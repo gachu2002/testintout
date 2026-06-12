@@ -1,0 +1,11 @@
+node_modules
+dist
+dist-ssr
+coverage
+.vite
+*.tsbuildinfo
+docs
+mock-api
+reference
+playwright-report
+test-results

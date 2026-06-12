@@ -1,0 +1,152 @@
+import type { SectionStatusInfo } from '@/components/reference-status';
+
+export const domainHubSectionStatus = {
+  cards: {
+    apis: [
+      { contract: 'accepted', method: 'GET', path: '/api/v2/domains (paged)' },
+      { contract: 'missing', method: 'GET', path: '/api/v2/domains/:id' },
+      { contract: 'missing', method: 'POST', path: '/api/v2/domains' },
+      { contract: 'missing', method: 'PATCH', path: '/api/v2/domains/:id' },
+      { contract: 'missing', method: 'DELETE', path: '/api/v2/domains/:id' },
+    ],
+    blockers: [
+      'Missing accepted response contract for GET /api/v2/domains/:id, so domain card detail behavior cannot be verified.',
+      'Missing accepted response contracts for POST /api/v2/domains, PATCH /api/v2/domains/:id, DELETE /api/v2/domains/:id, and bind/unbind actions; create/edit/delete CTAs remain blocked.',
+    ],
+    fieldsUsed: [
+      'items[].name',
+      'items[].description',
+      'items[].status',
+      'items[].statusLabel',
+      'items[].certificate.status',
+      'items[].owner.displayName',
+    ],
+    id: 'domain-hub-cards',
+    nextAction: 'Provide or approve contracts for the listed domain action endpoints.',
+    page: 'Domain Hub',
+    progress: 'blocked',
+    readiness: 'Blocked',
+    reference: 'workspace_domain_hub.html',
+    section: 'Domain cards',
+  },
+  certificateRail: {
+    apis: [
+      { contract: 'accepted', method: 'GET', path: '/api/v2/domains/panels/certificates' },
+      { contract: 'accepted', method: 'GET', path: '/api/v2/domains/:id/certificate' },
+    ],
+    blockers: [
+      'Reference sidebar shows per-domain certificate rows and labels, but accepted contracts expose aggregate status counts plus selected-domain detail; layout equivalence or a row-level contract is needed before verification.',
+    ],
+    evidence:
+      'Accepted contracts expose aggregate certificate status counts and selected-domain detail.',
+    fieldsUsed: ['items[].status', 'items[].count', 'total', 'detail.name', 'detail.status'],
+    id: 'domain-hub-certificate-rail',
+    nextAction:
+      'Accept the contract-driven aggregate/detail layout as equivalent or provide a row-level certificate rail contract.',
+    page: 'Domain Hub',
+    progress: 'blocked',
+    readiness: 'Blocked',
+    reference: 'workspace_domain_hub.html',
+    section: 'Certificate rail',
+  },
+  connectionRail: {
+    apis: [
+      { contract: 'accepted', method: 'GET', path: '/api/v2/domains/panels/connections' },
+      { contract: 'accepted', method: 'GET', path: '/api/v2/domains/:id/connection' },
+    ],
+    blockers: [
+      'Reference sidebar shows per-domain connection rows and labels, but accepted contracts expose aggregate status counts plus selected-domain detail; layout equivalence or a row-level contract is needed before verification.',
+    ],
+    evidence:
+      'Accepted contracts expose aggregate connection status counts and selected-domain detail.',
+    fieldsUsed: [
+      'items[].status',
+      'items[].count',
+      'total',
+      'detail.name',
+      'detail.status',
+      'detail.boundProject',
+    ],
+    id: 'domain-hub-connection-rail',
+    nextAction:
+      'Accept the contract-driven aggregate/detail layout as equivalent or provide a row-level connection rail contract.',
+    page: 'Domain Hub',
+    progress: 'blocked',
+    readiness: 'Blocked',
+    reference: 'workspace_domain_hub.html',
+    section: 'Connection rail',
+  },
+  filters: {
+    apis: [
+      { contract: 'accepted', method: 'GET', path: '/api/v2/domains/filters' },
+      { contract: 'accepted', method: 'GET', path: '/api/v2/domains (paged)' },
+    ],
+    evidence: 'Reference chip set implemented from accepted status/certificate fields.',
+    fieldsUsed: [
+      'statuses[].value',
+      'statuses[].label',
+      'statuses[].count',
+      'certificateStatuses[].value',
+      'certificateStatuses[].label',
+      'connectionStatuses[].value',
+      'connectionStatuses[].label',
+      'page.total',
+    ],
+    id: 'domain-hub-filters',
+    page: 'Domain Hub',
+    progress: 'implemented',
+    readiness: 'Ready',
+    reference: 'workspace_domain_hub.html',
+    section: 'Filter bar',
+  },
+  guideLinks: {
+    apis: [
+      { contract: 'accepted', method: 'GET', path: '/api/v2/panels/guide-links?surface=domains' },
+    ],
+    evidence: 'Verified with Playwright/browser comparison and pnpm check.',
+    fieldsUsed: ['title', 'description', 'rows[].title', 'rows[].href', 'footerLink.href'],
+    id: 'domain-hub-guide-links',
+    page: 'Domain Hub',
+    progress: 'verified',
+    readiness: 'Ready',
+    reference: 'workspace_domain_hub.html',
+    section: 'Guide links',
+  },
+  hero: {
+    apis: [
+      { contract: 'accepted', method: 'GET', path: '/api/v2/domains/stats' },
+      { contract: 'accepted', method: 'GET', path: '/api/v2/domains/filters' },
+      { contract: 'deferred', method: 'GET', path: '/api/v2/search?q=&types=projects,domains,...' },
+    ],
+    blockers: [
+      'Missing accepted hero stat contracts for bound-project and valid-certificate values; current stats do not prove the reference hero summary.',
+      'Create-domain CTA route and behavior are undecided, so the active reference CTA cannot be verified.',
+    ],
+    fieldsUsed: [
+      'total',
+      'connected',
+      'pending',
+      'review',
+      'filters.statuses[].count',
+      'filters.certificateStatuses[].count',
+    ],
+    id: 'domain-hub-hero',
+    nextAction: 'Provide hero stat contract and create-domain CTA behavior.',
+    page: 'Domain Hub',
+    progress: 'blocked',
+    readiness: 'Blocked',
+    reference: 'workspace_domain_hub.html',
+    section: 'Hero summary',
+  },
+  tips: {
+    apis: [{ contract: 'accepted', method: 'GET', path: '/api/v2/panels/tips?surface=domains' }],
+    evidence: 'Verified with mock endpoint smoke, route smoke, and pnpm check.',
+    fieldsUsed: ['title', 'description', 'rows[].title', 'rows[].meta', 'footerLink.href'],
+    id: 'domain-hub-tips',
+    page: 'Domain Hub',
+    progress: 'verified',
+    readiness: 'Ready',
+    reference: 'workspace_domain_hub.html',
+    section: 'DNS operation tips',
+  },
+} satisfies Record<string, SectionStatusInfo>;

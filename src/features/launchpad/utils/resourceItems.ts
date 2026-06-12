@@ -1,0 +1,73 @@
+import { routes } from '@/config/routes';
+import type {
+  BucketResource,
+  ConsoleResource,
+  DatabaseResource,
+  DomainResource,
+} from '@/features/launchpad/types';
+
+export type ResourceRailItem = {
+  href: string;
+  iconBackground: string;
+  iconName: string;
+  id: string;
+  meta: string;
+  status: string;
+  title: string;
+};
+
+type BuildResourceItemsInput = {
+  buckets: BucketResource[];
+  consoles: ConsoleResource[];
+  databases: DatabaseResource[];
+  domains: DomainResource[];
+};
+
+export function buildResourceItems({
+  buckets,
+  consoles,
+  databases,
+  domains,
+}: BuildResourceItemsInput): ResourceRailItem[] {
+  const databaseItems = databases.map((item) => ({
+    href: routes.databases,
+    iconBackground: 'linear-gradient(135deg,#2563eb,#06b6d4)',
+    iconName: 'database',
+    id: `database-${item.id}`,
+    meta: `DB · ${item.engine}`,
+    status: item.health.label,
+    title: item.name,
+  }));
+
+  const bucketItems = buckets.map((item) => ({
+    href: routes.buckets,
+    iconBackground: 'linear-gradient(135deg,#0f766e,#2dd4bf)',
+    iconName: 'bucket',
+    id: `bucket-${item.id}`,
+    meta: `Bucket · ${item.type}`,
+    status: item.status,
+    title: item.name,
+  }));
+
+  const domainItems = domains.map((item) => ({
+    href: routes.domains,
+    iconBackground: 'linear-gradient(135deg,#4f46e5,#60a5fa)',
+    iconName: 'domain',
+    id: `domain-${item.id}`,
+    meta: `Domain · ${item.kind}`,
+    status: item.status,
+    title: item.name,
+  }));
+
+  const consoleItems = consoles.map((item) => ({
+    href: routes.consoles,
+    iconBackground: 'linear-gradient(135deg,#f97316,#fb923c)',
+    iconName: 'console',
+    id: `console-${item.id}`,
+    meta: `Console · ${item.typeLabel}`,
+    status: item.statusLabel,
+    title: item.name,
+  }));
+
+  return [...databaseItems, ...bucketItems, ...domainItems, ...consoleItems];
+}
