@@ -1,0 +1,1942 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phòng Lab Chatbot</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="ax_studio_topbar.css" />
+    <style>
+      :root {
+        --bg: #f4f6f9;
+        --surface: #ffffff;
+        --border: #ebedf0;
+        --border-2: #d6d8db;
+        --t1: #2f3236;
+        --t2: #5f656d;
+        --t3: #9298a0;
+        --brand: #b40e4d;
+        --brand-h: #d5115b;
+        --brand-bg: #feeff5;
+        --blue: #0086cc;
+        --blue-bg: #e2f3ff;
+        --green: #0d9488;
+        --green-bg: #ecfdf5;
+        --purple: #7c5fcf;
+        --purple-bg: #f1e7ff;
+        --orange: #e07020;
+        --orange-bg: #fff1e7;
+        --slate: #334155;
+        --max: 1320px;
+        --r: 14px;
+        --gap: 20px;
+        --shadow-soft: 0 10px 26px rgba(15, 23, 42, 0.04);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        background: var(--bg);
+        color: var(--t1);
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      button,
+      input {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      [data-ax-topbar] .service-groups {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+
+      .page {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 24px 24px 72px;
+      }
+      .compact-page {
+        max-width: var(--max);
+      }
+
+      .page-head {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: start;
+        gap: 14px;
+        margin-bottom: 20px;
+      }
+      .sec-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 14px;
+        color: var(--t3);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .sec-label .material-icons-round {
+        font-size: 14px;
+      }
+      .title-wrap {
+        max-width: 760px;
+        display: grid;
+        gap: 0;
+      }
+      .page-title {
+        font-size: 34px;
+        line-height: 1.14;
+        font-weight: 800;
+        letter-spacing: -0.05em;
+        color: var(--t1);
+      }
+      .page-desc {
+        margin-top: 10px;
+        max-width: 860px;
+        color: var(--t2);
+        font-size: 14px;
+        line-height: 1.75;
+        letter-spacing: -0.02em;
+      }
+      .head-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        padding-top: 2px;
+      }
+      .btn {
+        height: 36px;
+        padding: 0 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--t2);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 700;
+        box-shadow: none;
+        transition:
+          border-color 0.15s ease,
+          background 0.15s ease,
+          color 0.15s ease,
+          box-shadow 0.15s ease,
+          transform 0.15s ease;
+      }
+      .btn .material-icons-round {
+        font-size: 16px;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+        border-color: rgba(180, 14, 77, 0.18);
+        color: var(--t1);
+        background: #fff;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+      }
+      .btn.primary {
+        border-color: transparent;
+        background: var(--brand);
+        color: #fff;
+        box-shadow: 0 10px 24px rgba(180, 14, 77, 0.16);
+      }
+      .btn.primary:hover {
+        border-color: transparent;
+        background: var(--brand-h);
+        color: #fff;
+        box-shadow: 0 14px 28px rgba(180, 14, 77, 0.18);
+      }
+
+      .workspace {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--gap);
+        align-items: start;
+      }
+      .panel {
+        background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+        border: 1px solid var(--border);
+        border-radius: var(--r);
+        overflow: hidden;
+        box-shadow: var(--shadow-soft);
+      }
+      .panel-head {
+        min-height: 58px;
+        padding: 16px 16px 12px;
+        border-bottom: none;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.82);
+      }
+      .panel-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--t3);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .panel-kicker .material-icons-round {
+        font-size: 14px;
+        color: var(--t3);
+      }
+      .panel-title {
+        margin-top: 5px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+        color: var(--t2);
+      }
+      .trial-panel {
+        order: 1;
+        display: grid;
+        grid-template-columns: 280px minmax(0, 1fr);
+        min-height: 680px;
+        border-color: rgba(214, 216, 219, 0.72);
+        background: #fff;
+        box-shadow: var(--shadow-soft);
+      }
+      .session-rail {
+        min-width: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.92),
+          rgba(251, 252, 255, 0.82)
+        );
+        position: relative;
+      }
+      .session-rail::after {
+        content: "";
+        position: absolute;
+        top: 16px;
+        right: 0;
+        bottom: 16px;
+        width: 1px;
+        background: rgba(214, 216, 219, 0.72);
+      }
+
+      .session-block {
+        padding: 10px;
+      }
+      .session-list {
+        display: grid;
+        gap: 7px;
+      }
+      .session-item {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: linear-gradient(180deg, #fbfcfe 0%, #ffffff 100%);
+        padding: 9px;
+        text-align: left;
+        display: grid;
+        gap: 6px;
+        transition:
+          border 0.15s ease,
+          background 0.15s ease,
+          box-shadow 0.15s ease,
+          transform 0.15s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      .session-item:hover {
+        transform: translateY(-1px);
+        border-color: rgba(180, 14, 77, 0.16);
+        background: #fff;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+      }
+      .session-item.is-active {
+        border-color: rgba(180, 14, 77, 0.22);
+        background: linear-gradient(
+          180deg,
+          rgba(254, 239, 245, 0.9),
+          rgba(255, 255, 255, 0.96)
+        );
+        box-shadow: 0 12px 24px rgba(180, 14, 77, 0.07);
+      }
+      .session-item-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .session-name {
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--t1);
+        letter-spacing: -0.02em;
+      }
+      .session-meta {
+        font-size: 10px;
+        line-height: 1.45;
+        color: var(--t2);
+      }
+      .session-rule {
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 13px;
+        background: #fff7ed;
+        color: #9a3412;
+        font-size: 11px;
+        line-height: 1.55;
+        font-weight: 700;
+      }
+      .bot-list {
+        width: 100%;
+        min-width: 0;
+        display: grid;
+        gap: 7px;
+        max-height: 492px;
+        overflow-y: auto;
+        padding: 1px 2px 3px;
+      }
+      .bot-list::-webkit-scrollbar {
+        width: 6px;
+      }
+      .bot-list::-webkit-scrollbar-thumb {
+        border-radius: 999px;
+        background: rgba(146, 152, 160, 0.3);
+      }
+      .bot-item {
+        width: 100%;
+        text-align: left;
+        border: 1px solid rgba(214, 216, 219, 0.9);
+        background: rgba(255, 255, 255, 0.86);
+        border-radius: 12px;
+        padding: 9px;
+        display: grid;
+        grid-template-columns: 30px minmax(0, 1fr);
+        gap: 4px 8px;
+        transition:
+          border 0.15s ease,
+          background 0.15s ease,
+          box-shadow 0.15s ease,
+          transform 0.15s ease;
+        position: relative;
+        cursor: pointer;
+        overflow: hidden;
+      }
+      .bot-item::before {
+        content: attr(data-initial);
+        grid-row: 1 / span 2;
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        color: #fff;
+        background: var(--brand);
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+      }
+      .bot-item:hover {
+        transform: translateY(-1px);
+        border-color: rgba(180, 14, 77, 0.18);
+        background: #fff;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+      }
+      .bot-item.is-active {
+        border-color: rgba(180, 14, 77, 0.24);
+        background: linear-gradient(180deg, #ffffff 0%, #fff7fa 100%);
+        box-shadow:
+          inset 3px 0 0 var(--brand),
+          0 10px 22px rgba(15, 23, 42, 0.05);
+      }
+      .bot-item-top {
+        min-width: 0;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 7px;
+      }
+      .bot-item-name {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 12px;
+        font-weight: 800;
+        color: var(--t1);
+        letter-spacing: -0.03em;
+      }
+      .bot-item-desc {
+        grid-column: 2;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 15px;
+        font-size: 10px;
+        line-height: 1.5;
+        color: var(--t2);
+      }
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        min-height: 20px;
+        padding: 0 7px;
+        border-radius: 999px;
+        border: 1px solid rgba(214, 216, 219, 0.92);
+        background: rgba(255, 255, 255, 0.88);
+        color: var(--t2);
+        font-size: 10px;
+        font-weight: 700;
+      }
+      .tag .material-icons-round {
+        font-size: 13px;
+        color: var(--t3);
+      }
+      .tag.purple {
+        border-color: rgba(124, 95, 207, 0.18);
+        background: rgba(241, 231, 255, 0.78);
+        color: var(--purple);
+      }
+      .tag.blue {
+        border-color: rgba(0, 134, 204, 0.16);
+        background: rgba(226, 243, 255, 0.82);
+        color: var(--blue);
+      }
+      .tag.green {
+        border-color: rgba(13, 148, 136, 0.16);
+        background: rgba(236, 253, 245, 0.86);
+        color: var(--green);
+      }
+      .tag.orange {
+        border-color: rgba(224, 112, 32, 0.18);
+        background: rgba(255, 241, 231, 0.9);
+        color: var(--orange);
+      }
+
+      .chat-panel {
+        min-height: 680px;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+      }
+      .chat-head {
+        min-height: 58px;
+        padding: 16px 18px 12px;
+        border-bottom: none;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        gap: 14px;
+        background: rgba(255, 255, 255, 0.84);
+      }
+      .chat-head-main {
+        grid-column: 2;
+        justify-self: center;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-width: 0;
+        text-align: center;
+      }
+      .chat-avatar {
+        width: 22px;
+        height: 22px;
+        color: var(--brand);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .chat-avatar .material-icons-round {
+        font-size: 20px;
+      }
+      .chat-title {
+        font-size: 18px;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        line-height: 1.18;
+        color: var(--t1);
+      }
+      .chat-subtitle {
+        margin-top: 5px;
+        font-size: 11px;
+        color: var(--t3);
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .chat-head-side {
+        grid-column: 3;
+        justify-self: end;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+      .chat-body {
+        padding: 22px 24px;
+        background: linear-gradient(180deg, #fbfcff 0%, #ffffff 100%);
+        overflow-y: auto;
+      }
+      .day-divider {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 18px;
+        color: var(--t3);
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .day-divider::before,
+      .day-divider::after {
+        content: "";
+        height: 1px;
+        background: var(--border);
+        flex: 1;
+      }
+      .message-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 14px;
+        align-items: flex-end;
+      }
+      .message-row.user {
+        justify-content: flex-end;
+      }
+      .message-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 11px;
+        background: linear-gradient(135deg, #b40e4d, #d5115b);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .message-avatar .material-icons-round {
+        font-size: 17px;
+      }
+      .bubble-wrap {
+        max-width: 76%;
+        display: grid;
+        gap: 5px;
+      }
+      .message-name {
+        font-size: 11px;
+        color: var(--t3);
+        font-weight: 800;
+      }
+      .bubble {
+        padding: 12px 13px;
+        border-radius: 16px;
+        background: #fff;
+        border: 1px solid var(--border);
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+        color: var(--t1);
+        font-size: 13px;
+        line-height: 1.62;
+      }
+      .message-row.user .bubble {
+        background: linear-gradient(135deg, var(--brand), var(--brand-h));
+        color: #fff;
+        border-color: transparent;
+        box-shadow: 0 10px 24px rgba(180, 14, 77, 0.16);
+      }
+      .source-strip {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+      }
+      .source-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        height: 24px;
+        padding: 0 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(214, 216, 219, 0.92);
+        color: var(--t2);
+        font-size: 10px;
+        font-weight: 700;
+      }
+      .source-pill .material-icons-round {
+        font-size: 13px;
+        color: var(--brand);
+      }
+      .typing {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 9px 12px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: #fff;
+        color: var(--t3);
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+      }
+      .typing span {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+        animation: pulse 1.2s ease-in-out infinite;
+      }
+      .typing span:nth-child(2) {
+        animation-delay: 0.12s;
+      }
+      .typing span:nth-child(3) {
+        animation-delay: 0.24s;
+      }
+      @keyframes pulse {
+        0%,
+        80%,
+        100% {
+          opacity: 0.35;
+          transform: translateY(0);
+        }
+        40% {
+          opacity: 1;
+          transform: translateY(-3px);
+        }
+      }
+
+      .prompt-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        padding: 0 18px 14px;
+        background: #fff;
+      }
+      .prompt-chip {
+        border: 1px solid var(--border);
+        background: linear-gradient(180deg, #fbfcfe 0%, #ffffff 100%);
+        color: var(--t2);
+        height: 30px;
+        padding: 0 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        transition:
+          border-color 0.15s ease,
+          background 0.15s ease,
+          color 0.15s ease,
+          transform 0.15s ease;
+      }
+      .prompt-chip:hover {
+        transform: translateY(-1px);
+        border-color: rgba(180, 14, 77, 0.18);
+        background: #fff;
+        color: var(--t1);
+      }
+      .composer {
+        border-top: 1px solid var(--border);
+        padding: 14px 16px 16px;
+        background: #fff;
+      }
+      .composer-box {
+        min-height: 54px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: linear-gradient(180deg, #fbfcfe 0%, #ffffff 100%);
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 9px 8px 12px;
+        transition:
+          border 0.15s,
+          box-shadow 0.15s,
+          background 0.15s;
+      }
+      .composer-box:focus-within {
+        border-color: rgba(180, 14, 77, 0.42);
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(180, 14, 77, 0.08);
+      }
+      .composer-box .material-icons-round {
+        color: var(--t3);
+        font-size: 19px;
+      }
+      .composer input {
+        border: none;
+        background: transparent;
+        outline: none;
+        width: 100%;
+        color: var(--t1);
+        font-size: 13px;
+      }
+      .send-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 13px;
+        border: none;
+        background: linear-gradient(135deg, var(--brand), var(--brand-h));
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 24px rgba(180, 14, 77, 0.16);
+      }
+      .send-btn .material-icons-round {
+        color: #fff;
+        font-size: 19px;
+      }
+      .composer-note {
+        margin-top: 8px;
+        color: var(--t3);
+        font-size: 11px;
+        line-height: 1.5;
+      }
+
+      .rail-switch {
+        margin: 10px 10px 0;
+        padding: 4px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4px;
+        border: 1px solid rgba(214, 216, 219, 0.82);
+        border-radius: 14px;
+        background: rgba(248, 250, 252, 0.88);
+      }
+      .rail-tab {
+        min-height: 34px;
+        border: 0;
+        border-radius: 10px;
+        background: transparent;
+        color: var(--t3);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 11px;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        transition:
+          background 0.15s ease,
+          color 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+      .rail-tab .material-icons-round {
+        font-size: 15px;
+      }
+      .rail-tab.is-active {
+        background: #fff;
+        color: var(--brand);
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+      }
+      .rail-view {
+        display: none;
+      }
+      .rail-view.is-active {
+        display: block;
+        min-width: 0;
+      }
+      .compact-rail-head {
+        min-height: auto;
+        padding: 14px 10px 10px;
+      }
+      .bot-fold-count {
+        margin-left: auto;
+        padding: 4px 7px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.76);
+        border: 1px solid rgba(214, 216, 219, 0.82);
+        color: var(--t3);
+        font-size: 9px;
+        font-weight: 900;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      .bot-rail-body {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        align-items: start;
+        gap: 9px;
+        min-width: 0;
+        padding: 0 10px 10px;
+      }
+      .bot-search {
+        width: 100%;
+        min-width: 0;
+        height: 33px;
+        display: grid;
+        grid-template-columns: 17px minmax(0, 1fr);
+        align-items: center;
+        gap: 8px;
+        padding: 0 12px;
+        border: 1px solid rgba(214, 216, 219, 0.86);
+        border-radius: 12px;
+        background: #fff;
+        transition:
+          border-color 0.15s ease,
+          box-shadow 0.15s ease,
+          background 0.15s ease;
+      }
+      .bot-search:focus-within {
+        border-color: rgba(180, 14, 77, 0.28);
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(180, 14, 77, 0.06);
+      }
+      .bot-search .material-icons-round {
+        color: var(--t3);
+        font-size: 17px;
+      }
+      .bot-search input {
+        width: 100%;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: var(--t1);
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .bot-search input::placeholder {
+        color: var(--t3);
+      }
+      .bot-item-action {
+        grid-column: 1 / -1;
+        display: none;
+        padding-top: 3px;
+      }
+      .bot-item.is-active .bot-item-action {
+        display: block;
+      }
+      .bot-action-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+      }
+      .bot-action-row.single {
+        grid-template-columns: 1fr;
+      }
+      .bot-rail-body .bot-select-btn {
+        width: 100%;
+        justify-content: center;
+        height: 30px;
+        margin-top: 1px;
+        border-radius: 10px;
+        font-size: 11px;
+      }
+      .bot-rail-body .bot-select-btn.secondary {
+        border-color: rgba(214, 216, 219, 0.9);
+        background: #fff;
+        color: var(--t2);
+        box-shadow: none;
+      }
+
+      .info-list {
+        display: grid;
+        gap: 9px;
+      }
+      .info-item {
+        display: grid;
+        grid-template-columns: 30px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 9px;
+        padding: 10px;
+        border-radius: 14px;
+        background: linear-gradient(180deg, #fbfcfe 0%, #ffffff 100%);
+        border: 1px solid rgba(214, 216, 219, 0.92);
+      }
+      .info-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        background: linear-gradient(135deg, #0086cc, #22d3ee);
+      }
+      .info-icon .material-icons-round {
+        font-size: 17px;
+      }
+      .info-name {
+        font-size: 12px;
+        font-weight: 800;
+        color: var(--t1);
+      }
+      .info-meta {
+        margin-top: 2px;
+        font-size: 11px;
+        color: var(--t2);
+        line-height: 1.35;
+      }
+      .info-count {
+        font-size: 11px;
+        color: var(--t3);
+        font-weight: 800;
+      }
+
+      @media (max-width: 1120px) {
+        [data-ax-topbar] .service-groups {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .compact-page {
+          max-width: var(--max);
+        }
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+        .trial-panel {
+          grid-template-columns: 260px minmax(0, 1fr);
+        }
+
+      }
+      @media (max-width: 820px) {
+        .page {
+          padding: 18px 16px 64px;
+        }
+        .page-head {
+          grid-template-columns: 1fr;
+        }
+        .head-actions {
+          justify-content: flex-start;
+          padding-bottom: 0;
+        }
+        .page-title {
+          font-size: 30px;
+        }
+        .workspace,
+        .trial-panel {
+          grid-template-columns: 1fr;
+        }
+        .bot-picker-head {
+          grid-template-columns: 1fr;
+          grid-template-areas: "title" "search";
+          gap: 8px;
+        }
+        .bot-list {
+          max-height: none;
+        }
+        .session-rail::after {
+          top: auto;
+          right: 16px;
+          bottom: 0;
+          left: 16px;
+          width: auto;
+          height: 1px;
+        }
+        .chat-panel {
+          min-height: 620px;
+        }
+        .bubble-wrap {
+          max-width: 88%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      data-ax-topbar
+      data-active-key="chatbot"
+      data-search-placeholder="Tìm chatbot, prompt, công cụ đã kết nối..."
+    ></div>
+
+    <main class="page compact-page">
+      <div class="page-head compact-head">
+        <div class="title-wrap">
+          <div class="sec-label">
+            <span class="material-icons-round">science</span>Phòng Lab Chatbot
+          </div>
+          <h1 class="page-title">Phòng Lab Chatbot</h1>
+          <p class="page-desc">
+            Không gian để chọn nhanh và thử nghiệm các chatbot theo mục đích,
+            từ chatbot hỗ trợ AX Studio đến bot hỗ trợ release, phát triển và vận hành.
+          </p>
+        </div>
+        <div class="head-actions">
+          <a class="btn" href="workspace_chatbot_hub.html"
+            ><span class="material-icons-round">hub</span>Chatbot</a
+          >
+          <a class="btn" href="dej_agent_store.html"
+            ><span class="material-icons-round">auto_awesome</span>Thư viện AI</a
+          >
+        </div>
+      </div>
+
+      <section class="workspace">
+
+        <section
+          class="panel trial-panel"
+          aria-label="Không gian làm việc Phòng Lab Chatbot"
+        >
+          <aside class="session-rail" aria-label="Thanh bên Phòng Lab Chatbot">
+            <div class="rail-switch" role="tablist" aria-label="Chuyển thanh bên">
+              <button class="rail-tab is-active" type="button" data-rail-view="bots" aria-selected="true">
+                <span class="material-icons-round">auto_awesome</span>Bot
+              </button>
+              <button class="rail-tab" type="button" data-rail-view="sessions" aria-selected="false">
+                <span class="material-icons-round">forum</span>Phiên
+              </button>
+            </div>
+
+            <div class="rail-view" data-rail-panel="sessions">
+            <div class="panel-head">
+              <div>
+                <div class="panel-kicker">
+                  <span class="material-icons-round">forum</span>Phiên
+                </div>
+                <div class="panel-title">Phiên thử nghiệm gần đây</div>
+              </div>
+            </div>
+            <div class="session-block">
+              <div class="session-list" id="sessionList"></div>
+            </div>
+
+            </div>
+
+            <div class="rail-view is-active" data-rail-panel="bots">
+              <div class="panel-head compact-rail-head">
+                <div>
+                  <div class="panel-kicker">
+                    <span class="material-icons-round">auto_awesome</span>Bảng chọn Bot
+                  </div>
+                  <div class="panel-title">Chọn bot phù hợp với mục đích công việc</div>
+                </div>
+                <span class="bot-fold-count">14 Bot</span>
+              </div>
+              <div class="bot-rail-body">
+
+                <label class="bot-search" aria-label="Tìm bot">
+                  <span class="material-icons-round">search</span>
+                  <input id="botSearch" type="search" placeholder="Tìm tên bot · vai trò" />
+                </label>
+                <div class="bot-list" id="botList">
+                  <div
+                    class="bot-item"
+                    data-bot="ax" data-initial="AX"
+                    role="button"
+                    tabindex="0"
+                  >
+                    <div class="bot-item-top">
+                      <span class="bot-item-name">AX Studio Assistant</span
+                      ><span class="tag green">Mặc định</span>
+                    </div>
+                    <div class="bot-item-desc">
+                      Bot hỗ trợ mặc định hướng dẫn cách dùng portal, khám phá app và luồng quyền
+                    </div>
+                    <div class="bot-item-action">
+                      <button
+                        class="btn primary bot-select-btn"
+                        type="button"
+                        data-new-bot="ax"
+                      >
+                        <span class="material-icons-round">forum</span>Bắt đầu cuộc trò chuyện mới
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="bot-item"
+                    data-bot="release" data-initial="RN"
+                    role="button"
+                    tabindex="0"
+                  >
+                    <div class="bot-item-top">
+                      <span class="bot-item-name">Release Note Bot</span>
+                    </div>
+                    <div class="bot-item-desc">
+                      Chatbot tóm tắt release note và các thay đổi
+                    </div>
+                    <div class="bot-item-action">
+                      <button
+                        class="btn primary bot-select-btn"
+                        type="button"
+                        data-new-bot="release"
+                      >
+                        <span class="material-icons-round">forum</span>Bắt đầu cuộc trò chuyện mới
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="bot-item"
+                    data-bot="developer" data-initial="DV"
+                    role="button"
+                    tabindex="0"
+                  >
+                    <div class="bot-item-top">
+                      <span class="bot-item-name">Developer Helper</span>
+                    </div>
+                    <div class="bot-item-desc">
+                      Chatbot tìm ví dụ SDK và checklist triển khai
+                    </div>
+                    <div class="bot-item-action">
+                      <button
+                        class="btn primary bot-select-btn"
+                        type="button"
+                        data-new-bot="developer"
+                      >
+                        <span class="material-icons-round">forum</span>Bắt đầu cuộc trò chuyện mới
+                      </button>
+                    </div>
+                  </div>
+                  <div class="bot-item" data-bot="ops" data-initial="OP" role="button" tabindex="0">
+                    <div class="bot-item-top">
+                      <span class="bot-item-name">Ops Triage Bot</span>
+                    </div>
+                    <div class="bot-item-desc">
+                      Chatbot tổng hợp tình hình vận hành từ log và metric
+                    </div>
+                    <div class="bot-item-action">
+                      <button
+                        class="btn primary bot-select-btn"
+                        type="button"
+                        data-new-bot="ops"
+                      >
+                        <span class="material-icons-round">forum</span>Bắt đầu cuộc trò chuyện mới
+                      </button>
+                    </div>
+                  </div>
+                  <div class="bot-item" data-bot="knowledge" data-initial="KB" role="button" tabindex="0">
+                    <div class="bot-item-top">
+                      <span class="bot-item-name">Knowledge Base Bot</span><span class="tag blue">Docs</span>
+                    </div>
+                    <div class="bot-item-desc">
+                      Chatbot tìm kiếm tri thức để kiểm tra luồng tra cứu FAQ và tài liệu
+                    </div>
+                    <div class="bot-item-action">
+                      <button
+                        class="btn primary bot-select-btn"
+                        type="button"
+                        data-new-bot="knowledge"
+                      >
+                        <span class="material-icons-round">forum</span>Bắt đầu cuộc trò chuyện mới
+                      </button>
+                    </div>
+                  </div>
+                  <div class="bot-item" data-bot="policy" data-initial="PG" role="button" tabindex="0">
+                    <div class="bot-item-top">
+                      <span class="bot-item-name">Policy Guard Bot</span><span class="tag orange">Policy</span>
+                    </div>
+                    <div class="bot-item-desc">
+                      Chatbot compliance kiểm tra chính sách nội bộ và tiêu chí phân quyền
+                    </div>
+                    <div class="bot-item-action">
+                      <button
+                        class="btn primary bot-select-btn"
+                        type="button"
+                        data-new-bot="policy"
+                      >
+                        <span class="material-icons-round">forum</span>Bắt đầu cuộc trò chuyện mới
+                      </button>
+                    </div>
+                  </div>
+                  <div class="bot-item" data-bot="data" data-initial="DI" role="button" tabindex="0">
+                    <div class="bot-item-top">
+                      <span class="bot-item-name">Data Insight Bot</span><span class="tag purple">Data</span>
+                    </div>
+                    <div class="bot-item-desc">
+                      Chatbot phân tích tóm tắt chỉ số và dữ liệu sử dụng
+                    </div>
+                    <div class="bot-item-action">
+                      <button
+                        class="btn primary bot-select-btn"
+                        type="button"
+                        data-new-bot="data"
+                      >
+                        <span class="material-icons-round">forum</span>Bắt đầu cuộc trò chuyện mới
+                      </button>
+                    </div>
+                  </div>
+                  <div class="bot-item" data-bot="qa" data-initial="QA" role="button" tabindex="0">
+                    <div class="bot-item-top">
+                      <span class="bot-item-name">QA Test Bot</span><span class="tag green">QA</span>
+                    </div>
+                    <div class="bot-item-desc">
+                      Chatbot chất lượng sắp xếp test case và quy trình tái hiện
+                    </div>
+                    <div class="bot-item-action">
+                      <button
+                        class="btn primary bot-select-btn"
+                        type="button"
+                        data-new-bot="qa"
+                      >
+                        <span class="material-icons-round">forum</span>Bắt đầu cuộc trò chuyện mới
+                      </button>
+                    </div>
+                  </div>
+                  <div class="bot-item" data-bot="ux" data-initial="UX" role="button" tabindex="0">
+                    <div class="bot-item-top">
+                      <span class="bot-item-name">UX Writing Bot</span><span class="tag purple">UX</span>
+                    </div>
+                    <div class="bot-item-desc">
+                      Chatbot UX tinh chỉnh tone cho nút, hướng dẫn và thông báo lỗi
+                    </div>
+                    <div class="bot-item-action">
+                      <button
+                        class="btn primary bot-select-btn"
+                        type="button"
+                        data-new-bot="ux"
+                      >
+                        <span class="material-icons-round">forum</span>Bắt đầu cuộc trò chuyện mới
+                      </button>
+                    </div>
+                  </div>
+                  <div class="bot-item" data-bot="incident" data-initial="IN" role="button" tabindex="0">
+                    <div class="bot-item-top">
+                      <span class="bot-item-name">Incident Helper</span><span class="tag orange">Alert</span>
+                    </div>
+                    <div class="bot-item-desc">
+                      Chatbot phản ứng nhanh tóm tắt ticket sự cố và phạm vi ảnh hưởng
+                    </div>
+                    <div class="bot-item-action">
+                      <button
+                        class="btn primary bot-select-btn"
+                        type="button"
+                        data-new-bot="incident"
+                      >
+                        <span class="material-icons-round">forum</span>Bắt đầu cuộc trò chuyện mới
+                      </button>
+                    </div>
+                  </div>
+                  <div class="bot-item" data-bot="security" data-initial="SC" role="button" tabindex="0">
+                    <div class="bot-item-top">
+                      <span class="bot-item-name">Security Review Bot</span><span class="tag blue">Secure</span>
+                    </div>
+                    <div class="bot-item-desc">
+                      Chatbot hướng dẫn kiểm tra bảo mật và xử lý lỗ hổng
+                    </div>
+                    <div class="bot-item-action">
+                      <button
+                        class="btn primary bot-select-btn"
+                        type="button"
+                        data-new-bot="security"
+                      >
+                        <span class="material-icons-round">forum</span>Bắt đầu cuộc trò chuyện mới
+                      </button>
+                    </div>
+                  </div>
+                  <div class="bot-item" data-bot="api" data-initial="API" role="button" tabindex="0">
+                    <div class="bot-item-top">
+                      <span class="bot-item-name">API Guide Bot</span><span class="tag green">API</span>
+                    </div>
+                    <div class="bot-item-desc">
+                      Chatbot hỗ trợ phát triển tìm cách dùng API và ví dụ tích hợp
+                    </div>
+                    <div class="bot-item-action">
+                      <button
+                        class="btn primary bot-select-btn"
+                        type="button"
+                        data-new-bot="api"
+                      >
+                        <span class="material-icons-round">forum</span>Bắt đầu cuộc trò chuyện mới
+                      </button>
+                    </div>
+                  </div>
+                  <div class="bot-item" data-bot="onboarding" data-initial="ON" role="button" tabindex="0">
+                    <div class="bot-item-top">
+                      <span class="bot-item-name">Onboarding Coach</span><span class="tag blue">Guide</span>
+                    </div>
+                    <div class="bot-item-desc">
+                      Chatbot hỗ trợ người dùng mới thiết lập ban đầu và lộ trình học
+                    </div>
+                    <div class="bot-item-action">
+                      <button
+                        class="btn primary bot-select-btn"
+                        type="button"
+                        data-new-bot="onboarding"
+                      >
+                        <span class="material-icons-round">forum</span>Bắt đầu cuộc trò chuyện mới
+                      </button>
+                    </div>
+                  </div>
+                  <div class="bot-item" data-bot="workflow" data-initial="WF" role="button" tabindex="0">
+                    <div class="bot-item-top">
+                      <span class="bot-item-name">Workflow Automator</span><span class="tag purple">Flow</span>
+                    </div>
+                    <div class="bot-item-desc">
+                      Chatbot đề xuất tự động hóa công việc lặp lại và luồng phê duyệt
+                    </div>
+                    <div class="bot-item-action">
+                      <button
+                        class="btn primary bot-select-btn"
+                        type="button"
+                        data-new-bot="workflow"
+                      >
+                        <span class="material-icons-round">forum</span>Bắt đầu cuộc trò chuyện mới
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </aside>
+
+          <section class="chat-panel" aria-label="Cửa sổ trò chuyện Phòng Lab Chatbot">
+            <div class="chat-head">
+              <div class="chat-head-main">
+                <div class="chat-avatar">
+                  <span class="material-icons-round">support_agent</span>
+                </div>
+                <div>
+                  <div class="chat-title" id="chatTitle">
+                    AX Studio Assistant
+                  </div>
+                  <div class="chat-subtitle" id="chatSubtitle">
+                    Đã kết nối với phiên Phòng Lab Chatbot
+                  </div>
+                </div>
+              </div>
+              <div class="chat-head-side">
+                <span class="tag green" id="chatStatusTag">Lab</span>
+              </div>
+            </div>
+
+            <div class="chat-body" id="chatBody"></div>
+
+            <div>
+              <div class="prompt-row">
+                <button class="prompt-chip" type="button">
+                  Cho tôi biết chatbot này làm tốt việc gì
+                </button>
+                <button class="prompt-chip" type="button">
+                  Gợi ý câu hỏi thử nghiệm
+                </button>
+                <button class="prompt-chip" type="button">
+                  Tôi muốn so sánh chất lượng phản hồi
+                </button>
+              </div>
+              <div class="composer">
+                <div class="composer-box">
+                  <span class="material-icons-round">add_circle</span>
+                  <input
+                    id="chatInput"
+                    type="text"
+                    placeholder="Gửi tin nhắn thử nghiệm cho chatbot đã chọn"
+                  />
+                  <button
+                    class="send-btn"
+                    id="sendButton"
+                    type="button"
+                    aria-label="Gửi tin nhắn"
+                  >
+                    <span class="material-icons-round">send</span>
+                  </button>
+                </div>
+                <div class="composer-note" id="composerNote">
+                  Tin nhắn trong Phòng Lab Chatbot chỉ được lưu trong phiên hiện tại.
+                </div>
+              </div>
+            </div>
+          </section>
+        </section>
+
+      </section>
+    </main>
+
+    <script src="ax_studio_topbar.js"></script>
+    <script>
+      const botProfiles = {
+        ax: {
+          shortName: "AX Studio",
+          name: "AX Studio Assistant",
+          subtitle: "Đã kết nối với phiên Phòng Lab Chatbot",
+          greeting:
+            "Xin chào, tôi là AX Studio Assistant. Hãy thử kiểm tra cách dùng portal, khám phá app và luồng quyền.",
+          badge: "Default",
+          badgeTone: "green",
+          sources: [
+            { icon: "hub", label: "Portal Guide" },
+            { icon: "menu_book", label: "Workspace Docs" },
+          ],
+        },
+        release: {
+          shortName: "Release",
+          name: "Release Note Bot",
+          subtitle: "Đã kết nối với phiên Phòng Lab Chatbot",
+          greeting:
+            "Tôi là Release Note Bot. Hãy cho tôi biết release note hoặc thay đổi cần xem.",
+          badge: "Review",
+          badgeTone: "orange",
+          sources: [
+            { icon: "campaign", label: "Release Feed" },
+            { icon: "description", label: "Change Summary" },
+          ],
+        },
+        developer: {
+          shortName: "Developer",
+          name: "Developer Helper",
+          subtitle: "Đã kết nối với phiên Phòng Lab Chatbot",
+          greeting:
+            "Tôi là Developer Helper. Tôi có thể hỗ trợ câu hỏi về SDK, template và triển khai.",
+          badge: "Live",
+          badgeTone: "purple",
+          sources: [
+            { icon: "code", label: "SDK Examples" },
+            { icon: "travel_explore", label: "Template Search" },
+          ],
+        },
+        ops: {
+          shortName: "Ops",
+          name: "Ops Triage Bot",
+          subtitle: "Đã kết nối với phiên Phòng Lab Chatbot",
+          greeting:
+            "Tôi là Ops Triage Bot. Tôi có thể cùng bạn kiểm tra log, metric và trạng thái vận hành.",
+          badge: "Ops",
+          badgeTone: "blue",
+          sources: [
+            { icon: "monitoring", label: "Metrics View" },
+            { icon: "lan", label: "MCP Logs" },
+          ],
+        },
+        knowledge: {
+          shortName: "Knowledge",
+          name: "Knowledge Base Bot",
+          subtitle: "Đã kết nối với phiên Phòng Lab Chatbot",
+          greeting:
+            "Tôi là Knowledge Base Bot, giúp tìm nhanh câu trả lời cần thiết dựa trên tài liệu và FAQ.",
+          badge: "Docs",
+          badgeTone: "blue",
+          sources: [
+            { icon: "menu_book", label: "Knowledge Docs" },
+            { icon: "search", label: "FAQ Index" },
+          ],
+        },
+        policy: {
+          shortName: "Policy",
+          name: "Policy Guard Bot",
+          subtitle: "Đã kết nối với phiên Phòng Lab Chatbot",
+          greeting:
+            "Tôi là Policy Guard Bot. Tôi có thể cùng bạn kiểm tra quyền, chính sách bảo mật và tiêu chí phê duyệt.",
+          badge: "Policy",
+          badgeTone: "orange",
+          sources: [
+            { icon: "policy", label: "Policy Rules" },
+            { icon: "verified_user", label: "Access Guide" },
+          ],
+        },
+        data: {
+          shortName: "Data",
+          name: "Data Insight Bot",
+          subtitle: "Đã kết nối với phiên Phòng Lab Chatbot",
+          greeting:
+            "Tôi là Data Insight Bot. Tôi có thể tóm tắt mức sử dụng, chỉ số hiệu quả và xu hướng thay đổi.",
+          badge: "Data",
+          badgeTone: "purple",
+          sources: [
+            { icon: "bar_chart", label: "Usage Metrics" },
+            { icon: "query_stats", label: "Insight View" },
+          ],
+        },
+        qa: {
+          shortName: "QA",
+          name: "QA Test Bot",
+          subtitle: "Đã kết nối với phiên Phòng Lab Chatbot",
+          greeting:
+            "Tôi là QA Test Bot. Tôi sẽ sắp xếp test case, quy trình tái hiện và điểm cần xác minh.",
+          badge: "QA",
+          badgeTone: "green",
+          sources: [
+            { icon: "fact_check", label: "Test Cases" },
+            { icon: "bug_report", label: "Issue Repro" },
+          ],
+        },
+        ux: {
+          shortName: "UX",
+          name: "UX Writing Bot",
+          subtitle: "Đã kết nối với phiên Phòng Lab Chatbot",
+          greeting:
+            "Tôi là UX Writing Bot. Tôi có thể tinh chỉnh tone cho hướng dẫn, nhãn nút và thông báo lỗi.",
+          badge: "UX",
+          badgeTone: "purple",
+          sources: [
+            { icon: "edit_note", label: "Copy Guide" },
+            { icon: "psychology", label: "Tone Rules" },
+          ],
+        },
+        incident: {
+          shortName: "Incident",
+          name: "Incident Helper",
+          subtitle: "Đã kết nối với phiên Phòng Lab Chatbot",
+          greeting:
+            "Tôi là Incident Helper. Tôi nhanh chóng tóm tắt tình huống sự cố, phạm vi ảnh hưởng và hành động tiếp theo.",
+          badge: "Alert",
+          badgeTone: "orange",
+          sources: [
+            { icon: "warning", label: "Incident Log" },
+            { icon: "support", label: "Response Playbook" },
+          ],
+        },
+        security: {
+          shortName: "Security",
+          name: "Security Review Bot",
+          subtitle: "Đã kết nối với phiên Phòng Lab Chatbot",
+          greeting:
+            "Tôi là Security Review Bot. Tôi có thể kiểm tra lỗ hổng, quyền và checklist bảo mật.",
+          badge: "Secure",
+          badgeTone: "blue",
+          sources: [
+            { icon: "security", label: "Security Checklist" },
+            { icon: "shield", label: "Risk Review" },
+          ],
+        },
+        api: {
+          shortName: "API",
+          name: "API Guide Bot",
+          subtitle: "Đã kết nối với phiên Phòng Lab Chatbot",
+          greeting:
+            "Tôi là API Guide Bot. Tôi có thể tìm cách dùng API, xác thực và ví dụ tích hợp.",
+          badge: "API",
+          badgeTone: "green",
+          sources: [
+            { icon: "api", label: "API Reference" },
+            { icon: "integration_instructions", label: "Code Samples" },
+          ],
+        },
+        onboarding: {
+          shortName: "Onboarding",
+          name: "Onboarding Coach",
+          subtitle: "Đã kết nối với phiên Phòng Lab Chatbot",
+          greeting:
+            "Tôi là Onboarding Coach. Tôi hướng dẫn thiết lập ban đầu và lộ trình học cho người dùng mới.",
+          badge: "Guide",
+          badgeTone: "blue",
+          sources: [
+            { icon: "school", label: "Getting Started" },
+            { icon: "route", label: "Learning Path" },
+          ],
+        },
+        workflow: {
+          shortName: "Workflow",
+          name: "Workflow Automator",
+          subtitle: "Đã kết nối với phiên Phòng Lab Chatbot",
+          greeting:
+            "Tôi là Workflow Automator. Tôi đề xuất ý tưởng tự động hóa cho công việc lặp lại và luồng phê duyệt.",
+          badge: "Flow",
+          badgeTone: "purple",
+          sources: [
+            { icon: "account_tree", label: "Workflow Map" },
+            { icon: "bolt", label: "Automation Ideas" },
+          ],
+        },
+      };
+
+      const storageKey = "chatbot-lab-vi-sessions";
+      const activeKey = "chatbot-lab-vi-active-session";
+      const chatInput = document.getElementById("chatInput");
+      const chatBody = document.getElementById("chatBody");
+      const sendButton = document.getElementById("sendButton");
+      const sessionList = document.getElementById("sessionList");
+
+      const defaultSession = () => ({
+        id: "session-ax-default",
+        title: "Cuộc trò chuyện thử nghiệm AX Studio",
+        bot: "ax",
+        updated: "Vừa xong",
+        messages: [],
+      });
+
+      let sessions = loadSessions();
+      let activeSessionId = localStorage.getItem(activeKey) || sessions[0].id;
+      if (!sessions.some((session) => session.id === activeSessionId))
+        activeSessionId = sessions[0].id;
+      let selectedBotKey = getActiveSession().bot;
+      let pendingBotKey = null;
+
+      function loadSessions() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(storageKey) || "[]");
+          return Array.isArray(parsed) && parsed.length
+            ? parsed
+            : [defaultSession()];
+        } catch (_) {
+          return [defaultSession()];
+        }
+      }
+
+      function persistSessions() {
+        localStorage.setItem(storageKey, JSON.stringify(sessions));
+        localStorage.setItem(activeKey, activeSessionId);
+      }
+
+      function getActiveSession() {
+        return (
+          sessions.find((session) => session.id === activeSessionId) ||
+          sessions[0]
+        );
+      }
+
+      function getSelectedBot() {
+        return botProfiles[selectedBotKey] || botProfiles.ax;
+      }
+
+      function setText(id, value) {
+        const node = document.getElementById(id);
+        if (node) node.textContent = value;
+      }
+
+      function renderSessions() {
+        sessionList.innerHTML = sessions
+          .map((session) => {
+            const bot = botProfiles[session.bot] || botProfiles.ax;
+            return `
+          <button class="session-item ${session.id === activeSessionId ? "is-active" : ""}" type="button" data-session="${session.id}">
+            <div class="session-item-top"><span class="session-name">${escapeHtml(session.title)}</span><span class="tag ${escapeHtml(bot.badgeTone || "green")}">${escapeHtml(bot.badge || "Lab")}</span></div>
+            <div class="session-meta">${bot.name} · ${countUserMessages(session)} tin nhắn · ${session.updated}</div>
+          </button>
+        `;
+          })
+          .join("");
+        sessionList.querySelectorAll(".session-item").forEach((button) => {
+          button.addEventListener("click", () => {
+            activeSessionId = button.dataset.session;
+            selectedBotKey = getActiveSession().bot;
+            persistSessions();
+            renderAll();
+          });
+        });
+      }
+
+      function renderMessages(session, previewBotKey = session.bot, isThinking = false) {
+        const activeBot = botProfiles[session.bot] || botProfiles.ax;
+        const previewBot = botProfiles[previewBotKey] || activeBot;
+        const messages = previewBotKey === session.bot ? session.messages : [];
+        const messageRows = messages.map((message) => renderMessage(message, previewBot)).join("");
+        const sourceStrip = renderSources(previewBot.sources || []);
+        const typingRow = isThinking
+          ? `
+        <div class="message-row">
+          <div class="message-avatar"><span class="material-icons-round">smart_toy</span></div>
+          <div class="bubble-wrap"><div class="typing" aria-label="Đang soạn phản hồi"><span></span><span></span><span></span></div></div>
+        </div>
+      `
+          : "";
+        chatBody.innerHTML = `
+        <div class="day-divider">${escapeHtml(previewBotKey === session.bot ? session.title : `${previewBot.shortName} phiên lab mới`)}</div>
+        <div class="message-row">
+          <div class="message-avatar"><span class="material-icons-round">smart_toy</span></div>
+          <div class="bubble-wrap">
+            <div class="message-name">${previewBot.name}</div>
+            <div class="bubble">${previewBot.greeting}</div>
+            <div class="source-strip">${sourceStrip}</div>
+          </div>
+        </div>
+        ${messageRows}
+        ${typingRow}
+      `;
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+
+      function renderMessage(message, bot) {
+        const normalized = normalizeMessage(message);
+        if (normalized.role === "user") {
+          return `
+        <div class="message-row user">
+          <div class="bubble-wrap"><div class="bubble">${escapeHtml(normalized.text)}</div></div>
+        </div>
+      `;
+        }
+        return `
+        <div class="message-row">
+          <div class="message-avatar"><span class="material-icons-round">smart_toy</span></div>
+          <div class="bubble-wrap">
+            <div class="message-name">${escapeHtml(bot.name)}</div>
+            <div class="bubble">${escapeHtml(normalized.text)}</div>
+            <div class="source-strip">${renderSources(normalized.sources || [])}</div>
+          </div>
+        </div>
+      `;
+      }
+
+      function renderSources(sources) {
+        return sources
+          .map(
+            (source) => `
+        <span class="source-pill"><span class="material-icons-round">${escapeHtml(source.icon)}</span>${escapeHtml(source.label)}</span>
+      `,
+          )
+          .join("");
+      }
+
+      function normalizeMessage(message) {
+        return typeof message === "string"
+          ? { role: "user", text: message }
+          : { role: message.role || "user", text: message.text || "", sources: message.sources || [] };
+      }
+
+      function renderBotInfo(botKey = selectedBotKey) {
+        const bot = botProfiles[botKey] || botProfiles.ax;
+        setText("chatTitle", bot.name);
+        setText("chatSubtitle", bot.subtitle);
+        setText("chatStatusTag", bot.badge || "Lab");
+        chatInput.placeholder = `Gửi tin nhắn thử nghiệm cho ${bot.name}`;
+        const chatStatusTag = document.getElementById("chatStatusTag");
+        if (chatStatusTag) chatStatusTag.className = `tag ${bot.badgeTone || "green"}`;
+        renderBotSelection();
+      }
+
+      function renderSummary(session) {
+        const bot = getSelectedBot();
+        setText(
+          "composerNote",
+          selectedBotKey === session.bot
+            ? `Tin nhắn trong Phòng Lab Chatbot chỉ được lưu trong phiên hiện tại. Bạn đã gửi ${countUserMessages(session)} tin nhắn.`
+            : `Bạn đã chọn ${bot.name}. Gửi tin nhắn để tạo phiên Phòng Lab Chatbot mới.`,
+        );
+      }
+
+      function renderBotSelection() {
+        document.querySelectorAll(".bot-item").forEach((button) => {
+          const botKey = button.dataset.bot;
+          const isPending = botKey === pendingBotKey;
+          button.classList.toggle("is-active", isPending);
+          const action = button.querySelector(".bot-item-action");
+          if (!action) return;
+          if (!isPending) {
+            action.innerHTML = "";
+            return;
+          }
+          const hasExistingSession = sessions.some((session) => session.bot === botKey);
+          action.innerHTML = hasExistingSession
+            ? `<div class="bot-action-row">
+                <button class="btn bot-select-btn secondary" type="button" data-continue-bot="${escapeHtml(botKey)}">
+                  <span class="material-icons-round">history</span>Tiếp tục trò chuyện
+                </button>
+                <button class="btn primary bot-select-btn" type="button" data-new-bot="${escapeHtml(botKey)}">
+                  <span class="material-icons-round">add_comment</span>Cuộc trò chuyện mới
+                </button>
+              </div>`
+            : `<div class="bot-action-row single">
+                <button class="btn primary bot-select-btn" type="button" data-new-bot="${escapeHtml(botKey)}">
+                  <span class="material-icons-round">add_comment</span>Bắt đầu cuộc trò chuyện mới
+                </button>
+              </div>`;
+        });
+      }
+
+      function renderAll() {
+        const session = getActiveSession();
+        renderSessions();
+        renderBotInfo(selectedBotKey);
+        renderMessages(session, selectedBotKey);
+        renderSummary(session);
+      }
+
+      function createSession(botKey = "ax") {
+        const bot = botProfiles[botKey] || botProfiles.ax;
+        const id = `session-${botKey}-${Date.now()}`;
+        const duplicateCount =
+          sessions.filter((session) => session.bot === botKey).length + 1;
+        const session = {
+          id,
+          title: `${bot.shortName} cuộc trò chuyện ${duplicateCount}`,
+          bot: botKey,
+          updated: "Vừa tạo",
+          messages: [],
+        };
+        sessions = [session, ...sessions];
+        activeSessionId = id;
+        selectedBotKey = botKey;
+        persistSessions();
+        renderAll();
+        return session;
+      }
+
+      function switchRailView(target) {
+        document.querySelectorAll("[data-rail-view]").forEach((tab) => {
+          const isActive = tab.dataset.railView === target;
+          tab.classList.toggle("is-active", isActive);
+          tab.setAttribute("aria-selected", String(isActive));
+        });
+        document.querySelectorAll("[data-rail-panel]").forEach((panel) => {
+          panel.classList.toggle("is-active", panel.dataset.railPanel === target);
+        });
+      }
+
+      function continueBotSession(botKey) {
+        const existingSession = sessions.find((session) => session.bot === botKey);
+        selectedBotKey = botKey;
+        pendingBotKey = null;
+        if (existingSession) {
+          activeSessionId = existingSession.id;
+          persistSessions();
+          renderAll();
+        } else {
+          createSession(botKey);
+        }
+        switchRailView("sessions");
+      }
+
+      function startNewBotSession(botKey) {
+        selectedBotKey = botKey;
+        pendingBotKey = null;
+        createSession(botKey);
+        switchRailView("sessions");
+      }
+
+      function persistSessionAutomatically(session) {
+        session.updated = "Vừa xong";
+        persistSessions();
+        renderSessions();
+        renderBotInfo(session.bot);
+        renderSummary(session);
+      }
+
+      function insertUserMessage(text) {
+        const userText = text.trim();
+        if (!userText) return;
+        if (selectedBotKey !== getActiveSession().bot) {
+          createSession(selectedBotKey);
+        }
+        const session = getActiveSession();
+        session.messages.push({ role: "user", text: userText });
+        chatInput.value = "";
+        persistSessionAutomatically(session);
+        renderMessages(session, session.bot, true);
+        window.setTimeout(() => {
+          session.messages.push(buildBotReply(userText, session.bot));
+          persistSessionAutomatically(session);
+          renderMessages(session);
+        }, 520);
+      }
+
+      function buildBotReply(text, botKey) {
+        const bot = botProfiles[botKey] || botProfiles.ax;
+        const query = text.toLowerCase();
+        const commonSources = bot.sources || [];
+        if (query.includes("gợi ý") || query.includes("câu hỏi") || query.includes("question")) {
+          return {
+            role: "bot",
+            text: `${bot.name} là ví dụ câu hỏi thử nghiệm.
+1. Bot này tham chiếu tài liệu hoặc công cụ nào?
+2. Nếu đây là yêu cầu thực tế của người dùng, bot sẽ đề xuất hành động tiếp theo nào?
+3. Bot có thể trình bày cả căn cứ và giới hạn của câu trả lời không?`,
+            sources: commonSources,
+          };
+        }
+        if (query.includes("làm tốt") || query.includes("gì") || query.includes("what")) {
+          return {
+            role: "bot",
+            text: `${bot.name}: ${bot.greeting} Hiện tại đây là phản hồi mock để kiểm tra màn hình, nên bạn có thể xem luồng lưu phiên, chuyển bot và hiển thị nguồn mà không cần gọi API thật.`,
+            sources: commonSources,
+          };
+        }
+        if (query.includes("so sánh") || query.includes("chất lượng") || query.includes("quality")) {
+          return {
+            role: "bot",
+            text: "Khi so sánh chất lượng phản hồi, hãy xem các tiêu chí như độ chính xác, nguồn căn cứ, độ rõ của hành động tiếp theo, tính nhất quán về tone và hướng dẫn khi thất bại. Hãy gửi cùng một câu hỏi cho các bot khác nhau để so sánh luồng phản hồi theo từng phiên.",
+            sources: [
+              { icon: "fact_check", label: "Quality Criteria" },
+              ...commonSources.slice(0, 1),
+            ],
+          };
+        }
+        return {
+          role: "bot",
+          text: `Đây là phản hồi mock của ${bot.shortName} cho nội dung “${text}”. Trước khi kết nối thật, hãy kiểm tra xem khu vực trả lời, chip nguồn và luồng lưu phiên có tự nhiên không.`,
+          sources: commonSources,
+        };
+      }
+
+      function countUserMessages(session) {
+        return session.messages.filter((message) => normalizeMessage(message).role === "user").length;
+      }
+
+      function escapeHtml(value) {
+        return String(value).replace(
+          /[&<>'"]/g,
+          (char) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              "'": "&#39;",
+              '"': "&quot;",
+            })[char],
+        );
+      }
+
+      sendButton.addEventListener("click", () =>
+        insertUserMessage(chatInput.value),
+      );
+      chatInput.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter") return;
+        event.preventDefault();
+        insertUserMessage(chatInput.value);
+      });
+      document.querySelectorAll(".bot-item").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          if (event.target.closest("[data-continue-bot], [data-new-bot]")) return;
+          pendingBotKey = button.dataset.bot;
+          selectedBotKey = button.dataset.bot;
+          renderAll();
+        });
+        button.addEventListener("keydown", (event) => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          pendingBotKey = button.dataset.bot;
+          selectedBotKey = button.dataset.bot;
+          renderAll();
+        });
+      });
+      document.getElementById("botList")?.addEventListener("click", (event) => {
+        const continueButton = event.target.closest("[data-continue-bot]");
+        if (continueButton) {
+          event.stopPropagation();
+          continueBotSession(continueButton.dataset.continueBot);
+          return;
+        }
+        const newButton = event.target.closest("[data-new-bot]");
+        if (newButton) {
+          event.stopPropagation();
+          startNewBotSession(newButton.dataset.newBot);
+        }
+      });
+      const botSearch = document.getElementById("botSearch");
+      botSearch?.addEventListener("input", () => {
+        const keyword = botSearch.value.trim().toLowerCase();
+        document.querySelectorAll(".bot-item").forEach((button) => {
+          button.hidden = keyword && !button.textContent.toLowerCase().includes(keyword);
+        });
+      });
+      document.querySelectorAll("[data-rail-view]").forEach((button) => {
+        button.addEventListener("click", () => switchRailView(button.dataset.railView));
+      });
+      document.querySelectorAll(".prompt-chip").forEach((button) => {
+        button.addEventListener("click", () => {
+          chatInput.value = button.textContent.trim();
+          chatInput.focus();
+        });
+      });
+
+      renderAll();
+    </script>
+    <script src="concept_endpoint_overlay.js"></script>
+  </body>
+</html>

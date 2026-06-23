@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    window.HUB_CONFIG = {
+      documentTitle: "Agent Hub",
+      activeKey: "agent-hub",
+      theme: {
+        bg: "#f7f3ff",
+        brand: "#7c3aed",
+        brandH: "#6d28d9",
+        brandBg: "#ede9fe",
+        brandSoft: "rgba(124,58,237,.14)",
+        accent2: "#22d3ee"
+      },
+      searchPlaceholder: "Agent 이름과 연결된 LLM Key를 검색하세요...",
+      eyebrow: "AI · Automation Runtimes",
+      title: "Agent Hub",
+      description: "실제로 업무를 실행하는 Dify agent를 모았습니다. 이 화면은 agent 자체와 연결된 LLM Key를 빠르게 확인하는 데 집중합니다.",
+      primaryAction: { href: "workspace_project_detail.html?project=coverity-ai", icon: "add_circle", label: "새 Agent 생성" },
+      heroStats: [
+        { icon: "smart_toy", value: "4", label: "등록 Runtime", note: "Running 3 · Review 1", color: "linear-gradient(135deg,#7c3aed,#8b5cf6)" },
+        { icon: "account_tree", value: "3", label: "Workflow Lane", note: "Dify orchestration", color: "linear-gradient(135deg,#6d28d9,#a78bfa)" },
+        { icon: "approval", value: "2", label: "Approval Step", note: "human checkpoint", color: "linear-gradient(135deg,#8b5cf6,#c4b5fd)" },
+        { icon: "vpn_key", value: "4", label: "Linked Keys", note: "shared + prod pools", color: "linear-gradient(135deg,#5b21b6,#8b5cf6)" }
+      ],
+      filters: [
+        { id: "dify", icon: "smart_toy", label: "Dify" }
+      ],
+      resourceSectionIcon: "smart_toy",
+      resourceSectionLabel: "Agent Fleet",
+      resourceTitle: "Agents",
+      resourceDescription: "카드는 복잡한 실행 메타보다 어떤 Dify agent가 어떤 LLM Key에 연결되어 있는지 먼저 읽히도록 정리했습니다.",
+      resourceHeaderLink: { href: "workspace_keycenter_hub.html", label: "Keycenter 연결 보기" },
+      resources: [
+        {
+          categories: ["dify"],
+          status: { label: "Running", tone: "healthy" },
+          engine: "Dify",
+          icon: "account_tree",
+          name: "campaign-orchestrator",
+          meta: "프로모션 운영 승인 플로와 게시 단계를 자동으로 묶는 orchestration runtime",
+          color: "linear-gradient(135deg,#7c3aed,#22d3ee)",
+          connectionsLabel: "Connected LLM Key",
+          connections: [
+            { abbr: "KEY", name: "OpenAI Gateway Pool", meta: "Shared Gateway" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_agent_detail.html?item=campaign-orchestrator" }
+          ]
+        },
+        {
+          categories: ["dify"],
+          status: { label: "Running", tone: "healthy" },
+          engine: "Dify",
+          icon: "schema",
+          name: "release-notes-pilot",
+          meta: "배포 로그, 티켓, 문서를 엮어 릴리즈 노트를 만드는 doc automation runtime",
+          color: "linear-gradient(135deg,#2563eb,#60a5fa)",
+          connectionsLabel: "Connected LLM Key",
+          connections: [
+            { abbr: "KEY", name: "Production Paid Pool", meta: "Paid Provider Tier" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_agent_detail.html?item=release-notes-pilot" }
+          ]
+        },
+        {
+          categories: ["dify"],
+          status: { label: "Running", tone: "healthy" },
+          engine: "Dify",
+          icon: "fact_check",
+          name: "repo-review-guard",
+          meta: "MR 위험도를 읽고 reviewer queue를 구성하는 approval-oriented runtime",
+          color: "linear-gradient(135deg,#ec4899,#fb7185)",
+          connectionsLabel: "Connected LLM Key",
+          connections: [
+            { abbr: "KEY", name: "Workspace Shared Pool", meta: "Team Shared Tier" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_agent_detail.html?item=repo-review-guard" }
+          ]
+        },
+        {
+          categories: ["dify"],
+          status: { label: "Review", tone: "review" },
+          engine: "Dify",
+          icon: "monitoring",
+          name: "incident-triage-bot",
+          meta: "장애 접수 내용을 분류하고 대응 담당자를 배정하는 ops automation runtime",
+          color: "linear-gradient(135deg,#0f766e,#34d399)",
+          connectionsLabel: "Connected LLM Key",
+          connections: [
+            { abbr: "KEY", name: "Sandbox Experiment Pool", meta: "Limited Scope Tier" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_agent_detail.html?item=incident-triage-bot" }
+          ]
+        }
+      ],
+      mainPanels: [
+        {
+          icon: "tips_and_updates",
+          label: "Model",
+          title: "Agent Hub 분리 기준",
+          description: "Agent Hub는 챗봇 노출면이 아니라 자동화 실행 주체를 다룹니다. 그래서 endpoint보다 workflow route, approval checkpoint, 그리고 어떤 key pool을 쓰는지가 먼저 읽히도록 정리합니다.",
+          rows: [
+            { title: "Agent는 실행 흐름이 먼저 읽혀야 합니다", meta: "entry channel보다 단계 수, approval, key policy 같은 orchestration 메타를 우선 노출합니다." },
+            { title: "Key는 Keycenter에서 연결합니다", meta: "agent 페이지에서는 secret 자체가 아니라 어떤 key pool을 참조하는지만 읽히게 둡니다." },
+            { title: "프로젝트 바인딩보다 운영 기준을 먼저 보여줍니다", meta: "실행 주체를 비교할 때는 workflow 구조와 key tier가 먼저 보이는 편이 더 자연스럽습니다." }
+          ],
+          footerLink: { href: "workspace_keycenter_hub.html", label: "Keycenter 보기" }
+        },
+        {
+          icon: "menu_book",
+          label: "Guide Links",
+          title: "연결 기준",
+          description: "Agent Hub에서는 실행 주체를 보고, credential과 tier 정책은 Keycenter에서 이어서 확인하는 흐름입니다.",
+          rows: [
+            { title: "OpenAI Gateway Pool", meta: "공용 agent가 함께 쓰는 shared gateway key입니다.", href: "workspace_keycenter_hub.html" },
+            { title: "Production Paid Pool", meta: "운영 워크로드용 paid provider key tier입니다.", href: "workspace_keycenter_hub.html" },
+            { title: "Sandbox Experiment Pool", meta: "실험성 agent가 붙는 제한된 key pool입니다.", href: "workspace_keycenter_hub.html" }
+          ],
+          footerLink: { href: "portal_launchpad.html", label: "런치패드로 돌아가기" }
+        }
+      ],
+      sidebarPanels: [
+        {
+          icon: "monitor_heart",
+          label: "Service Status",
+          title: "현재 서비스 상태",
+          description: "운영 중인 agent service의 health 상태를 우측에서 짧게 확인합니다.",
+          rows: [
+            { title: "campaign-orchestrator", meta: "Dify Workflow", pill: { label: "Healthy", tone: "healthy" } },
+            { title: "release-notes-pilot", meta: "Doc Automation", pill: { label: "Healthy", tone: "healthy" } },
+            { title: "repo-review-guard", meta: "Review Runtime", pill: { label: "Healthy", tone: "healthy" } },
+            { title: "incident-triage-bot", meta: "Ops Runtime", pill: { label: "Healthy", tone: "healthy" } }
+          ]
+        }
+      ]
+    };
+  </script>
+  <script src="workspace_resource_hub_shared.js"></script>
+  <script src="ax_studio_topbar.js"></script>
+  <script src="concept_endpoint_overlay.js"></script>
+</body>
+</html>

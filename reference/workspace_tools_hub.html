@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Consoles Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    window.HUB_CONFIG = {
+      documentTitle: "Consoles Hub",
+      activeKey: "tools",
+      theme: {
+        bg: "#f2fbf7",
+        brand: "#15803d",
+        brandH: "#166534",
+        brandBg: "#dcfce7",
+        brandSoft: "rgba(21,128,61,.14)",
+        accent2: "#34d399"
+      },
+      searchPlaceholder: "콘솔 이름, DB 엔진, 사용 목적을 검색하세요...",
+      eyebrow: "Development · Database Consoles",
+      title: "Consoles Hub",
+      description: "데이터베이스 콘솔 모음입니다. 실제 DB 리소스는 Database Hub에서 관리하고 여기서는 접속, 조회, 운영에 쓰는 콘솔을 빠르게 찾습니다.",
+      primaryAction: { href: "dej_app_store.html", icon: "add_circle", label: "새 콘솔 생성" },
+      secondaryAction: { href: "workspace_database_hub.html", icon: "storage", label: "Database Hub 보기" },
+      heroStats: [
+        { icon: "web", value: "6", label: "등록 콘솔", note: "Running 4 · Stopped 2", color: "linear-gradient(135deg,#15803d,#22c55e)" },
+        { icon: "database", value: "14", label: "연결 엔드포인트", note: "MySQL · PostgreSQL · Redis · MongoDB · Elastic · Milvus", color: "linear-gradient(135deg,#166534,#4ade80)" },
+        { icon: "link", value: "26", label: "워크스페이스 연결", note: "프로젝트/운영 계정 기준", color: "linear-gradient(135deg,#16a34a,#86efac)" },
+        { icon: "visibility", value: "108", label: "주간 콘솔 진입", note: "최근 7일 Open 기준", color: "linear-gradient(135deg,#22c55e,#bbf7d0)" }
+      ],
+      filters: [
+        { id: "all", icon: "apps", label: "전체" },
+        { id: "relational", icon: "table_chart", label: "관계형" },
+        { id: "document", icon: "account_tree", label: "문서형" },
+        { id: "cache", icon: "bolt", label: "캐시" },
+        { id: "search", icon: "travel_explore", label: "검색" },
+        { id: "vector", icon: "hub", label: "벡터" }
+      ],
+      resourceSectionIcon: "web",
+      resourceSectionLabel: "Console Fleet",
+      resourceTitle: "Consoles",
+      resourceDescription: "워크스페이스에서 운영 중인 데이터 콘솔을 한곳에 모았습니다. 콘솔 종류, 바인딩된 DB/타깃, 현재 런타임 상태를 보고 Start / Stop / Open으로 바로 제어할 수 있습니다.",
+      resourceHeaderLink: { href: "workspace_database_hub.html", label: "연결 리소스 같이 보기" },
+      resources: [
+        {
+          categories: ["all", "relational"],
+          status: { label: "Running", tone: "healthy" },
+          engine: "Relational Console · MySQL / MariaDB",
+          icon: "table_view",
+          name: "phpMyAdmin",
+          meta: "MySQL/MariaDB 스키마 조회, grants 확인, 단건 데이터 검증에 쓰는 관계형 콘솔",
+          color: "linear-gradient(135deg,#0891b2,#22d3ee)",
+          connectionsLabel: "Bound DB",
+          connections: [
+            { abbr: "MY", name: "payments-mysql", meta: "MySQL 8", color: "linear-gradient(135deg,#0891b2,#22d3ee)" },
+            { abbr: "MB", name: "cms-mariadb", meta: "MariaDB 10.11", color: "linear-gradient(135deg,#0f766e,#2dd4bf)" }
+          ],
+          actions: [
+            { label: "Start", icon: "play_circle", kind: "start", disabled: true },
+            { label: "Stop", icon: "stop_circle", kind: "stop" },
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_console_detail.html?item=phpmyadmin" }
+          ]
+        },
+        {
+          categories: ["all", "relational"],
+          status: { label: "Running", tone: "healthy" },
+          engine: "Admin Console · PostgreSQL",
+          icon: "database",
+          name: "PG Admin",
+          meta: "PostgreSQL role, schema, session 상태를 확인하는 메인 운영 콘솔",
+          color: "linear-gradient(135deg,#2563eb,#60a5fa)",
+          connectionsLabel: "Bound DB",
+          connections: [
+            { abbr: "PG", name: "hermes-main", meta: "Primary OLTP", color: "linear-gradient(135deg,#2563eb,#60a5fa)" },
+            { abbr: "PG", name: "order-archive", meta: "Read replica", color: "linear-gradient(135deg,#1d4ed8,#38bdf8)" },
+            { abbr: "PG", name: "analytics-readonly", meta: "BI mirror", color: "linear-gradient(135deg,#0ea5e9,#67e8f9)" }
+          ],
+          actions: [
+            { label: "Start", icon: "play_circle", kind: "start", disabled: true },
+            { label: "Stop", icon: "stop_circle", kind: "stop" },
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_console_detail.html?item=pg-admin" }
+          ]
+        },
+        {
+          categories: ["all", "document"],
+          status: { label: "Stopped", tone: "muted" },
+          engine: "Document Console · MongoDB",
+          icon: "account_tree",
+          name: "Mongo GUI",
+          meta: "MongoDB document/collection 탐색과 인덱스 점검에 쓰는 문서형 콘솔",
+          color: "linear-gradient(135deg,#16a34a,#4ade80)",
+          connectionsLabel: "Bound DB",
+          connections: [
+            { abbr: "MG", name: "customer-profile", meta: "PII masked", color: "linear-gradient(135deg,#16a34a,#4ade80)" },
+            { abbr: "MG", name: "user-event-cluster", meta: "Event store", color: "linear-gradient(135deg,#15803d,#86efac)" }
+          ],
+          actions: [
+            { label: "Start", icon: "play_circle", kind: "start" },
+            { label: "Stop", icon: "stop_circle", kind: "stop", disabled: true },
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_console_detail.html?item=mongo-gui" }
+          ]
+        },
+        {
+          categories: ["all", "cache"],
+          status: { label: "Running", tone: "healthy" },
+          engine: "Cache Console · Redis",
+          icon: "memory",
+          name: "Redis Insight",
+          meta: "Redis 키스페이스, 메모리 편중, TTL, hot key를 점검하는 캐시 콘솔",
+          color: "linear-gradient(135deg,#f97316,#fb923c)",
+          connectionsLabel: "Bound DB",
+          connections: [
+            { abbr: "RD", name: "session-redis", meta: "Shared session", color: "linear-gradient(135deg,#f97316,#fb923c)" },
+            { abbr: "RD", name: "ranking-cache", meta: "Restaurant API", color: "linear-gradient(135deg,#ea580c,#fdba74)" },
+            { abbr: "RD", name: "preview-cache", meta: "Staging", color: "linear-gradient(135deg,#fb923c,#fed7aa)" }
+          ],
+          actions: [
+            { label: "Start", icon: "play_circle", kind: "start", disabled: true },
+            { label: "Stop", icon: "stop_circle", kind: "stop" },
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_console_detail.html?item=redis-insight" }
+          ]
+        },
+        {
+          categories: ["all", "search"],
+          status: { label: "Running", tone: "healthy" },
+          engine: "Search Console · Elasticsearch",
+          icon: "travel_explore",
+          name: "Kibana",
+          meta: "Elasticsearch index 탐색, 로그 검색, DSL 확인에 쓰는 검색 콘솔",
+          color: "linear-gradient(135deg,#7c3aed,#a78bfa)",
+          connectionsLabel: "Bound DB",
+          connections: [
+            { abbr: "ES", name: "ops-search", meta: "Service logs", color: "linear-gradient(135deg,#7c3aed,#a78bfa)" },
+            { abbr: "ES", name: "audit-log-search", meta: "Security audit", color: "linear-gradient(135deg,#6d28d9,#c4b5fd)" }
+          ],
+          actions: [
+            { label: "Start", icon: "play_circle", kind: "start", disabled: true },
+            { label: "Stop", icon: "stop_circle", kind: "stop" },
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_console_detail.html?item=kibana" }
+          ]
+        },
+        {
+          categories: ["all", "vector"],
+          status: { label: "Stopped", tone: "muted" },
+          engine: "Vector Console · Milvus",
+          icon: "hub",
+          name: "Attu",
+          meta: "Milvus collection, partition, index, vector count를 확인하는 벡터 콘솔",
+          color: "linear-gradient(135deg,#0f766e,#5eead4)",
+          connectionsLabel: "Bound DB",
+          connections: [
+            { abbr: "MV", name: "search-embedding", meta: "ANN retrieval", color: "linear-gradient(135deg,#0f766e,#5eead4)" },
+            { abbr: "MV", name: "catalog-vector", meta: "Semantic catalog", color: "linear-gradient(135deg,#0d9488,#99f6e4)" }
+          ],
+          actions: [
+            { label: "Start", icon: "play_circle", kind: "start" },
+            { label: "Stop", icon: "stop_circle", kind: "stop", disabled: true },
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_console_detail.html?item=attu" }
+          ]
+        }
+      ],
+      mainPanels: [
+        {
+          icon: "tips_and_updates",
+          label: "Tips",
+          title: "콘솔 운영 팁",
+          description: "카드에서는 꼭 필요한 제어만 남기고, 운용 팁은 아래에서 짧게 확인하는 흐름으로 정리했습니다.",
+          rows: [
+            { title: "Running 상태면 Open / Stop만 보면 됩니다", meta: "phpMyAdmin, PG Admin, Redis Insight, Kibana는 이미 떠 있는 콘솔 기준입니다." },
+            { title: "Stopped 상태면 Start 후 Open 순서로 접근합니다", meta: "Mongo GUI, Attu처럼 상시 기동이 필요 없는 콘솔은 필요 시에만 올립니다." },
+            { title: "카드의 Bound DB만 보고 진입해도 충분합니다", meta: "연결된 DB를 카드 안에 바로 노출해 별도 설명 칩 없이도 판단 가능하게 했습니다." }
+          ],
+          footerLink: { href: "workspace_database_hub.html", label: "연결 DB 보기" }
+        },
+        {
+          icon: "menu_book",
+          label: "Guide Links",
+          title: "가이드 링크",
+          description: "운영 문서나 연결 기준은 카드 안이 아니라 링크 패널에서 여는 구조로 분리했습니다.",
+          rows: [
+            { title: "Database Hub 연결 맵", meta: "콘솔에 바인딩된 실제 DB 리소스와 프로젝트 연결을 같이 확인합니다.", href: "workspace_database_hub.html" },
+            { title: "권한/접근 정책 가이드", meta: "운영 콘솔 접근 방식과 read-only 기준을 확인합니다.", href: "workspace_permission_hub.html" },
+            { title: "프로젝트 상세 운영 가이드", meta: "Kibana, Redis Insight 같은 콘솔이 연결된 프로젝트 맥락을 봅니다.", href: "workspace_project_detail.html?project=lgloganalyzer" }
+          ],
+          footerLink: { href: "portal_launchpad.html", label: "런치패드로 돌아가기" }
+        }
+      ],
+      sidebarPanels: [
+        {
+          icon: "health_and_safety",
+          label: "Running Health",
+          title: "현재 Running 콘솔 Healthy",
+          description: "이상 감지는 여기서 다루지 않고 K8s 이벤트 기준으로 확인합니다. 우측 레일은 지금 떠 있는 콘솔의 헬시 상태만 보여줍니다.",
+          rows: [
+            { title: "phpMyAdmin", meta: "payments-mysql · cms-mariadb", pill: { label: "Healthy", tone: "healthy" } },
+            { title: "PG Admin", meta: "hermes-main · order-archive · analytics-readonly", pill: { label: "Healthy", tone: "healthy" } },
+            { title: "Redis Insight", meta: "session-redis · ranking-cache · preview-cache", pill: { label: "Healthy", tone: "healthy" } },
+            { title: "Kibana", meta: "ops-search · audit-log-search", pill: { label: "Healthy", tone: "healthy" } }
+          ]
+        }
+      ]
+    };
+  </script>
+  <script src="workspace_resource_hub_shared.js"></script>
+  <script src="ax_studio_topbar.js"></script>
+  <script src="concept_endpoint_overlay.js"></script>
+</body>
+</html>

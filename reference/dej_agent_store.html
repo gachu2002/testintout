@@ -1,0 +1,1554 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DEJ AI Gallery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <style>
+    :root {
+      --bg:#f4f6f9;
+      --surface:#ffffff;
+      --border:#ebedf0;
+      --border-2:#d6d8db;
+      --t1:#2f3236;
+      --t2:#5f656d;
+      --t3:#9298a0;
+      --brand:#b40e4d;
+      --brand-h:#d5115b;
+      --brand-bg:#feeff5;
+      --blue:#0086cc;
+      --blue-bg:#e2f3ff;
+      --green:#0d9488;
+      --green-bg:#ecfdf5;
+      --purple:#7c5fcf;
+      --purple-bg:#f1e7ff;
+      --orange:#e07020;
+      --orange-bg:#fff1e7;
+      --indigo:#4f46e5;
+      --max:1280px;
+      --nav-max:1520px;
+      --r:14px;
+      --gap:20px;
+    }
+
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      font-family:'Inter', -apple-system, sans-serif;
+      background:var(--bg);
+      color:var(--t1);
+      min-height:100vh;
+      -webkit-font-smoothing:antialiased;
+    }
+    a { color:inherit; text-decoration:none; }
+    button { font:inherit; cursor:pointer; }
+
+    .topbar {
+      position:sticky;
+      top:0;
+      z-index:200;
+      height:56px;
+      background:var(--surface);
+      border-bottom:1px solid var(--border);
+    }
+    .topbar-inner {
+      max-width:var(--nav-max);
+      margin:0 auto;
+      height:100%;
+      padding:0 24px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      position:relative;
+    }
+    .topbar-brand {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-shrink:0;
+      padding-right:2px;
+    }
+    .brand-mark {
+      width:40px;
+      height:24px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+    .brand-mark img {
+      display:block;
+      width:35px;
+      height:20px;
+    }
+    .brand-name {
+      font-size:15px;
+      font-weight:800;
+      color:var(--t1);
+      letter-spacing:-.35px;
+      white-space:nowrap;
+    }
+    .logo-menu {
+      flex-shrink:0;
+      display:flex;
+      align-items:center;
+    }
+    .menu-trigger {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      height:40px;
+      padding:0 11px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#fbfcfe;
+      font-size:13px;
+      font-weight:700;
+      color:var(--t1);
+      letter-spacing:-.2px;
+      transition:background .15s, box-shadow .15s;
+    }
+    .menu-trigger:hover,
+    .logo-menu.is-open .menu-trigger {
+      background:var(--bg);
+      box-shadow:inset 0 0 0 1px var(--border);
+    }
+    .menu-trigger .material-icons-round:first-child {
+      font-size:18px;
+      color:var(--t2);
+    }
+    .menu-caret {
+      font-size:18px;
+      color:var(--t3);
+      transition:transform .18s ease, color .15s ease;
+    }
+    .logo-menu.is-open .menu-caret {
+      transform:rotate(180deg);
+      color:var(--brand);
+    }
+    .service-popover {
+      position:fixed;
+      left:0;
+      top:56px;
+      width:100vw;
+      background:
+        linear-gradient(180deg, rgba(247,248,251,.98) 0%, rgba(243,245,249,.98) 100%);
+      border-top:1px solid rgba(235,237,240,.9);
+      border-bottom:1px solid var(--border);
+      box-shadow:0 18px 36px rgba(15,23,42,.08);
+      padding:18px 0 20px;
+      z-index:240;
+    }
+    .service-popover[hidden] { display:none; }
+    .service-popover-inner {
+      max-width:var(--nav-max);
+      margin:0 auto;
+      padding:0 24px;
+    }
+    .service-groups {
+      display:grid;
+      grid-template-columns:repeat(6, minmax(0, 1fr));
+      gap:0;
+    }
+    .service-group {
+      min-width:0;
+      padding:0 30px;
+    }
+    .service-group + .service-group { border-left:1px solid var(--border); }
+    .service-group-head {
+      margin-bottom:18px;
+    }
+    .service-group-copy { min-width:0; }
+    .service-group-title-row { margin-bottom:0; }
+    .service-group-title {
+      font-size:15px;
+      font-weight:700;
+      color:var(--t1);
+    }
+    .service-group-icon,
+    .service-group-count,
+    .service-group-desc { display:none; }
+    .service-links { display:grid; gap:18px; margin-left:0; }
+    .service-link {
+      display:grid;
+      grid-template-columns:18px minmax(0, 1fr);
+      align-items:flex-start;
+      gap:10px;
+      padding:7px 10px;
+      margin:0 -10px;
+      border-radius:10px;
+      background:transparent;
+      border:none;
+      font-size:13px;
+      font-weight:600;
+      color:var(--t1);
+      transition:background .15s ease, color .15s ease;
+    }
+    .service-link:hover {
+      background:rgba(255,255,255,.84);
+      color:var(--brand);
+    }
+    .service-link.is-current {
+      background:rgba(255,255,255,.84);
+      color:var(--brand);
+      box-shadow:inset 0 0 0 1px rgba(180,14,77,.08);
+    }
+    .service-link-icon {
+      font-size:17px;
+      color:var(--t2);
+      margin-top:2px;
+      transition:color .15s ease;
+    }
+    .service-link:hover .service-link-icon,
+    .service-link.is-current .service-link-icon { color:var(--brand); }
+    .service-link-copy { display:grid; gap:4px; min-width:0; }
+    .service-link-title { line-height:1.3; }
+    .service-link-desc {
+      font-size:12px;
+      line-height:1.45;
+      color:var(--t2);
+      font-weight:400;
+    }
+    .service-link:hover .service-link-desc,
+    .service-link.is-current .service-link-desc { color:var(--t1); }
+
+
+.service-outlinks {
+  position:relative;
+  left:50%;
+  width:100vw;
+  box-sizing:border-box;
+  margin:16px 0 -20px;
+  padding:9px max(24px, calc((100vw - var(--nav-max)) / 2 + 24px)) 10px;
+  transform:translateX(-50%);
+  border-top:1px solid rgba(15,23,42,.10);
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  flex-wrap:wrap;
+  gap:10px;
+  background:rgba(248,250,252,.72);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+}
+.service-outlinks-title {
+  color:var(--t3);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  opacity:.72;
+}
+.service-outlink-list {
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  flex-wrap:wrap;
+  gap:0;
+}
+.service-outlink {
+  min-width:0;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:3px 8px;
+  color:var(--t2);
+  text-decoration:none;
+  font-size:12px;
+  font-weight:600;
+  transition:color .15s ease;
+}
+.service-outlink + .service-outlink {
+  border-left:1px solid var(--border);
+}
+.service-outlink:hover {
+  color:var(--brand);
+}
+.service-outlink-icon,
+.service-outlink-arrow {
+  color:currentColor;
+  font-size:13px;
+  opacity:.48;
+  transition:opacity .15s ease;
+}
+.service-outlink:hover .service-outlink-icon,
+.service-outlink:hover .service-outlink-arrow {
+  opacity:.8;
+}
+.service-outlink-copy {
+  min-width:0;
+  display:inline-flex;
+  align-items:center;
+}
+.service-outlink-title {
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.service-outlink-desc {
+  display:none;
+}
+
+.search-wrap {
+      flex:1;
+      max-width:440px;
+      min-width:0;
+      position:relative;
+    }
+    .search-wrap .ico {
+      position:absolute;
+      left:13px;
+      top:50%;
+      transform:translateY(-50%);
+      font-size:17px;
+      color:var(--t3);
+      pointer-events:none;
+    }
+    .search-input {
+      width:100%;
+      height:36px;
+      border:1.5px solid var(--border);
+      border-radius:20px;
+      padding:0 72px 0 38px;
+      background:var(--bg);
+      outline:none;
+      font-size:13px;
+      font-family:inherit;
+      color:var(--t1);
+      transition:border .15s, box-shadow .15s;
+    }
+    .search-input:focus {
+      border-color:var(--brand);
+      background:var(--surface);
+      box-shadow:0 0 0 3px rgba(180,14,77,.08);
+    }
+    .search-input::placeholder { color:var(--t3); }
+    .search-ai {
+      position:absolute;
+      right:12px;
+      top:50%;
+      transform:translateY(-50%);
+      height:22px;
+      padding:0 7px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      gap:3px;
+      background:linear-gradient(135deg, #f6f0ff 0%, #eef4ff 100%);
+      border:1px solid rgba(124,95,207,.18);
+      font-size:10px;
+      font-weight:700;
+      color:var(--purple);
+      letter-spacing:.02em;
+      pointer-events:none;
+    }
+    .search-ai .material-icons-round { font-size:12px; }
+    .tb-spacer { flex:1; }
+    .tb-btn {
+      display:flex;
+      align-items:center;
+      gap:5px;
+      height:32px;
+      padding:0 12px;
+      border:1px solid var(--border-2);
+      border-radius:6px;
+      background:transparent;
+      color:var(--t2);
+      font-size:12px;
+      font-weight:500;
+      transition:all .15s;
+      flex-shrink:0;
+    }
+    .tb-btn:hover {
+      background:var(--bg);
+      color:var(--t1);
+    }
+    .tb-btn-ai {
+      border-color:rgba(124,95,207,.18);
+      background:linear-gradient(135deg, #f6f0ff 0%, #eef4ff 100%);
+      color:var(--purple);
+      box-shadow:0 8px 18px rgba(124,95,207,.12);
+    }
+    .tb-btn-ai:hover {
+      background:linear-gradient(135deg, #efe4ff 0%, #e3efff 100%);
+      color:#5b45b0;
+      border-color:rgba(124,95,207,.28);
+    }
+    .tb-btn .material-icons-round { font-size:14px; }
+    .tb-icon {
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--t2);
+      position:relative;
+    }
+    .tb-icon:hover { background:var(--bg); }
+    .tb-icon .material-icons-round { font-size:20px; }
+    .tb-icon .dot {
+      position:absolute;
+      top:5px;
+      right:5px;
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:var(--brand);
+      border:2px solid var(--surface);
+    }
+    .avatar {
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      background:var(--brand);
+      color:#fff;
+      font-size:12px;
+      font-weight:600;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+
+    .page {
+      max-width:var(--max);
+      margin:0 auto;
+      padding:24px 24px 72px;
+    }
+    .panel {
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:var(--r);
+      padding:20px;
+    }
+    .page-head {
+      display:grid;
+      gap:14px;
+      margin-bottom:20px;
+    }
+    .page-title {
+      font-size:34px;
+      line-height:1.14;
+      letter-spacing:-.05em;
+      font-weight:800;
+    }
+    .page-desc {
+      max-width:860px;
+      font-size:14px;
+      line-height:1.75;
+      color:var(--t2);
+    }
+    .sec-label {
+      display:flex;
+      align-items:center;
+      gap:6px;
+      margin-bottom:14px;
+      font-size:11px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:var(--t3);
+    }
+    .sec-label .material-icons-round { font-size:14px; }
+    .sec-label-more {
+      margin-left:auto;
+      display:flex;
+      align-items:center;
+      gap:2px;
+      font-size:11px;
+      font-weight:600;
+      letter-spacing:0;
+      text-transform:none;
+      color:var(--t3);
+    }
+    .hero-rail {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:12px;
+      margin-bottom:20px;
+    }
+    .hero-rail-card {
+      padding:18px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+    }
+    .rail-kicker {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-bottom:10px;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:var(--brand);
+    }
+    .rail-title {
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      margin-bottom:6px;
+    }
+    .rail-desc {
+      font-size:12px;
+      line-height:1.6;
+      color:var(--t2);
+      margin-bottom:14px;
+    }
+    .mini-list { display:grid; gap:10px; }
+    .mini-row {
+      display:grid;
+      grid-template-columns:auto minmax(0, 1fr) auto;
+      gap:10px;
+      align-items:center;
+    }
+    .mini-icon {
+      width:34px;
+      height:34px;
+      border-radius:11px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      flex-shrink:0;
+    }
+    .mini-icon .material-icons-round { font-size:18px; }
+    .mini-copy { min-width:0; }
+    .mini-name {
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:2px;
+    }
+    .mini-meta {
+      font-size:11px;
+      color:var(--t3);
+      line-height:1.45;
+    }
+    .mini-pill {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:10px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .layout {
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) 320px;
+      gap:var(--gap);
+      align-items:start;
+    }
+    .main-col,
+    .side-col {
+      display:grid;
+      gap:var(--gap);
+    }
+
+    .feature-grid {
+      display:grid;
+      grid-template-columns:minmax(0, 1.08fr) minmax(0, .92fr);
+      gap:14px;
+    }
+    .section-head {
+      display:grid;
+      gap:8px;
+      margin-bottom:18px;
+    }
+    .section-kicker {
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--t3);
+    }
+    .section-kicker .material-icons-round {
+      font-size:14px;
+      color:var(--brand);
+    }
+    .section-title {
+      font-size:26px;
+      line-height:1.18;
+      letter-spacing:-.04em;
+      font-weight:800;
+      color:var(--t1);
+    }
+    .section-subtitle {
+      max-width:760px;
+      font-size:13px;
+      line-height:1.7;
+      color:var(--t2);
+    }
+    .spotlight-card {
+      padding:22px;
+      border-radius:18px;
+      border:1px solid rgba(180,14,77,.12);
+      background:
+        radial-gradient(circle at top right, rgba(124,95,207,.16), transparent 36%),
+        linear-gradient(145deg, #fff8fb 0%, #ffffff 68%);
+      box-shadow:0 12px 30px rgba(15,23,42,.06);
+    }
+    .spotlight-top {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .spotlight-icon {
+      width:46px;
+      height:46px;
+      border-radius:15px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      background:linear-gradient(135deg, var(--brand), var(--purple));
+      box-shadow:0 12px 28px rgba(180,14,77,.22);
+    }
+    .spotlight-icon .material-icons-round { font-size:23px; }
+    .spotlight-badge {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:var(--brand-bg);
+      color:var(--brand);
+      font-size:10px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .spotlight-badge::before {
+      content:"";
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:var(--brand);
+    }
+    .spotlight-eyebrow {
+      font-size:10px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--purple);
+      margin-bottom:8px;
+    }
+    .spotlight-title {
+      font-size:24px;
+      font-weight:800;
+      letter-spacing:-.04em;
+      margin-bottom:8px;
+    }
+    .spotlight-desc {
+      font-size:13px;
+      line-height:1.7;
+      color:var(--t2);
+      margin-bottom:16px;
+    }
+    .point-list {
+      display:grid;
+      gap:9px;
+      margin-bottom:16px;
+    }
+    .point-item {
+      display:flex;
+      align-items:flex-start;
+      gap:8px;
+      font-size:12px;
+      line-height:1.55;
+      color:var(--t1);
+    }
+    .point-item .material-icons-round {
+      font-size:15px;
+      color:var(--brand);
+      margin-top:1px;
+      flex-shrink:0;
+    }
+    .tag-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .tag {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(214,216,219,.9);
+      background:rgba(255,255,255,.88);
+      color:var(--t2);
+      font-size:10px;
+      font-weight:700;
+    }
+    .tag .material-icons-round {
+      font-size:13px;
+      color:var(--t3);
+    }
+    .stack-panel {
+      display:grid;
+      gap:12px;
+    }
+    .stack-card {
+      padding:16px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, #fbfbff 0%, #ffffff 100%);
+    }
+    .stack-title {
+      font-size:14px;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+    .stack-desc {
+      font-size:12px;
+      line-height:1.6;
+      color:var(--t2);
+      margin-bottom:12px;
+    }
+    .capsule-list { display:flex; flex-wrap:wrap; gap:8px; }
+    .capsule {
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:10px;
+      font-weight:800;
+    }
+
+    .agent-grid {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:14px;
+    }
+    .agent-card {
+      display:flex;
+      flex-direction:column;
+      min-height:248px;
+      padding:18px;
+      border-radius:18px;
+      border:1px solid rgba(214,216,219,.95);
+      background:
+        radial-gradient(circle at top right, rgba(255,255,255,.95), transparent 35%),
+        linear-gradient(180deg, #ffffff 0%, #fbfbfd 100%);
+      transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+    .agent-card:hover {
+      transform:translateY(-2px);
+      border-color:rgba(180,14,77,.16);
+      box-shadow:0 12px 28px rgba(15,23,42,.08);
+    }
+    .agent-card.chatbot-card {
+      background:
+        radial-gradient(circle at top right, rgba(79,140,255,.12), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+    }
+    .agent-card.mcp-card {
+      background:
+        radial-gradient(circle at top right, rgba(167,139,250,.12), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, #fcfbff 100%);
+    }
+    .card-top {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .card-icon {
+      width:42px;
+      height:42px;
+      border-radius:13px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      flex-shrink:0;
+    }
+    .card-icon .material-icons-round { font-size:21px; }
+    .card-badge {
+      padding:5px 9px;
+      border-radius:999px;
+      font-size:10px;
+      font-weight:800;
+      white-space:nowrap;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);
+    }
+    .card-name {
+      font-size:17px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      margin-bottom:4px;
+    }
+    .card-meta {
+      font-size:11px;
+      color:#6f7680;
+      margin-bottom:12px;
+      font-weight:700;
+    }
+    .card-desc {
+      font-size:12px;
+      line-height:1.65;
+      color:var(--t2);
+      margin-bottom:14px;
+    }
+    .card-stats {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:14px;
+    }
+    .card-stat {
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      padding:5px 8px;
+      border-radius:999px;
+      background:var(--bg);
+      color:var(--t2);
+      font-size:10px;
+      font-weight:700;
+    }
+    .card-stat .material-icons-round { font-size:13px; }
+    .card-foot {
+      margin-top:auto;
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .card-actions {
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      gap:8px;
+    }
+    .action-link {
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:var(--brand);
+      color:#fff;
+      font-size:12px;
+      font-weight:700;
+      box-shadow:0 10px 24px rgba(180,14,77,.16);
+    }
+    .action-link.secondary {
+      background:#fff;
+      color:var(--t2);
+      border:1px solid var(--border);
+      box-shadow:none;
+    }
+    .action-link .material-icons-round {
+      font-size:15px;
+    }
+    .scope-note {
+      font-size:11px;
+      font-weight:700;
+      color:var(--green);
+      letter-spacing:-.01em;
+    }
+    .card-link {
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      color:var(--brand);
+      font-size:12px;
+      font-weight:700;
+    }
+    .card-link .material-icons-round { font-size:15px; }
+
+    .workflow-grid {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:14px;
+    }
+    .workflow-card {
+      padding:18px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:
+        radial-gradient(circle at top right, rgba(180,14,77,.08), transparent 36%),
+        linear-gradient(180deg, #ffffff 0%, #fcfbfd 100%);
+    }
+    .workflow-title {
+      font-size:18px;
+      font-weight:800;
+      margin-bottom:6px;
+      letter-spacing:-.03em;
+    }
+    .workflow-desc {
+      font-size:12px;
+      line-height:1.65;
+      color:var(--t2);
+      margin-bottom:14px;
+    }
+    .chain-list { display:grid; gap:10px; }
+    .chain-item {
+      display:grid;
+      grid-template-columns:auto minmax(0, 1fr) auto;
+      gap:10px;
+      align-items:center;
+      padding:11px 12px;
+      border-radius:12px;
+      background:rgba(244,246,249,.8);
+    }
+    .chain-icon {
+      width:30px;
+      height:30px;
+      border-radius:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+    }
+    .chain-icon .material-icons-round { font-size:16px; }
+    .chain-name {
+      font-size:12px;
+      font-weight:700;
+      margin-bottom:2px;
+    }
+    .chain-meta {
+      font-size:11px;
+      color:var(--t3);
+    }
+    .chain-tag {
+      font-size:10px;
+      font-weight:800;
+      color:var(--brand);
+    }
+
+    .side-card {
+      border-color:rgba(180,14,77,.16);
+      background:linear-gradient(180deg, #ffffff 0%, #fff9fb 100%);
+      box-shadow:0 16px 34px rgba(15,23,42,.06);
+    }
+    .approval-list,
+    .mcp-list,
+    .insight-list {
+      display:grid;
+      gap:10px;
+    }
+    .approval-item,
+    .mcp-item,
+    .insight-item {
+      display:grid;
+      grid-template-columns:auto minmax(0, 1fr) auto;
+      gap:10px;
+      align-items:center;
+    }
+    .mcp-icon,
+    .approval-icon {
+      width:30px;
+      height:30px;
+      border-radius:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+    }
+    .mcp-icon .material-icons-round,
+    .approval-icon .material-icons-round { font-size:16px; }
+    .side-name {
+      font-size:12px;
+      font-weight:700;
+      margin-bottom:3px;
+    }
+    .side-meta {
+      font-size:11px;
+      line-height:1.5;
+      color:var(--t3);
+    }
+    .side-value {
+      font-size:11px;
+      font-weight:700;
+      color:var(--t2);
+      white-space:nowrap;
+    }
+    .table-wrap {
+      border-radius:16px;
+      overflow:hidden;
+      border:1px solid var(--border);
+    }
+    table {
+      width:100%;
+      border-collapse:collapse;
+      background:#fff;
+    }
+    th, td {
+      padding:12px 14px;
+      text-align:left;
+      font-size:12px;
+      border-bottom:1px solid var(--border);
+    }
+    th {
+      background:#fafbfc;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      color:var(--t3);
+    }
+    tbody tr:last-child td { border-bottom:none; }
+    .state-pill {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      padding:5px 8px;
+      border-radius:999px;
+      font-size:10px;
+      font-weight:800;
+    }
+    .state-pill::before {
+      content:"";
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:currentColor;
+    }
+
+    @media (max-width:1120px) {
+      .service-groups { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+      .service-group:nth-child(odd) { border-right:1px solid var(--border); }
+      .service-group:nth-child(n + 3) {
+        border-top:1px solid var(--border);
+        padding-top:18px;
+      }
+      .service-group + .service-group { border-left:none; }
+      .hero-rail,
+      .layout,
+      .feature-grid { grid-template-columns:1fr; }
+    }
+    @media (max-width:800px) {
+      .service-groups { grid-template-columns:1fr; }
+      .service-group {
+        padding:16px 18px;
+        border-right:none;
+        border-top:1px solid var(--border);
+      }
+      .service-group:first-child { border-top:none; }
+      .topbar-inner { padding:0 16px; }
+      .tb-btn { display:none; }
+      .section-title { font-size:22px; }
+      .agent-grid,
+      .workflow-grid { grid-template-columns:1fr; }
+    }
+    @media (max-width:640px) {
+      .page { padding:18px 16px 64px; }
+      .search-ai { display:none; }
+      .service-popover { top:56px; padding:14px 0 16px; }
+      .service-popover-inner { padding:0 16px; }
+
+      .service-outlinks {
+        margin:14px 0 -16px;
+        padding:9px 16px;
+        justify-content:flex-start;
+        gap:8px;
+      }
+      .service-outlink-list {
+        justify-content:flex-start;
+      }
+      .service-outlink {
+        padding:3px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div
+    data-ax-topbar
+    data-active-key="agent-store"
+    data-search-placeholder="챗봇, MCP, 활용 사례를 찾아보세요..."
+    data-search-source="ai-gallery"
+    data-search-source-label="AI Gallery"
+    data-search-default-type="assistant"
+  ></div>
+  <template data-legacy-topbar>
+    <div class="topbar-inner">
+      <a class="topbar-brand" href="portal_launchpad.html" aria-label="AX Studio">
+        <span class="brand-mark" aria-hidden="true">
+          <img src="data:image/svg+xml,%3csvg%20width='35'%20height='20'%20viewBox='0%200%2035%2020'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M16.7961%2010.1421L21.022%2014.368C23.4543%2016.8004%2027.398%2016.8004%2029.8303%2014.368C32.2627%2011.9356%2032.2627%207.99197%2029.8303%205.5596C27.398%203.12723%2023.4543%203.12723%2021.022%205.5596L20.723%205.85861L18.7019%203.83756L19.0009%203.53856C22.5495%20-0.0100035%2028.3028%20-0.0100042%2031.8514%203.53856C35.4%207.08712%2035.4%2012.8405%2031.8514%2016.389C28.3028%2019.9376%2022.5495%2019.9376%2019.0009%2016.389L12.5757%209.96379L14.5948%207.9447L16.7941%2010.144L16.7961%2010.1421ZM17.6605%208.92103L19.6782%206.90332L17.6572%204.88228L15.6395%206.89998L17.6605%208.92103Z'%20fill='%236D6E72'/%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M14.3637%205.63217L18.6416%209.91016L18.6428%209.90899L20.7901%2012.0562L22.8099%2010.0364L16.3847%203.61113C12.8361%200.0625671%207.08278%200.0625666%203.53422%203.61113C-0.0143374%207.15969%20-0.0143374%2012.913%203.53422%2016.4616C7.08278%2020.0102%2012.8361%2020.0102%2016.3847%2016.4616L16.6801%2016.1662L14.6591%2014.1452L14.3637%2014.4406C11.9313%2016.8729%207.98764%2016.8729%205.55527%2014.4406C3.1229%2012.0082%203.1229%208.06454%205.55527%205.63217C7.98764%203.1998%2011.9313%203.1998%2014.3637%205.63217ZM15.7038%2013.1004L17.7248%2015.1215L19.7453%2013.101L17.7243%2011.0799L15.7038%2013.1004Z'%20fill='%23A50034'/%3e%3crect%20x='15.376'%20y='12.7714'%20width='2.85369'%20height='5.21909'%20transform='rotate(-45%2015.376%2012.7714)'%20fill='%236D6E72'/%3e%3c/svg%3e" alt="AX Studio" />
+        </span>
+        <span class="brand-name">AX Studio</span>
+      </a>
+      <div class="logo-menu" id="serviceMenuWrap">
+        <button class="menu-trigger" id="serviceMenuButton" type="button" aria-label="전체 메뉴 열기" aria-haspopup="true" aria-expanded="false" aria-controls="serviceMenuPopover">
+          <span class="material-icons-round">apps</span>
+          <span class="material-icons-round menu-caret">expand_more</span>
+        </button>
+        <div class="service-popover" id="serviceMenuPopover" aria-labelledby="serviceMenuButton" hidden>
+          <div class="service-popover-inner">
+            <div class="service-groups">
+              <section class="service-group">
+                <div class="service-group-title">Store</div>
+                <div class="service-links">
+                  <a class="service-link" href="dej_app_store.html"><span class="material-icons-round service-link-icon">widgets</span><span class="service-link-copy"><span class="service-link-title">App Gallery</span><span class="service-link-desc">실행형 개발 앱과 워크스페이스 도구를 발견하고 살펴보기</span></span></a>
+                  <a class="service-link is-current" href="dej_agent_store.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">AI Gallery</span><span class="service-link-desc">챗봇과 tool 자산을 전시하고 재사용 흐름으로 연결</span></span></a>
+                </div>
+              </section>
+              <section class="service-group">
+                <div class="service-group-title">Accessibility</div>
+                <div class="service-links">
+                  <a class="service-link" href="workspace_domain_hub.html"><span class="material-icons-round service-link-icon">apartment</span><span class="service-link-copy"><span class="service-link-title">Domain</span><span class="service-link-desc">DNS 및 도메인 관리</span></span></a>
+                  <a class="service-link" href="workspace_permission_hub.html"><span class="material-icons-round service-link-icon">groups</span><span class="service-link-copy"><span class="service-link-title">Permission</span><span class="service-link-desc">IAM 및 권한 관리</span></span></a>
+                </div>
+              </section>
+              <section class="service-group">
+                <div class="service-group-title">Storage</div>
+                <div class="service-links">
+                  <a class="service-link" href="workspace_database_hub.html"><span class="material-icons-round service-link-icon">storage</span><span class="service-link-copy"><span class="service-link-title">Database</span><span class="service-link-desc">데이터베이스 관리(MongoDB, PostgreSQL, Redis 등)</span></span></a>
+                  <a class="service-link" href="workspace_s3_hub.html"><span class="material-icons-round service-link-icon">folder</span><span class="service-link-copy"><span class="service-link-title">Buckets</span><span class="service-link-desc">S3 스토리지 및 버킷 관리</span></span></a>
+                </div>
+              </section>
+              <section class="service-group">
+                <div class="service-group-title">Development</div>
+                <div class="service-links">
+                  <a class="service-link" href="workspace_tools_hub.html"><span class="material-icons-round service-link-icon">web</span><span class="service-link-copy"><span class="service-link-title">Consoles</span><span class="service-link-desc">데이터베이스 웹 콘솔 모음</span></span></a>
+                  <a class="service-link" href="workspace_projects_hub.html"><span class="material-icons-round service-link-icon">public</span><span class="service-link-copy"><span class="service-link-title">Project/Publish</span><span class="service-link-desc">개발 프로젝트 관리(IDE 작업 공간)</span></span></a>
+                  <a class="service-link" href="#"><span class="material-icons-round service-link-icon">science</span><span class="service-link-copy"><span class="service-link-title">Jupyter</span><span class="service-link-desc">노트북 실험 및 분석 환경</span></span></a>
+                </div>
+              </section>
+              <section class="service-group">
+                <div class="service-group-title">AI</div>
+                <div class="service-links">
+                  <a class="service-link" href="workspace_agent_hub.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">Workflow</span><span class="service-link-desc">Dify workflow와 승인형 자동화 런타임을 운영</span></span></a>
+                  <a class="service-link" href="workspace_chatbot_hub.html"><span class="material-icons-round service-link-icon">chat</span><span class="service-link-copy"><span class="service-link-title">Chatbot</span><span class="service-link-desc">API와 Frontend URL 기반 챗봇 엔드포인트를 관리</span></span></a>
+                  <a class="service-link" href="workspace_tool_inventory_hub.html"><span class="material-icons-round service-link-icon">inventory_2</span><span class="service-link-copy"><span class="service-link-title">Tool Inventory</span><span class="service-link-desc">에이전트가 사용하는 연결된 MCP 및 도구 자산을 관리</span></span></a>
+                  <a class="service-link" href="workspace_keycenter_hub.html"><span class="material-icons-round service-link-icon">vpn_key</span><span class="service-link-copy"><span class="service-link-title">Keycenter</span><span class="service-link-desc">발급된 LLM 키와 연결된 사용처를 관리</span></span></a>
+                </div>
+              </section>
+              <section class="service-group">
+                <div class="service-group-title">Support</div>
+                <div class="service-links">
+                  <a class="service-link" href="#"><span class="material-icons-round service-link-icon">description</span><span class="service-link-copy"><span class="service-link-title">다큐먼트</span><span class="service-link-desc">가이드와 운영 문서를 확인합니다</span></span></a>
+                  <a class="service-link" href="about_dej.html"><span class="material-icons-round service-link-icon">timeline</span><span class="service-link-copy"><span class="service-link-title">About DEJ</span><span class="service-link-desc">DEJ의 역사와 CEJ·DEJ 흐름을 확인합니다</span></span></a>
+                  <a class="service-link" href="dej_chatbot_trial.html"><span class="material-icons-round service-link-icon">chat_bubble_outline</span><span class="service-link-copy"><span class="service-link-title">챗봇</span><span class="service-link-desc">지원 챗봇으로 빠르게 문의합니다</span></span></a>
+                  <a class="service-link" href="#"><span class="material-icons-round service-link-icon">campaign</span><span class="service-link-copy"><span class="service-link-title">요청하기</span><span class="service-link-desc">기능 요청이나 지원 요청을 등록합니다</span></span></a>
+                </div>
+              </section>
+            </div>
+            <div class="service-outlinks" aria-label="외부 서비스 바로가기">
+              <div class="service-outlinks-title">DEJ 시스템</div>
+              <div class="service-outlink-list">
+                <a class="service-outlink" href="https://dej-chatbot.apps.hedej.lge.com" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">forum</span><span class="service-outlink-copy"><span class="service-outlink-title">DEJ 챗봇</span><span class="service-outlink-desc">Workspace 지원 챗봇</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
+                <a class="service-outlink" href="https://workspace.hedej.lge.com/heans" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">open_in_new</span><span class="service-outlink-copy"><span class="service-outlink-title">HEANS</span><span class="service-outlink-desc">HEANS 서비스 바로가기</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
+                <a class="service-outlink" href="https://workspace.hedej.lge.com/hevpds" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">open_in_new</span><span class="service-outlink-copy"><span class="service-outlink-title">HEVPDS</span><span class="service-outlink-desc">HEVPDS 서비스 바로가기</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="search-wrap">
+        <span class="material-icons-round ico">search</span>
+        <input class="search-input" placeholder="챗봇, MCP, 활용 사례를 찾아보세요..." />
+        <div class="search-ai"><span class="material-icons-round">auto_awesome</span>AI</div>
+      </div>
+      <div class="tb-spacer"></div>
+      <div class="tb-icon"><span class="material-icons-round">notifications_none</span><div class="dot"></div></div>
+      <div class="avatar">TN</div>
+    </div>
+  </template>
+
+  <main class="page">
+    <section class="page-head">
+      <div class="sec-label"><span class="material-icons-round">auto_awesome</span>DEJ AI Gallery</div>
+      <h1 class="page-title">AI Gallery</h1>
+      <p class="page-desc">팀에서 만든 챗봇과 MCP를 한곳에서 만나볼 수 있는 공간입니다. 눈에 띄는 항목부터 가볍게 둘러보고, 마음에 드는 결과물은 바로 살펴보거나 다음 작업에 이어서 활용해 보세요.</p>
+      <div class="tag-row">
+        <span class="tag"><span class="material-icons-round">chat</span>Chatbots 18</span>
+        <span class="tag"><span class="material-icons-round">build</span>Tools 34</span>
+        <span class="tag"><span class="material-icons-round">view_carousel</span>Showcases 6</span>
+        <span class="tag"><span class="material-icons-round">verified</span>Verified Assets 11</span>
+      </div>
+    </section>
+
+    <section class="hero-rail">
+      <div class="hero-rail-card">
+        <div class="rail-kicker"><span class="material-icons-round">play_circle</span>지금 바로 써보기</div>
+        <div class="rail-title">바로 대화를 시작할 수 있는 챗봇</div>
+        <div class="rail-desc">Bot API로 등록된 챗봇은 이곳에서 바로 열어보고, 나에게 맞는지 가볍게 확인할 수 있습니다. 마음에 들면 앱의 챗봇 화면으로 이어서 사용해 보세요.</div>
+        <div class="mini-list">
+          <div class="mini-row">
+            <div class="mini-icon" style="background:linear-gradient(135deg,#4f8cff,#0086cc)"><span class="material-icons-round">campaign</span></div>
+            <div class="mini-copy"><div class="mini-name">Release Notes Bot</div><div class="mini-meta">갤러리에서 바로 대화를 시작할 수 있는 대표 챗봇</div></div>
+            <span class="mini-pill" style="background:#e0f2fe;color:#0369a1">Bot API</span>
+          </div>
+          <div class="mini-row">
+            <div class="mini-icon" style="background:linear-gradient(135deg,#34d399,#0d9488)"><span class="material-icons-round">support_agent</span></div>
+            <div class="mini-copy"><div class="mini-name">Developer Helper Chat</div><div class="mini-meta">문서와 예제를 찾을 때 바로 열어보기 좋은 챗봇</div></div>
+            <span class="mini-pill" style="background:var(--green-bg);color:var(--green)">추천</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-rail-card">
+        <div class="rail-kicker"><span class="material-icons-round">link</span>함께 보기</div>
+        <div class="rail-title">챗봇 다음은 MCP</div>
+        <div class="rail-desc">챗봇이 어떤 정보를 읽고 어떤 일을 도와주는지 궁금하다면 MCP를 함께 살펴보세요. 챗봇과 연결 도구를 한 흐름으로 이해하기 좋습니다.</div>
+        <div class="mini-list">
+          <div class="mini-row">
+            <div class="mini-icon" style="background:linear-gradient(135deg,#a78bfa,#7c5fcf)"><span class="material-icons-round">merge_type</span></div>
+            <div class="mini-copy"><div class="mini-name">GitLab Review MCP</div><div class="mini-meta">코드 리뷰에 필요한 정보를 불러오는 대표 MCP</div></div>
+            <a class="mini-pill" href="workspace_tool_inventory_hub.html" style="background:var(--purple-bg);color:var(--purple)">열기</a>
+          </div>
+          <div class="mini-row">
+            <div class="mini-icon" style="background:linear-gradient(135deg,#22c55e,#16a34a)"><span class="material-icons-round">folder_shared</span></div>
+            <div class="mini-copy"><div class="mini-name">Drive MCP</div><div class="mini-meta">공유 문서와 파일을 읽게 도와주는 연결 도구</div></div>
+            <span class="mini-pill" style="background:#ecfdf5;color:#0d9488">MCP</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="layout">
+      <div class="main-col">
+        <section class="panel">
+          <div class="sec-label"><span class="material-icons-round">tips_and_updates</span>Curated Highlights</div>
+          <div class="feature-grid">
+            <article class="spotlight-card">
+              <div class="spotlight-top">
+                <div class="spotlight-icon"><span class="material-icons-round">chat</span></div>
+                <div class="spotlight-badge">처음 보는 사람을 위한 추천</div>
+              </div>
+              <div class="spotlight-eyebrow">Start Here</div>
+              <h2 class="spotlight-title">가볍게 둘러보고, 하나 골라 바로 써보세요</h2>
+              <p class="spotlight-desc">마음에 드는 챗봇을 바로 열어보고, 지금 필요한 작업에 맞는지 가볍게 확인해 보세요. API로 등록된 챗봇은 여기에서 바로 써볼 수 있고, 더 길게 사용하고 싶다면 앱 안의 챗봇 화면으로 이어서 이동할 수 있습니다.</p>
+              <div class="point-list">
+                <div class="point-item"><span class="material-icons-round">chat</span><span>먼저 챗봇을 보면서 어떤 일을 도와주는지 가볍게 확인해 보세요.</span></div>
+                <div class="point-item"><span class="material-icons-round">play_circle</span><span>Bot API로 등록된 항목은 갤러리 안에서 바로 대화를 시작해 보세요.</span></div>
+                <div class="point-item"><span class="material-icons-round">build</span><span>그다음 MCP를 보면서 어떤 정보와 연결되는지 함께 살펴보세요.</span></div>
+                <div class="point-item"><span class="material-icons-round">open_in_new</span><span>마음에 들면 앱의 챗봇 화면으로 이동해 같은 흐름을 이어가 보세요.</span></div>
+              </div>
+              <div class="tag-row">
+                <span class="tag"><span class="material-icons-round">chat</span>Chatbots</span>
+                <span class="tag"><span class="material-icons-round">lan</span>MCP</span>
+                <span class="tag"><span class="material-icons-round">lightbulb</span>Tips</span>
+                <span class="tag"><span class="material-icons-round">explore</span>Easy Start</span>
+              </div>
+            </article>
+
+            <div class="stack-panel">
+              <div class="stack-card">
+                <div class="sec-label"><span class="material-icons-round">chat</span>추천 챗봇</div>
+                <div class="stack-title">Release Notes Bot</div>
+                <div class="stack-desc">배포 요약과 변경 공지를 자동으로 만들어 주는 대표 챗봇입니다. 여기에서 바로 대화를 시작해 보고, 더 써보고 싶다면 앱 챗봇으로 이어서 열어보세요.</div>
+                <div class="capsule-list">
+                  <span class="capsule" style="background:var(--brand-bg);color:var(--brand)">갤러리에서 바로 사용</span>
+                  <span class="capsule" style="background:var(--purple-bg);color:var(--purple)">앱 챗봇으로 이어쓰기</span>
+                  <span class="capsule" style="background:var(--green-bg);color:var(--green)">인기 항목</span>
+                </div>
+              </div>
+              <div class="stack-card">
+                <div class="sec-label"><span class="material-icons-round">lan</span>추천 MCP</div>
+                <div class="stack-title">GitLab Review MCP</div>
+                <div class="stack-desc">코드 리뷰에 필요한 정보들을 불러오는 대표 MCP입니다. 복잡한 기술 설명보다, 챗봇이 필요한 정보를 가져오게 돕는 도구라고 가볍게 이해해 보세요.</div>
+                <a class="card-link" href="workspace_tool_inventory_hub.html">Tool Inventory 보기 <span class="material-icons-round">arrow_forward</span></a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div class="section-kicker"><span class="material-icons-round">chat</span>Chatbots</div>
+            <h2 class="section-title">지금 바로 살펴보고 써볼 수 있는 챗봇 모음</h2>
+            <p class="section-subtitle">원하는 챗봇을 바로 열어보고, 나에게 맞는지 가볍게 확인해 보세요. Bot API는 이곳에서 바로 대화를 시작할 수 있고, Bot Web은 원래 화면에서 살펴볼 수 있으며, 마음에 드는 챗봇은 이 앱의 챗봇 화면으로 이어서 사용할 수 있습니다.</p>
+          </div>
+          <div class="agent-grid">
+            <article class="agent-card chatbot-card">
+              <div class="card-top">
+                <div class="card-icon" style="background:linear-gradient(135deg,#4f8cff,#0086cc)"><span class="material-icons-round">campaign</span></div>
+                <span class="card-badge" style="background:#e0f2fe;color:#0369a1">Bot API</span>
+              </div>
+              <div class="card-name">Release Notes Bot</div>
+              <div class="card-meta">배포 요약과 공지를 빠르게 만드는 챗봇</div>
+              <div class="card-desc">배포 내용을 정리해서 공지 초안을 만들어 줍니다. 릴리즈 노트를 자주 쓰는 팀이라면 가장 먼저 체감하기 쉬운 챗봇입니다.</div>
+              <div class="card-stats">
+                <span class="card-stat"><span class="material-icons-round">play_circle</span>갤러리에서 바로 사용</span>
+                <span class="card-stat"><span class="material-icons-round">smart_toy</span>앱 챗봇 연결</span>
+                <span class="card-stat"><span class="material-icons-round">content_copy</span>복제 가능</span>
+                <span class="card-stat"><span class="material-icons-round">star</span>인기</span>
+              </div>
+              <div class="card-foot"><span class="scope-note">처음 써보기 좋은 챗봇</span><div class="card-actions"><a class="action-link" href="dej_chatbot_trial.html">바로 써보기 <span class="material-icons-round">chat</span></a><a class="action-link secondary" href="dej_chatbot_trial.html">앱 챗봇으로 열기 <span class="material-icons-round">open_in_new</span></a></div></div>
+            </article>
+
+            <article class="agent-card chatbot-card">
+              <div class="card-top">
+                <div class="card-icon" style="background:linear-gradient(135deg,#34d399,#0d9488)"><span class="material-icons-round">support_agent</span></div>
+                <span class="card-badge" style="background:var(--green-bg);color:var(--green)">Bot API</span>
+              </div>
+              <div class="card-name">Developer Helper Chat</div>
+              <div class="card-meta">개발 문서와 예제를 쉽게 찾게 도와주는 챗봇</div>
+              <div class="card-desc">사내 개발 문서, 자주 묻는 질문, 예제 코드를 바탕으로 답을 찾아줍니다. 새로운 팀원이 가장 자주 찾게 되는 유형의 챗봇입니다.</div>
+              <div class="card-stats">
+                <span class="card-stat"><span class="material-icons-round">play_circle</span>갤러리에서 바로 사용</span>
+                <span class="card-stat"><span class="material-icons-round">smart_toy</span>앱 챗봇 연결</span>
+                <span class="card-stat"><span class="material-icons-round">groups</span>여러 팀 사용</span>
+                <span class="card-stat"><span class="material-icons-round">school</span>입문용</span>
+              </div>
+              <div class="card-foot"><span class="scope-note">가볍게 시작하기 좋은 챗봇</span><div class="card-actions"><a class="action-link" href="dej_chatbot_trial.html">바로 써보기 <span class="material-icons-round">chat</span></a><a class="action-link secondary" href="dej_chatbot_trial.html">앱 챗봇으로 열기 <span class="material-icons-round">open_in_new</span></a></div></div>
+            </article>
+
+            <article class="agent-card chatbot-card">
+              <div class="card-top">
+                <div class="card-icon" style="background:linear-gradient(135deg,#f59e0b,#f97316)"><span class="material-icons-round">quiz</span></div>
+                <span class="card-badge" style="background:#fff1e7;color:#e07020">Bot Web</span>
+              </div>
+              <div class="card-name">Workspace FAQ Bot</div>
+              <div class="card-meta">자주 묻는 질문을 빠르게 안내해 주는 챗봇</div>
+              <div class="card-desc">워크스페이스 사용법, 권한 요청, 기본 설정 같은 반복 질문에 바로 답해 줍니다. 새로운 사용자에게 특히 친절한 유형입니다.</div>
+              <div class="card-stats">
+                <span class="card-stat"><span class="material-icons-round">help</span>자주 묻는 질문</span>
+                <span class="card-stat"><span class="material-icons-round">public</span>웹에서 열기</span>
+                <span class="card-stat"><span class="material-icons-round">school</span>입문용</span>
+              </div>
+              <div class="card-foot"><span class="scope-note">가장 가볍게 시작할 수 있는 챗봇</span><div class="card-actions"><a class="action-link" href="#">웹에서 보기 <span class="material-icons-round">open_in_new</span></a></div></div>
+            </article>
+
+            <article class="agent-card chatbot-card">
+              <div class="card-top">
+                <div class="card-icon" style="background:linear-gradient(135deg,#8b5cf6,#6366f1)"><span class="material-icons-round">description</span></div>
+                <span class="card-badge" style="background:#f1e7ff;color:#7c5fcf">Bot Web</span>
+              </div>
+              <div class="card-name">Document Summary Bot</div>
+              <div class="card-meta">긴 문서 내용을 짧고 쉽게 요약해 주는 챗봇</div>
+              <div class="card-desc">회의록, 가이드 문서, 정책 문서를 빠르게 읽기 좋은 형태로 요약해 줍니다. 문서가 많은 팀에서 두루 쓰기 좋은 대표 챗봇입니다.</div>
+              <div class="card-stats">
+                <span class="card-stat"><span class="material-icons-round">article</span>문서 요약</span>
+                <span class="card-stat"><span class="material-icons-round">groups</span>여러 팀 사용</span>
+                <span class="card-stat"><span class="material-icons-round">public</span>웹에서 열기</span>
+              </div>
+              <div class="card-foot"><span class="scope-note">활용 범위가 넓은 공용 챗봇</span><div class="card-actions"><a class="action-link" href="#">웹에서 보기 <span class="material-icons-round">open_in_new</span></a></div></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div class="section-kicker"><span class="material-icons-round">lan</span>MCP</div>
+            <h2 class="section-title">챗봇이 더 똑똑하게 일하도록 돕는 MCP 모음</h2>
+            <p class="section-subtitle">MCP라는 이름이 낯설더라도 어렵게 볼 필요는 없습니다. 챗봇이 필요한 정보를 가져오고 일을 돕게 만드는 도구라고 생각하고, 용도가 분명한 항목부터 가볍게 살펴보세요.</p>
+          </div>
+          <div class="agent-grid">
+            <article class="agent-card mcp-card">
+              <div class="card-top">
+                <div class="card-icon" style="background:linear-gradient(135deg,#a78bfa,#7c5fcf)"><span class="material-icons-round">merge_type</span></div>
+                <span class="card-badge" style="background:var(--purple-bg);color:var(--purple)">MCP</span>
+              </div>
+              <div class="card-name">GitLab Review MCP</div>
+              <div class="card-meta">코드 리뷰에 필요한 정보를 가져오는 MCP</div>
+              <div class="card-desc">Merge Request, 변경 파일, 파이프라인 상태 같은 리뷰에 필요한 정보를 챗봇이 읽을 수 있게 도와줍니다.</div>
+              <div class="card-stats">
+                <span class="card-stat"><span class="material-icons-round">merge</span>GitLab 연결</span>
+                <span class="card-stat"><span class="material-icons-round">rate_review</span>리뷰용</span>
+                <span class="card-stat"><span class="material-icons-round">star</span>자주 사용</span>
+              </div>
+              <div class="card-foot"><span class="scope-note">대표적인 업무형 MCP</span><a class="card-link" href="#">살펴보기 <span class="material-icons-round">chevron_right</span></a></div>
+            </article>
+
+            <article class="agent-card mcp-card">
+              <div class="card-top">
+                <div class="card-icon" style="background:linear-gradient(135deg,#f472b6,#b40e4d)"><span class="material-icons-round">emergency</span></div>
+                <span class="card-badge" style="background:var(--brand-bg);color:var(--brand)">MCP</span>
+              </div>
+              <div class="card-name">Ops Console MCP</div>
+              <div class="card-meta">운영 상황을 빠르게 확인하게 도와주는 MCP</div>
+              <div class="card-desc">로그, 메트릭, 파드 상태처럼 운영 대응에 필요한 정보를 챗봇이 불러올 수 있게 해 줍니다.</div>
+              <div class="card-stats">
+                <span class="card-stat"><span class="material-icons-round">monitoring</span>운영 확인</span>
+                <span class="card-stat"><span class="material-icons-round">article</span>로그 조회</span>
+                <span class="card-stat"><span class="material-icons-round">warning</span>주의 필요</span>
+              </div>
+              <div class="card-foot"><span class="scope-note">운영용으로 자주 보는 MCP</span><a class="card-link" href="#">살펴보기 <span class="material-icons-round">chevron_right</span></a></div>
+            </article>
+
+            <article class="agent-card mcp-card">
+              <div class="card-top">
+                <div class="card-icon" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)"><span class="material-icons-round">search</span></div>
+                <span class="card-badge" style="background:#e2f3ff;color:#0086cc">MCP</span>
+              </div>
+              <div class="card-name">Search MCP</div>
+              <div class="card-meta">문서와 위키 내용을 찾아주는 MCP</div>
+              <div class="card-desc">사내 문서, 위키, 검색 인덱스에서 필요한 정보를 찾아 챗봇이 참고할 수 있게 도와줍니다. 지식형 챗봇과 특히 잘 어울립니다.</div>
+              <div class="card-stats">
+                <span class="card-stat"><span class="material-icons-round">manage_search</span>검색 지원</span>
+                <span class="card-stat"><span class="material-icons-round">menu_book</span>문서 탐색</span>
+                <span class="card-stat"><span class="material-icons-round">star</span>활용도 높음</span>
+              </div>
+              <div class="card-foot"><span class="scope-note">지식형 챗봇에 잘 맞는 MCP</span><a class="card-link" href="#">살펴보기 <span class="material-icons-round">chevron_right</span></a></div>
+            </article>
+
+            <article class="agent-card mcp-card">
+              <div class="card-top">
+                <div class="card-icon" style="background:linear-gradient(135deg,#22c55e,#16a34a)"><span class="material-icons-round">folder_shared</span></div>
+                <span class="card-badge" style="background:#ecfdf5;color:#0d9488">MCP</span>
+              </div>
+              <div class="card-name">Drive MCP</div>
+              <div class="card-meta">공유 문서와 파일을 읽게 도와주는 MCP</div>
+              <div class="card-desc">팀이 자주 쓰는 공유 폴더와 파일을 챗봇이 읽고 활용할 수 있게 해 줍니다. 보고서 요약이나 자료 정리에 자주 쓰이는 편입니다.</div>
+              <div class="card-stats">
+                <span class="card-stat"><span class="material-icons-round">folder</span>파일 읽기</span>
+                <span class="card-stat"><span class="material-icons-round">description</span>자료 요약</span>
+                <span class="card-stat"><span class="material-icons-round">groups</span>공용 자산</span>
+              </div>
+              <div class="card-foot"><span class="scope-note">문서 활용에 익숙한 MCP</span><a class="card-link" href="#">살펴보기 <span class="material-icons-round">chevron_right</span></a></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div class="section-kicker"><span class="material-icons-round">lightbulb</span>Tips</div>
+            <h2 class="section-title">처음 보는 사람도 어렵지 않게 고르는 방법</h2>
+            <p class="section-subtitle">무엇부터 볼지 고민된다면, 아래 순서대로 가볍게 시작해 보세요. 어렵게 공부하기보다 직접 보고 써보면서 익히는 데 도움이 되는 순서입니다.</p>
+          </div>
+          <div class="workflow-grid">
+            <article class="workflow-card">
+              <div class="workflow-title">어떤 챗봇을 먼저 보면 좋을까?</div>
+              <div class="workflow-desc">처음이라면 가장 익숙한 업무와 가까운 챗봇부터 살펴보세요. 릴리즈 공지, 문서 검색, FAQ처럼 바로 이해되는 주제가 시작하기 좋습니다.</div>
+              <div class="chain-list">
+                <div class="chain-item">
+                  <div class="chain-icon" style="background:linear-gradient(135deg,#4f8cff,#0086cc)"><span class="material-icons-round">campaign</span></div>
+                  <div><div class="chain-name">익숙한 업무부터</div><div class="chain-meta">내가 바로 이해할 수 있는 주제를 먼저 보기</div></div>
+                  <div class="chain-tag">1</div>
+                </div>
+                <div class="chain-item">
+                  <div class="chain-icon" style="background:linear-gradient(135deg,#34d399,#0d9488)"><span class="material-icons-round">public</span></div>
+                  <div><div class="chain-name">사용 방법이 쉬운 것부터</div><div class="chain-meta">웹에서 바로 열리는 챗봇이 가장 부담이 적음</div></div>
+                  <div class="chain-tag">2</div>
+                </div>
+                <div class="chain-item">
+                  <div class="chain-icon" style="background:linear-gradient(135deg,#a78bfa,#7c5fcf)"><span class="material-icons-round">content_copy</span></div>
+                  <div><div class="chain-name">마음에 들면 복제</div><div class="chain-meta">좋아 보이는 항목을 내 환경으로 가져와 보기</div></div>
+                  <div class="chain-tag">3</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="workflow-card">
+              <div class="workflow-title">MCP는 어떻게 이해하면 좋을까?</div>
+              <div class="workflow-desc">MCP를 너무 어렵게 볼 필요는 없습니다. 챗봇이 외부 정보를 읽거나 작업을 도와주는 연결 도구라고 생각하면 충분합니다.</div>
+              <div class="chain-list">
+                <div class="chain-item">
+                  <div class="chain-icon" style="background:linear-gradient(135deg,#34d399,#0d9488)"><span class="material-icons-round">search</span></div>
+                  <div><div class="chain-name">정보를 가져오게 해 줌</div><div class="chain-meta">문서, 코드, 운영 정보 등을 읽어 올 수 있음</div></div>
+                  <div class="chain-tag">A</div>
+                </div>
+                <div class="chain-item">
+                  <div class="chain-icon" style="background:linear-gradient(135deg,#f472b6,#b40e4d)"><span class="material-icons-round">extension</span></div>
+                  <div><div class="chain-name">챗봇의 손발이 됨</div><div class="chain-meta">답변만 하는 것이 아니라 필요한 일을 도와주는 기반</div></div>
+                  <div class="chain-tag">B</div>
+                </div>
+                <div class="chain-item">
+                  <div class="chain-icon" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)"><span class="material-icons-round">visibility</span></div>
+                  <div><div class="chain-name">용도부터 보기</div><div class="chain-meta">기술 설명보다 무엇에 쓰는지 먼저 살펴보기</div></div>
+                  <div class="chain-tag">C</div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <aside class="side-col">
+        <section class="panel side-card">
+          <div class="sec-label"><span class="material-icons-round">explore</span>이 페이지에서 볼 것</div>
+          <div class="mcp-list">
+            <div class="mcp-item">
+              <div class="mcp-icon" style="background:linear-gradient(135deg,#4f8cff,#0086cc)"><span class="material-icons-round">sell</span></div>
+              <div><div class="side-name">챗봇</div><div class="side-meta">무엇을 도와주는지 바로 감이 오는 결과물부터 살펴볼 수 있습니다</div></div>
+              <div class="side-value">4개</div>
+            </div>
+            <div class="mcp-item">
+              <div class="mcp-icon" style="background:linear-gradient(135deg,#34d399,#0d9488)"><span class="material-icons-round">apartment</span></div>
+              <div><div class="side-name">MCP</div><div class="side-meta">챗봇이 정보를 가져오고 일을 돕게 만드는 도구를 함께 볼 수 있습니다</div></div>
+              <div class="side-value">4개</div>
+            </div>
+            <div class="mcp-item">
+              <div class="mcp-icon" style="background:linear-gradient(135deg,#a78bfa,#7c5fcf)"><span class="material-icons-round">sort</span></div>
+              <div><div class="side-name">Tips</div><div class="side-meta">처음 둘러볼 때 도움이 되는 짧은 안내를 확인할 수 있습니다</div></div>
+              <div class="side-value">2개</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel side-card">
+          <div class="sec-label"><span class="material-icons-round">help_outline</span>처음이라면</div>
+          <div class="approval-list">
+            <div class="approval-item">
+              <div class="approval-icon" style="background:linear-gradient(135deg,#34d399,#0d9488)"><span class="material-icons-round">chat</span></div>
+              <div><div class="side-name">챗봇부터 보기</div><div class="side-meta">기능이 가장 직관적으로 보이고, Bot API는 여기서 바로 써볼 수 있습니다</div></div>
+              <div class="side-value">추천</div>
+            </div>
+            <div class="approval-item">
+              <div class="approval-icon" style="background:linear-gradient(135deg,#f472b6,#b40e4d)"><span class="material-icons-round">api</span></div>
+              <div><div class="side-name">바로 써보고 이어서 사용</div><div class="side-meta">갤러리에서 가볍게 체험한 뒤, 마음에 들면 앱 챗봇으로 이어서 사용할 수 있습니다</div></div>
+              <div class="side-value">안내</div>
+            </div>
+            <div class="approval-item">
+              <div class="approval-icon" style="background:linear-gradient(135deg,#4f8cff,#0086cc)"><span class="material-icons-round">lan</span></div>
+              <div><div class="side-name">마음에 들면 허브로 이동</div><div class="side-meta">더 자세한 관리 화면은 Chatbot Hub와 Tool Inventory에서 확인할 수 있습니다</div></div>
+              <div class="side-value">다음</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel side-card">
+          <div class="sec-label"><span class="material-icons-round">link</span>관련 메뉴</div>
+          <div class="insight-list">
+            <div class="insight-item"><span class="side-value" style="color:#0369a1">Hub</span><div><div class="side-name">Chatbot Hub</div><div class="side-meta">챗봇을 실제로 등록하고 관리하는 곳</div></div><span></span></div>
+            <div class="insight-item"><span class="side-value" style="color:var(--green)">Hub</span><div><div class="side-name">Tool Inventory</div><div class="side-meta">MCP와 도구 구성을 실제로 관리하는 곳</div></div><span></span></div>
+            <div class="insight-item"><span class="side-value" style="color:var(--purple)">Hub</span><div><div class="side-name">Keycenter</div><div class="side-meta">챗봇과 MCP가 쓰는 키를 관리하는 곳</div></div><span></span></div>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      const menuWrap = document.getElementById("serviceMenuWrap");
+      const menuButton = document.getElementById("serviceMenuButton");
+      const menuPopover = document.getElementById("serviceMenuPopover");
+
+      if (!menuWrap || !menuButton || !menuPopover) return;
+
+      const setOpen = (open) => {
+        menuWrap.classList.toggle("is-open", open);
+        menuButton.setAttribute("aria-expanded", String(open));
+        menuPopover.hidden = !open;
+      };
+
+      setOpen(false);
+
+      menuButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        setOpen(!menuWrap.classList.contains("is-open"));
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!menuWrap.contains(event.target)) setOpen(false);
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          setOpen(false);
+          menuButton.focus();
+        }
+      });
+    })();
+
+  </script>
+  <script src="ax_studio_topbar.js"></script>
+  <script src="concept_endpoint_overlay.js"></script>
+</body>
+</html>

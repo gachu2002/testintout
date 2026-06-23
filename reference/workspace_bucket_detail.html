@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bucket Detail</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+    <link rel="stylesheet" href="workspace_detail_shared.css" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      function cards(items) {
+        return items
+          .map(
+            (item) =>
+              `<article class="card"><div class="card-title">${item.title}</div><div class="card-desc">${item.desc}</div><div class="tag-row">${item.tags.map((tag) => `<span class="tag">${tag}</span>`).join('')}</div></article>`,
+          )
+          .join('');
+      }
+      function list(rows) {
+        return rows
+          .map(
+            (row) =>
+              `<div class="list-row"><div class="list-main"><div class="list-title">${row.title}</div><div class="list-meta">${row.meta}</div></div>${row.side ? `<div class="list-side">${row.side}</div>` : ''}</div>`,
+          )
+          .join('');
+      }
+      function kv(rows) {
+        return rows
+          .map(
+            (row) =>
+              `<div class="kv-item"><div class="kv-key">${row.key}</div><div class="kv-value">${row.value}</div></div>`,
+          )
+          .join('');
+      }
+      function table(rows) {
+        return `<div class="table-wrap"><table><thead><tr><th>Consumer</th><th>Binding</th><th>Exposure</th><th>Note</th></tr></thead><tbody>${rows.map((row) => `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td></tr>`).join('')}</tbody></table></div>`;
+      }
+      function progress(rows) {
+        return rows
+          .map(
+            (row) =>
+              `<article class="progress-card"><div class="progress-top"><div class="progress-title">${row.title}</div><div class="progress-value">${row.value}</div></div><div class="progress-bar"><div class="progress-fill" style="width:${row.percent}%;"></div></div><div class="progress-meta">${row.meta}</div></article>`,
+          )
+          .join('');
+      }
+      function timeline(rows) {
+        return rows
+          .map(
+            (row) =>
+              `<div class="timeline-row"><div class="timeline-rail"><span class="timeline-dot"></span></div><div class="timeline-card"><div class="timeline-title">${row.title}</div><div class="timeline-meta">${row.meta}</div></div></div>`,
+          )
+          .join('');
+      }
+      function buildItem(item) {
+        return {
+          ...item,
+          mainHtml: `
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">folder</span>Exposure Snapshot</div>
+                <h2 class="section-title">버킷 상태와 노출 모델</h2>
+                <p class="section-desc">public / private / shared 성격과 lifecycle 메모를 다른 detail 샘플 톤으로 정리했습니다.</p>
+              </div>
+              <a class="section-link" href="${item.relatedHref}"><span class="material-icons-round">arrow_outward</span>연관 허브</a>
+            </div>
+            <div class="card-grid three">${cards(item.cards)}</div>
+          </section>
+          <section class="panel section">
+            <div class="section-kicker"><span class="material-icons-round">hub</span>Bound Projects</div>
+            <h2 class="section-title">연결 프로젝트와 사용 패턴</h2>
+            <p class="section-desc">버킷을 소비하는 프로젝트, 노출 범위, 사용 목적을 한 번에 볼 수 있게 했습니다.</p>
+            ${table(item.bindings)}
+          </section>
+          <section class="panel section">
+            <div class="list-grid two">
+              <div class="subpanel">
+                <div class="panel-title" style="font-size:16px;">Policy Notes</div>
+                <div class="info-list">${list(item.notes)}</div>
+              </div>
+              <div class="subpanel">
+                <div class="panel-title" style="font-size:16px;">Related Surfaces</div>
+                <div class="info-list">${list(item.relatedLinks)}</div>
+              </div>
+            </div>
+          </section>
+        `,
+          sidebarHtml: `
+          <section class="panel section">
+            <div class="section-kicker"><span class="material-icons-round">donut_large</span>Usage Pulse</div>
+            <h3 class="section-title" style="font-size:18px;">용량과 요청 지표</h3>
+            <div class="stats-grid">${progress(item.progress)}</div>
+          </section>
+          <section class="panel timeline-panel">
+            <div class="panel-kicker"><span class="material-icons-round">history</span>Change Log</div>
+            <h3 class="panel-title" style="font-size:18px;">최근 운영 변경</h3>
+            <div class="timeline-list">${timeline(item.timeline)}</div>
+          </section>
+          <section class="panel section">
+            <div class="section-kicker"><span class="material-icons-round">info</span>Bucket Facts</div>
+            <div class="kv-list">${kv(item.facts)}</div>
+          </section>
+        `,
+        };
+      }
+
+      const rawItems = [
+        {
+          key: 'workspace-build-artifacts',
+          title: 'workspace-build-artifacts',
+          description:
+            '빌드 결과물과 릴리즈 번들이 모이는 공용 아티팩트 버킷입니다. 배포 파이프라인과 rollback 흐름을 한 화면에서 이해할 수 있게 구성했습니다.',
+          heroIcon: 'inventory_2',
+          typeLabel: 'Private Bucket',
+          statusLabel: 'Active',
+          statusTone: 'healthy',
+          theme: {
+            brand: '#0f766e',
+            brandH: '#115e59',
+            brandBg: '#ccfbf1',
+            brandSoft: 'rgba(15,118,110,.14)',
+            accent: '#2dd4bf',
+          },
+          relatedHref: 'workspace_projects_hub.html',
+          actions: [
+            { label: 'Projects Hub', icon: 'inventory_2', href: 'workspace_projects_hub.html' },
+            {
+              label: 'Release Project',
+              icon: 'arrow_outward',
+              variant: 'primary',
+              href: 'workspace_project_detail.html?project=restaurant',
+            },
+          ],
+          heroStats: [
+            { label: 'Storage Used', value: '3.8TB', meta: '월간 증가 0.4TB' },
+            { label: 'Consumers', value: '3', meta: 'fe / deployer / worker' },
+            { label: 'Retention', value: '90d', meta: 'release bundle 기준' },
+            { label: 'Weekly Views', value: '12', meta: '운영자 점검 기준' },
+          ],
+          cards: [
+            {
+              title: 'Exposure',
+              desc: '외부 공개 없이 CI/CD 파이프라인 내부에서만 참조됩니다.',
+              tags: ['private', 'shared', 'artifact'],
+            },
+            {
+              title: 'Lifecycle',
+              desc: '최근 릴리즈는 hot storage에 두고 이전 번들은 lifecycle로 정리합니다.',
+              tags: ['90d hot', 'archive sync'],
+            },
+            {
+              title: 'Safety',
+              desc: 'manual delete보다 release manifest 기준의 자동 정리 방식을 사용합니다.',
+              tags: ['guarded', 'versioned'],
+            },
+          ],
+          bindings: [
+            ['workspace-fe', 'release bundle', 'internal only', '정적 빌드 산출물 적재'],
+            ['release-worker', 'artifact sync', 'internal only', '배포 위치로 번들 복제'],
+            ['ops-deployer', 'rollback asset', 'internal only', '이전 버전 복원 패키지 보관'],
+          ],
+          notes: [
+            {
+              title: '릴리즈 안정성 우선',
+              meta: 'artifact immutability를 유지해 rollback 정확도를 높입니다.',
+              side: 'Immutable',
+            },
+            {
+              title: '대용량 purge는 배치 처리',
+              meta: '수동 삭제보다 nightly cleanup job으로 정리합니다.',
+              side: 'Batch',
+            },
+            {
+              title: '프로젝트 상세와 연결',
+              meta: '어떤 앱이 어떤 bundle을 올렸는지 project detail에서 이어서 확인합니다.',
+              side: 'Linked',
+            },
+          ],
+          relatedLinks: [
+            { title: 'workspace-fe project', meta: '빌드 산출물 생성 흐름 확인', side: 'Project' },
+            { title: 'Domain Hub', meta: '배포 후 공개되는 정적 route 확인', side: 'Domain' },
+            { title: 'Permission Hub', meta: 'artifact write 권한 그룹 확인', side: 'Access' },
+          ],
+          progress: [
+            { title: 'Capacity', value: '63%', percent: 63, meta: 'allocated quota 대비 사용량' },
+            { title: 'Replication', value: '96%', percent: 96, meta: 'backup region sync 상태' },
+          ],
+          timeline: [
+            {
+              title: '오늘 07:30 · release bundle upload',
+              meta: 'workspace-fe 2026.06.15 build 적재',
+            },
+            {
+              title: '어제 22:10 · rollback asset verify',
+              meta: 'ops-deployer가 직전 릴리즈 검증',
+            },
+            {
+              title: '6월 10일 · lifecycle rule tune',
+              meta: 'stale branch artifact 정리 기준 수정',
+            },
+          ],
+          facts: [
+            { key: 'Bucket Class', value: 'private shared artifact' },
+            { key: 'Primary Region', value: '<span class="mono">ap-northeast-2</span>' },
+            { key: 'Versioning', value: 'enabled' },
+          ],
+        },
+        {
+          key: 'restaurant-static-assets',
+          title: 'restaurant-static-assets',
+          description:
+            '메뉴 이미지와 캠페인 에셋이 노출되는 퍼블릭 정적 버킷입니다. 공개 경로와 업로드 파이프라인을 함께 보여주는 샘플 UI입니다.',
+          heroIcon: 'language',
+          typeLabel: 'Public Bucket',
+          statusLabel: 'Active',
+          statusTone: 'healthy',
+          theme: {
+            brand: '#0ea5e9',
+            brandH: '#0284c7',
+            brandBg: '#dff6ff',
+            brandSoft: 'rgba(14,165,233,.14)',
+            accent: '#22d3ee',
+          },
+          relatedHref: 'workspace_domain_hub.html',
+          actions: [
+            { label: 'Domain Hub', icon: 'apartment', href: 'workspace_domain_hub.html' },
+            {
+              label: 'Restaurant Detail',
+              icon: 'arrow_outward',
+              variant: 'primary',
+              href: 'workspace_project_detail.html?project=restaurant',
+            },
+          ],
+          heroStats: [
+            { label: 'Storage Used', value: '5.2TB', meta: '이미지/캠페인 혼합' },
+            { label: 'Consumers', value: '3', meta: 'web / admin / studio' },
+            { label: 'CDN Hit', value: '87%', meta: '최근 7일' },
+            { label: 'Weekly Views', value: '19', meta: '운영 점검 횟수' },
+          ],
+          cards: [
+            {
+              title: 'Exposure',
+              desc: 'public CDN을 통해 메뉴/캠페인 에셋이 직접 노출됩니다.',
+              tags: ['public', 'cdn', 'static'],
+            },
+            {
+              title: 'Upload Path',
+              desc: 'admin과 campaign studio에서 승인 후 publish 되는 구조입니다.',
+              tags: ['admin upload', 'publish flow'],
+            },
+            {
+              title: 'Cache Policy',
+              desc: 'immutable asset naming과 긴 cache-control을 기본으로 둡니다.',
+              tags: ['long ttl', 'versioned url'],
+            },
+          ],
+          bindings: [
+            ['restaurant-web', 'public media', 'public CDN', '메뉴/매장 이미지 노출'],
+            ['restaurant-admin', 'asset upload', 'private upload api', '운영 업로드'],
+            ['campaign-studio', 'campaign bundle', 'public CDN', '프로모션 랜딩 자산'],
+          ],
+          notes: [
+            {
+              title: '버킷과 도메인을 같이 봐야 함',
+              meta: '노출 품질 판단은 bucket alone이 아니라 domain / CDN 연결까지 포함합니다.',
+              side: 'Expose',
+            },
+            {
+              title: '퍼블릭이지만 쓰기 제한',
+              meta: 'upload는 signed flow를 통해서만 허용합니다.',
+              side: 'Signed',
+            },
+            {
+              title: '버전 기반 교체',
+              meta: '자산 덮어쓰기보다 새 key 발급 후 switchover를 권장합니다.',
+              side: 'Versioned',
+            },
+          ],
+          relatedLinks: [
+            {
+              title: 'preview.restaurant domain',
+              meta: '실제 공개 route와 preview route 비교',
+              side: 'Domain',
+            },
+            { title: 'restaurant project', meta: 'asset publish 배포 흐름 확인', side: 'Project' },
+            {
+              title: 'media-ingest-dropzone',
+              meta: '원본 업로드 intake 버킷과 관계',
+              side: 'Bucket',
+            },
+          ],
+          progress: [
+            { title: 'Capacity', value: '58%', percent: 58, meta: 'quota 대비 사용량' },
+            { title: 'CDN Freshness', value: '91%', percent: 91, meta: 'invalidation SLA 충족률' },
+          ],
+          timeline: [
+            {
+              title: '오늘 08:20 · summer campaign publish',
+              meta: '신규 프로모션 이미지 bundle 반영',
+            },
+            { title: '어제 15:05 · cache invalidation', meta: '메뉴 리뉴얼 asset 교체' },
+            { title: '6월 12일 · upload policy audit', meta: 'signed upload path 재점검' },
+          ],
+          facts: [
+            { key: 'Bucket Class', value: 'public static asset' },
+            {
+              key: 'Primary Domain',
+              value: '<span class="mono">docs.workspace.hedej.lge.com</span>',
+            },
+            { key: 'Versioning', value: 'enabled' },
+          ],
+        },
+        {
+          key: 'prompt-catalog-private',
+          title: 'prompt-catalog-private',
+          description:
+            '프롬프트 번들과 평가 스냅샷이 쌓이는 프라이빗 버킷입니다. AI 운영 자산과 접근 정책을 같이 보여주는 샘플 detail입니다.',
+          heroIcon: 'psychology',
+          typeLabel: 'Private Bucket',
+          statusLabel: 'Review',
+          statusTone: 'review',
+          theme: {
+            brand: '#7c3aed',
+            brandH: '#6d28d9',
+            brandBg: '#ede9fe',
+            brandSoft: 'rgba(124,58,237,.14)',
+            accent: '#a78bfa',
+          },
+          relatedHref: 'workspace_permission_hub.html',
+          actions: [
+            { label: 'Permission Hub', icon: 'groups', href: 'workspace_permission_hub.html' },
+            {
+              label: 'AI Project',
+              icon: 'arrow_outward',
+              variant: 'primary',
+              href: 'workspace_project_detail.html?project=coverity-ai',
+            },
+          ],
+          heroStats: [
+            { label: 'Storage Used', value: '0.9TB', meta: 'snapshot 포함' },
+            { label: 'Consumers', value: '2', meta: 'ai-platform / evaluator' },
+            { label: 'Review Items', value: '4', meta: 'policy exception 대기' },
+            { label: 'Weekly Views', value: '11', meta: '운영/검수 기준' },
+          ],
+          cards: [
+            {
+              title: 'Exposure',
+              desc: 'private 버킷이며 prompt asset과 평가 스냅샷을 함께 보관합니다.',
+              tags: ['private', 'prompt', 'snapshot'],
+            },
+            {
+              title: 'Policy',
+              desc: '민감 prompt bundle은 승인된 평가자만 접근 가능합니다.',
+              tags: ['approval', 'limited readers'],
+            },
+            {
+              title: 'Lifecycle',
+              desc: '평가 snapshot은 버전 태그와 함께 남겨 재현성을 보장합니다.',
+              tags: ['versioned', 'reproducible'],
+            },
+          ],
+          bindings: [
+            ['ai-platform', 'prompt source', 'private only', '운영 prompt bundle 참조'],
+            ['prompt-evaluator', 'snapshot read', 'private only', '평가 비교용 snapshot 로드'],
+          ],
+          notes: [
+            {
+              title: '정책 검토가 잦음',
+              meta: 'prompt asset 특성상 접근 예외와 보존 정책 review가 자주 발생합니다.',
+              side: 'Review',
+            },
+            {
+              title: '평가 재현성 중요',
+              meta: 'snapshot과 prompt bundle을 묶어 같은 실험을 다시 실행할 수 있게 둡니다.',
+              side: 'Replay',
+            },
+            {
+              title: '모델 tier와 연결',
+              meta: '어떤 key tier로 평가했는지도 함께 남기는 구조가 자연스럽습니다.',
+              side: 'Tier',
+            },
+          ],
+          relatedLinks: [
+            { title: 'Keycenter', meta: '평가/운영 tier 매핑 확인', side: 'Tier' },
+            {
+              title: 'Tool Inventory',
+              meta: 'workspace-knowledge가 참조하는 prompt asset 경계 확인',
+              side: 'Tool',
+            },
+            { title: 'Permission Hub', meta: 'private bucket 접근 승인 플로우', side: 'Access' },
+          ],
+          progress: [
+            { title: 'Capacity', value: '27%', percent: 27, meta: 'quota 대비 여유 충분' },
+            { title: 'Policy Coverage', value: '74%', percent: 74, meta: 'object label 부착률' },
+          ],
+          timeline: [
+            {
+              title: '오늘 09:40 · eval snapshot added',
+              meta: 'pricing-advisor 신규 평가 세트 반영',
+            },
+            { title: '6월 13일 · prompt bundle review', meta: '민감 태그 정책 검토' },
+            { title: '6월 9일 · retention tag refine', meta: 'snapshot 분류 기준 업데이트' },
+          ],
+          facts: [
+            { key: 'Bucket Class', value: 'private prompt asset' },
+            { key: 'Primary Region', value: '<span class="mono">ap-northeast-2</span>' },
+            { key: 'Access Model', value: 'approved groups only' },
+          ],
+        },
+        {
+          key: 'compliance-longterm-archive',
+          title: 'compliance-longterm-archive',
+          description:
+            '감사 대응과 장기 보관 데이터를 다루는 컴플라이언스 아카이브 버킷입니다. 보관 정책과 retrieval 흐름을 중심으로 샘플을 만들었습니다.',
+          heroIcon: 'archive',
+          typeLabel: 'Archive Bucket',
+          statusLabel: 'Active',
+          statusTone: 'healthy',
+          theme: {
+            brand: '#f59e0b',
+            brandH: '#d97706',
+            brandBg: '#fef3c7',
+            brandSoft: 'rgba(245,158,11,.14)',
+            accent: '#fbbf24',
+          },
+          relatedHref: 'workspace_permission_hub.html',
+          actions: [
+            { label: 'Permission Hub', icon: 'groups', href: 'workspace_permission_hub.html' },
+            {
+              label: 'Audit Project',
+              icon: 'arrow_outward',
+              variant: 'primary',
+              href: 'workspace_project_detail.html?project=restaurant',
+            },
+          ],
+          heroStats: [
+            { label: 'Storage Used', value: '8.1TB', meta: '장기 보관 데이터' },
+            { label: 'Consumers', value: '3', meta: 'audit / legal / secops' },
+            { label: 'Retrieval SLA', value: '4h', meta: '표준 요청 기준' },
+            { label: 'Weekly Views', value: '6', meta: '운영 점검' },
+          ],
+          cards: [
+            {
+              title: 'Exposure',
+              desc: '직접 공개되지 않으며 감사/법무 요청에 따라 retrieval 됩니다.',
+              tags: ['archive', 'restricted', 'compliance'],
+            },
+            {
+              title: 'Lifecycle',
+              desc: '장기 보관과 immutable 정책을 함께 적용합니다.',
+              tags: ['worm style', 'long retention'],
+            },
+            {
+              title: 'Access',
+              desc: '복구 요청은 승인 기반으로만 허용됩니다.',
+              tags: ['approval', 'retrieval queue'],
+            },
+          ],
+          bindings: [
+            ['audit-center', 'audit export', 'restricted retrieval', '감사 로그 보관'],
+            ['legal-export', 'compliance bundle', 'restricted retrieval', '법무 제출 자료 보관'],
+            ['security-ops', 'retrieval request', 'private only', '보안 조사 시 조회'],
+          ],
+          notes: [
+            {
+              title: '운영보다 보존이 우선',
+              meta: '실시간 서비스 성격이 아니라 보관 무결성과 추적성이 핵심입니다.',
+              side: 'Archive',
+            },
+            {
+              title: 'retrieval은 워크플로우화',
+              meta: '콘솔에서 즉시 다운로드하지 않고 승인 큐를 거칩니다.',
+              side: 'Queued',
+            },
+            {
+              title: '장기 보관 비용 관리',
+              meta: '사용량 증가가 빨라 quota와 비용 모니터링이 중요합니다.',
+              side: 'Cost',
+            },
+          ],
+          relatedLinks: [
+            { title: 'Permission Hub', meta: 'retrieval 승인과 예외 절차 확인', side: 'Access' },
+            { title: 'Keycenter', meta: '민감 데이터 분석용 상위 tier 정책', side: 'Tier' },
+            { title: 'Tool Inventory', meta: 'observability export와 연결 관계', side: 'Tool' },
+          ],
+          progress: [
+            { title: 'Capacity', value: '81%', percent: 81, meta: '증설 검토 필요 구간' },
+            {
+              title: 'Retention Policy',
+              value: '100%',
+              percent: 100,
+              meta: 'mandatory tag 적용 완료',
+            },
+          ],
+          timeline: [
+            { title: '오늘 06:50 · archive usage review', meta: '월간 증가량 보고서 업데이트' },
+            { title: '6월 12일 · legal retrieval request', meta: '증빙 묶음 복구 요청 처리' },
+            { title: '6월 5일 · retention audit', meta: '장기 보관 정책 준수 점검' },
+          ],
+          facts: [
+            { key: 'Bucket Class', value: 'archive / compliance' },
+            { key: 'Encryption', value: 'managed key + immutable policy' },
+            { key: 'Access Model', value: 'approval queue only' },
+          ],
+        },
+        {
+          key: 'media-ingest-dropzone',
+          title: 'media-ingest-dropzone',
+          description:
+            '업로드 게이트웨이와 워커가 함께 쓰는 공용 인입 버킷입니다. signed upload와 후처리 워커 연결을 중심으로 샘플을 구성했습니다.',
+          heroIcon: 'upload',
+          typeLabel: 'Shared Bucket',
+          statusLabel: 'Active',
+          statusTone: 'healthy',
+          theme: {
+            brand: '#0891b2',
+            brandH: '#0e7490',
+            brandBg: '#d9f5ff',
+            brandSoft: 'rgba(8,145,178,.14)',
+            accent: '#5eead4',
+          },
+          relatedHref: 'workspace_projects_hub.html',
+          actions: [
+            { label: 'Projects Hub', icon: 'inventory_2', href: 'workspace_projects_hub.html' },
+            {
+              label: 'Creator Project',
+              icon: 'arrow_outward',
+              variant: 'primary',
+              href: 'workspace_project_detail.html?project=restaurant',
+            },
+          ],
+          heroStats: [
+            { label: 'Storage Used', value: '1.7TB', meta: '원본 업로드 대기분' },
+            { label: 'Consumers', value: '3', meta: 'studio / worker / restaurant' },
+            { label: 'Signed Upload', value: '98%', meta: '정상 요청 비율' },
+            { label: 'Weekly Views', value: '14', meta: '운영 점검' },
+          ],
+          cards: [
+            {
+              title: 'Exposure',
+              desc: '직접 공개되지 않고 업로드 intake 용도로만 사용됩니다.',
+              tags: ['shared', 'upload', 'private'],
+            },
+            {
+              title: 'Flow',
+              desc: 'signed upload 후 media worker가 후처리와 분배를 담당합니다.',
+              tags: ['signed url', 'worker'],
+            },
+            {
+              title: 'Retention',
+              desc: '원본은 일정 기간 뒤 정적 버킷 또는 archive로 이동합니다.',
+              tags: ['transient', 'handoff'],
+            },
+          ],
+          bindings: [
+            ['creator-studio', 'signed upload', 'private upload api', '콘텐츠 업로드 진입점'],
+            ['media-worker', 'image processing', 'internal only', '리사이즈/검수 후 이동'],
+            ['restaurant', 'media import', 'private only', '운영 데이터로 반영'],
+          ],
+          notes: [
+            {
+              title: '업로드 실패 분석 중요',
+              meta: '직접 노출보다 ingest 실패와 후처리 누락이 핵심 운영 포인트입니다.',
+              side: 'Ops',
+            },
+            {
+              title: '원본과 공개 자산 분리',
+              meta: '같은 버킷에 영구 공개 자산을 두지 않습니다.',
+              side: 'Separated',
+            },
+            {
+              title: 'worker 지연과 연동',
+              meta: 'media worker backlog가 버킷 체류 시간에 직접 영향을 줍니다.',
+              side: 'Linked',
+            },
+          ],
+          relatedLinks: [
+            {
+              title: 'restaurant-static-assets',
+              meta: '후처리 후 공개되는 대상 버킷',
+              side: 'Bucket',
+            },
+            { title: 'creator project', meta: '업로드 surface의 프로젝트 맥락', side: 'Project' },
+            { title: 'Tool Inventory', meta: '관찰용 observability tool 연결', side: 'Tool' },
+          ],
+          progress: [
+            {
+              title: 'Capacity',
+              value: '34%',
+              percent: 34,
+              meta: '일시 저장 버킷 특성상 여유 충분',
+            },
+            { title: 'Processing SLA', value: '89%', percent: 89, meta: '15분 이내 후처리 비율' },
+          ],
+          timeline: [
+            { title: '오늘 09:05 · burst upload handled', meta: 'campaign asset 업로드 피크 대응' },
+            { title: '어제 18:10 · worker backlog clear', meta: 'image processing queue 정상화' },
+            { title: '6월 11일 · signed url ttl tune', meta: '업로드 링크 만료 시간 조정' },
+          ],
+          facts: [
+            { key: 'Bucket Class', value: 'shared upload intake' },
+            { key: 'Versioning', value: 'disabled for temp objects' },
+            { key: 'Lifecycle', value: '7d temporary retention' },
+          ],
+        },
+        {
+          key: 'analytics-report-export',
+          title: 'analytics-report-export',
+          description:
+            '리포트와 다운로드 번들이 배포되는 공용 익스포트 버킷입니다. 다운로드 링크 품질과 만료 정책을 중심으로 detail을 구성했습니다.',
+          heroIcon: 'bar_chart',
+          typeLabel: 'Shared Bucket',
+          statusLabel: 'Active',
+          statusTone: 'healthy',
+          theme: {
+            brand: '#14b8a6',
+            brandH: '#0f766e',
+            brandBg: '#d5fbf5',
+            brandSoft: 'rgba(20,184,166,.14)',
+            accent: '#60a5fa',
+          },
+          relatedHref: 'workspace_domain_hub.html',
+          actions: [
+            { label: 'Domain Hub', icon: 'apartment', href: 'workspace_domain_hub.html' },
+            {
+              label: 'Ops Project',
+              icon: 'arrow_outward',
+              variant: 'primary',
+              href: 'workspace_project_detail.html?project=hermes-be',
+            },
+          ],
+          heroStats: [
+            { label: 'Storage Used', value: '0.6TB', meta: 'export bundle 중심' },
+            { label: 'Consumers', value: '2', meta: 'ops / finance' },
+            { label: 'Expiry Window', value: '14d', meta: 'download link 기준' },
+            { label: 'Weekly Views', value: '9', meta: '운영/CS 대응' },
+          ],
+          cards: [
+            {
+              title: 'Exposure',
+              desc: '공개 링크가 생성되지만 장기 공개 대신 만료형 다운로드 링크를 사용합니다.',
+              tags: ['export', 'expiring', 'shared'],
+            },
+            {
+              title: 'Flow',
+              desc: 'ops dashboard와 finance job이 번들을 생성해 사용자에게 전달합니다.',
+              tags: ['scheduled', 'download'],
+            },
+            {
+              title: 'Policy',
+              desc: 'PII 포함 가능성이 있어 퍼블릭 캐시보다 만료 정책이 더 중요합니다.',
+              tags: ['expiring url', 'policy'],
+            },
+          ],
+          bindings: [
+            ['ops-dashboard', 'report export', 'expiring URL', '운영 리포트 다운로드'],
+            ['finance-ops', 'scheduled download', 'expiring URL', '정기 정산 리포트 배포'],
+          ],
+          notes: [
+            {
+              title: '영구 공개 지양',
+              meta: '다운로드 목적 버킷이므로 public static asset 모델과 다르게 운영합니다.',
+              side: 'Expire',
+            },
+            {
+              title: '링크 생성 로그 중요',
+              meta: '누가 언제 어떤 번들을 발급했는지 추적이 필요합니다.',
+              side: 'Audit',
+            },
+            {
+              title: '도메인 품질과 연결',
+              meta: '사용자 관점에서는 어떤 route로 내려받는지가 중요합니다.',
+              side: 'UX',
+            },
+          ],
+          relatedLinks: [
+            { title: 'docs domain', meta: '리포트 다운로드가 노출되는 route 확인', side: 'Domain' },
+            {
+              title: 'hermes-be project',
+              meta: 'export api 배포와 백엔드 흐름 확인',
+              side: 'Project',
+            },
+            { title: 'Permission Hub', meta: '민감 보고서 접근 제어 확인', side: 'Access' },
+          ],
+          progress: [
+            { title: 'Capacity', value: '22%', percent: 22, meta: 'current quota 대비 낮은 수준' },
+            { title: 'Expiry Compliance', value: '93%', percent: 93, meta: '만료형 링크 적용률' },
+          ],
+          timeline: [
+            { title: '오늘 08:45 · monthly report export', meta: 'finance bundle 생성 완료' },
+            { title: '6월 13일 · audit log verify', meta: 'download link 발급 이력 점검' },
+            { title: '6월 9일 · expiry preset update', meta: '14일 만료 기본값 적용' },
+          ],
+          facts: [
+            { key: 'Bucket Class', value: 'shared export bucket' },
+            { key: 'Link Policy', value: 'signed expiring URL' },
+            { key: 'Versioning', value: 'enabled' },
+          ],
+        },
+      ];
+
+      window.DETAIL_PAGE_CONFIG = {
+        paramName: 'item',
+        pageTitle: 'Bucket Detail',
+        hubLabel: 'Bucket Hub',
+        hubHref: 'workspace_s3_hub.html',
+        activeHubKey: 's3',
+        eyebrow: 'Storage · Object Plane',
+        searchPlaceholder: '버킷 이름, 바인딩 프로젝트, 정책 메모를 검색하세요...',
+        items: Object.fromEntries(rawItems.map((item) => [item.key, buildItem(item)])),
+      };
+    </script>
+    <script src="workspace_detail_shared.js"></script>
+  </body>
+</html>

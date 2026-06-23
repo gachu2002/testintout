@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chatbot Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    window.HUB_CONFIG = {
+      documentTitle: "Chatbot Hub",
+      activeKey: "chatbot-hub",
+      theme: {
+        bg: "#f2fbff",
+        brand: "#0891b2",
+        brandH: "#0e7490",
+        brandBg: "#d8f3ff",
+        brandSoft: "rgba(8,145,178,.14)",
+        accent2: "#22d3ee"
+      },
+      searchPlaceholder: "챗봇 이름, Bot API, Bot Web을 검색하세요...",
+      eyebrow: "AI · Chat Endpoints",
+      title: "Chatbot Hub",
+      description: "사용자가 실제로 접속하는 챗봇 endpoint와 채널을 모았습니다. Bot API와 Bot Web 두 방식으로 나누어 보고, API는 OpenAI-compatible 표준을 우선하며 Web은 실제 접속 URL을 중심으로 관리합니다.",
+      primaryAction: { href: "workspace_project_detail.html?project=coverity-ai", icon: "add_circle", label: "새 Chatbot 등록" },
+      secondaryAction: { href: "workspace_keycenter_hub.html", icon: "vpn_key", label: "Keycenter 보기" },
+      heroStats: [
+        { icon: "chat", value: "6", label: "등록 Chatbot", note: "Live 4 · Review 2", color: "linear-gradient(135deg,#0891b2,#22d3ee)" },
+        { icon: "api", value: "3", label: "Bot API", note: "OpenAI-compatible 우선", color: "linear-gradient(135deg,#0e7490,#38bdf8)" },
+        { icon: "language", value: "2", label: "Bot Web", note: "portal / hosted page", color: "linear-gradient(135deg,#06b6d4,#67e8f9)" },
+        { icon: "hub", value: "9", label: "Active Channels", note: "web · portal · slack", color: "linear-gradient(135deg,#155e75,#22d3ee)" }
+      ],
+      filters: [
+        { id: "all", icon: "apps", label: "전체" },
+        { id: "api", icon: "api", label: "Bot API" },
+        { id: "web", icon: "language", label: "Bot Web" }
+      ],
+      resourceSectionIcon: "chat",
+      resourceSectionLabel: "Chatbot Fleet",
+      resourceTitle: "Chatbots",
+      resourceDescription: "이 허브에서는 연결 리소스보다 현재 사용자가 접속하게 될 챗봇 URL이 먼저 읽히도록 정리했습니다.",
+      resources: [
+        {
+          categories: ["all", "api"],
+          status: { label: "Live", tone: "healthy" },
+          engine: "Bot API",
+          icon: "api",
+          name: "support-assistant-api",
+          meta: "고객 문의 응답용 OpenAI-compatible chatbot API",
+          color: "linear-gradient(135deg,#2563eb,#06b6d4)",
+          connectionsLabel: "Current URL",
+          connections: [
+            { abbr: "API", name: "https://chat-api.dej.ai/support-assistant", meta: "API Endpoint" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_chatbot_detail.html?item=support-assistant-api" }
+          ]
+        },
+        {
+          categories: ["all", "web"],
+          status: { label: "Live", tone: "healthy" },
+          engine: "Bot Web",
+          icon: "language",
+          name: "docs-guide-widget",
+          meta: "문서 탐색용 hosted chatbot 화면을 직접 연결한 frontend bot",
+          color: "linear-gradient(135deg,#0f766e,#34d399)",
+          connectionsLabel: "Current URL",
+          connections: [
+            { abbr: "WEB", name: "https://docs.dej.ai/chatbot/guide-widget", meta: "Bot Web URL" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_chatbot_detail.html?item=docs-guide-widget" }
+          ]
+        },
+        {
+          categories: ["all", "web"],
+          status: { label: "Live", tone: "healthy" },
+          engine: "Bot Web",
+          icon: "device_hub",
+          name: "ops-briefing-bot",
+          meta: "API와 Slack 채널을 함께 운영하는 운영 브리핑 chatbot",
+          color: "linear-gradient(135deg,#7c3aed,#22d3ee)",
+          connectionsLabel: "Current URL",
+          connections: [
+            { abbr: "URL", name: "https://ops.dej.ai/bots/briefing", meta: "Primary Landing URL" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_chatbot_detail.html?item=ops-briefing-bot" }
+          ]
+        },
+        {
+          categories: ["all", "api"],
+          status: { label: "Review", tone: "review" },
+          engine: "Bot API",
+          icon: "smart_toy",
+          name: "pricing-advisor-bot",
+          meta: "외부 파트너용 상담 봇으로 custom response mapping 검토 중",
+          color: "linear-gradient(135deg,#f59e0b,#f97316)",
+          connectionsLabel: "Current URL",
+          connections: [
+            { abbr: "API", name: "https://partner-api.dej.ai/pricing-advisor", meta: "Custom API Endpoint" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_chatbot_detail.html?item=pricing-advisor-bot" }
+          ]
+        }
+      ],
+      mainPanels: [
+        {
+          icon: "tips_and_updates",
+          label: "Registration",
+          title: "등록 모델",
+          description: "챗봇은 Bot API 방식과 Bot Web 방식을 함께 받아야 합니다. API는 OpenAI-compatible를 기본 표준으로 두고, Web은 실제 접속 URL을 기준으로 관리합니다.",
+          rows: [
+            { title: "Bot API는 OpenAI-compatible를 우선합니다", meta: "gateway, logging, playground, evaluator를 공통화하기 쉽습니다." },
+            { title: "Bot Web은 접속 URL을 기준으로 봅니다", meta: "호출 표준보다 SSO, iframe 허용, 공개 범위, landing 품질이 중요합니다." },
+            { title: "한 챗봇이 여러 channel을 가질 수 있습니다", meta: "web, portal, Slack, API를 같은 봇 자산 아래에서 관리하는 모델이 적합합니다." }
+          ],
+          footerLink: { href: "workspace_tool_inventory_hub.html", label: "Tool Inventory 보기" }
+        },
+        {
+          icon: "menu_book",
+          label: "Guide Links",
+          title: "연결 허브",
+          description: "챗봇은 대화형 surface이지만, 뒤에서는 agent runtime, tool inventory, key pool을 함께 참조합니다.",
+          rows: [
+            { title: "Agent Hub", meta: "챗봇 뒤에서 orchestration을 담당하는 runtime을 확인합니다.", href: "workspace_agent_hub.html" },
+            { title: "Tool Inventory", meta: "챗봇이 호출하는 connected tool asset을 확인합니다.", href: "workspace_tool_inventory_hub.html" },
+            { title: "Keycenter", meta: "API bot과 widget bot이 참조하는 provider key와 gateway를 확인합니다.", href: "workspace_keycenter_hub.html" }
+          ],
+          footerLink: { href: "portal_launchpad.html", label: "런치패드로 돌아가기" }
+        }
+      ],
+      sidebarPanels: [
+        {
+          icon: "publish",
+          label: "Publish Queue",
+          title: "현재 등록 상태",
+          description: "신규 챗봇 등록과 검토 중인 endpoint를 우측에서 빠르게 확인합니다.",
+          rows: [
+            { title: "support-assistant-api", meta: "Bot API", pill: { label: "Live", tone: "healthy" } },
+            { title: "docs-guide-widget", meta: "Bot Web", pill: { label: "Live", tone: "healthy" } },
+            { title: "ops-briefing-bot", meta: "Bot Web", pill: { label: "Live", tone: "healthy" } },
+            { title: "pricing-advisor-bot", meta: "Bot API", pill: { label: "Review", tone: "review" } }
+          ]
+        }
+      ]
+    };
+  </script>
+  <script src="workspace_resource_hub_shared.js"></script>
+  <script src="ax_studio_topbar.js"></script>
+  <script src="concept_endpoint_overlay.js"></script>
+</body>
+</html>

@@ -1,0 +1,2972 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Database Detail</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <style>
+    :root {
+      --bg:#edf4ff;
+      --surface:#ffffff;
+      --surface-soft:#fbfcfe;
+      --surface-deep:#0f172a;
+      --border:#e7ebf0;
+      --border-strong:#d5dbe4;
+      --text:#202631;
+      --muted:#5c6675;
+      --subtle:#8a93a2;
+      --good:#0f766e;
+      --good-bg:#d9fbf1;
+      --warn:#d97706;
+      --warn-bg:#fff2d8;
+      --danger:#b91c1c;
+      --danger-bg:#fee2e2;
+      --max:1360px;
+      --nav-max:1520px;
+      --radius:22px;
+      --shadow:0 18px 40px rgba(15,23,42,.08);
+      --shadow-soft:0 10px 24px rgba(15,23,42,.05);
+      --brand:#2563eb;
+      --brand-bg:#cfe2ff;
+      --brand-soft:rgba(37,99,235,.18);
+      --accent:#06b6d4;
+      --border-2:#d5dbe4;
+      --t1:#202631;
+      --t2:#5c6675;
+      --t3:#8a93a2;
+      --purple:#7c5fcf;
+    }
+
+    * { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body {
+      font-family:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height:100vh;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, var(--brand-soft), transparent 28%),
+        radial-gradient(circle at top right, rgba(6,182,212,.10), transparent 24%),
+        linear-gradient(180deg, #f7f9fc 0%, var(--bg) 100%);
+      -webkit-font-smoothing:antialiased;
+    }
+    a { color:inherit; text-decoration:none; }
+    button { font:inherit; cursor:pointer; }
+
+    .topbar {
+      position:sticky;
+      top:0;
+      z-index:200;
+      height:56px;
+      background:var(--surface);
+      border-bottom:1px solid var(--border);
+    }
+    .topbar-inner {
+      max-width:var(--nav-max);
+      height:100%;
+      margin:0 auto;
+      padding:0 24px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      position:relative;
+    }
+    .topbar-brand {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-shrink:0;
+      padding-right:2px;
+    }
+    .brand-mark {
+      width:40px;
+      height:24px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .brand-mark img { width:35px; height:20px; display:block; }
+    .brand-name {
+      font-size:15px;
+      font-weight:800;
+      letter-spacing:-.35px;
+      white-space:nowrap;
+    }
+    .logo-menu {
+      flex-shrink:0;
+      display:flex;
+      align-items:center;
+    }
+    .menu-trigger {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      height:40px;
+      padding:0 11px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#fbfcfe;
+      font-size:13px;
+      font-weight:700;
+      color:var(--t1);
+      transition:background .15s, box-shadow .15s;
+    }
+    .menu-trigger:hover,
+    .logo-menu.is-open .menu-trigger {
+      background:var(--bg);
+      box-shadow:inset 0 0 0 1px var(--border);
+    }
+    .menu-trigger .material-icons-round:first-child {
+      font-size:18px;
+      color:var(--t2);
+    }
+    .menu-caret {
+      font-size:18px;
+      color:var(--t3);
+      transition:transform .18s ease, color .15s ease;
+    }
+    .logo-menu.is-open .menu-caret {
+      transform:rotate(180deg);
+      color:var(--brand);
+    }
+    .service-popover {
+      position:fixed;
+      left:0;
+      top:56px;
+      width:100vw;
+      background:linear-gradient(180deg, rgba(247,248,251,.98) 0%, rgba(243,245,249,.98) 100%);
+      border-top:1px solid rgba(235,237,240,.9);
+      border-bottom:1px solid var(--border);
+      box-shadow:0 18px 36px rgba(15,23,42,.08);
+      padding:18px 0 20px;
+      z-index:240;
+    }
+    .service-popover[hidden] { display:none; }
+    .service-popover-inner {
+      max-width:var(--nav-max);
+      margin:0 auto;
+      padding:0 24px;
+    }
+    .service-groups {
+      display:grid;
+      grid-template-columns:repeat(6, minmax(0, 1fr));
+    }
+    .service-group {
+      min-width:0;
+      padding:0 30px;
+    }
+    .service-group + .service-group { border-left:1px solid var(--border); }
+    .service-group-title {
+      font-size:15px;
+      font-weight:700;
+      margin-bottom:18px;
+    }
+    .service-links { display:grid; gap:18px; }
+    .service-link {
+      display:grid;
+      grid-template-columns:18px minmax(0, 1fr);
+      gap:10px;
+      padding:7px 10px;
+      margin:0 -10px;
+      border-radius:10px;
+      font-size:13px;
+      font-weight:600;
+      transition:background .15s ease, color .15s ease;
+    }
+    .service-link:hover {
+      background:rgba(255,255,255,.84);
+      color:var(--brand);
+    }
+    .service-link.is-current {
+      background:rgba(255,255,255,.84);
+      color:var(--brand);
+      box-shadow:inset 0 0 0 1px rgba(37,99,235,.08);
+    }
+    .service-link-icon {
+      font-size:17px;
+      color:var(--t2);
+      margin-top:2px;
+    }
+    .service-link:hover .service-link-icon,
+    .service-link.is-current .service-link-icon { color:var(--brand); }
+    .service-link-copy { display:grid; gap:4px; min-width:0; }
+    .service-link-desc {
+      font-size:12px;
+      line-height:1.45;
+      color:var(--t2);
+      font-weight:400;
+    }
+    .service-link:hover .service-link-desc,
+    .service-link.is-current .service-link-desc { color:var(--t1); }
+    .service-outlinks {
+      position:relative;
+      left:50%;
+      width:100vw;
+      box-sizing:border-box;
+      margin:16px 0 -20px;
+      padding:9px max(24px, calc((100vw - var(--nav-max)) / 2 + 24px)) 10px;
+      transform:translateX(-50%);
+      border-top:1px solid rgba(15,23,42,.10);
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      flex-wrap:wrap;
+      gap:10px;
+      background:rgba(248,250,252,.72);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+    }
+    .service-outlinks-title {
+      color:var(--t3);
+      font-size:10px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      opacity:.72;
+    }
+    .service-outlink-list {
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      flex-wrap:wrap;
+      gap:0;
+    }
+    .service-outlink {
+      min-width:0;
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      padding:3px 8px;
+      color:var(--t2);
+      text-decoration:none;
+      font-size:12px;
+      font-weight:600;
+      transition:color .15s ease;
+    }
+    .service-outlink + .service-outlink {
+      border-left:1px solid var(--border);
+    }
+    .service-outlink:hover {
+      color:var(--brand);
+    }
+    .service-outlink-icon,
+    .service-outlink-arrow {
+      color:currentColor;
+      font-size:13px;
+      opacity:.48;
+      transition:opacity .15s ease;
+    }
+    .service-outlink:hover .service-outlink-icon,
+    .service-outlink:hover .service-outlink-arrow {
+      opacity:.8;
+    }
+    .service-outlink-copy {
+      min-width:0;
+      display:inline-flex;
+      align-items:center;
+    }
+    .service-outlink-title {
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .service-outlink-desc {
+      display:none;
+    }
+    .search-wrap {
+      flex:1;
+      max-width:440px;
+      min-width:0;
+      position:relative;
+    }
+    .search-wrap .ico {
+      position:absolute;
+      left:13px;
+      top:50%;
+      transform:translateY(-50%);
+      font-size:17px;
+      color:var(--t3);
+      pointer-events:none;
+    }
+    .search-input {
+      width:100%;
+      height:36px;
+      border:1.5px solid var(--border);
+      border-radius:20px;
+      padding:0 72px 0 38px;
+      background:var(--bg);
+      outline:none;
+      font-size:13px;
+      color:var(--t1);
+      transition:border .15s, box-shadow .15s;
+    }
+    .search-input:focus {
+      border-color:var(--brand);
+      background:var(--surface);
+      box-shadow:0 0 0 3px rgba(37,99,235,.08);
+    }
+    .search-ai {
+      position:absolute;
+      right:12px;
+      top:50%;
+      transform:translateY(-50%);
+      height:22px;
+      padding:0 7px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      gap:3px;
+      background:linear-gradient(135deg, #f6f0ff 0%, #eef4ff 100%);
+      border:1px solid rgba(124,95,207,.18);
+      font-size:10px;
+      font-weight:700;
+      color:var(--purple);
+      letter-spacing:.02em;
+      pointer-events:none;
+    }
+    .search-ai .material-icons-round { font-size:12px; }
+    .tb-spacer { flex:1; }
+    .tb-icon {
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--t2);
+      position:relative;
+    }
+    .tb-icon:hover { background:var(--bg); }
+    .tb-icon .material-icons-round { font-size:20px; }
+    .tb-icon .dot {
+      position:absolute;
+      top:5px;
+      right:5px;
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:var(--brand);
+      border:2px solid var(--surface);
+    }
+    .avatar {
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      background:var(--brand);
+      color:#fff;
+      font-size:12px;
+      font-weight:600;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+
+    .page {
+      max-width:var(--max);
+      margin:0 auto;
+      padding:28px 24px 44px;
+      display:grid;
+      gap:22px;
+    }
+    .breadcrumbs {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+      font-size:12px;
+      color:var(--subtle);
+    }
+    .breadcrumbs a {
+      color:var(--muted);
+      font-weight:700;
+    }
+    .breadcrumbs .material-icons-round {
+      font-size:15px;
+      color:#bcc6d4;
+    }
+    .panel {
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow-soft);
+    }
+    .hero {
+      overflow:hidden;
+      position:relative;
+      padding:28px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.96), rgba(248,251,255,.92)),
+        linear-gradient(135deg, var(--brand-soft), rgba(6,182,212,.06));
+    }
+    .hero::after {
+      content:"";
+      position:absolute;
+      right:-80px;
+      top:-90px;
+      width:280px;
+      height:280px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(37,99,235,.12) 0%, rgba(37,99,235,0) 68%);
+      pointer-events:none;
+    }
+    .hero-top {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:20px;
+      margin-bottom:22px;
+    }
+    .eyebrow {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:14px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .hero-title-row {
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .hero-title {
+      font-size:34px;
+      font-weight:800;
+      letter-spacing:-.04em;
+    }
+    .pill {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:7px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      border:1px solid transparent;
+      white-space:nowrap;
+    }
+    .pill.status-healthy { color:var(--good); background:var(--good-bg); }
+    .pill.status-warning { color:var(--warn); background:var(--warn-bg); }
+    .pill.status-danger { color:var(--danger); background:var(--danger-bg); }
+    .pill.engine { color:var(--brand); background:var(--brand-bg); }
+    .hero-desc {
+      max-width:760px;
+      color:var(--muted);
+      line-height:1.65;
+      font-size:15px;
+    }
+    .hero-actions {
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      gap:10px;
+    }
+    .action-btn {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      height:42px;
+      padding:0 16px;
+      border-radius:14px;
+      border:1px solid transparent;
+      font-size:13px;
+      font-weight:800;
+      transition:.16s ease;
+    }
+    .action-btn.primary {
+      background:linear-gradient(135deg,var(--brand),#1d4ed8);
+      color:#fff;
+      box-shadow:0 14px 28px rgba(37,99,235,.22);
+    }
+    .action-btn.secondary {
+      background:#fff;
+      border-color:var(--border);
+      color:var(--text);
+    }
+    .action-btn:hover { transform:translateY(-1px); }
+    .hero-stats {
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      gap:14px;
+    }
+    .stat-card {
+      padding:18px;
+      border-radius:18px;
+      background:rgba(255,255,255,.86);
+      border:1px solid rgba(231,235,240,.96);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.65);
+    }
+    .stat-label {
+      color:var(--subtle);
+      font-size:12px;
+      font-weight:700;
+      margin-bottom:8px;
+    }
+    .stat-value {
+      font-size:27px;
+      font-weight:800;
+      letter-spacing:-.04em;
+      margin-bottom:5px;
+    }
+    .stat-value small {
+      margin-left:4px;
+      font-size:14px;
+      font-weight:700;
+      color:var(--muted);
+    }
+    .stat-meta {
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    .layout {
+      display:grid;
+      grid-template-columns:1fr;
+      gap:22px;
+      align-items:start;
+    }
+    .main-col,
+    .side-col {
+      display:grid;
+      gap:22px;
+    }
+    .section {
+      padding:24px;
+    }
+    .section-head {
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:flex-start;
+      margin-bottom:20px;
+    }
+    .section-kicker {
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      margin-bottom:8px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+    .section-title {
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      margin-bottom:6px;
+    }
+    .section-desc {
+      color:var(--muted);
+      line-height:1.6;
+      font-size:14px;
+    }
+    .section-link {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      color:var(--brand);
+      font-size:13px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .usage-grid {
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:18px;
+    }
+    .usage-card {
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:var(--surface-soft);
+      padding:20px;
+    }
+    .usage-head {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .usage-name {
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    .usage-meta {
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+      margin-top:4px;
+    }
+    .usage-value {
+      font-size:28px;
+      font-weight:800;
+      letter-spacing:-.04em;
+      text-align:right;
+    }
+    .usage-track {
+      height:14px;
+      border-radius:999px;
+      background:#e8edf5;
+      overflow:hidden;
+      margin-bottom:12px;
+    }
+    .usage-fill {
+      height:100%;
+      border-radius:inherit;
+      background:linear-gradient(90deg,var(--brand),var(--accent));
+    }
+    .usage-legend {
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+    }
+    .mini-stats {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:12px;
+      margin-top:16px;
+    }
+    .mini-stat {
+      padding:14px;
+      border-radius:16px;
+      background:#fff;
+      border:1px solid var(--border);
+    }
+    .mini-stat-label {
+      color:var(--subtle);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+    .mini-stat-value {
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      margin-bottom:4px;
+    }
+    .mini-stat-meta {
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    .trend-chart {
+      display:flex;
+      align-items:flex-end;
+      gap:8px;
+      height:162px;
+      padding:14px 6px 6px;
+    }
+    .trend-bar-wrap {
+      flex:1;
+      min-width:0;
+      display:grid;
+      justify-items:center;
+      gap:8px;
+    }
+    .trend-bar {
+      width:100%;
+      max-width:34px;
+      border-radius:14px 14px 10px 10px;
+      background:linear-gradient(180deg, rgba(37,99,235,.28), rgba(6,182,212,.88));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.45);
+    }
+    .trend-label {
+      color:var(--subtle);
+      font-size:11px;
+      font-weight:700;
+    }
+    .trend-summary {
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      margin-top:14px;
+      padding-top:14px;
+      border-top:1px dashed var(--border-strong);
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .section-card-spacer {
+      margin-top:18px;
+    }
+    .peak-grid {
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:12px;
+    }
+    .peak-card {
+      padding:14px;
+      border-radius:16px;
+      background:#fff;
+      border:1px solid var(--border);
+    }
+    .peak-label {
+      color:var(--subtle);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+    .peak-value {
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      margin-bottom:4px;
+    }
+    .peak-meta {
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    .project-list,
+    .event-list,
+    .kv-list,
+    .checkpoint-list,
+    .member-list,
+    .snapshot-list {
+      display:grid;
+      gap:12px;
+    }
+    .project-card,
+    .event-row,
+    .checkpoint-row,
+    .member-row,
+    .snapshot-row {
+      display:grid;
+      gap:12px;
+      padding:16px 18px;
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:var(--surface-soft);
+    }
+    .project-card {
+      grid-template-columns:minmax(0,1fr) auto;
+      align-items:center;
+    }
+    .project-main {
+      min-width:0;
+      display:grid;
+      gap:7px;
+    }
+    .project-top {
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:10px;
+    }
+    .project-name {
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    .project-meta,
+    .event-meta,
+    .checkpoint-meta {
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .project-tags {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .tag {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--border);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+    }
+    .project-side {
+      display:grid;
+      gap:8px;
+      justify-items:end;
+      text-align:right;
+    }
+    .tiny-label {
+      color:var(--subtle);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+    }
+    .tiny-value {
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    .project-link {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      color:var(--brand);
+      font-size:12px;
+      font-weight:800;
+    }
+    .console-binding-card {
+      grid-template-columns:minmax(0,1fr) auto;
+      align-items:center;
+    }
+    .console-binding-side {
+      display:grid;
+      gap:8px;
+      justify-items:end;
+      text-align:right;
+    }
+    .console-binding-status {
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    .console-workbench {
+      display:grid;
+      gap:14px;
+      margin-bottom:18px;
+    }
+    .console-launch-card {
+      display:grid;
+      gap:10px;
+      padding:18px;
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:linear-gradient(180deg, #fcfdff, #f7fbff);
+    }
+    .console-launch-top {
+      display:flex;
+      justify-content:flex-start;
+      gap:8px;
+      align-items:flex-start;
+    }
+    .console-launch-title {
+      font-size:15px;
+      font-weight:800;
+      letter-spacing:-.02em;
+      margin-bottom:4px;
+    }
+    .console-launch-meta {
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+    .console-mode-group {
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    .console-mode-btn {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      height:32px;
+      padding:0 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--muted);
+      font-size:11px;
+      font-weight:800;
+    }
+    .console-mode-btn.active {
+      border-color:rgba(37,99,235,.28);
+      background:var(--brand-bg);
+      color:var(--brand);
+    }
+    .console-launch-actions {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+    }
+    .console-launch-status {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      height:32px;
+      padding:0 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--muted);
+      font-size:11px;
+      font-weight:800;
+    }
+    .console-terminal {
+      min-height:280px;
+      padding:18px;
+      border-radius:16px;
+      background:#0f172a;
+      color:#dbeafe;
+      border:1px solid rgba(15,23,42,.16);
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size:13px;
+      line-height:1.7;
+      white-space:pre-wrap;
+      word-break:break-word;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+    }
+
+    .access-grid,
+    .ops-grid {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:18px;
+    }
+    .card {
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:var(--surface-soft);
+      padding:18px;
+    }
+    .card-title {
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.02em;
+      margin-bottom:12px;
+    }
+    .kv-item {
+      display:grid;
+      grid-template-columns:110px minmax(0,1fr);
+      gap:12px;
+      padding:10px 0;
+      border-bottom:1px dashed var(--border);
+      align-items:center;
+    }
+    .kv-item:last-child { border-bottom:none; padding-bottom:0; }
+    .kv-key {
+      color:var(--subtle);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+    .kv-value {
+      min-width:0;
+      color:var(--text);
+      font-size:13px;
+      line-height:1.6;
+      word-break:break-word;
+    }
+    .mono {
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size:12px;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:3px 8px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      width:max-content;
+      max-width:100%;
+    }
+    .masked {
+      letter-spacing:.12em;
+    }
+
+    .console-list {
+      display:grid;
+      gap:10px;
+      margin-top:14px;
+    }
+    .console-chip {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 14px;
+      border-radius:14px;
+      background:#fff;
+      border:1px solid var(--border);
+    }
+    .console-name {
+      font-size:13px;
+      font-weight:800;
+    }
+    .console-meta {
+      color:var(--muted);
+      font-size:12px;
+      margin-top:3px;
+    }
+
+    .event-row {
+      grid-template-columns:auto 1fr auto;
+      align-items:center;
+      background:#fff;
+    }
+    .event-icon {
+      width:38px;
+      height:38px;
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      background:var(--brand-bg);
+      color:var(--brand);
+    }
+    .event-title {
+      font-size:14px;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+    .event-time {
+      color:var(--subtle);
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+
+    .checkpoint-row {
+      background:#fff;
+    }
+    .checkpoint-top {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:6px;
+    }
+    .checkpoint-title {
+      font-size:14px;
+      font-weight:800;
+    }
+    .member-row,
+    .snapshot-row {
+      background:#fff;
+    }
+    .member-top,
+    .snapshot-top {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:6px;
+    }
+    .member-title,
+    .snapshot-title {
+      font-size:14px;
+      font-weight:800;
+    }
+    .member-meta,
+    .snapshot-meta {
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .member-extra,
+    .snapshot-extra {
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      margin-top:8px;
+      color:var(--subtle);
+      font-size:12px;
+      font-weight:700;
+    }
+    .card-head {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .card-head .card-title {
+      margin-bottom:6px;
+    }
+    .card-desc {
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .inline-btn {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      height:38px;
+      padding:0 14px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--text);
+      font-size:12px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .inline-btn:hover {
+      border-color:var(--border-strong);
+      background:#f8fbff;
+    }
+    .inline-btn:disabled {
+      opacity:.72;
+      cursor:default;
+      background:#f3f4f6;
+      border-color:var(--border);
+    }
+    .snapshot-manage {
+      display:grid;
+      gap:14px;
+    }
+    .snapshot-action-card {
+      display:grid;
+      gap:10px;
+      padding:16px 18px;
+      border-radius:18px;
+      border:1px solid rgba(37,99,235,.18);
+      background:linear-gradient(135deg, rgba(219,234,254,.85), rgba(240,249,255,.92));
+    }
+    .snapshot-action-title {
+      font-size:14px;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+    .snapshot-action-meta {
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .snapshot-badges {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .snapshot-policy-grid {
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:12px;
+    }
+    .snapshot-top-right {
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      gap:8px;
+    }
+    .snapshot-rotation-note {
+      color:var(--subtle);
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .side-summary {
+      padding:22px;
+      border-radius:22px;
+      color:#e5eefc;
+      background:
+        linear-gradient(160deg, rgba(8,47,73,.98), rgba(30,41,59,.98)),
+        linear-gradient(135deg,var(--brand),var(--accent));
+      box-shadow:var(--shadow);
+    }
+    .side-summary .section-kicker,
+    .side-summary .section-desc { color:rgba(226,232,240,.84); }
+    .summary-value {
+      font-size:42px;
+      font-weight:800;
+      letter-spacing:-.05em;
+      margin:12px 0 8px;
+    }
+    .summary-value small {
+      font-size:18px;
+      font-weight:700;
+      opacity:.78;
+    }
+    .summary-blocks {
+      display:grid;
+      gap:12px;
+      margin-top:18px;
+    }
+    .summary-block {
+      padding:14px 15px;
+      border-radius:16px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .summary-block-label {
+      color:rgba(226,232,240,.7);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+      margin-bottom:5px;
+    }
+    .summary-block-value {
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      margin-bottom:4px;
+    }
+    .summary-block-meta {
+      color:rgba(226,232,240,.82);
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    @media (max-width: 1120px) {
+      .service-groups { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+      .service-group:nth-child(odd) { border-right:1px solid var(--border); }
+      .service-group:nth-child(n + 3) {
+        border-top:1px solid var(--border);
+        padding-top:18px;
+      }
+      .service-group + .service-group { border-left:none; }
+      .layout,
+      .usage-grid,
+      .access-grid,
+      .ops-grid {
+        grid-template-columns:1fr;
+      }
+      .peak-grid {
+        grid-template-columns:1fr;
+      }
+      .snapshot-policy-grid {
+        grid-template-columns:1fr;
+      }
+      .hero-stats {
+        grid-template-columns:repeat(2, minmax(0,1fr));
+      }
+    }
+    @media (max-width: 760px) {
+      .page { padding:18px 16px 32px; }
+      .search-ai { display:none; }
+      .hero,
+      .section,
+      .side-summary { padding:20px; }
+      .hero-top,
+      .section-head,
+      .project-card,
+      .event-row,
+      .console-binding-card,
+      .console-launch-top {
+        grid-template-columns:1fr;
+        display:grid;
+      }
+      .card-head {
+        flex-direction:column;
+      }
+      .hero-actions,
+      .project-side,
+      .console-binding-side {
+        justify-content:flex-start;
+        text-align:left;
+      }
+      .hero-title { font-size:28px; }
+      .hero-stats { grid-template-columns:1fr; }
+      .kv-item { grid-template-columns:1fr; gap:7px; }
+      .member-extra,
+      .snapshot-extra {
+        flex-direction:column;
+      }
+      .topbar-inner { padding:0 16px; }
+      .service-groups { grid-template-columns:1fr; }
+      .service-group {
+        padding:16px 18px;
+        border-right:none;
+        border-top:1px solid var(--border);
+      }
+      .service-group:first-child { border-top:none; }
+      .service-popover { top:56px; padding:14px 0 16px; }
+      .service-popover-inner { padding:0 16px; }
+      .service-outlinks {
+        margin:14px 0 -16px;
+        padding:9px 16px;
+        justify-content:flex-start;
+        gap:8px;
+      }
+      .service-outlink-list { justify-content:flex-start; }
+      .service-outlink { padding:3px 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    (() => {
+      const logoDataUrl = "data:image/svg+xml,%3csvg%20width='35'%20height='20'%20viewBox='0%200%2035%2020'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M16.7961%2010.1421L21.022%2014.368C23.4543%2016.8004%2027.398%2016.8004%2029.8303%2014.368C32.2627%2011.9356%2032.2627%207.99197%2029.8303%205.5596C27.398%203.12723%2023.4543%203.12723%2021.022%205.5596L20.723%205.85861L18.7019%203.83756L19.0009%203.53856C22.5495%20-0.0100035%2028.3028%20-0.0100042%2031.8514%203.53856C35.4%207.08712%2035.4%2012.8405%2031.8514%2016.389C28.3028%2019.9376%2022.5495%2019.9376%2019.0009%2016.389L12.5757%209.96379L14.5948%207.9447L16.7941%2010.144L16.7961%2010.1421ZM17.6605%208.92103L19.6782%206.90332L17.6572%204.88228L15.6395%206.89998L17.6605%208.92103Z'%20fill='%236D6E72'/%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M14.3637%205.63217L18.6416%209.91016L18.6428%209.90899L20.7901%2012.0562L22.8099%2010.0364L16.3847%203.61113C12.8361%200.0625671%207.08278%200.0625666%203.53422%203.61113C-0.0143374%207.15969%20-0.0143374%2012.913%203.53422%2016.4616C7.08278%2020.0102%2012.8361%2020.0102%2016.3847%2016.4616L16.6801%2016.1662L14.6591%2014.1452L14.3637%2014.4406C11.9313%2016.8729%207.98764%2016.8729%205.55527%2014.4406C3.1229%2012.0082%203.1229%208.06454%205.55527%205.63217C7.98764%203.1998%2011.9313%203.1998%2014.3637%205.63217ZM15.7038%2013.1004L17.7248%2015.1215L19.7453%2013.101L17.7243%2011.0799L15.7038%2013.1004Z'%20fill='%23A50034'/%3e%3crect%20x='15.376'%20y='12.7714'%20width='2.85369'%20height='5.21909'%20transform='rotate(-45%2015.376%2012.7714)'%20fill='%236D6E72'/%3e%3c/svg%3e";
+
+      const dbCatalog = {
+        "hermes-main-postgres": {
+          theme: { bg: "#edf4ff", brand: "#2563eb", brandBg: "#cfe2ff", brandSoft: "rgba(37,99,235,.18)", accent: "#06b6d4" },
+          statusTone: "healthy",
+          statusLabel: "Running",
+          eyebrow: "Storage · Database Detail",
+          engineLabel: "PostgreSQL 15 · Primary OLTP",
+          title: "hermes-main-postgres",
+          description: "주요 주문/결제 트랜잭션과 운영 백오피스가 함께 붙는 메인 PostgreSQL 리소스입니다. 사용량과 연결 프로젝트 영향 범위를 먼저 확인하고, 접속은 운영 정책에 맞춰 read-only 또는 admin endpoint로 나누어 접근합니다.",
+          actions: [
+            { label: "Database Hub", icon: "arrow_back", href: "workspace_database_hub.html" },
+            { label: "PG Admin 열기", icon: "open_in_new", href: "workspace_tools_hub.html" }
+          ],
+          heroStats: [
+            { label: "Storage Used", value: "2.84", suffix: "TB", meta: "3.60 TB quota 중 78.9%" },
+            { label: "Peak Connections", value: "186", suffix: "", meta: "지난 24시간 max · limit 240" },
+            { label: "Connected Projects", value: "3", suffix: "", meta: "primary 1 · worker 1 · readonly 1" },
+            { label: "7d Growth", value: "+148", suffix: "GB", meta: "주간 데이터 순증" }
+          ],
+          runtime: {
+            heroLastAccess: { value: "오늘 20:18", meta: "hermes-be · primary write" },
+            heroCluster: { value: "3", meta: "primary 1 · replica 2" },
+            overview: [
+              { key: "Last Accessed", value: "2026-06-11 20:18 KST" },
+              { key: "Access Path", value: "hermes-be · primary writer endpoint" },
+              { key: "Namespace", value: "postgres" },
+              { key: "Cluster Mode", value: "Patroni primary + 2 replicas" },
+              { key: "Failover", value: "자동 failover enabled" },
+              { key: "Last Failover Test", value: "2026-06-05 02:30 KST" }
+            ],
+            members: [
+              { name: "hermes-main-postgres-0", role: "Primary", pill: { label: "Primary", tone: "healthy" }, meta: "az-a · Patroni leader", usage: "CPU peak 74% · Memory peak 52 GB", storage: "PVC 3.60 TB · used 2.84 TB" },
+              { name: "hermes-main-postgres-1", role: "Replica", pill: { label: "Replica", tone: "healthy" }, meta: "az-b · read traffic 분산", usage: "CPU peak 58% · Memory peak 43 GB", storage: "replica lag 11s" },
+              { name: "hermes-main-postgres-2", role: "Replica", pill: { label: "Replica", tone: "healthy" }, meta: "az-c · failover candidate", usage: "CPU peak 55% · Memory peak 41 GB", storage: "base backup sync 정상" }
+            ]
+          },
+          summary: {
+            label: "Usage Focus",
+            kicker: "이번 주 저장소 증가율이 높습니다",
+            value: "78.9",
+            unit: "% used",
+            description: "WAL 증가와 order_history 테이블 적재량이 같이 올라오는 패턴입니다. 이번 주는 스토리지보다 connection saturation과 vacuum 여유율을 같이 보는 편이 안전합니다.",
+            blocks: [
+              { label: "Write Pressure", value: "High", meta: "18:00~22:00 KST 구간 TPS 상승" },
+              { label: "Backup Window", value: "02:10 KST", meta: "PITR 14일 보관 · 최근 성공 6월 11일" },
+              { label: "Failover Readiness", value: "Replica Lag 11s", meta: "archive-read replica 정상 추종 중" }
+            ]
+          },
+          usage: {
+            primary: {
+              name: "스토리지 사용량",
+              meta: "data 2.41 TB · index 342 GB · WAL 116 GB",
+              percent: 78.9,
+              value: "2.84 TB / 3.60 TB",
+              legendLeft: "Free 760 GB",
+              legendRight: "이번 주 +148 GB"
+            },
+            secondary: {
+              name: "주간 성장 추이",
+              meta: "배치 적재와 월말 정산 테이블 증가가 반영된 수치",
+              bars: [
+                { label: "Thu", value: 58 },
+                { label: "Fri", value: 61 },
+                { label: "Sat", value: 56 },
+                { label: "Sun", value: 60 },
+                { label: "Mon", value: 72 },
+                { label: "Tue", value: 79 },
+                { label: "Wed", value: 88 }
+              ],
+              summaryLeft: "7일 평균 +21.1 GB/day",
+              summaryRight: "가장 큰 증가: `order_history` 파티션"
+            },
+            miniStats: [
+              { label: "CPU", value: "61%", meta: "vacuum 시점 74% 피크" },
+              { label: "Memory", value: "47 GB", meta: "shared buffers 16 GB" },
+              { label: "TPS", value: "2,480/s", meta: "최근 1시간 평균" },
+              { label: "Slow Query", value: "4.2%", meta: "500ms 이상 비율" }
+            ]
+          },
+          peakUsage: [
+            { label: "CPU Peak", value: "74%", meta: "오늘 19:42 · settlement batch와 vacuum 동시 구간" },
+            { label: "Memory Peak", value: "52 GB", meta: "7일 max · quota 64 GB 대비 81.3%" },
+            { label: "Storage Peak", value: "2.84 TB", meta: "최근 24시간 max · quota 3.60 TB 대비 78.9%" }
+          ],
+          access: {
+            overview: [
+              { key: "Primary Host", value: "postgres.hermes.svc.cluster.local" },
+              { key: "Read-only Host", value: "postgres-ro.hermes.svc.cluster.local" },
+              { key: "Port", value: "5432 / TLS required" },
+              { key: "Database", value: "hermes_prod" },
+              { key: "Schema", value: "public, billing, reporting" },
+              { key: "Secret Ref", value: "vault://workspace/db/hermes-main-postgres" }
+            ],
+            credentials: [
+              { key: "Writer User", value: "hermes_app_rw" },
+              { key: "Reader User", value: "hermes_ops_ro" },
+              { key: "Password", value: "•••••••••••• rotated 2026-05-28" },
+              { key: "SSL Mode", value: "verify-full" },
+              { key: "Allowed CIDR", value: "10.44.0.0/16, 10.88.4.0/24" },
+              { key: "CLI Example", value: "psql \"host=postgres-ro.hermes.svc.cluster.local port=5432 dbname=hermes_prod user=hermes_ops_ro sslmode=verify-full\"" }
+            ],
+            consoles: [
+              { name: "PG Admin", meta: "schema 조회 · role 관리 · explain plan" },
+              { name: "Read Replica Query Pad", meta: "readonly 분석 쿼리 전용" }
+            ]
+          },
+          bindings: [
+            {
+              name: "hermes-be",
+              href: "workspace_project_detail.html?project=hermes-be",
+              role: "Primary App",
+              meta: "주요 주문/결제 API · write/read 모두 사용",
+              tags: ["RW user `hermes_app_rw`", "Pool 60", "critical path"],
+              traffic: "1.8k rpm",
+              deployment: "배포 2시간 전"
+            },
+            {
+              name: "ops-worker",
+              href: "workspace_project_detail.html?project=hermes-be",
+              role: "Batch / Cron",
+              meta: "정산 배치와 리포트 materialize 작업이 연결됨",
+              tags: ["RW user `hermes_batch_rw`", "Pool 24", "nightly heavy write"],
+              traffic: "320 jobs/day",
+              deployment: "배포 어제"
+            },
+            {
+              name: "ops-admin",
+              href: "workspace_project_detail.html?project=hermes-be",
+              role: "Read-only Admin",
+              meta: "운영 조회, 장애 대응용 백오피스",
+              tags: ["RO user `hermes_ops_ro`", "Pool 12", "audited access"],
+              traffic: "64 sessions/day",
+              deployment: "배포 5일 전"
+            }
+          ],
+          ops: {
+            checkpoints: [
+              { title: "Backup / PITR", pill: { label: "Healthy", tone: "healthy" }, meta: "매일 02:10 KST base backup, 14일 PITR 보관. 최근 복구 drill 6월 7일 완료." },
+              { title: "Replication", pill: { label: "Watch", tone: "warning" }, meta: "read replica lag 11초. 배치 윈도우에서는 25초까지 상승 가능." },
+              { title: "Autovacuum", pill: { label: "Healthy", tone: "healthy" }, meta: "billing.order_history dead tuples 비율 7.2%. 현 기준 즉시 조치 필요 없음." }
+            ],
+            events: [
+              { icon: "monitoring", title: "스토리지 75% 초과 알림", meta: "quota soft-threshold 도달 후 Slack 알림 전송", time: "오늘 09:12" },
+              { icon: "update", title: "Replica lag spike 감지", meta: "정산 배치 시작 직후 23초까지 증가 후 정상 복귀", time: "오늘 02:21" },
+              { icon: "verified", title: "접속 비밀정보 rotation", meta: "Vault secret 신규 버전 발행 및 app rollout 완료", time: "5월 28일" }
+            ]
+          },
+          snapshots: {
+            summary: [
+              { label: "Daily", value: "14 copies", meta: "매일 02:10 KST · 보관 14일" },
+              { label: "Weekly", value: "8 copies", meta: "매주 일요일 03:00 KST · 보관 8주" },
+              { label: "Monthly", value: "12 copies", meta: "매월 1일 04:00 KST · 보관 12개월" }
+            ],
+            recent: [
+              { name: "daily-2026-06-11", cycle: "Daily", pill: { label: "Healthy", tone: "healthy" }, meta: "02:10 KST 완료 · base backup + WAL archive", extraLeft: "용량 2.84 TB logical", extraRight: "보관 만료 6월 25일" },
+              { name: "weekly-2026-w24", cycle: "Weekly", pill: { label: "Healthy", tone: "healthy" }, meta: "6월 9일 03:00 KST 완료 · restore verify 통과", extraLeft: "복구 테스트 12m 18s", extraRight: "보관 만료 8월 4일" },
+              { name: "monthly-2026-06", cycle: "Monthly", pill: { label: "Healthy", tone: "healthy" }, meta: "6월 1일 04:00 KST 완료 · 장기 보관 대상", extraLeft: "암호화 저장소 복제 완료", extraRight: "보관 만료 2027-06-01" }
+            ]
+          }
+        },
+        "payments-mysql": {
+          theme: { bg: "#edf4ff", brand: "#2563eb", brandBg: "#cfe2ff", brandSoft: "rgba(37,99,235,.18)", accent: "#06b6d4" },
+          statusTone: "healthy",
+          statusLabel: "Running",
+          eyebrow: "Storage · Database Detail",
+          engineLabel: "MySQL 8.0 · Payments Core",
+          title: "payments-mysql",
+          description: "결제 승인과 정산 데이터를 공통으로 처리하는 MySQL 운영 리소스입니다. 실시간 쓰기 부하가 높은 편이라 사용량과 connection headroom을 먼저 확인하고, 관리자 접속은 phpMyAdmin과 Vault 참조 기반으로 제한합니다.",
+          actions: [
+            { label: "Database Hub", icon: "arrow_back", href: "workspace_database_hub.html" },
+            { label: "phpMyAdmin 열기", icon: "open_in_new", href: "workspace_tools_hub.html" }
+          ],
+          heroStats: [
+            { label: "Storage Used", value: "1.32", suffix: "TB", meta: "2.00 TB quota 중 66.1%" },
+            { label: "Peak Connections", value: "142", suffix: "", meta: "limit 220" },
+            { label: "Connected Projects", value: "2", suffix: "", meta: "결제 API · 운영 정산" },
+            { label: "7d Growth", value: "+82", suffix: "GB", meta: "승인 로그 적재 증가" }
+          ],
+          runtime: {
+            heroLastAccess: { value: "오늘 21:04", meta: "payment-api · settlement write" },
+            heroCluster: { value: "3", meta: "primary 1 · replica 2" },
+            overview: [
+              { key: "Last Accessed", value: "2026-06-11 21:04 KST" },
+              { key: "Access Path", value: "payment-api · writer endpoint" },
+              { key: "Namespace", value: "mysql" },
+              { key: "Cluster Mode", value: "single primary + 2 replicas" },
+              { key: "Failover", value: "semi-sync failover enabled" },
+              { key: "Last Read Switch", value: "2026-06-10 01:55 KST" }
+            ],
+            members: [
+              { name: "payments-mysql-0", role: "Primary", pill: { label: "Primary", tone: "healthy" }, meta: "az-a · write source", usage: "CPU peak 69% · Memory peak 38 GB", storage: "PVC 2.00 TB · used 1.32 TB" },
+              { name: "payments-mysql-1", role: "Replica", pill: { label: "Replica", tone: "healthy" }, meta: "az-b · 정산 조회 read", usage: "CPU peak 44% · Memory peak 29 GB", storage: "replication delay 4s" },
+              { name: "payments-mysql-2", role: "Replica", pill: { label: "Replica", tone: "healthy" }, meta: "az-c · failover standby", usage: "CPU peak 41% · Memory peak 28 GB", storage: "binlog apply 정상" }
+            ]
+          },
+          summary: {
+            label: "Usage Focus",
+            kicker: "핵심 쓰기 트랜잭션 안정권",
+            value: "66.1",
+            unit: "% used",
+            description: "현재는 스토리지 여유가 비교적 충분하지만, 승인 로그 파티션 증가율과 인덱스 편중을 계속 보는 편이 좋습니다.",
+            blocks: [
+              { label: "Write Pressure", value: "Moderate", meta: "실시간 승인 트래픽은 안정적" },
+              { label: "Backup Window", value: "01:40 KST", meta: "증분 백업 7일, full backup 주 1회" },
+              { label: "Replication", value: "Semi-sync", meta: "평균 지연 4초 내" }
+            ]
+          },
+          usage: {
+            primary: {
+              name: "스토리지 사용량",
+              meta: "data 1.02 TB · index 228 GB · binlog 74 GB",
+              percent: 66.1,
+              value: "1.32 TB / 2.00 TB",
+              legendLeft: "Free 680 GB",
+              legendRight: "이번 주 +82 GB"
+            },
+            secondary: {
+              name: "주간 성장 추이",
+              meta: "payment_log, settlement_line 증가가 반영됨",
+              bars: [
+                { label: "Thu", value: 52 },
+                { label: "Fri", value: 55 },
+                { label: "Sat", value: 54 },
+                { label: "Sun", value: 58 },
+                { label: "Mon", value: 62 },
+                { label: "Tue", value: 67 },
+                { label: "Wed", value: 70 }
+              ],
+              summaryLeft: "7일 평균 +11.7 GB/day",
+              summaryRight: "binlog 보관 72시간"
+            },
+            miniStats: [
+              { label: "CPU", value: "48%", meta: "정산 시간대 69%" },
+              { label: "Memory", value: "32 GB", meta: "buffer pool 18 GB" },
+              { label: "QPS", value: "3,120/s", meta: "승인/조회 혼합" },
+              { label: "Slow Query", value: "2.7%", meta: "200ms 이상 비율" }
+            ]
+          },
+          peakUsage: [
+            { label: "CPU Peak", value: "69%", meta: "오늘 20:58 · 정산 집계 구간" },
+            { label: "Memory Peak", value: "38 GB", meta: "7일 max · quota 48 GB 대비 79.1%" },
+            { label: "Storage Peak", value: "1.32 TB", meta: "최근 24시간 max · quota 2.00 TB 대비 66.1%" }
+          ],
+          access: {
+            overview: [
+              { key: "Primary Host", value: "mysql.payments.svc.cluster.local" },
+              { key: "Read Host", value: "mysql-ro.payments.svc.cluster.local" },
+              { key: "Port", value: "3306 / TLS preferred" },
+              { key: "Database", value: "payments" },
+              { key: "Charset", value: "utf8mb4" },
+              { key: "Secret Ref", value: "vault://workspace/db/payments-mysql" }
+            ],
+            credentials: [
+              { key: "Writer User", value: "payment_api_rw" },
+              { key: "Reader User", value: "billing_admin_ro" },
+              { key: "Password", value: "•••••••••• rotated 2026-06-01" },
+              { key: "TLS", value: "enabled / optional client cert" },
+              { key: "Allowed CIDR", value: "10.44.0.0/16" },
+              { key: "CLI Example", value: "mysql --host=mysql-ro.payments.svc.cluster.local --port=3306 --user=billing_admin_ro --ssl-mode=REQUIRED payments" }
+            ],
+            consoles: [
+              { name: "phpMyAdmin", meta: "schema browse · grants 확인 · 인덱스 점검" }
+            ]
+          },
+          bindings: [
+            {
+              name: "payment-api",
+              href: "workspace_project_detail.html?project=hermes-be",
+              role: "Primary App",
+              meta: "승인/취소/정산용 core API",
+              tags: ["RW user `payment_api_rw`", "Pool 48", "latency sensitive"],
+              traffic: "2.6k rpm",
+              deployment: "배포 오늘"
+            },
+            {
+              name: "billing-admin",
+              href: "workspace_project_detail.html?project=hermes-be",
+              role: "Ops Console",
+              meta: "정산 조회와 수기 검증용 백오피스",
+              tags: ["RO user `billing_admin_ro`", "Pool 10", "office hours"],
+              traffic: "41 sessions/day",
+              deployment: "배포 3일 전"
+            }
+          ],
+          ops: {
+            checkpoints: [
+              { title: "Backup / Restore", pill: { label: "Healthy", tone: "healthy" }, meta: "최근 restore smoke test 성공. full backup checksum 정상." },
+              { title: "Index Drift", pill: { label: "Watch", tone: "warning" }, meta: "payment_log 보조 인덱스 2개 사용률 낮음. 정리 후보." },
+              { title: "Binlog Retention", pill: { label: "Healthy", tone: "healthy" }, meta: "72시간 보관 정책과 현재 디스크 여유 일치." }
+            ],
+            events: [
+              { icon: "receipt_long", title: "settlement_line 파티션 롤오버", meta: "월별 파티션 생성 자동화 성공", time: "오늘 00:03" },
+              { icon: "shield", title: "읽기 계정 접근 정책 갱신", meta: "billing-admin read-only 권한 재적용", time: "어제" },
+              { icon: "dns", title: "phpMyAdmin 접속 세션 증가", meta: "월말 검증으로 운영 접근량 상승", time: "6월 9일" }
+            ]
+          },
+          snapshots: {
+            summary: [
+              { label: "Daily", value: "7 copies", meta: "매일 01:40 KST · 보관 7일" },
+              { label: "Weekly", value: "6 copies", meta: "매주 일요일 02:20 KST · 보관 6주" },
+              { label: "Monthly", value: "12 copies", meta: "매월 1일 03:10 KST · 보관 12개월" }
+            ],
+            recent: [
+              { name: "daily-2026-06-11", cycle: "Daily", pill: { label: "Healthy", tone: "healthy" }, meta: "01:40 KST 완료 · incremental backup", extraLeft: "binlog chain 연결 정상", extraRight: "보관 만료 6월 18일" },
+              { name: "weekly-2026-w24", cycle: "Weekly", pill: { label: "Healthy", tone: "healthy" }, meta: "6월 8일 02:20 KST 완료 · full backup", extraLeft: "checksum verify 성공", extraRight: "보관 만료 7월 20일" },
+              { name: "monthly-2026-06", cycle: "Monthly", pill: { label: "Healthy", tone: "healthy" }, meta: "6월 1일 03:10 KST 완료 · cold archive", extraLeft: "encrypted object storage", extraRight: "보관 만료 2027-06-01" }
+            ]
+          }
+        },
+        "customer-profile-mongo": {
+          theme: { bg: "#edf4ff", brand: "#2563eb", brandBg: "#cfe2ff", brandSoft: "rgba(37,99,235,.18)", accent: "#06b6d4" },
+          statusTone: "healthy",
+          statusLabel: "Running",
+          eyebrow: "Storage · Database Detail",
+          engineLabel: "MongoDB 7 · Profile Store",
+          title: "customer-profile-mongo",
+          description: "프로필 문서와 행동 이벤트 샘플이 적재되는 MongoDB 리소스입니다. document growth와 index footprint를 중심으로 보고, PII 성격상 접속 정보와 접근 계정은 마스킹/권한 분리 원칙을 따릅니다.",
+          actions: [
+            { label: "Database Hub", icon: "arrow_back", href: "workspace_database_hub.html" },
+            { label: "Mongo GUI 열기", icon: "open_in_new", href: "workspace_tools_hub.html" }
+          ],
+          heroStats: [
+            { label: "Storage Used", value: "684", suffix: "GB", meta: "1.20 TB quota 중 57.0%" },
+            { label: "Peak Connections", value: "96", suffix: "", meta: "limit 180" },
+            { label: "Connected Projects", value: "2", suffix: "", meta: "profile-api · restaurant" },
+            { label: "7d Growth", value: "+39", suffix: "GB", meta: "이벤트 문서 적재 증가" }
+          ],
+          runtime: {
+            heroLastAccess: { value: "오늘 19:56", meta: "profile-api · profile update" },
+            heroCluster: { value: "3", meta: "primary 1 · secondary 2" },
+            overview: [
+              { key: "Last Accessed", value: "2026-06-11 19:56 KST" },
+              { key: "Access Path", value: "profile-api · replica set write" },
+              { key: "Namespace", value: "mongodb" },
+              { key: "Cluster Mode", value: "replica set 3 members" },
+              { key: "Primary Election", value: "2026-05-29 04:18 KST" },
+              { key: "Last Topology Check", value: "2026-06-11 21:00 KST" }
+            ],
+            members: [
+              { name: "customer-profile-mongo-0", role: "Primary", pill: { label: "Primary", tone: "healthy" }, meta: "rs0 primary · write node", usage: "CPU peak 58% · Memory peak 24 GB", storage: "PVC 1.20 TB · used 684 GB" },
+              { name: "customer-profile-mongo-1", role: "Secondary", pill: { label: "Secondary", tone: "healthy" }, meta: "analytics/read routing", usage: "CPU peak 41% · Memory peak 18 GB", storage: "oplog replay 정상" },
+              { name: "customer-profile-mongo-2", role: "Secondary", pill: { label: "Secondary", tone: "healthy" }, meta: "failover standby", usage: "CPU peak 39% · Memory peak 17 GB", storage: "replication delay 2s" }
+            ]
+          },
+          summary: {
+            label: "Usage Focus",
+            kicker: "문서 수는 늘지만 여유는 충분합니다",
+            value: "57.0",
+            unit: "% used",
+            description: "문서형 스토어라 컬렉션별 index size 분리를 같이 봐야 합니다. 최근에는 프로필 본문보다 event sample 컬렉션 증가가 더 큽니다.",
+            blocks: [
+              { label: "Hot Collection", value: "event_samples", meta: "주간 +22 GB" },
+              { label: "Backup Window", value: "03:20 KST", meta: "snapshot + oplog 7일" },
+              { label: "PII Guard", value: "Masked", meta: "운영 콘솔은 sample 제한 적용" }
+            ]
+          },
+          usage: {
+            primary: {
+              name: "스토리지 사용량",
+              meta: "documents 522 GB · indexes 118 GB · journal 44 GB",
+              percent: 57.0,
+              value: "684 GB / 1.20 TB",
+              legendLeft: "Free 516 GB",
+              legendRight: "이번 주 +39 GB"
+            },
+            secondary: {
+              name: "주간 성장 추이",
+              meta: "profile_snapshot보다 event_samples 증가 비중이 큼",
+              bars: [
+                { label: "Thu", value: 42 },
+                { label: "Fri", value: 44 },
+                { label: "Sat", value: 45 },
+                { label: "Sun", value: 47 },
+                { label: "Mon", value: 51 },
+                { label: "Tue", value: 56 },
+                { label: "Wed", value: 60 }
+              ],
+              summaryLeft: "7일 평균 +5.6 GB/day",
+              summaryRight: "TTL cleanup job 매일 04:00"
+            },
+            miniStats: [
+              { label: "CPU", value: "39%", meta: "aggregation 시 58%" },
+              { label: "Memory", value: "21 GB", meta: "wiredTiger cache 9 GB" },
+              { label: "Ops/s", value: "1,140", meta: "read 우세" },
+              { label: "Index Hit", value: "97.8%", meta: "최근 24시간" }
+            ]
+          },
+          peakUsage: [
+            { label: "CPU Peak", value: "58%", meta: "오늘 18:43 · aggregation burst" },
+            { label: "Memory Peak", value: "24 GB", meta: "7일 max · quota 32 GB 대비 75.0%" },
+            { label: "Storage Peak", value: "684 GB", meta: "최근 24시간 max · quota 1.20 TB 대비 57.0%" }
+          ],
+          access: {
+            overview: [
+              { key: "Cluster Host", value: "mongo.profile.svc.cluster.local" },
+              { key: "Replica Set", value: "profile-rs0" },
+              { key: "Port", value: "27017 / TLS required" },
+              { key: "Database", value: "customer_profile" },
+              { key: "Collections", value: "42 active" },
+              { key: "Secret Ref", value: "vault://workspace/db/customer-profile-mongo" }
+            ],
+            credentials: [
+              { key: "App User", value: "profile_api_rw" },
+              { key: "Ops User", value: "profile_ops_ro" },
+              { key: "Password", value: "•••••••••• rotated 2026-05-19" },
+              { key: "Auth DB", value: "admin" },
+              { key: "Allowed CIDR", value: "10.44.0.0/16, bastion only" },
+              { key: "URI Example", value: "mongodb://profile_ops_ro:••••@mongo.profile.svc.cluster.local:27017/customer_profile?replicaSet=profile-rs0&tls=true" }
+            ],
+            consoles: [
+              { name: "Mongo GUI", meta: "collection browse · index check · sample query" }
+            ]
+          },
+          bindings: [
+            {
+              name: "profile-api",
+              href: "workspace_project_detail.html?project=restaurant",
+              role: "Primary API",
+              meta: "고객 프로필 조회/수정의 메인 문서 스토어",
+              tags: ["RW user `profile_api_rw`", "Pool 28", "PII governed"],
+              traffic: "920 rpm",
+              deployment: "배포 1일 전"
+            },
+            {
+              name: "restaurant",
+              href: "workspace_project_detail.html?project=restaurant",
+              role: "Feature Consumer",
+              meta: "프로필 추천/세그먼트 일부 조회",
+              tags: ["RO user `restaurant_seg_ro`", "Pool 8", "masked sample only"],
+              traffic: "220 rpm",
+              deployment: "배포 4일 전"
+            }
+          ],
+          ops: {
+            checkpoints: [
+              { title: "Snapshot Backup", pill: { label: "Healthy", tone: "healthy" }, meta: "최근 snapshot 6월 11일 03:20 완료." },
+              { title: "TTL Cleanup", pill: { label: "Healthy", tone: "healthy" }, meta: "event_samples 만료 문서 정리 정상." },
+              { title: "PII Sample Guard", pill: { label: "Healthy", tone: "healthy" }, meta: "운영 콘솔은 민감 필드 기본 마스킹 상태." }
+            ],
+            events: [
+              { icon: "person_search", title: "sample query access 검토 완료", meta: "운영 조회 계정 정책 점검", time: "오늘" },
+              { icon: "delete_sweep", title: "TTL cleanup batch 실행", meta: "4.1M 문서 만료 정리", time: "오늘 04:07" },
+              { icon: "hub", title: "new segment index 생성", meta: "restaurant 조회 최적화 목적", time: "6월 8일" }
+            ]
+          },
+          snapshots: {
+            summary: [
+              { label: "Daily", value: "7 copies", meta: "매일 03:20 KST · 보관 7일" },
+              { label: "Weekly", value: "5 copies", meta: "매주 토요일 03:50 KST · 보관 5주" },
+              { label: "Monthly", value: "12 copies", meta: "매월 1일 04:40 KST · 보관 12개월" }
+            ],
+            recent: [
+              { name: "daily-2026-06-11", cycle: "Daily", pill: { label: "Healthy", tone: "healthy" }, meta: "03:20 KST 완료 · snapshot + oplog marker", extraLeft: "용량 684 GB logical", extraRight: "보관 만료 6월 18일" },
+              { name: "weekly-2026-w24", cycle: "Weekly", pill: { label: "Healthy", tone: "healthy" }, meta: "6월 7일 03:50 KST 완료 · secondary 기준 캡처", extraLeft: "복구 smoke test 성공", extraRight: "보관 만료 7월 12일" },
+              { name: "monthly-2026-06", cycle: "Monthly", pill: { label: "Healthy", tone: "healthy" }, meta: "6월 1일 04:40 KST 완료 · 장기 보관 아카이브", extraLeft: "PII 암호화 아카이브", extraRight: "보관 만료 2027-06-01" }
+            ]
+          }
+        },
+        "workspace-session-redis": {
+          theme: { bg: "#edf4ff", brand: "#2563eb", brandBg: "#cfe2ff", brandSoft: "rgba(37,99,235,.18)", accent: "#06b6d4" },
+          statusTone: "healthy",
+          statusLabel: "Running",
+          eyebrow: "Storage · Database Detail",
+          engineLabel: "Redis 7 · Shared Session Cache",
+          title: "workspace-session-redis",
+          description: "세션, 웹소켓 fanout, 랭킹 캐시가 함께 붙는 공용 Redis 리소스입니다. 핵심 지표는 저장소보다 메모리 점유율과 hot key 쏠림입니다.",
+          actions: [
+            { label: "Database Hub", icon: "arrow_back", href: "workspace_database_hub.html" },
+            { label: "Redis Insight 열기", icon: "open_in_new", href: "workspace_tools_hub.html" }
+          ],
+          heroStats: [
+            { label: "Memory Used", value: "41.6", suffix: "GB", meta: "64 GB quota 중 65.0%" },
+            { label: "Peak Clients", value: "3,420", suffix: "", meta: "soft limit 5,000" },
+            { label: "Connected Projects", value: "3", suffix: "", meta: "web · gateway · restaurant" },
+            { label: "Evictions", value: "0", suffix: "", meta: "지난 7일 기준" }
+          ],
+          runtime: {
+            heroLastAccess: { value: "방금 전", meta: "realtime-gateway · pub/sub" },
+            heroCluster: { value: "2", meta: "primary 1 · replica 1" },
+            overview: [
+              { key: "Last Accessed", value: "2026-06-11 21:27 KST" },
+              { key: "Access Path", value: "realtime-gateway · pub/sub channel" },
+              { key: "Namespace", value: "redis" },
+              { key: "Cluster Mode", value: "single primary + replica + sentinel" },
+              { key: "Sentinel", value: "3 sentinels healthy" },
+              { key: "Last Role Check", value: "2026-06-11 21:25 KST" }
+            ],
+            members: [
+              { name: "rfr-workspace-session-redis-0", role: "Primary", pill: { label: "Primary", tone: "healthy" }, meta: "write + pub/sub node", usage: "CPU peak 49% · Memory peak 45.8 GB", storage: "AOF size 12.4 GB" },
+              { name: "rfr-workspace-session-redis-1", role: "Replica", pill: { label: "Replica", tone: "healthy" }, meta: "read replica · standby", usage: "CPU peak 31% · Memory peak 41.2 GB", storage: "replication offset 정상" }
+            ]
+          },
+          summary: {
+            label: "Usage Focus",
+            kicker: "메모리 헤드룸은 안정권입니다",
+            value: "65.0",
+            unit: "% used",
+            description: "Redis는 디스크보다 메모리 사용량과 key churn이 중요합니다. 현재는 세션 저장과 실시간 fanout이 주 부하이며 eviction 없이 유지 중입니다.",
+            blocks: [
+              { label: "Hot Key Risk", value: "Low", meta: "상위 5개 keyspace 편중 완화" },
+              { label: "Persistence", value: "AOF everysec", meta: "RDB snapshot 6시간" },
+              { label: "TTL Discipline", value: "Good", meta: "세션 key 평균 TTL 28분" }
+            ]
+          },
+          usage: {
+            primary: {
+              name: "메모리 사용량",
+              meta: "session 19.4 GB · pubsub/meta 8.6 GB · ranking 13.6 GB",
+              percent: 65.0,
+              value: "41.6 GB / 64 GB",
+              legendLeft: "Free 22.4 GB",
+              legendRight: "Peak fragmentation 1.19"
+            },
+            secondary: {
+              name: "주간 사용 추이",
+              meta: "점심/저녁 트래픽 시간대에 사용량이 오릅니다",
+              bars: [
+                { label: "Thu", value: 47 },
+                { label: "Fri", value: 50 },
+                { label: "Sat", value: 52 },
+                { label: "Sun", value: 54 },
+                { label: "Mon", value: 57 },
+                { label: "Tue", value: 62 },
+                { label: "Wed", value: 65 }
+              ],
+              summaryLeft: "7일 평균 +0.9 GB/day",
+              summaryRight: "eviction 0건"
+            },
+            miniStats: [
+              { label: "CPU", value: "34%", meta: "lua script 시 49%" },
+              { label: "Ops/s", value: "28k", meta: "GET/SET/PUBLISH 혼합" },
+              { label: "Hit Rate", value: "94.8%", meta: "ranking cache 포함" },
+              { label: "Expired/s", value: "820", meta: "정상 TTL 소멸" }
+            ]
+          },
+          peakUsage: [
+            { label: "CPU Peak", value: "49%", meta: "오늘 20:14 · gateway burst" },
+            { label: "Memory Peak", value: "45.8 GB", meta: "7일 max · quota 64 GB 대비 71.6%" },
+            { label: "Storage Peak", value: "12.4 GB", meta: "AOF + RDB 기준 · 최근 7일 max" }
+          ],
+          access: {
+            overview: [
+              { key: "Primary Host", value: "redis.workspace.svc.cluster.local" },
+              { key: "Replica Host", value: "redis-ro.workspace.svc.cluster.local" },
+              { key: "Port", value: "6379 / TLS disabled (internal)" },
+              { key: "Mode", value: "single primary + replica" },
+              { key: "DB Index", value: "0=session · 1=ranking" },
+              { key: "Secret Ref", value: "vault://workspace/db/workspace-session-redis" }
+            ],
+            credentials: [
+              { key: "App User", value: "default ACL + scoped tokens" },
+              { key: "Ops User", value: "redis_ops_ro" },
+              { key: "Password", value: "•••••••• rotated 2026-06-06" },
+              { key: "ACL", value: "~session:* ~ranking:* +@read +@write" },
+              { key: "Allowed CIDR", value: "cluster internal only" },
+              { key: "CLI Example", value: "redis-cli -h redis.workspace.svc.cluster.local -p 6379 -a '••••••••'" }
+            ],
+            consoles: [
+              { name: "Redis Insight", meta: "hot key · memory profile · TTL 확인" }
+            ]
+          },
+          bindings: [
+            {
+              name: "workspace-web",
+              href: "workspace_project_detail.html?project=restaurant",
+              role: "Session Owner",
+              meta: "로그인 세션과 사용자 상태 저장",
+              tags: ["ACL `session:*`", "Pool 120", "latency sensitive"],
+              traffic: "5.2k rpm",
+              deployment: "배포 오늘"
+            },
+            {
+              name: "realtime-gateway",
+              href: "workspace_project_detail.html?project=restaurant",
+              role: "Pub/Sub",
+              meta: "웹소켓 fanout과 presence 처리",
+              tags: ["ACL `session:*`", "Pool 60", "pubsub heavy"],
+              traffic: "1.1M msg/day",
+              deployment: "배포 2일 전"
+            },
+            {
+              name: "restaurant",
+              href: "workspace_project_detail.html?project=restaurant",
+              role: "Ranking Cache",
+              meta: "검색/랭킹 캐시와 미리보기 캐시",
+              tags: ["ACL `ranking:*`", "Pool 20", "best effort"],
+              traffic: "860 rpm",
+              deployment: "배포 4일 전"
+            }
+          ],
+          ops: {
+            checkpoints: [
+              { title: "Memory Headroom", pill: { label: "Healthy", tone: "healthy" }, meta: "현재 35% 여유. eviction 없음." },
+              { title: "Persistence", pill: { label: "Healthy", tone: "healthy" }, meta: "AOF rewrite 최근 성공." },
+              { title: "Hot Key Scan", pill: { label: "Watch", tone: "warning" }, meta: "상위 key 1개가 전체 request의 8% 차지." }
+            ],
+            events: [
+              { icon: "bolt", title: "실시간 gateway burst 감지", meta: "이벤트 방송량 급증 후 안정화", time: "오늘 20:14" },
+              { icon: "timelapse", title: "AOF rewrite 완료", meta: "persistence compact 정상 종료", time: "오늘 03:11" },
+              { icon: "shield", title: "ACL token rotation", meta: "운영용 read-only token 갱신", time: "6월 6일" }
+            ]
+          },
+          snapshots: {
+            summary: [
+              { label: "Daily", value: "7 copies", meta: "매일 03:10 KST · 보관 7일" },
+              { label: "Weekly", value: "4 copies", meta: "매주 일요일 03:40 KST · 보관 4주" },
+              { label: "Monthly", value: "6 copies", meta: "매월 1일 04:00 KST · 보관 6개월" }
+            ],
+            recent: [
+              { name: "daily-2026-06-11", cycle: "Daily", pill: { label: "Healthy", tone: "healthy" }, meta: "03:10 KST 완료 · RDB snapshot + AOF marker", extraLeft: "메모리 41.2 GB 기준", extraRight: "보관 만료 6월 18일" },
+              { name: "weekly-2026-w24", cycle: "Weekly", pill: { label: "Healthy", tone: "healthy" }, meta: "6월 8일 03:40 KST 완료 · restore verify 정상", extraLeft: "Redis Insight 검증 완료", extraRight: "보관 만료 7월 6일" },
+              { name: "monthly-2026-06", cycle: "Monthly", pill: { label: "Healthy", tone: "healthy" }, meta: "6월 1일 04:00 KST 완료 · 장기 보관 복제", extraLeft: "암호화 오브젝트 스토리지", extraRight: "보관 만료 2026-12-01" }
+            ]
+          }
+        },
+        "ops-search": {
+          theme: { bg: "#edf4ff", brand: "#2563eb", brandBg: "#cfe2ff", brandSoft: "rgba(37,99,235,.18)", accent: "#06b6d4" },
+          statusTone: "healthy",
+          statusLabel: "Running",
+          eyebrow: "Storage · Database Detail",
+          engineLabel: "Elasticsearch 8 · Logs & Audit Search",
+          title: "ops-search",
+          description: "운영 로그와 감사 검색이 적재되는 Elasticsearch 리소스입니다. shard usage와 index growth가 사용량의 핵심이며, 접속은 Kibana와 service account를 통해 구분합니다.",
+          actions: [
+            { label: "Database Hub", icon: "arrow_back", href: "workspace_database_hub.html" },
+            { label: "Kibana 열기", icon: "open_in_new", href: "workspace_tools_hub.html" }
+          ],
+          heroStats: [
+            { label: "Storage Used", value: "5.8", suffix: "TB", meta: "8.0 TB quota 중 72.5%" },
+            { label: "Peak Search QPS", value: "910", suffix: "", meta: "logs + audit 조회 혼합" },
+            { label: "Connected Projects", value: "2", suffix: "", meta: "lgloganalyzer · ops-dashboard" },
+            { label: "7d Growth", value: "+420", suffix: "GB", meta: "로그 적재 증가" }
+          ],
+          runtime: {
+            heroLastAccess: { value: "오늘 20:44", meta: "lgloganalyzer · search query" },
+            heroCluster: { value: "6", meta: "master 3 · data 3" },
+            overview: [
+              { key: "Last Accessed", value: "2026-06-11 20:44 KST" },
+              { key: "Access Path", value: "lgloganalyzer · search API" },
+              { key: "Namespace", value: "elastic" },
+              { key: "Cluster Mode", value: "master 3 + data 3" },
+              { key: "Cluster Health", value: "green" },
+              { key: "Last Shard Rebalance", value: "2026-06-10 23:40 KST" }
+            ],
+            members: [
+              { name: "ops-search-master-0", role: "Master", pill: { label: "Master", tone: "healthy" }, meta: "cluster coordination", usage: "CPU peak 34% · Heap peak 9 GB", storage: "no data role" },
+              { name: "ops-search-master-1", role: "Master", pill: { label: "Master", tone: "healthy" }, meta: "election quorum", usage: "CPU peak 31% · Heap peak 8 GB", storage: "no data role" },
+              { name: "ops-search-master-2", role: "Master", pill: { label: "Master", tone: "healthy" }, meta: "coordination standby", usage: "CPU peak 30% · Heap peak 8 GB", storage: "no data role" },
+              { name: "ops-search-data-0", role: "Data", pill: { label: "Data", tone: "healthy" }, meta: "hot tier shard owner", usage: "CPU peak 73% · Heap peak 27 GB", storage: "PVC 2.8 TB used" },
+              { name: "ops-search-data-1", role: "Data", pill: { label: "Data", tone: "healthy" }, meta: "warm tier + replica", usage: "CPU peak 66% · Heap peak 24 GB", storage: "PVC 1.7 TB used" },
+              { name: "ops-search-data-2", role: "Data", pill: { label: "Data", tone: "healthy" }, meta: "warm tier + replica", usage: "CPU peak 64% · Heap peak 23 GB", storage: "PVC 1.3 TB used" }
+            ]
+          },
+          summary: {
+            label: "Usage Focus",
+            kicker: "검색 계열 중 가장 빠르게 증가 중입니다",
+            value: "72.5",
+            unit: "% used",
+            description: "retention 정책과 hot-warm index 이동을 같이 봐야 합니다. 이번 주는 service log 적재량이 많아 storage growth가 뚜렷합니다.",
+            blocks: [
+              { label: "Hot Tier", value: "61%", meta: "최근 48시간 index 집중" },
+              { label: "Retention", value: "30 days", meta: "audit는 90일 별도" },
+              { label: "Shard Health", value: "Green", meta: "unassigned shard 없음" }
+            ]
+          },
+          usage: {
+            primary: {
+              name: "스토리지 사용량",
+              meta: "logs 4.3 TB · audit 1.1 TB · system 0.4 TB",
+              percent: 72.5,
+              value: "5.8 TB / 8.0 TB",
+              legendLeft: "Free 2.2 TB",
+              legendRight: "이번 주 +420 GB"
+            },
+            secondary: {
+              name: "주간 성장 추이",
+              meta: "service log ingestion 증가가 주 원인",
+              bars: [
+                { label: "Thu", value: 54 },
+                { label: "Fri", value: 58 },
+                { label: "Sat", value: 62 },
+                { label: "Sun", value: 65 },
+                { label: "Mon", value: 69 },
+                { label: "Tue", value: 74 },
+                { label: "Wed", value: 79 }
+              ],
+              summaryLeft: "7일 평균 +60 GB/day",
+              summaryRight: "hot-warm rollover 예정"
+            },
+            miniStats: [
+              { label: "CPU", value: "57%", meta: "index merge 시 73%" },
+              { label: "Heap", value: "25 GB", meta: "32 GB 중 사용" },
+              { label: "Search Lat", value: "182 ms", meta: "P95" },
+              { label: "Shard", value: "148", meta: "primary 74 / replica 74" }
+            ]
+          },
+          peakUsage: [
+            { label: "CPU Peak", value: "73%", meta: "오늘 18:30 · rollover 직전 merge 작업" },
+            { label: "Memory Peak", value: "29 GB", meta: "7일 max · heap quota 32 GB 대비 90.6%" },
+            { label: "Storage Peak", value: "5.8 TB", meta: "최근 24시간 max · quota 8.0 TB 대비 72.5%" }
+          ],
+          access: {
+            overview: [
+              { key: "Cluster Host", value: "elastic.ops.svc.cluster.local" },
+              { key: "Kibana URL", value: "kibana.ops.svc.cluster.local" },
+              { key: "Port", value: "9200 / TLS required" },
+              { key: "Index Prefix", value: "logs-*, audit-*" },
+              { key: "Auth", value: "service account + Kibana session" },
+              { key: "Secret Ref", value: "vault://workspace/db/ops-search" }
+            ],
+            credentials: [
+              { key: "Writer User", value: "fluentbit_ingest" },
+              { key: "Reader User", value: "ops_dashboard_ro" },
+              { key: "Password", value: "•••••••••• rotated 2026-05-31" },
+              { key: "Role", value: "logs_reader / audit_reader" },
+              { key: "Allowed CIDR", value: "bastion + cluster internal" },
+              { key: "Curl Example", value: "curl --cacert ca.crt -u ops_dashboard_ro:•••• https://elastic.ops.svc.cluster.local:9200/_cluster/health" }
+            ],
+            consoles: [
+              { name: "Kibana", meta: "search DSL · dashboard · index lifecycle 확인" }
+            ]
+          },
+          bindings: [
+            {
+              name: "lgloganalyzer",
+              href: "workspace_project_detail.html?project=lgloganalyzer",
+              role: "Primary Consumer",
+              meta: "서비스 로그 검색과 장애 분석 화면",
+              tags: ["RO role `logs_reader`", "saved search", "ops critical"],
+              traffic: "780 searches/hour",
+              deployment: "배포 오늘"
+            },
+            {
+              name: "ops-dashboard",
+              href: "workspace_project_detail.html?project=hermes-be",
+              role: "Audit Dashboard",
+              meta: "감사 로그와 보안 이벤트 조회",
+              tags: ["RO role `audit_reader`", "dashboard only", "compliance"],
+              traffic: "210 searches/hour",
+              deployment: "배포 6일 전"
+            }
+          ],
+          ops: {
+            checkpoints: [
+              { title: "Cluster Health", pill: { label: "Healthy", tone: "healthy" }, meta: "green 상태 유지." },
+              { title: "Retention Pressure", pill: { label: "Watch", tone: "warning" }, meta: "hot tier 사용량 증가. rollover 시점 조정 필요." },
+              { title: "Snapshot Repo", pill: { label: "Healthy", tone: "healthy" }, meta: "S3 snapshot 성공." }
+            ],
+            events: [
+              { icon: "travel_explore", title: "hot index rollover 예약", meta: "용량 기준 nearing threshold", time: "오늘 18:30" },
+              { icon: "inventory_2", title: "audit-* snapshot 완료", meta: "주간 보관 아카이브 성공", time: "오늘 02:50" },
+              { icon: "speed", title: "search latency spike", meta: "대시보드 대량 조회 후 복구", time: "6월 10일" }
+            ]
+          },
+          snapshots: {
+            summary: [
+              { label: "Daily", value: "7 copies", meta: "매일 02:50 KST · 보관 7일" },
+              { label: "Weekly", value: "8 copies", meta: "매주 일요일 03:30 KST · 보관 8주" },
+              { label: "Monthly", value: "12 copies", meta: "매월 1일 05:00 KST · 보관 12개월" }
+            ],
+            recent: [
+              { name: "daily-2026-06-11", cycle: "Daily", pill: { label: "Healthy", tone: "healthy" }, meta: "02:50 KST 완료 · logs-* + audit-* snapshot", extraLeft: "snapshot repo S3 정상", extraRight: "보관 만료 6월 18일" },
+              { name: "weekly-2026-w24", cycle: "Weekly", pill: { label: "Healthy", tone: "healthy" }, meta: "6월 8일 03:30 KST 완료 · verify open 성공", extraLeft: "복구 점검 18m 42s", extraRight: "보관 만료 8월 3일" },
+              { name: "monthly-2026-06", cycle: "Monthly", pill: { label: "Healthy", tone: "healthy" }, meta: "6월 1일 05:00 KST 완료 · archive tier 복제", extraLeft: "감사 로그 장기 보관", extraRight: "보관 만료 2027-06-01" }
+            ]
+          }
+        },
+        "search-embedding": {
+          theme: { bg: "#edf4ff", brand: "#2563eb", brandBg: "#cfe2ff", brandSoft: "rgba(37,99,235,.18)", accent: "#06b6d4" },
+          statusTone: "warning",
+          statusLabel: "Stopped",
+          eyebrow: "Storage · Database Detail",
+          engineLabel: "Milvus 2.4 · Vector Search",
+          title: "search-embedding",
+          description: "임베딩 검색과 카탈로그 벡터를 저장하는 Milvus 리소스입니다. 상시 기동이 아닌 실험/배치성 성격이며 현재는 stopped 상태입니다.",
+          actions: [
+            { label: "Database Hub", icon: "arrow_back", href: "workspace_database_hub.html" },
+            { label: "Attu 보기", icon: "open_in_new", href: "workspace_tools_hub.html" }
+          ],
+          heroStats: [
+            { label: "Storage Used", value: "412", suffix: "GB", meta: "1.50 TB quota 중 27.5%" },
+            { label: "Collections", value: "18", suffix: "", meta: "stopped 상태 보존 중" },
+            { label: "Connected Projects", value: "2", suffix: "", meta: "coverity-ai · catalog-ai" },
+            { label: "7d Growth", value: "+9", suffix: "GB", meta: "최근 적재 거의 없음" }
+          ],
+          runtime: {
+            heroLastAccess: { value: "어제 17:12", meta: "catalog-ai · readonly query" },
+            heroCluster: { value: "3", meta: "proxy 1 · data 2" },
+            overview: [
+              { key: "Last Accessed", value: "2026-06-10 17:12 KST" },
+              { key: "Access Path", value: "catalog-ai · query endpoint" },
+              { key: "Namespace", value: "milvus" },
+              { key: "Cluster Mode", value: "proxy 1 + data/query 2" },
+              { key: "Runtime State", value: "stopped" },
+              { key: "Last Load Job", value: "2026-06-08 11:20 KST" }
+            ],
+            members: [
+              { name: "search-embedding-proxy-0", role: "Proxy", pill: { label: "Stopped", tone: "warning" }, meta: "API gateway pod", usage: "마지막 CPU peak 22% · Memory peak 3.2 GB", storage: "stateless" },
+              { name: "search-embedding-query-0", role: "Query", pill: { label: "Stopped", tone: "warning" }, meta: "vector query worker", usage: "마지막 CPU peak 37% · Memory peak 11 GB", storage: "cache warm 상태 저장" },
+              { name: "search-embedding-data-0", role: "Data", pill: { label: "Stopped", tone: "warning" }, meta: "segment/data node", usage: "마지막 CPU peak 28% · Memory peak 14 GB", storage: "PVC 412 GB used" }
+            ]
+          },
+          summary: {
+            label: "Usage Focus",
+            kicker: "현재는 운영 부담이 낮습니다",
+            value: "27.5",
+            unit: "% used",
+            description: "기동 중이 아니므로 runtime metric보다 저장소와 collection 보존 현황이 중요합니다. 필요 시 콘솔/리소스 기동 절차를 별도 따라야 합니다.",
+            blocks: [
+              { label: "Runtime", value: "Stopped", meta: "상시 서비스 아님" },
+              { label: "Backup Window", value: "Weekly", meta: "토요일 snapshot" },
+              { label: "Index State", value: "Persisted", meta: "vector index 저장 완료" }
+            ]
+          },
+          usage: {
+            primary: {
+              name: "스토리지 사용량",
+              meta: "vectors 288 GB · index 94 GB · metadata 30 GB",
+              percent: 27.5,
+              value: "412 GB / 1.50 TB",
+              legendLeft: "Free 1.09 TB",
+              legendRight: "이번 주 +9 GB"
+            },
+            secondary: {
+              name: "주간 성장 추이",
+              meta: "배치형 적재만 간헐적으로 발생",
+              bars: [
+                { label: "Thu", value: 16 },
+                { label: "Fri", value: 16 },
+                { label: "Sat", value: 18 },
+                { label: "Sun", value: 18 },
+                { label: "Mon", value: 19 },
+                { label: "Tue", value: 20 },
+                { label: "Wed", value: 21 }
+              ],
+              summaryLeft: "7일 평균 +1.3 GB/day",
+              summaryRight: "실험성 workload 중심"
+            },
+            miniStats: [
+              { label: "Collections", value: "18", meta: "active 7 / archived 11" },
+              { label: "Vectors", value: "128 M", meta: "총 벡터 개수" },
+              { label: "Last Load", value: "3d ago", meta: "최근 메모리 load 시점" },
+              { label: "Compaction", value: "Idle", meta: "중요 작업 없음" }
+            ]
+          },
+          peakUsage: [
+            { label: "CPU Peak", value: "37%", meta: "마지막 기동 구간 · bulk ingest 시점" },
+            { label: "Memory Peak", value: "14 GB", meta: "마지막 기동 7일 중 max" },
+            { label: "Storage Peak", value: "412 GB", meta: "최근 30일 max · quota 1.50 TB 대비 27.5%" }
+          ],
+          access: {
+            overview: [
+              { key: "Cluster Host", value: "milvus.search.svc.cluster.local" },
+              { key: "Port", value: "19530 / grpc" },
+              { key: "HTTP", value: "9091 / optional" },
+              { key: "Namespace", value: "embedding" },
+              { key: "Console", value: "Attu (기동 시 사용)" },
+              { key: "Secret Ref", value: "vault://workspace/db/search-embedding" }
+            ],
+            credentials: [
+              { key: "App User", value: "embedding_ingest_rw" },
+              { key: "Ops User", value: "embedding_ops_ro" },
+              { key: "Password", value: "•••••• rotated 2026-04-22" },
+              { key: "Allowed CIDR", value: "cluster internal + bastion" },
+              { key: "TLS", value: "internal tunnel only" },
+              { key: "SDK Example", value: "MilvusClient(uri='http://milvus.search.svc.cluster.local:9091', token='embedding_ops_ro:••••')" }
+            ],
+            consoles: [
+              { name: "Attu", meta: "collection · index · vector count 확인" }
+            ]
+          },
+          bindings: [
+            {
+              name: "coverity-ai",
+              href: "workspace_project_detail.html?project=coverity-ai",
+              role: "Embedding Retrieval",
+              meta: "코드/문서 임베딩 검색 실험",
+              tags: ["RW user `embedding_ingest_rw`", "batch only", "experimental"],
+              traffic: "72 jobs/day",
+              deployment: "배포 1주 전"
+            },
+            {
+              name: "catalog-ai",
+              href: "workspace_project_detail.html?project=coverity-ai",
+              role: "Semantic Catalog",
+              meta: "카탈로그 유사도 검색",
+              tags: ["RO user `catalog_query_ro`", "best effort", "non-critical"],
+              traffic: "180 queries/day",
+              deployment: "배포 2주 전"
+            }
+          ],
+          ops: {
+            checkpoints: [
+              { title: "Snapshot Backup", pill: { label: "Healthy", tone: "healthy" }, meta: "주간 snapshot 성공." },
+              { title: "Runtime State", pill: { label: "Stopped", tone: "warning" }, meta: "필요 시 별도 기동 절차 필요." },
+              { title: "Collection Hygiene", pill: { label: "Healthy", tone: "healthy" }, meta: "archive collection 정리 예정 없음." }
+            ],
+            events: [
+              { icon: "pause_circle", title: "Milvus runtime 중지 상태 유지", meta: "비상시/실험성 운용 정책 반영", time: "현재" },
+              { icon: "save", title: "주간 snapshot 완료", meta: "collection metadata 저장 성공", time: "6월 8일" },
+              { icon: "hub", title: "catalog-vector batch ingest", meta: "신규 임베딩 2.1M건 적재", time: "6월 5일" }
+            ]
+          },
+          snapshots: {
+            summary: [
+              { label: "Daily", value: "3 copies", meta: "평일 02:30 KST · 보관 3일" },
+              { label: "Weekly", value: "6 copies", meta: "매주 토요일 04:00 KST · 보관 6주" },
+              { label: "Monthly", value: "6 copies", meta: "매월 1일 05:20 KST · 보관 6개월" }
+            ],
+            recent: [
+              { name: "daily-2026-06-10", cycle: "Daily", pill: { label: "Healthy", tone: "healthy" }, meta: "6월 10일 02:30 KST 완료 · metadata snapshot", extraLeft: "기동 중지 상태에서도 보관 유지", extraRight: "보관 만료 6월 13일" },
+              { name: "weekly-2026-w23", cycle: "Weekly", pill: { label: "Healthy", tone: "healthy" }, meta: "6월 8일 04:00 KST 완료 · vector segment copy", extraLeft: "Attu 검증 완료", extraRight: "보관 만료 7월 20일" },
+              { name: "monthly-2026-06", cycle: "Monthly", pill: { label: "Healthy", tone: "healthy" }, meta: "6월 1일 05:20 KST 완료 · archive snapshot", extraLeft: "cold storage 복제 완료", extraRight: "보관 만료 2026-12-01" }
+            ]
+          }
+        }
+      };
+
+      Object.values(dbCatalog).forEach((item) => {
+        item.runtime.overview = item.runtime.overview
+          .filter((entry) => entry.key !== "Cluster Health")
+          .map((entry) => {
+            const runtimeKeyMap = {
+              "Cluster Mode": "Member Layout",
+              "Last Topology Check": "Last Member Check"
+            };
+
+            return {
+              ...entry,
+              key: runtimeKeyMap[entry.key] || entry.key
+            };
+          });
+
+        item.ops.checkpoints = item.ops.checkpoints.map((entry) => ({
+          ...entry,
+          title: entry.title === "Cluster Health" ? "검색 상태" : entry.title
+        }));
+
+        item.snapshots.manual = item.snapshots.manual || {
+          name: "수동 스냅샷",
+          cycle: "Manual",
+          pill: { label: "Ready", tone: "healthy" },
+          meta: "즉시 생성 요청 후 목록 상단에서 상태와 생성 시점을 볼 수 있습니다.",
+          extraLeft: "보관 72시간",
+          extraRight: "최대 10개 로테이션"
+        };
+
+        item.snapshots.summary = item.snapshots.summary.map((entry) => ({
+          ...entry,
+          value: "최대 10개",
+          meta: `${entry.meta} · 최신 순환 보관`
+        }));
+
+        item.heroStats = [
+          item.heroStats[0],
+          item.heroStats[1],
+          { label: "최종 접속", value: item.runtime.heroLastAccess.value, suffix: "", meta: item.runtime.heroLastAccess.meta },
+          { label: "멤버 수", value: String(item.runtime.members.length), suffix: "", meta: item.runtime.heroCluster.meta },
+          ...item.heroStats.slice(2)
+        ];
+      });
+
+      const params = new URLSearchParams(window.location.search);
+      const requestedDb = params.get("db");
+      const selectedKey = Object.prototype.hasOwnProperty.call(dbCatalog, requestedDb) ? requestedDb : "hermes-main-postgres";
+      const db = dbCatalog[selectedKey];
+
+      const root = document.documentElement.style;
+      root.setProperty("--bg", db.theme.bg || "#edf4ff");
+      root.setProperty("--brand", db.theme.brand);
+      root.setProperty("--brand-bg", db.theme.brandBg);
+      root.setProperty("--brand-soft", db.theme.brandSoft);
+      root.setProperty("--accent", db.theme.accent);
+      document.title = `${db.title} · Database Detail`;
+
+      const statusClassMap = {
+        healthy: "status-healthy",
+        warning: "status-warning",
+        danger: "status-danger"
+      };
+
+      const pillToneMap = {
+        healthy: "status-healthy",
+        warning: "status-warning",
+        danger: "status-danger"
+      };
+
+      const renderHeroStats = () => db.heroStats.map((item) => `
+        <article class="stat-card">
+          <div class="stat-label">${item.label}</div>
+          <div class="stat-value">${item.value}${item.suffix ? `<small>${item.suffix}</small>` : ""}</div>
+          <div class="stat-meta">${item.meta}</div>
+        </article>
+      `).join("");
+
+      const renderMiniStats = () => db.usage.miniStats.slice(0, 2).map((item) => `
+        <article class="mini-stat">
+          <div class="mini-stat-label">${item.label}</div>
+          <div class="mini-stat-value">${item.value}</div>
+          <div class="mini-stat-meta">${item.meta}</div>
+        </article>
+      `).join("");
+
+      const renderTrendBars = () => db.usage.secondary.bars.map((item) => `
+        <div class="trend-bar-wrap">
+          <div class="trend-bar" style="height:${Math.max(18, item.value)}%;"></div>
+          <div class="trend-label">${item.label}</div>
+        </div>
+      `).join("");
+
+      const renderPeakUsage = () => db.peakUsage.map((item) => `
+        <article class="peak-card">
+          <div class="peak-label">${item.label}</div>
+          <div class="peak-value">${item.value}</div>
+          <div class="peak-meta">${item.meta}</div>
+        </article>
+      `).join("");
+
+      const renderKvList = (items) => items.map((item) => {
+        const value = item.value.includes("://") || item.value.includes(" ") || item.value.length > 28
+          ? item.value
+          : `<span class="mono">${item.value}</span>`;
+        return `
+          <div class="kv-item">
+            <div class="kv-key">${item.key}</div>
+            <div class="kv-value">${value}</div>
+          </div>
+        `;
+      }).join("");
+
+      const renderBindings = () => db.bindings.map((item) => `
+        <article class="project-card">
+          <div class="project-main">
+            <div class="project-top">
+              <a class="project-name" href="${item.href}">${item.name}</a>
+              <span class="pill engine">${item.role}</span>
+            </div>
+            <div class="project-meta">${item.meta}</div>
+            <div class="project-tags">
+              ${item.tags.slice(0, 2).map((tag) => `<span class="tag">${tag}</span>`).join("")}
+            </div>
+          </div>
+          <div class="project-side">
+            <div>
+              <div class="tiny-label">Traffic</div>
+              <div class="tiny-value">${item.traffic}</div>
+            </div>
+            <div>
+              <div class="tiny-label">Last Deploy</div>
+              <div class="tiny-value">${item.deployment}</div>
+            </div>
+            <a class="project-link" href="${item.href}">프로젝트 보기<span class="material-icons-round">chevron_right</span></a>
+          </div>
+        </article>
+        `).join("");
+
+      const getAccessValue = (candidates) => {
+        const found = db.access.overview.find((item) => candidates.includes(item.key));
+        return found ? found.value : "-";
+      };
+
+      const getCredentialValue = (candidates) => {
+        const found = db.access.credentials.find((item) => candidates.includes(item.key));
+        return found ? itemOrValue(found.value) : "-";
+      };
+
+      const itemOrValue = (value) => value.replace(/••••[^ ]*/g, "******");
+
+      const buildConsolePreset = () => {
+        const host = getAccessValue(["Primary Host", "Cluster Host", "Read-only Host", "Read Host", "Kibana URL"]);
+        const dbName = getAccessValue(["Database", "Mode", "Index Prefix", "Namespace"]);
+        const namespace = db.runtime.overview.find((item) => item.key === "Namespace")?.value || "default";
+        const opsUser = db.access.credentials.find((item) => /Ops User|Reader User|App User/i.test(item.key))?.value || "ops_user";
+
+        if (db.engineLabel.includes("PostgreSQL")) {
+          return {
+            bash: [
+              "$ kubectl exec -it hermes-main-postgres-0 -n postgres -- bash",
+              "postgres@hermes-main-postgres-0:/var/lib/postgresql/data$ export PAGER=cat",
+              `postgres@hermes-main-postgres-0:/var/lib/postgresql/data$ psql -h ${host} -U ${opsUser} ${dbName}`
+            ].join("\n"),
+            dbcli: [
+              `psql "${host} ${dbName}"`,
+              `host=${host}`,
+              `dbname=${dbName}`,
+              `user=${opsUser}`,
+              "sslmode=verify-full",
+              "",
+              `${dbName}=> select now();`
+            ].join("\n")
+          };
+        }
+
+        if (db.engineLabel.includes("MySQL")) {
+          return {
+            bash: [
+              "$ kubectl exec -it payments-mysql-0 -n mysql -- bash",
+              "mysql@payments-mysql-0:/var/lib/mysql$ export MYSQL_HISTFILE=/tmp/.mysql_history",
+              `mysql@payments-mysql-0:/var/lib/mysql$ mysql -h ${host} -u ${opsUser} ${dbName}`
+            ].join("\n"),
+            dbcli: [
+              `mysql --host=${host} --user=${opsUser} ${dbName}`,
+              "",
+              "mysql> show databases;",
+              "mysql> select now();"
+            ].join("\n")
+          };
+        }
+
+        if (db.engineLabel.includes("MongoDB")) {
+          return {
+            bash: [
+              `$ kubectl exec -it customer-profile-mongo-0 -n ${namespace} -- bash`,
+              `mongodb@customer-profile-mongo-0:/data/db$ mongosh "${host}/${dbName}"`,
+              ""
+            ].join("\n"),
+            dbcli: [
+              `mongosh "mongodb://${opsUser}@${host}/${dbName}"`,
+              "",
+              "> db.runCommand({ ping: 1 })",
+              "> show collections"
+            ].join("\n")
+          };
+        }
+
+        if (db.engineLabel.includes("Redis")) {
+          return {
+            bash: [
+              `$ kubectl exec -it rfr-workspace-session-redis-0 -n ${namespace} -- bash`,
+              `redis@rfr-workspace-session-redis-0:/data$ redis-cli -h ${host}`,
+              ""
+            ].join("\n"),
+            dbcli: [
+              `redis-cli -h ${host}`,
+              "",
+              "127.0.0.1:6379> ping",
+              "PONG"
+            ].join("\n")
+          };
+        }
+
+        if (db.engineLabel.includes("Elasticsearch")) {
+          return {
+            bash: [
+              `$ kubectl exec -it ops-search-data-0 -n ${namespace} -- bash`,
+              "elastic@ops-search-data-0:/usr/share/elasticsearch$ export ES_PATH_CONF=/usr/share/elasticsearch/config",
+              `elastic@ops-search-data-0:/usr/share/elasticsearch$ curl -u ${opsUser}:****** https://${host}:9200/_cluster/health`
+            ].join("\n"),
+            dbcli: [
+              `curl -u ${opsUser}:****** https://${host}:9200/_cat/indices?v`,
+              "",
+              "{",
+              '  "status": "green"',
+              "}"
+            ].join("\n")
+          };
+        }
+
+        return {
+          bash: [
+            `$ kubectl exec -it ${db.title}-0 -n ${namespace} -- bash`,
+            `$ export DB_TARGET=${host}`,
+            `$ ./connect.sh`
+          ].join("\n"),
+          dbcli: [
+            `endpoint: ${host}`,
+            `target: ${dbName}`,
+            `user: ${opsUser}`,
+            "",
+            "> status"
+          ].join("\n")
+        };
+      };
+
+      const consolePreset = buildConsolePreset();
+
+      const renderConsoleWorkbench = () => `
+        <article class="console-launch-card">
+          <div class="console-launch-top">
+            <div>
+              <div class="console-launch-title">웹 콘솔</div>
+              <div class="console-launch-meta">브라우저에서 Bash 또는 DB CLI 연결 방식을 고른 뒤 바로 세션을 열 수 있습니다.</div>
+            </div>
+          </div>
+          <div class="console-launch-actions">
+            <div class="console-mode-group" id="consoleModeGroup">
+              <button class="console-mode-btn" type="button" data-console-mode="bash">
+                <span class="material-icons-round">terminal</span>
+                Bash
+              </button>
+              <button class="console-mode-btn active" type="button" data-console-mode="dbcli">
+                <span class="material-icons-round">database</span>
+                DB CLI
+              </button>
+            </div>
+            <button class="inline-btn" id="connectConsoleButton" type="button" style="height:32px; padding:0 12px; font-size:11px;">
+              <span class="material-icons-round">play_arrow</span>
+              연결
+            </button>
+            <div class="console-launch-status" id="consoleConnectStatus">
+              <span class="material-icons-round">cable</span>
+              연결 대기
+            </div>
+          </div>
+          <pre class="console-terminal" id="consoleTerminal">DB CLI 선택됨
+
+${consolePreset.dbcli}</pre>
+        </article>
+      `;
+
+      const renderConsoleBindings = () => {
+        const accessUser = db.access.credentials.find((item) => /Ops User|Reader User|App User/i.test(item.key))?.value || "ops account";
+
+        return db.access.consoles.slice(0, 2).map((item, index) => `
+          <article class="project-card console-binding-card">
+            <div class="project-main">
+              <div class="project-top">
+                <div class="project-name">${item.name}</div>
+                <span class="pill engine">${index === 0 ? "기본 콘솔" : "연결 콘솔"}</span>
+              </div>
+              <div class="project-meta">${item.meta}</div>
+              <div class="project-tags">
+                <span class="tag">접근 계정 ${accessUser}</span>
+                <span class="tag">콘솔 허브</span>
+              </div>
+            </div>
+            <div class="console-binding-side">
+              <div>
+                <div class="tiny-label">Binding</div>
+                <div class="console-binding-status">연결됨</div>
+              </div>
+              <a class="project-link" href="workspace_tools_hub.html">콘솔 보기<span class="material-icons-round">chevron_right</span></a>
+            </div>
+          </article>
+        `).join("");
+      };
+
+      const renderCheckpoints = () => db.ops.checkpoints.slice(0, 2).map((item) => `
+        <article class="checkpoint-row">
+          <div class="checkpoint-top">
+            <div class="checkpoint-title">${item.title}</div>
+            <span class="pill ${pillToneMap[item.pill.tone] || "status-healthy"}">${item.pill.label}</span>
+          </div>
+          <div class="checkpoint-meta">${item.meta}</div>
+        </article>
+      `).join("");
+
+      const renderEvents = () => db.ops.events.slice(0, 2).map((item) => `
+        <article class="event-row">
+          <div class="event-icon"><span class="material-icons-round">${item.icon}</span></div>
+          <div>
+            <div class="event-title">${item.title}</div>
+            <div class="event-meta">${item.meta}</div>
+          </div>
+          <div class="event-time">${item.time}</div>
+        </article>
+      `).join("");
+
+      const renderClusterMembers = () => db.runtime.members.slice(0, 2).map((item) => `
+        <article class="member-row">
+          <div class="member-top">
+            <div class="member-title">${item.name}</div>
+            <span class="pill ${pillToneMap[item.pill.tone] || "status-healthy"}">${item.pill.label}</span>
+          </div>
+          <div class="member-meta">${item.role} · ${item.meta}</div>
+          <div class="member-extra">
+            <span>${item.usage}</span>
+            <span>${item.storage}</span>
+          </div>
+        </article>
+      `).join("");
+
+      const renderSnapshotPolicies = () => db.snapshots.summary.map((item) => `
+        <article class="peak-card">
+          <div class="peak-label">${item.label}</div>
+          <div class="peak-value">${item.value}</div>
+          <div class="peak-meta">${item.meta}</div>
+        </article>
+      `).join("");
+
+      const renderSnapshots = () => db.snapshots.recent.slice(0, 5).map((item) => `
+        <article class="snapshot-row">
+          <div class="snapshot-top">
+            <div class="snapshot-title">${item.name}</div>
+            <div class="snapshot-top-right">
+              <span class="pill engine">${item.cycle}</span>
+              <span class="pill ${pillToneMap[item.pill.tone] || "status-healthy"}">${item.pill.label}</span>
+            </div>
+          </div>
+          <div class="snapshot-meta">${item.meta}</div>
+          <div class="snapshot-extra">
+            <span>${item.extraLeft}</span>
+            <span>${item.extraRight}</span>
+          </div>
+        </article>
+      `).join("");
+
+      document.getElementById("app").innerHTML = `
+        <div
+          data-ax-topbar
+          data-active-key="database"
+          data-search-placeholder="DB 이름, 엔진, 연결 프로젝트를 검색하세요..."
+          data-search-source="workspace-database-detail"
+          data-search-source-label="Database Detail"
+          data-search-default-type="database"
+        ></div>
+        <template data-legacy-topbar>
+          <div class="topbar-inner">
+            <a class="topbar-brand" href="portal_launchpad.html" aria-label="AX Studio">
+              <span class="brand-mark" aria-hidden="true">
+                <img src="${logoDataUrl}" alt="AX Studio" />
+              </span>
+              <span class="brand-name">AX Studio</span>
+            </a>
+            <div class="logo-menu" id="serviceMenuWrap">
+              <button class="menu-trigger" id="serviceMenuButton" type="button" aria-label="전체 메뉴 열기" aria-haspopup="true" aria-expanded="false" aria-controls="serviceMenuPopover">
+                <span class="material-icons-round">apps</span>
+                <span class="material-icons-round menu-caret">expand_more</span>
+              </button>
+              <div class="service-popover" id="serviceMenuPopover" aria-labelledby="serviceMenuButton" hidden>
+                <div class="service-popover-inner">
+                  <div class="service-groups">
+                    <section class="service-group">
+                      <div class="service-group-title">Store</div>
+                      <div class="service-links">
+                        <a class="service-link" href="dej_app_store.html"><span class="material-icons-round service-link-icon">widgets</span><span class="service-link-copy"><span class="service-link-title">App Gallery</span><span class="service-link-desc">실행형 개발 앱과 워크스페이스 도구를 발견하고 살펴보기</span></span></a>
+                        <a class="service-link" href="dej_agent_store.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">AI Gallery</span><span class="service-link-desc">챗봇과 tool 자산을 전시하고 재사용 흐름으로 연결</span></span></a>
+                      </div>
+                    </section>
+                    <section class="service-group">
+                      <div class="service-group-title">Accessibility</div>
+                      <div class="service-links">
+                        <a class="service-link" href="workspace_domain_hub.html"><span class="material-icons-round service-link-icon">apartment</span><span class="service-link-copy"><span class="service-link-title">Domain</span><span class="service-link-desc">DNS 및 도메인 관리</span></span></a>
+                        <a class="service-link" href="workspace_permission_hub.html"><span class="material-icons-round service-link-icon">groups</span><span class="service-link-copy"><span class="service-link-title">Permission</span><span class="service-link-desc">IAM 및 권한 관리</span></span></a>
+                      </div>
+                    </section>
+                    <section class="service-group">
+                      <div class="service-group-title">Storage</div>
+                      <div class="service-links">
+                        <a class="service-link is-current" href="workspace_database_hub.html"><span class="material-icons-round service-link-icon">storage</span><span class="service-link-copy"><span class="service-link-title">Database</span><span class="service-link-desc">데이터베이스 관리(MongoDB, PostgreSQL, Redis 등)</span></span></a>
+                        <a class="service-link" href="workspace_s3_hub.html"><span class="material-icons-round service-link-icon">folder</span><span class="service-link-copy"><span class="service-link-title">Buckets</span><span class="service-link-desc">S3 스토리지 및 버킷 관리</span></span></a>
+                      </div>
+                    </section>
+                    <section class="service-group">
+                      <div class="service-group-title">Development</div>
+                      <div class="service-links">
+                        <a class="service-link" href="workspace_tools_hub.html"><span class="material-icons-round service-link-icon">web</span><span class="service-link-copy"><span class="service-link-title">Consoles</span><span class="service-link-desc">데이터베이스 웹 콘솔 모음</span></span></a>
+                        <a class="service-link" href="workspace_projects_hub.html"><span class="material-icons-round service-link-icon">public</span><span class="service-link-copy"><span class="service-link-title">Project/Publish</span><span class="service-link-desc">개발 프로젝트 관리(IDE 작업 공간)</span></span></a>
+                        <a class="service-link" href="#"><span class="material-icons-round service-link-icon">science</span><span class="service-link-copy"><span class="service-link-title">Jupyter</span><span class="service-link-desc">노트북 실험 및 분석 환경</span></span></a>
+                      </div>
+                    </section>
+                    <section class="service-group">
+                      <div class="service-group-title">AI</div>
+                      <div class="service-links">
+                        <a class="service-link" href="workspace_agent_hub.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">Workflow</span><span class="service-link-desc">Dify workflow와 승인형 자동화 런타임을 운영</span></span></a>
+                        <a class="service-link" href="workspace_chatbot_hub.html"><span class="material-icons-round service-link-icon">chat</span><span class="service-link-copy"><span class="service-link-title">Chatbot</span><span class="service-link-desc">API와 Frontend URL 기반 챗봇 엔드포인트를 관리</span></span></a>
+                        <a class="service-link" href="workspace_tool_inventory_hub.html"><span class="material-icons-round service-link-icon">inventory_2</span><span class="service-link-copy"><span class="service-link-title">Tool Inventory</span><span class="service-link-desc">에이전트가 사용하는 연결된 MCP 및 도구 자산을 관리</span></span></a>
+                        <a class="service-link" href="workspace_keycenter_hub.html"><span class="material-icons-round service-link-icon">vpn_key</span><span class="service-link-copy"><span class="service-link-title">Keycenter</span><span class="service-link-desc">발급된 LLM 키와 연결 상태를 관리</span></span></a>
+                      </div>
+                    </section>
+                    <section class="service-group">
+                      <div class="service-group-title">Support</div>
+                      <div class="service-links">
+                        <a class="service-link" href="#"><span class="material-icons-round service-link-icon">description</span><span class="service-link-copy"><span class="service-link-title">다큐먼트</span><span class="service-link-desc">가이드와 운영 문서를 확인합니다</span></span></a>
+                        <a class="service-link" href="about_dej.html"><span class="material-icons-round service-link-icon">timeline</span><span class="service-link-copy"><span class="service-link-title">About DEJ</span><span class="service-link-desc">DEJ의 역사와 CEJ·DEJ 흐름을 확인합니다</span></span></a>
+                        <a class="service-link" href="#"><span class="material-icons-round service-link-icon">chat_bubble_outline</span><span class="service-link-copy"><span class="service-link-title">챗봇</span><span class="service-link-desc">지원 챗봇으로 빠르게 문의합니다</span></span></a>
+                        <a class="service-link" href="#"><span class="material-icons-round service-link-icon">campaign</span><span class="service-link-copy"><span class="service-link-title">요청하기</span><span class="service-link-desc">기능 요청이나 지원 요청을 등록합니다</span></span></a>
+                      </div>
+                    </section>
+                  </div>
+                  <div class="service-outlinks" aria-label="외부 서비스 바로가기">
+                    <div class="service-outlinks-title">DEJ 시스템</div>
+                    <div class="service-outlink-list">
+                      <a class="service-outlink" href="https://dej-chatbot.apps.hedej.lge.com" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">forum</span><span class="service-outlink-copy"><span class="service-outlink-title">DEJ 챗봇</span><span class="service-outlink-desc">Workspace 지원 챗봇</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
+                      <a class="service-outlink" href="https://workspace.hedej.lge.com/heans" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">open_in_new</span><span class="service-outlink-copy"><span class="service-outlink-title">HEANS</span><span class="service-outlink-desc">HEANS 서비스 바로가기</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
+                      <a class="service-outlink" href="https://workspace.hedej.lge.com/hevpds" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">open_in_new</span><span class="service-outlink-copy"><span class="service-outlink-title">HEVPDS</span><span class="service-outlink-desc">HEVPDS 서비스 바로가기</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="search-wrap">
+              <span class="material-icons-round ico">search</span>
+              <input class="search-input" placeholder="DB 이름, 엔진, 연결 프로젝트를 검색하세요..." />
+              <div class="search-ai"><span class="material-icons-round">auto_awesome</span>AI</div>
+            </div>
+            <div class="tb-spacer"></div>
+            <div class="tb-icon"><span class="material-icons-round">notifications_none</span><div class="dot"></div></div>
+            <div class="avatar">TN</div>
+          </div>
+      </template>
+
+        <main class="page">
+          <nav class="breadcrumbs" aria-label="Breadcrumb">
+            <a href="portal_launchpad.html">Launchpad</a>
+            <span class="material-icons-round" aria-hidden="true">chevron_right</span>
+            <a href="workspace_database_hub.html">Database Hub</a>
+            <span class="material-icons-round" aria-hidden="true">chevron_right</span>
+            <span>${db.title}</span>
+          </nav>
+
+          <section class="panel hero">
+            <div class="hero-top">
+              <div>
+                <div class="eyebrow"><span class="material-icons-round">database</span>${db.eyebrow}</div>
+                <div class="hero-title-row">
+                  <h1 class="hero-title">${db.title}</h1>
+                  <span class="pill ${statusClassMap[db.statusTone] || "status-healthy"}">${db.statusLabel}</span>
+                  <span class="pill engine">${db.engineLabel}</span>
+                </div>
+                <p class="hero-desc">${db.description}</p>
+              </div>
+              <div class="hero-actions">
+                ${db.actions.map((action, index) => `
+                  <a class="action-btn ${index === 0 ? "secondary" : "primary"}" href="${action.href}">
+                    <span class="material-icons-round">${action.icon}</span>${action.label}
+                  </a>
+                `).join("")}
+              </div>
+            </div>
+            <div class="hero-stats">${renderHeroStats()}</div>
+          </section>
+
+          <div class="layout">
+            <div class="main-col">
+              <section class="panel section">
+                <div class="section-head">
+                  <div>
+                    <div class="section-kicker"><span class="material-icons-round">stacked_bar_chart</span>Usage Overview</div>
+                    <h2 class="section-title">DB 사용량</h2>
+                    <p class="section-desc">현재 사용량과 최대 사용 리소스를 중심으로 볼 수 있습니다.</p>
+                  </div>
+                </div>
+                <article class="usage-card">
+                  <div class="usage-head">
+                    <div>
+                      <div class="usage-name">${db.usage.primary.name}</div>
+                      <div class="usage-meta">${db.usage.primary.meta}</div>
+                    </div>
+                    <div class="usage-value">${db.usage.primary.percent}%</div>
+                  </div>
+                  <div class="usage-track"><div class="usage-fill" style="width:${db.usage.primary.percent}%;"></div></div>
+                  <div class="usage-legend">
+                    <span>${db.usage.primary.value}</span>
+                    <span>${db.usage.primary.legendRight}</span>
+                  </div>
+                  <div class="usage-meta" style="margin-top:8px;">${db.usage.primary.legendLeft}</div>
+                  <div class="mini-stats">${renderMiniStats()}</div>
+                </article>
+                <article class="card section-card-spacer">
+                  <div class="card-title">최대 사용 리소스</div>
+                  <div class="peak-grid">${renderPeakUsage()}</div>
+                </article>
+              </section>
+
+              <section class="panel section">
+                <div class="section-head">
+                  <div>
+                    <div class="section-kicker"><span class="material-icons-round">monitor_heart</span>Status</div>
+                    <h2 class="section-title">DB 상태</h2>
+                    <p class="section-desc">실행 상태와 운영 상태를 간단히 볼 수 있습니다.</p>
+                  </div>
+                </div>
+                <div class="access-grid">
+                  <article class="card">
+                    <div class="card-title">상태 개요</div>
+                    <div class="kv-list">${renderKvList([{ key: "Runtime State", value: db.statusLabel }, { key: "Engine", value: db.engineLabel }, ...db.runtime.overview])}</div>
+                  </article>
+                  <article class="card">
+                    <div class="card-title">운영 상태</div>
+                    <div class="checkpoint-list">${renderCheckpoints()}</div>
+                    <div class="member-list section-card-spacer">${renderClusterMembers()}</div>
+                  </article>
+                </div>
+              </section>
+
+              <section class="panel section">
+                <div class="section-head">
+                  <div>
+                    <div class="section-kicker"><span class="material-icons-round">restore_page</span>Snapshots</div>
+                    <h2 class="section-title">DB 스냅샷 관리</h2>
+                    <p class="section-desc">수동 생성과 최근 스냅샷 목록을 간단히 볼 수 있습니다.</p>
+                  </div>
+                </div>
+                <article class="card">
+                  <div class="card-head">
+                    <div>
+                      <div class="card-title">스냅샷 관리</div>
+                      <div class="card-desc">최신 스냅샷 목록은 최대 10개까지 순환 보관 기준으로 정리됩니다.</div>
+                    </div>
+                    <button class="inline-btn" id="manualSnapshotButton" type="button">
+                      <span class="material-icons-round">photo_camera</span>
+                      수동 스냅샷
+                    </button>
+                  </div>
+                  <div class="snapshot-manage">
+                    <article class="snapshot-action-card">
+                      <div>
+                        <div class="snapshot-action-title">${db.snapshots.manual.name}</div>
+                        <div class="snapshot-action-meta">${db.snapshots.manual.meta}</div>
+                      </div>
+                      <div class="snapshot-badges">
+                        <span class="tag">${db.snapshots.manual.cycle}</span>
+                        <span class="tag">${db.snapshots.manual.extraLeft}</span>
+                        <span class="tag">${db.snapshots.manual.extraRight}</span>
+                      </div>
+                    </article>
+                    <div class="snapshot-policy-grid">${renderSnapshotPolicies()}</div>
+                    <div class="card-head" style="margin-bottom:0;">
+                      <div class="card-title">스냅샷 목록</div>
+                      <div class="snapshot-rotation-note" id="snapshotRotationCount">${Math.min(db.snapshots.recent.length, 10)} / 10</div>
+                    </div>
+                    <div class="snapshot-list" id="snapshotList">${renderSnapshots()}</div>
+                  </div>
+                </article>
+              </section>
+
+              <section class="panel section">
+                <div class="section-head">
+                  <div>
+                    <div class="section-kicker"><span class="material-icons-round">vpn_key</span>Access</div>
+                    <h2 class="section-title">DB 접근 정보</h2>
+                    <p class="section-desc">접속 경로와 계정 정보를 볼 수 있습니다.</p>
+                  </div>
+                  <a class="section-link" href="workspace_permission_hub.html">접근 정책 보기<span class="material-icons-round">chevron_right</span></a>
+                </div>
+                <div class="access-grid">
+                  <article class="card">
+                    <div class="card-title">접속 경로</div>
+                    <div class="kv-list">${renderKvList(db.access.overview)}</div>
+                  </article>
+                  <article class="card">
+                    <div class="card-title">계정 및 정책</div>
+                    <div class="kv-list">${renderKvList(db.access.credentials)}</div>
+                  </article>
+                </div>
+              </section>
+
+              <section class="panel section">
+                <div class="section-head">
+                  <div>
+                    <div class="section-kicker"><span class="material-icons-round">link</span>Connected Projects</div>
+                    <h2 class="section-title">연결된 프로젝트</h2>
+                    <p class="section-desc">연결된 프로젝트와 역할을 볼 수 있습니다.</p>
+                  </div>
+                  <a class="section-link" href="workspace_projects_hub.html">프로젝트 허브 보기<span class="material-icons-round">chevron_right</span></a>
+                </div>
+                <div class="project-list">${renderBindings()}</div>
+              </section>
+
+              <section class="panel section">
+                <div class="section-head">
+                  <div>
+                    <div class="section-kicker"><span class="material-icons-round">terminal</span>Connected Consoles</div>
+                    <h2 class="section-title">연결된 콘솔</h2>
+                    <p class="section-desc">연결된 콘솔과 웹 콘솔 진입 상태를 볼 수 있습니다.</p>
+                  </div>
+                </div>
+                <div class="console-workbench">${renderConsoleWorkbench()}</div>
+                <div class="project-list">${renderConsoleBindings()}</div>
+              </section>
+            </div>
+          </div>
+        </main>
+      `;
+
+      const menuWrap = document.getElementById("serviceMenuWrap");
+      const menuButton = document.getElementById("serviceMenuButton");
+      const menuPopover = document.getElementById("serviceMenuPopover");
+
+      if (menuWrap && menuButton && menuPopover) {
+        const setOpen = (open) => {
+          menuWrap.classList.toggle("is-open", open);
+          menuButton.setAttribute("aria-expanded", String(open));
+          menuPopover.hidden = !open;
+        };
+
+        setOpen(false);
+
+        menuButton.addEventListener("click", (event) => {
+          event.preventDefault();
+          setOpen(!menuWrap.classList.contains("is-open"));
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!menuWrap.contains(event.target)) setOpen(false);
+        });
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            setOpen(false);
+            menuButton.focus();
+          }
+        });
+      }
+
+      const snapshotListEl = document.getElementById("snapshotList");
+      const manualSnapshotButton = document.getElementById("manualSnapshotButton");
+      const snapshotRotationCountEl = document.getElementById("snapshotRotationCount");
+      const consoleModeButtons = Array.from(document.querySelectorAll("[data-console-mode]"));
+      const consoleTerminalEl = document.getElementById("consoleTerminal");
+      const consoleConnectButton = document.getElementById("connectConsoleButton");
+      const consoleConnectStatusEl = document.getElementById("consoleConnectStatus");
+      let selectedConsoleMode = "dbcli";
+
+      if (snapshotListEl && manualSnapshotButton) {
+        manualSnapshotButton.addEventListener("click", () => {
+          const now = new Date();
+          const pad = (value) => String(value).padStart(2, "0");
+          const stamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
+          const createdAt = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())} KST`;
+          const expiresAt = new Date(now);
+          expiresAt.setDate(expiresAt.getDate() + 3);
+
+          db.snapshots.recent.unshift({
+            name: `manual-${stamp}`,
+            cycle: "Manual",
+            pill: { label: "Creating", tone: "warning" },
+            meta: `${createdAt} 생성 요청 · 수동 스냅샷`,
+            extraLeft: "보관 72시간",
+            extraRight: `${pad(expiresAt.getMonth() + 1)}월 ${pad(expiresAt.getDate())}일 만료 예정`
+          });
+
+          db.snapshots.recent = db.snapshots.recent.slice(0, 10);
+
+          snapshotListEl.innerHTML = renderSnapshots();
+          if (snapshotRotationCountEl) {
+            snapshotRotationCountEl.textContent = `${Math.min(db.snapshots.recent.length, 10)} / 10`;
+          }
+        });
+      }
+
+      const renderConsoleTerminal = (mode, connected) => {
+        const title = mode === "bash" ? "Bash 선택됨" : "DB CLI 선택됨";
+        const body = mode === "bash" ? consolePreset.bash : consolePreset.dbcli;
+        const suffix = connected ? "\n\nsession status: connected" : "";
+        return `${title}\n\n${body}${suffix}`;
+      };
+
+      if (consoleModeButtons.length && consoleTerminalEl) {
+        consoleModeButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedConsoleMode = button.dataset.consoleMode || "dbcli";
+            consoleModeButtons.forEach((item) => item.classList.toggle("active", item === button));
+            consoleTerminalEl.textContent = renderConsoleTerminal(selectedConsoleMode, false);
+            if (consoleConnectStatusEl) {
+              consoleConnectStatusEl.innerHTML = '<span class="material-icons-round">cable</span>연결 대기';
+            }
+          });
+        });
+      }
+
+      if (consoleConnectButton && consoleTerminalEl) {
+        consoleConnectButton.addEventListener("click", () => {
+          consoleTerminalEl.textContent = renderConsoleTerminal(selectedConsoleMode, true);
+          if (consoleConnectStatusEl) {
+            consoleConnectStatusEl.innerHTML = `<span class="material-icons-round">check_circle</span>${selectedConsoleMode === "bash" ? "Bash 연결됨" : "DB CLI 연결됨"}`;
+          }
+        });
+      }
+    })();
+  </script>
+  <script src="ax_studio_topbar.js"></script>
+</body>
+</html>

@@ -12,7 +12,7 @@ coverage
 playwright-report/
 test-results/
 tests/
-reference/
-mock-api/
+# reference/
+# mock-api/
 playwright.config.ts
 scripts/ensure-playwright-chromium.mjs

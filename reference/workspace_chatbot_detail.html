@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chatbot Detail</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="workspace_detail_shared.css" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <style>
+    .usage-card {
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:var(--surface-soft);
+      padding:20px;
+    }
+    .usage-head {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:16px;
+    }
+    .usage-name {
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    .usage-meta {
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+      margin-top:4px;
+    }
+    .usage-value {
+      font-size:28px;
+      font-weight:800;
+      letter-spacing:-.04em;
+      text-align:right;
+    }
+    .mini-stats {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:12px;
+    }
+    .mini-stat {
+      padding:14px;
+      border-radius:16px;
+      background:#fff;
+      border:1px solid var(--border);
+    }
+    .mini-stat-label {
+      color:var(--subtle);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+    .mini-stat-value {
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      margin-bottom:4px;
+    }
+    .mini-stat-meta {
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .access-grid {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:18px;
+    }
+    .project-list {
+      display:grid;
+      gap:12px;
+    }
+    .project-card {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:12px;
+      align-items:center;
+      padding:16px 18px;
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:var(--surface-soft);
+    }
+    .project-main {
+      min-width:0;
+      display:grid;
+      gap:7px;
+    }
+    .project-top {
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:10px;
+    }
+    .project-name {
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    .project-meta {
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .project-tags {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .project-side {
+      display:grid;
+      gap:8px;
+      justify-items:end;
+      text-align:right;
+    }
+    .tiny-label {
+      color:var(--subtle);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+    }
+    .tiny-value {
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    .project-link {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      color:var(--brand);
+      font-size:12px;
+      font-weight:800;
+    }
+    .section-card-spacer {
+      margin-top:18px;
+    }
+    @media (max-width: 920px) {
+      .mini-stats,
+      .access-grid {
+        grid-template-columns:1fr;
+      }
+      .project-card {
+        grid-template-columns:1fr;
+      }
+      .project-side {
+        justify-items:start;
+        text-align:left;
+      }
+      .usage-head {
+        flex-direction:column;
+        align-items:flex-start;
+      }
+      .usage-value {
+        text-align:left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    function list(rows) {
+      return rows.map((row) => `<div class="list-row"><div class="list-main"><div class="list-title">${row.title}</div><div class="list-meta">${row.meta}</div></div>${row.side ? `<div class="list-side">${row.side}</div>` : ""}</div>`).join("");
+    }
+    function kv(rows) {
+      return rows.map((row) => `<div class="kv-item"><div class="kv-key">${row.key}</div><div class="kv-value">${row.value}</div></div>`).join("");
+    }
+    function secretGrid(rows) {
+      return `<div class="secret-grid two">${rows.map((row) => `
+        <article class="secret-card">
+          <div class="secret-label">${row.label}</div>
+          <div class="secret-value"><span class="mono">${row.value}</span></div>
+          <div class="secret-meta">${row.meta || ""}</div>
+        </article>
+      `).join("")}</div>`;
+    }
+    function metricSummary(rows) {
+      return `<div class="mini-stats">${rows.map((row) => `
+        <article class="mini-stat">
+          <div class="mini-stat-label">${row.label}</div>
+          <div class="mini-stat-value">${row.value}</div>
+          <div class="mini-stat-meta">${row.meta}</div>
+        </article>
+      `).join("")}</div>`;
+    }
+    function healthSummary(rows) {
+      return `<div class="info-list">${rows.map((row) => `<div class="list-row"><div class="list-main"><div class="list-title">${row.title}</div><div class="list-meta">${row.meta}</div></div><div class="list-side">${row.value}</div></div>`).join("")}</div>`;
+    }
+    function connectionCards(rows) {
+      return `<div class="project-list">${rows.map((row) => `
+        <article class="project-card">
+          <div class="project-main">
+            <div class="project-top">
+              <div class="project-name">${row.title}</div>
+              <span class="tag">${row.badge}</span>
+            </div>
+            <div class="project-meta">${row.meta}</div>
+            <div class="project-tags">${(row.tags || []).map((tag) => `<span class="tag">${tag}</span>`).join("")}</div>
+          </div>
+          <div class="project-side">
+            <div class="tiny-label">${row.sideLabel}</div>
+            <div class="tiny-value">${row.sideValue}</div>
+            ${row.href ? `<a class="project-link" href="${row.href}">${row.linkLabel || "자세히 보기"}<span class="material-icons-round">chevron_right</span></a>` : ""}
+          </div>
+        </article>
+      `).join("")}</div>`;
+    }
+    function buildAccessSection(item) {
+      const accessTitle = item.botType === "api" ? "API 접속 정보" : "웹 접속 정보";
+      const accessRows = item.botType === "api" ? item.apiInfo : item.webInfo;
+
+      return `
+        <section class="panel section">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker"><span class="material-icons-round">vpn_key</span>Access</div>
+              <h2 class="section-title">접근 정보</h2>
+              <p class="section-desc">${item.botType === "api" ? "연결할 API 주소와 인증 방식을 확인할 수 있습니다." : "사용자가 접속할 URL과 노출 방식을 확인할 수 있습니다."}</p>
+            </div>
+            <a class="section-link" href="${item.accessLink.href}">${item.accessLink.label}<span class="material-icons-round">chevron_right</span></a>
+          </div>
+          <div class="access-grid">
+            <article class="card">
+              <div class="card-title">${accessTitle}</div>
+              <div class="kv-list">${kv(accessRows)}</div>
+            </article>
+            <article class="card">
+              <div class="card-title">등록 정보</div>
+              ${secretGrid(item.registration)}
+            </article>
+          </div>
+          <article class="card section-card-spacer">
+            <div class="card-title">연결 확인</div>
+            <div class="info-list">${list(item.connectionChecks)}</div>
+          </article>
+        </section>
+      `;
+    }
+    function buildItem(item) {
+      const primaryMetric = item.statusCards[1];
+      return {
+        ...item,
+        layoutMode: "full-width",
+        mainHtml: `
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">stacked_bar_chart</span>Usage Overview</div>
+                <h2 class="section-title">사용 현황</h2>
+                <p class="section-desc">최근 사용량과 핵심 상태를 먼저 확인할 수 있습니다.</p>
+              </div>
+            </div>
+            <article class="usage-card">
+              <div class="usage-head">
+                <div>
+                  <div class="usage-name">${primaryMetric.title}</div>
+                  <div class="usage-meta">${primaryMetric.meta}</div>
+                </div>
+                <div class="usage-value">${primaryMetric.value}</div>
+              </div>
+              ${metricSummary(item.usageSummary)}
+            </article>
+            <article class="card section-card-spacer">
+              <div class="card-title">상태 요약</div>
+              <div class="card-desc">현재 상태와 최근 오류 흐름을 함께 확인할 수 있습니다.</div>
+              <div class="section-stack">${healthSummary(item.statusCards)}</div>
+            </article>
+          </section>
+          ${buildAccessSection(item)}
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">link</span>Connection Status</div>
+                <h2 class="section-title">연결 상태</h2>
+                <p class="section-desc">이 챗봇이 어떤 채널과 자산에 연결되어 있는지 함께 볼 수 있습니다.</p>
+              </div>
+              <a class="section-link" href="workspace_chatbot_hub.html">Chatbot Hub 보기<span class="material-icons-round">chevron_right</span></a>
+            </div>
+            ${connectionCards(item.connectedItems)}
+          </section>
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">monitor_heart</span>Checks</div>
+                <h2 class="section-title">점검 결과</h2>
+                <p class="section-desc">최근 점검 항목과 현재 확인 결과를 볼 수 있습니다.</p>
+              </div>
+            </div>
+            <div class="info-list">${list(item.healthChecks)}</div>
+          </section>
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">lightbulb</span>Usage Tips</div>
+                <h2 class="section-title">사용 팁</h2>
+                <p class="section-desc">연결 전 확인하면 좋은 항목을 빠르게 볼 수 있습니다.</p>
+              </div>
+            </div>
+            <div class="info-list">${list(item.guideTips)}</div>
+          </section>
+        `,
+        sidebarHtml: ""
+      };
+    }
+
+    const rawItems = [
+      {
+        key: "support-assistant-api",
+        title: "support-assistant-api",
+        description: "워크스페이스에서 바로 연결해 사용할 수 있는 고객 문의 응답용 Bot API입니다.",
+        heroIcon: "api",
+        botType: "api",
+        typeLabel: "Bot API",
+        statusLabel: "Live",
+        statusTone: "healthy",
+        theme: { bg: "#e9f8ff", brand: "#0891b2", brandH: "#0e7490", brandBg: "#cbeeff", brandSoft: "rgba(8,145,178,.18)", accent: "#22d3ee" },
+        accessLink: { href: "workspace_keycenter_hub.html", label: "Keycenter 보기" },
+        actions: [
+          { label: "Chatbot Hub", icon: "chat", href: "workspace_chatbot_hub.html" },
+          { label: "Keycenter", icon: "arrow_outward", variant: "primary", href: "workspace_keycenter_hub.html" }
+        ],
+        heroStats: [
+          { label: "Type", value: "Bot API", meta: "workspace connectable" },
+          { label: "Status", value: "Live", meta: "ready to use" },
+          { label: "Visibility", value: "Workspace", meta: "shared use" },
+          { label: "Auth", value: "API Key", meta: "gateway header" }
+        ],
+        registration: [
+          { label: "챗봇 이름", value: "support-assistant-api", meta: "등록된 식별자" },
+          { label: "담당 조직", value: "support platform", meta: "운영 owner" },
+          { label: "등록자", value: "taehun.nam", meta: "2026.06.16 등록" },
+          { label: "공개 범위", value: "Workspace", meta: "같은 워크스페이스에서 사용" }
+        ],
+        apiInfo: [
+          { key: "Base URL", value: '<span class="mono">https://chat-api.dej.ai</span>' },
+          { key: "Endpoint", value: '<span class="mono">/v1/support-assistant/chat/completions</span>' },
+          { key: "Method", value: '<span class="mono">POST</span>' },
+          { key: "인증 헤더", value: '<span class="mono">Authorization: Bearer &lt;api-key&gt;</span>' },
+          { key: "OpenAI 호환", value: "예" }
+        ],
+        connectionChecks: [
+          { title: "연결 가능", meta: "최근 점검에서 200 OK를 확인했습니다.", side: "정상" },
+          { title: "인증 확인", meta: "워크스페이스 키로 테스트 호출을 통과했습니다.", side: "완료" }
+        ],
+        statusCards: [
+          { title: "연결 상태", meta: "gateway 기준", value: "Healthy" },
+          { title: "최근 호출", meta: "최근 24시간", value: "12.4k" },
+          { title: "오류", meta: "최근 1시간", value: "0" }
+        ],
+        usageSummary: [
+          { label: "Status", value: "Healthy", meta: "gateway 상태가 정상입니다." },
+          { label: "Visibility", value: "Workspace", meta: "같은 워크스페이스에서 바로 연결할 수 있습니다." },
+          { label: "Auth", value: "API Key", meta: "Gateway API Key를 사용합니다." },
+          { label: "Use Surface", value: "2", meta: "support console, ops test client에서 사용 중입니다." }
+        ],
+        connectedItems: [
+          { title: "support console", meta: "고객 문의 응답 흐름에서 이 API를 직접 호출합니다.", badge: "Workspace", tags: ["Primary surface", "운영 사용"], sideLabel: "Channel", sideValue: "Console", href: "workspace_chatbot_hub.html", linkLabel: "챗봇 허브 보기" },
+          { title: "ops test client", meta: "운영 검증과 응답 회귀 확인에 사용하는 테스트 화면입니다.", badge: "Validation", tags: ["운영 검증", "테스트 호출"], sideLabel: "Channel", sideValue: "Client", href: "workspace_chatbot_hub.html", linkLabel: "챗봇 허브 보기" },
+          { title: "gateway key binding", meta: "Keycenter에서 발급한 gateway key로 인증을 연결합니다.", badge: "Keycenter", tags: ["API Key", "Gateway"], sideLabel: "Access", sideValue: "Bound", href: "workspace_keycenter_hub.html", linkLabel: "Keycenter 보기" }
+        ],
+        healthChecks: [
+          { title: "Endpoint Probe", meta: "2026.06.16 11:12 / status 200", side: "Pass" },
+          { title: "Auth Probe", meta: "서비스 키 검증 완료", side: "Pass" },
+          { title: "Rate Limit", meta: "현재 quota 여유 61%", side: "Normal" }
+        ],
+        guideTips: [
+          { title: "연결 전 인증 헤더를 먼저 확인합니다", meta: "Gateway API Key 형식이 맞지 않으면 정상 URL이어도 바로 사용할 수 없습니다.", side: "Auth" },
+          { title: "테스트 호출은 support console과 같은 payload로 확인합니다", meta: "실제 사용 위치와 다른 요청 형식으로 검증하면 응답 차이를 놓치기 쉽습니다.", side: "Payload" },
+          { title: "오류가 없더라도 quota 여유를 함께 봅니다", meta: "호출량이 늘어나는 시간대에는 rate limit 여유가 더 중요할 수 있습니다.", side: "Quota" }
+        ]
+      },
+      {
+        key: "docs-guide-widget",
+        title: "docs-guide-widget",
+        description: "문서 페이지에서 바로 열어볼 수 있는 Bot Web 바로가기입니다.",
+        heroIcon: "language",
+        botType: "web",
+        typeLabel: "Bot Web",
+        statusLabel: "Live",
+        statusTone: "healthy",
+        theme: { bg: "#e9f8ff", brand: "#0891b2", brandH: "#0e7490", brandBg: "#cbeeff", brandSoft: "rgba(8,145,178,.18)", accent: "#22d3ee" },
+        accessLink: { href: "workspace_domain_detail.html?item=docs", label: "도메인 보기" },
+        actions: [
+          { label: "Chatbot Hub", icon: "chat", href: "workspace_chatbot_hub.html" },
+          { label: "도메인 보기", icon: "arrow_outward", variant: "primary", href: "workspace_domain_detail.html?item=docs" }
+        ],
+        heroStats: [
+          { label: "Type", value: "Bot Web", meta: "web shortcut" },
+          { label: "Status", value: "Live", meta: "url reachable" },
+          { label: "Visibility", value: "Public", meta: "docs users" },
+          { label: "Access", value: "SSO / Public", meta: "mixed entry" }
+        ],
+        registration: [
+          { label: "챗봇 이름", value: "docs-guide-widget", meta: "등록된 식별자" },
+          { label: "담당 조직", value: "docs experience", meta: "운영 owner" },
+          { label: "등록자", value: "minji.kim", meta: "2026.06.14 등록" },
+          { label: "공개 범위", value: "Public", meta: "문서 사용자 대상" }
+        ],
+        webInfo: [
+          { key: "접속 URL", value: '<span class="mono">https://docs.dej.ai/chatbot/guide-widget</span>' },
+          { key: "도메인", value: '<span class="mono">docs.dej.ai</span>' },
+          { key: "로그인 필요", value: "선택" },
+          { key: "노출 방식", value: "Landing, Widget, Embedded" },
+          { key: "새 창 열기", value: "지원" }
+        ],
+        connectionChecks: [
+          { title: "URL 확인", meta: "기본 주소가 정상 응답합니다.", side: "정상" },
+          { title: "Embed 확인", meta: "허용된 도메인에서 iframe 사용이 가능합니다.", side: "완료" }
+        ],
+        statusCards: [
+          { title: "접속 상태", meta: "primary url 기준", value: "Healthy" },
+          { title: "최근 열림", meta: "최근 7일", value: "4.8k" },
+          { title: "오류", meta: "최근 24시간", value: "1" }
+        ],
+        usageSummary: [
+          { label: "Status", value: "Healthy", meta: "기본 URL이 정상 응답 중입니다." },
+          { label: "Visibility", value: "Public", meta: "문서 사용자에게 공개되어 있습니다." },
+          { label: "Access", value: "SSO / Public", meta: "로그인 여부에 따라 진입 경로가 달라집니다." },
+          { label: "Surface", value: "3", meta: "landing, widget, embedded 방식으로 노출됩니다." }
+        ],
+        connectedItems: [
+          { title: "docs portal", meta: "문서 탐색 화면에서 도움말 챗봇으로 바로 열립니다.", badge: "Portal", tags: ["Primary surface", "문서 사용자"], sideLabel: "Channel", sideValue: "Web", href: "workspace_chatbot_hub.html", linkLabel: "챗봇 허브 보기" },
+          { title: "embedded help", meta: "허용된 문서 도메인 안에서 iframe 형태로 함께 노출됩니다.", badge: "Embed", tags: ["iframe", "도움말"], sideLabel: "Mode", sideValue: "Embedded", href: "workspace_domain_detail.html?item=docs", linkLabel: "도메인 보기" },
+          { title: "docs.dej.ai", meta: "대표 접속 도메인으로 웹 챗봇 랜딩을 연결합니다.", badge: "Domain", tags: ["Primary URL", "Landing"], sideLabel: "Domain", sideValue: "Bound", href: "workspace_domain_detail.html?item=docs", linkLabel: "도메인 보기" }
+        ],
+        healthChecks: [
+          { title: "URL Probe", meta: "2026.06.16 09:41 / status 200", side: "Pass" },
+          { title: "Embed Probe", meta: "iframe render 정상", side: "Pass" },
+          { title: "Asset Load", meta: "bundle load p95 1.8s", side: "Normal" }
+        ],
+        guideTips: [
+          { title: "대표 URL과 embed 경로를 함께 확인합니다", meta: "메인 주소가 정상이더라도 embed 허용 설정이 다르면 실제 노출 상태가 달라질 수 있습니다.", side: "Embed" },
+          { title: "공개 범위와 로그인 조건을 함께 봅니다", meta: "Public 노출 챗봇은 SSO 진입 조건이 섞여 있으면 사용자 경험이 달라질 수 있습니다.", side: "Access" },
+          { title: "로드 시간은 widget 체감에 직접 영향을 줍니다", meta: "문서 페이지 안에 포함되는 경우 첫 응답보다 asset load가 더 중요할 수 있습니다.", side: "Load" }
+        ]
+      },
+      {
+        key: "ops-briefing-bot",
+        title: "ops-briefing-bot",
+        description: "운영 브리핑과 incident 요약을 함께 전달하는 Bot Web입니다.",
+        heroIcon: "device_hub",
+        botType: "web",
+        typeLabel: "Bot Web",
+        statusLabel: "Live",
+        statusTone: "healthy",
+        theme: { bg: "#e9f8ff", brand: "#0891b2", brandH: "#0e7490", brandBg: "#cbeeff", brandSoft: "rgba(8,145,178,.18)", accent: "#22d3ee" },
+        accessLink: { href: "workspace_domain_hub.html", label: "도메인 보기" },
+        actions: [
+          { label: "Chatbot Hub", icon: "chat", href: "workspace_chatbot_hub.html" },
+          { label: "도메인 보기", icon: "arrow_outward", variant: "primary", href: "workspace_domain_hub.html" }
+        ],
+        heroStats: [
+          { label: "Type", value: "Bot Web", meta: "briefing landing" },
+          { label: "Status", value: "Live", meta: "url reachable" },
+          { label: "Visibility", value: "Workspace", meta: "ops members" },
+          { label: "Access", value: "SSO", meta: "secured access" }
+        ],
+        registration: [
+          { label: "챗봇 이름", value: "ops-briefing-bot", meta: "등록된 식별자" },
+          { label: "담당 조직", value: "site reliability", meta: "운영 owner" },
+          { label: "등록자", value: "jiho.park", meta: "2026.06.13 등록" },
+          { label: "공개 범위", value: "Workspace", meta: "운영 조직 전용" }
+        ],
+        webInfo: [
+          { key: "접속 URL", value: '<span class="mono">https://ops.dej.ai/bots/briefing</span>' },
+          { key: "도메인", value: '<span class="mono">ops.dej.ai</span>' },
+          { key: "로그인 필요", value: "예" },
+          { key: "노출 방식", value: "Landing, Slack Link" },
+          { key: "새 창 열기", value: "지원" }
+        ],
+        connectionChecks: [
+          { title: "URL 확인", meta: "기본 브리핑 화면이 정상 응답합니다.", side: "정상" },
+          { title: "SSO 확인", meta: "운영 조직 계정으로 접속을 통과했습니다.", side: "완료" }
+        ],
+        statusCards: [
+          { title: "접속 상태", meta: "primary url 기준", value: "Healthy" },
+          { title: "최근 열림", meta: "최근 7일", value: "2.9k" },
+          { title: "오류", meta: "최근 24시간", value: "0" }
+        ],
+        usageSummary: [
+          { label: "Status", value: "Healthy", meta: "브리핑 URL이 정상 응답 중입니다." },
+          { label: "Visibility", value: "Workspace", meta: "운영 조직 사용자에게만 노출됩니다." },
+          { label: "Access", value: "SSO", meta: "사내 계정으로만 접속할 수 있습니다." },
+          { label: "Surface", value: "2", meta: "landing, Slack link로 브리핑을 엽니다." }
+        ],
+        connectedItems: [
+          { title: "ops landing", meta: "장애 브리핑과 요약 응답을 확인하는 대표 웹 화면입니다.", badge: "Landing", tags: ["Primary surface", "운영 브리핑"], sideLabel: "Channel", sideValue: "Web", href: "workspace_chatbot_hub.html", linkLabel: "챗봇 허브 보기" },
+          { title: "Slack briefing link", meta: "운영 채널에서 공유되는 링크로 바로 이동합니다.", badge: "Slack", tags: ["운영 채널", "바로 열기"], sideLabel: "Channel", sideValue: "Link", href: "workspace_chatbot_hub.html", linkLabel: "챗봇 허브 보기" },
+          { title: "ops.dej.ai", meta: "브리핑 화면을 노출하는 대표 도메인입니다.", badge: "Domain", tags: ["SSO", "Workspace"], sideLabel: "Domain", sideValue: "Bound", href: "workspace_domain_hub.html", linkLabel: "도메인 보기" }
+        ],
+        healthChecks: [
+          { title: "URL Probe", meta: "2026.06.16 08:52 / status 200", side: "Pass" },
+          { title: "SSO Probe", meta: "workspace 계정 로그인 정상", side: "Pass" },
+          { title: "Slack Link", meta: "최근 공유 링크 응답 정상", side: "Normal" }
+        ],
+        guideTips: [
+          { title: "SSO 계정 범위를 먼저 확인합니다", meta: "운영 사용자 전용 브리핑은 URL이 열려도 접근 권한이 다르면 바로 사용할 수 없습니다.", side: "SSO" },
+          { title: "Slack 링크와 landing 주소를 함께 봅니다", meta: "브리핑 링크는 정상이어도 최종 landing 주소가 바뀌면 진입 경로가 달라질 수 있습니다.", side: "Link" },
+          { title: "오류보다 공유 경로 정상 여부가 더 중요할 수 있습니다", meta: "브리핑 화면은 호출량보다 실제 공유 채널에서 잘 열리는지가 중요합니다.", side: "Flow" }
+        ]
+      },
+      {
+        key: "pricing-advisor-bot",
+        title: "pricing-advisor-bot",
+        description: "검토 중인 파트너 상담용 Bot API입니다.",
+        heroIcon: "smart_toy",
+        botType: "api",
+        typeLabel: "Bot API",
+        statusLabel: "Review",
+        statusTone: "review",
+        theme: { bg: "#e9f8ff", brand: "#0891b2", brandH: "#0e7490", brandBg: "#cbeeff", brandSoft: "rgba(8,145,178,.18)", accent: "#22d3ee" },
+        accessLink: { href: "workspace_keycenter_hub.html", label: "Keycenter 보기" },
+        actions: [
+          { label: "Chatbot Hub", icon: "chat", href: "workspace_chatbot_hub.html" },
+          { label: "Keycenter", icon: "arrow_outward", variant: "primary", href: "workspace_keycenter_hub.html" }
+        ],
+        heroStats: [
+          { label: "Type", value: "Bot API", meta: "partner integration" },
+          { label: "Status", value: "Review", meta: "mapping check" },
+          { label: "Visibility", value: "Private", meta: "pilot only" },
+          { label: "Auth", value: "Partner Key", meta: "custom header" }
+        ],
+        registration: [
+          { label: "챗봇 이름", value: "pricing-advisor-bot", meta: "등록된 식별자" },
+          { label: "담당 조직", value: "partner solutions", meta: "운영 owner" },
+          { label: "등록자", value: "sora.lee", meta: "2026.06.12 등록" },
+          { label: "공개 범위", value: "Private", meta: "pilot partner 전용" }
+        ],
+        apiInfo: [
+          { key: "Base URL", value: '<span class="mono">https://partner-api.dej.ai</span>' },
+          { key: "Endpoint", value: '<span class="mono">/v2/pricing-advisor/respond</span>' },
+          { key: "Method", value: '<span class="mono">POST</span>' },
+          { key: "인증 헤더", value: '<span class="mono">X-Partner-Key / X-Signature</span>' },
+          { key: "OpenAI 호환", value: "아니오" }
+        ],
+        connectionChecks: [
+          { title: "연결 상태", meta: "sandbox 환경에서만 확인되었습니다.", side: "검토중" },
+          { title: "스키마 확인", meta: "response mapping 수정이 필요합니다.", side: "대기" }
+        ],
+        statusCards: [
+          { title: "연결 상태", meta: "sandbox 기준", value: "Review" },
+          { title: "최근 호출", meta: "최근 7일", value: "1.1k" },
+          { title: "오류", meta: "최근 24시간", value: "7" }
+        ],
+        usageSummary: [
+          { label: "Status", value: "Review", meta: "정식 연결 전 검토 단계입니다." },
+          { label: "Visibility", value: "Private", meta: "pilot partner에게만 열려 있습니다." },
+          { label: "Auth", value: "Partner Key", meta: "custom header와 signature를 함께 사용합니다." },
+          { label: "Use Surface", value: "1", meta: "partner pilot validation에서만 사용 중입니다." }
+        ],
+        connectedItems: [
+          { title: "partner pilot validation", meta: "파트너 상담 흐름을 검토하는 파일럿 검증 경로입니다.", badge: "Pilot", tags: ["Private", "검토 단계"], sideLabel: "Channel", sideValue: "Validation", href: "workspace_chatbot_hub.html", linkLabel: "챗봇 허브 보기" },
+          { title: "response mapping review", meta: "응답 포맷 검토와 계약 확인이 함께 진행 중입니다.", badge: "Review", tags: ["Schema", "Response"], sideLabel: "Stage", sideValue: "Pending", href: "workspace_chatbot_hub.html", linkLabel: "챗봇 허브 보기" },
+          { title: "partner key binding", meta: "정식 운영 전 Keycenter의 파트너 키 연결이 필요합니다.", badge: "Keycenter", tags: ["Partner Key", "Signature"], sideLabel: "Access", sideValue: "Pending", href: "workspace_keycenter_hub.html", linkLabel: "Keycenter 보기" }
+        ],
+        healthChecks: [
+          { title: "Sandbox Probe", meta: "2026.06.16 10:04 / status 200", side: "Pass" },
+          { title: "Prod Auth", meta: "정식 키 검수 대기", side: "Pending" },
+          { title: "Response Mapping", meta: "mismatch 3건", side: "Review" }
+        ],
+        guideTips: [
+          { title: "sandbox 결과만으로 정식 연결을 판단하지 않습니다", meta: "실제 운영 전에는 정식 키와 응답 매핑 상태를 함께 확인해야 합니다.", side: "Review" },
+          { title: "인증 헤더 두 종류를 모두 확인합니다", meta: "Partner Key와 Signature 중 하나라도 빠지면 응답 확인이 어려워질 수 있습니다.", side: "Auth" },
+          { title: "오류 수보다 mapping mismatch를 먼저 봅니다", meta: "검토 단계의 API는 에러 건수보다 응답 계약 불일치가 더 큰 이슈일 수 있습니다.", side: "Schema" }
+        ]
+      }
+    ];
+
+    window.DETAIL_PAGE_CONFIG = {
+      paramName: "item",
+      pageTitle: "Chatbot Detail",
+      hubLabel: "Chatbot Hub",
+      hubHref: "workspace_chatbot_hub.html",
+      activeHubKey: "chatbot-hub",
+      eyebrow: "AI · User Registered Chatbots",
+      searchPlaceholder: "챗봇 이름, 타입, url, endpoint를 검색하세요...",
+      items: Object.fromEntries(rawItems.map((item) => [item.key, buildItem(item)]))
+    };
+  </script>
+  <script src="workspace_detail_shared.js"></script>
+  <script src="ax_studio_topbar.js"></script>
+</body>
+</html>

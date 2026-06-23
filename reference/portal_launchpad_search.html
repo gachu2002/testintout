@@ -1,0 +1,1536 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AX Studio Search</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --surface: rgba(255,255,255,.9);
+      --surface-strong: #ffffff;
+      --border: #e8ebf0;
+      --border-strong: #d7dce4;
+      --text-1: #2f3236;
+      --text-2: #616873;
+      --text-3: #9298a0;
+      --brand: #b40e4d;
+      --brand-strong: #d5115b;
+      --brand-soft: #feeff5;
+      --blue: #2563eb;
+      --blue-soft: #e8f0ff;
+      --teal: #0d9488;
+      --teal-soft: #e7faf7;
+      --violet: #7c5fcf;
+      --violet-soft: #f3edff;
+      --amber: #d97706;
+      --amber-soft: #fff5df;
+      --shadow: 0 22px 44px rgba(15,23,42,.08);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --nav-max: 1320px;
+      --max: 1320px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-1);
+      background:
+        radial-gradient(circle at top left, rgba(180,14,77,.08), transparent 30%),
+        radial-gradient(circle at top right, rgba(37,99,235,.08), transparent 28%),
+        linear-gradient(180deg, #f7f8fb 0%, #f4f6f9 34%, #eef2f7 100%);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      height: 56px;
+      background: var(--surface-strong);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-inner {
+      max-width: var(--nav-max);
+      margin: 0 auto;
+      height: 100%;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+      padding-right: 2px;
+    }
+    .brand-mark {
+      width: 40px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .brand-mark img {
+      display: block;
+      width: 35px;
+      height: 20px;
+    }
+    .brand-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-1);
+      letter-spacing: -.35px;
+      white-space: nowrap;
+    }
+    .logo-menu {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+    .menu-trigger {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 40px;
+      padding: 0 11px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fbfcfe;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-1);
+      letter-spacing: -.2px;
+      transition: background .15s, box-shadow .15s;
+    }
+    .menu-trigger:hover,
+    .logo-menu.is-open .menu-trigger {
+      background: var(--bg);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+    .menu-trigger .material-icons-round:first-child {
+      font-size: 18px;
+      color: var(--text-2);
+    }
+    .menu-caret {
+      font-size: 18px;
+      color: var(--text-3);
+      transition: transform .18s ease, color .15s ease;
+    }
+    .logo-menu.is-open .menu-caret {
+      transform: rotate(180deg);
+      color: var(--brand);
+    }
+    .service-popover {
+      position: fixed;
+      left: 0;
+      top: 56px;
+      width: 100vw;
+      background: linear-gradient(180deg, rgba(247,248,251,.98) 0%, rgba(243,245,249,.98) 100%);
+      border-top: 1px solid rgba(235,237,240,.9);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 18px 36px rgba(15,23,42,.08);
+      padding: 18px 0 20px;
+      z-index: 240;
+    }
+    .service-popover[hidden] { display: none; }
+    .service-popover-inner {
+      max-width: var(--nav-max);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .service-groups {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0,1fr));
+      gap: 0;
+    }
+    .service-group {
+      min-width: 0;
+      padding: 0 30px;
+    }
+    .service-group + .service-group { border-left: 1px solid var(--border); }
+    .service-group-head { margin-bottom: 18px; }
+    .service-group-copy { min-width: 0; }
+    .service-group-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-1);
+    }
+    .service-links {
+      display: grid;
+      gap: 18px;
+      margin-left: 0;
+    }
+    .service-link {
+      display: grid;
+      grid-template-columns: 18px minmax(0,1fr);
+      align-items: flex-start;
+      gap: 10px;
+      padding: 7px 10px;
+      margin: 0 -10px;
+      border-radius: 10px;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-1);
+      transition: background .15s ease, color .15s ease;
+    }
+    .service-link:hover {
+      background: rgba(255,255,255,.84);
+      color: var(--brand);
+    }
+    .service-link-icon {
+      font-size: 17px;
+      color: var(--text-2);
+      margin-top: 2px;
+      transition: color .15s ease;
+    }
+    .service-link:hover .service-link-icon { color: var(--brand); }
+    .service-link-copy {
+      min-width: 0;
+      display: grid;
+      gap: 4px;
+    }
+    .service-link-desc {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.45;
+      color: var(--text-2);
+    }
+    .service-link:hover .service-link-desc { color: var(--text-1); }
+    .service-outlinks {
+      position: relative;
+      left: 50%;
+      width: 100vw;
+      box-sizing: border-box;
+      margin: 16px 0 -20px;
+      padding: 9px max(24px, calc((100vw - var(--nav-max)) / 2 + 24px)) 10px;
+      transform: translateX(-50%);
+      border-top: 1px solid rgba(15,23,42,.10);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: rgba(248,250,252,.72);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.72);
+    }
+    .service-outlinks-title {
+      color: var(--text-3);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      opacity: .72;
+    }
+    .service-outlink-list {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      gap: 0;
+    }
+    .service-outlink {
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      color: var(--text-2);
+      font-size: 12px;
+      font-weight: 600;
+      transition: color .15s ease;
+    }
+    .service-outlink + .service-outlink { border-left: 1px solid var(--border); }
+    .service-outlink:hover { color: var(--brand); }
+    .service-outlink-icon,
+    .service-outlink-arrow {
+      color: currentColor;
+      font-size: 13px;
+      opacity: .48;
+      transition: opacity .15s ease;
+    }
+    .service-outlink:hover .service-outlink-icon,
+    .service-outlink:hover .service-outlink-arrow {
+      opacity: .8;
+    }
+    .service-outlink-copy {
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+    }
+    .search-wrap {
+      flex: 1;
+      max-width: 440px;
+      min-width: 0;
+      position: relative;
+    }
+    .search-wrap .ico {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 17px;
+      color: var(--text-3);
+      pointer-events: none;
+    }
+    .search-input {
+      width: 100%;
+      height: 36px;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 0 72px 0 38px;
+      font-size: 13px;
+      color: var(--text-1);
+      background: var(--bg);
+      outline: none;
+      transition: border .15s, box-shadow .15s;
+    }
+    .search-input:focus {
+      border-color: var(--brand);
+      background: var(--surface-strong);
+      box-shadow: 0 0 0 3px rgba(180,14,77,.08);
+    }
+    .search-input::placeholder { color: var(--text-3); }
+    .search-ai {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 18px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-3);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .02em;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .search-ai .material-icons-round { font-size: 11px; }
+    .tb-spacer { flex: 1; }
+    .tb-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-2);
+      position: relative;
+      transition: background .15s;
+      flex-shrink: 0;
+    }
+    .tb-icon:hover { background: var(--bg); }
+    .tb-icon .material-icons-round { font-size: 20px; }
+    .tb-icon .dot {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--brand);
+      border: 2px solid var(--surface-strong);
+    }
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--brand);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .page {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 28px 24px 72px;
+    }
+    .panel {
+      border: 1px solid rgba(232,235,240,.9);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0,1.6fr) minmax(300px,.74fr);
+      gap: 22px;
+      align-items: start;
+    }
+    .stack {
+      display: grid;
+      gap: 22px;
+    }
+    .panel {
+      border-radius: 24px;
+      padding: 22px;
+    }
+    .ask-ai-banner {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(215,220,228,.92);
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 6px 18px rgba(15,23,42,.03);
+    }
+    .ask-ai-copy {
+      min-width: 0;
+      display: grid;
+      gap: 6px;
+    }
+    .ask-ai-title {
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.35;
+      letter-spacing: -.03em;
+    }
+    .ask-ai-title mark {
+      background: none;
+      color: inherit;
+      padding: 0;
+      font-weight: 800;
+    }
+    .ask-ai-desc {
+      margin: 0;
+      color: var(--text-2);
+      font-size: 12px;
+      line-height: 1.55;
+      letter-spacing: -.01em;
+    }
+    .ask-ai-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(226,230,236,.96);
+    }
+    .ask-ai-meta-items {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-width: 0;
+    }
+    .ask-ai-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #f5f7fa;
+      color: var(--text-2);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: -.01em;
+      white-space: nowrap;
+    }
+    .ask-ai-chip strong {
+      color: var(--text-1);
+      font-weight: 800;
+    }
+    .ask-ai-chip .material-icons-round {
+      font-size: 14px;
+      color: var(--text-3);
+    }
+    .ask-ai-cta {
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: transparent;
+      color: var(--text-2);
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: -.01em;
+      transition: color .15s ease;
+      white-space: nowrap;
+    }
+    .ask-ai-cta:hover {
+      color: var(--brand);
+    }
+    .ask-ai-cta .material-icons-round { font-size: 14px; }
+    .panel-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .panel-head .title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+    }
+    .panel-head .meta {
+      margin-left: auto;
+      color: var(--text-3);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .featured-card {
+      position: relative;
+      overflow: hidden;
+      padding: 24px;
+      border-radius: 24px;
+      border: 1px solid rgba(37,99,235,.12);
+      background:
+        radial-gradient(circle at 84% 18%, rgba(37,99,235,.14), transparent 26%),
+        linear-gradient(135deg, #f8fbff 0%, #eef5ff 50%, #f8f8ff 100%);
+    }
+    .featured-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(37,99,235,.1);
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .featured-kicker .material-icons-round { font-size: 14px; }
+    .featured-grid {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: minmax(0,1fr) auto;
+      gap: 18px;
+      align-items: center;
+    }
+    .featured-title {
+      margin: 0 0 10px;
+      font-size: 28px;
+      line-height: 1.18;
+      letter-spacing: -.05em;
+    }
+    .featured-title strong { color: var(--blue); }
+    .featured-desc {
+      margin: 0;
+      color: var(--text-2);
+      font-size: 14px;
+      line-height: 1.7;
+      max-width: 700px;
+    }
+    .featured-tags {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 30px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .01em;
+    }
+    .tag .material-icons-round { font-size: 14px; }
+    .tag.blue { background: var(--blue-soft); color: var(--blue); }
+    .tag.teal { background: var(--teal-soft); color: var(--teal); }
+    .tag.violet { background: var(--violet-soft); color: var(--violet); }
+    .tag.amber { background: var(--amber-soft); color: var(--amber); }
+    .featured-actions {
+      display: grid;
+      gap: 10px;
+      min-width: 190px;
+    }
+    .action-primary,
+    .action-secondary {
+      height: 42px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+    }
+    .action-primary {
+      background: linear-gradient(135deg, #2563eb 0%, #4f8cff 100%);
+      color: #fff;
+      box-shadow: 0 14px 24px rgba(37,99,235,.18);
+    }
+    .action-secondary {
+      border: 1px solid rgba(37,99,235,.14);
+      background: rgba(255,255,255,.86);
+      color: var(--blue);
+    }
+    .action-primary .material-icons-round,
+    .action-secondary .material-icons-round { font-size: 17px; }
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 38px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(215,220,228,.9);
+      background: rgba(255,255,255,.88);
+      color: var(--text-2);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: border-color .15s ease, background .15s ease, color .15s ease, transform .15s ease;
+    }
+    .filter-chip .material-icons-round { font-size: 16px; }
+    .filter-chip.is-active {
+      background: var(--brand-soft);
+      border-color: rgba(180,14,77,.18);
+      color: var(--brand);
+      transform: translateY(-1px);
+    }
+
+    .result-list {
+      display: grid;
+      gap: 14px;
+    }
+    .result-card {
+      display: grid;
+      grid-template-columns: auto minmax(0,1fr) auto;
+      gap: 14px;
+      align-items: start;
+      padding: 18px;
+      border-radius: 20px;
+      border: 1px solid rgba(215,220,228,.88);
+      background: rgba(255,255,255,.82);
+      transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+    }
+    .result-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(180,14,77,.16);
+      box-shadow: 0 18px 34px rgba(15,23,42,.08);
+      background: #fff;
+    }
+    .result-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.16);
+    }
+    .result-icon .material-icons-round { font-size: 22px; }
+    .result-copy { min-width: 0; }
+    .result-type {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-3);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .result-type .material-icons-round { font-size: 14px; }
+    .result-title {
+      margin: 0 0 8px;
+      font-size: 18px;
+      line-height: 1.3;
+      letter-spacing: -.03em;
+    }
+    .result-title mark {
+      background: linear-gradient(180deg, rgba(180,14,77,0) 0%, rgba(180,14,77,.18) 100%);
+      color: inherit;
+      padding: 0 .12em;
+    }
+    .result-desc {
+      margin: 0;
+      color: var(--text-2);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .result-meta {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 28px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(244,246,249,.9);
+      color: var(--text-2);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .meta-pill .material-icons-round { font-size: 14px; }
+    .result-side {
+      display: grid;
+      gap: 8px;
+      justify-items: end;
+    }
+    .score-pill,
+    .route-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 30px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .02em;
+      white-space: nowrap;
+    }
+    .score-pill {
+      color: var(--teal);
+      background: var(--teal-soft);
+    }
+    .route-pill {
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+    .score-pill .material-icons-round,
+    .route-pill .material-icons-round { font-size: 14px; }
+    .empty-state {
+      padding: 22px;
+      border-radius: 18px;
+      border: 1px dashed rgba(215,220,228,.98);
+      background: rgba(244,246,249,.7);
+      color: var(--text-2);
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .rail-panel {
+      display: grid;
+      gap: 14px;
+    }
+    .summary-box {
+      padding: 16px;
+      border-radius: 18px;
+      background:
+        linear-gradient(135deg, rgba(180,14,77,.06) 0%, rgba(124,95,207,.08) 100%);
+      border: 1px solid rgba(180,14,77,.1);
+    }
+    .summary-box h3,
+    .quick-card h3,
+    .timeline-card h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      line-height: 1.35;
+      letter-spacing: -.02em;
+    }
+    .summary-box p,
+    .quick-card p,
+    .timeline-card p {
+      margin: 0;
+      color: var(--text-2);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .summary-list,
+    .quick-links,
+    .timeline-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .summary-list-item,
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 28px minmax(0,1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.74);
+      border: 1px solid rgba(215,220,228,.88);
+    }
+    .summary-list-item .material-icons-round,
+    .timeline-item .material-icons-round {
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(124,95,207,.1);
+      color: var(--violet);
+      font-size: 16px;
+    }
+    .summary-list-item strong,
+    .timeline-item strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    .summary-list-item span,
+    .timeline-item span {
+      color: var(--text-2);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .quick-link {
+      display: grid;
+      grid-template-columns: 36px minmax(0,1fr) auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(215,220,228,.88);
+      background: rgba(255,255,255,.82);
+    }
+    .quick-link:hover {
+      border-color: rgba(37,99,235,.16);
+      background: #fff;
+    }
+    .quick-link-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+    .quick-link-icon .material-icons-round { font-size: 18px; }
+    .quick-link strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    .quick-link span {
+      color: var(--text-2);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .quick-link .material-icons-round.trailing {
+      color: var(--text-3);
+      font-size: 18px;
+    }
+
+    .footnote {
+      margin-top: 18px;
+      color: var(--text-3);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 1120px) {
+      .topbar {
+        height: auto;
+      }
+      .topbar-inner {
+        min-height: 56px;
+        padding: 10px 16px;
+        flex-wrap: wrap;
+      }
+      .search-wrap {
+        order: 4;
+        flex-basis: 100%;
+        max-width: none;
+      }
+      .tb-spacer {
+        display: none;
+      }
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .ask-ai-cta {
+        width: auto;
+      }
+      .ask-ai-meta {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .featured-grid {
+        grid-template-columns: 1fr;
+      }
+      .featured-actions {
+        min-width: 0;
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar-inner {
+        gap: 10px;
+      }
+      .page { padding: 20px 16px 48px; }
+      .panel { padding: 18px; }
+      .service-groups {
+        grid-template-columns: 1fr;
+      }
+      .service-group {
+        padding: 14px 16px;
+      }
+      .service-group + .service-group {
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+      .service-popover-inner {
+        padding: 0 16px;
+      }
+      .service-outlinks {
+        margin: 14px 0 -16px;
+        padding: 10px 16px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .service-outlink-list {
+        justify-content: flex-start;
+      }
+      .tb-icon {
+        display: none;
+      }
+      .ask-ai-title {
+        font-size: 18px;
+      }
+      .result-card {
+        grid-template-columns: auto minmax(0,1fr);
+      }
+      .result-side {
+        grid-column: 2;
+        justify-items: start;
+        grid-auto-flow: column;
+      }
+      .featured-actions {
+        grid-template-columns: 1fr;
+      }
+      .search-ai {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="topbar-brand" href="portal_launchpad.html" aria-label="AX Studio">
+        <span class="brand-mark" aria-hidden="true">
+          <img src="data:image/svg+xml,%3csvg%20width='35'%20height='20'%20viewBox='0%200%2035%2020'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M16.7961%2010.1421L21.022%2014.368C23.4543%2016.8004%2027.398%2016.8004%2029.8303%2014.368C32.2627%2011.9356%2032.2627%207.99197%2029.8303%205.5596C27.398%203.12723%2023.4543%203.12723%2021.022%205.5596L20.723%205.85861L18.7019%203.83756L19.0009%203.53856C22.5495%20-0.0100035%2028.3028%20-0.0100042%2031.8514%203.53856C35.4%207.08712%2035.4%2012.8405%2031.8514%2016.389C28.3028%2019.9376%2022.5495%2019.9376%2019.0009%2016.389L12.5757%209.96379L14.5948%207.9447L16.7941%2010.144L16.7961%2010.1421ZM17.6605%208.92103L19.6782%206.90332L17.6572%204.88228L15.6395%206.89998L17.6605%208.92103Z'%20fill='%236D6E72'/%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M14.3637%205.63217L18.6416%209.91016L18.6428%209.90899L20.7901%2012.0562L22.8099%2010.0364L16.3847%203.61113C12.8361%200.0625671%207.08278%200.0625666%203.53422%203.61113C-0.0143374%207.15969%20-0.0143374%2012.913%203.53422%2016.4616C7.08278%2020.0102%2012.8361%2020.0102%2016.3847%2016.4616L16.6801%2016.1662L14.6591%2014.1452L14.3637%2014.4406C11.9313%2016.8729%207.98764%2016.8729%205.55527%2014.4406C3.1229%2012.0082%203.1229%208.06454%205.55527%205.63217C7.98764%203.1998%2011.9313%203.1998%2014.3637%205.63217ZM15.7038%2013.1004L17.7248%2015.1215L19.7453%2013.101L17.7243%2011.0799L15.7038%2013.1004Z'%20fill='%23A50034'/%3e%3crect%20x='15.376'%20y='12.7714'%20width='2.85369'%20height='5.21909'%20transform='rotate(-45%2015.376%2012.7714)'%20fill='%236D6E72'/%3e%3c/svg%3e" alt="AX Studio" />
+        </span>
+        <span class="brand-name">AX Studio</span>
+      </a>
+      <div class="logo-menu" id="serviceMenuWrap">
+        <button class="menu-trigger" id="serviceMenuButton" type="button" aria-label="전체 메뉴 열기" aria-haspopup="true" aria-expanded="false" aria-controls="serviceMenuPopover">
+          <span class="material-icons-round">apps</span>
+          <span class="material-icons-round menu-caret">expand_more</span>
+        </button>
+        <div class="service-popover" id="serviceMenuPopover" aria-labelledby="serviceMenuButton" hidden>
+          <div class="service-popover-inner">
+            <div class="service-groups">
+              <section class="service-group">
+                <div class="service-group-head">
+                  <div class="service-group-copy">
+                    <div class="service-group-title">Store</div>
+                  </div>
+                </div>
+                <div class="service-links">
+                  <a class="service-link" href="dej_app_store.html">
+                    <span class="material-icons-round service-link-icon">widgets</span>
+                    <span class="service-link-copy">
+                      <span class="service-link-title">App Gallery</span>
+                      <span class="service-link-desc">실행형 개발 앱과 워크스페이스 도구를 발견하고 살펴보기</span>
+                    </span>
+                  </a>
+                  <a class="service-link" href="dej_agent_store.html">
+                    <span class="material-icons-round service-link-icon">smart_toy</span>
+                    <span class="service-link-copy">
+                      <span class="service-link-title">AI Gallery</span>
+                      <span class="service-link-desc">챗봇과 tool 자산을 전시하고 재사용 흐름으로 연결</span>
+                    </span>
+                  </a>
+                </div>
+              </section>
+
+              <section class="service-group">
+                <div class="service-group-head">
+                  <div class="service-group-copy">
+                    <div class="service-group-title">Accessibility</div>
+                  </div>
+                </div>
+                <div class="service-links">
+                  <a class="service-link" href="workspace_domain_hub.html">
+                    <span class="material-icons-round service-link-icon">apartment</span>
+                    <span class="service-link-copy">
+                      <span class="service-link-title">Domain</span>
+                      <span class="service-link-desc">DNS 및 도메인 관리</span>
+                    </span>
+                  </a>
+                  <a class="service-link" href="workspace_permission_hub.html">
+                    <span class="material-icons-round service-link-icon">groups</span>
+                    <span class="service-link-copy">
+                      <span class="service-link-title">Permission</span>
+                      <span class="service-link-desc">IAM 및 권한 관리</span>
+                    </span>
+                  </a>
+                </div>
+              </section>
+
+              <section class="service-group">
+                <div class="service-group-head">
+                  <div class="service-group-copy">
+                    <div class="service-group-title">Storage</div>
+                  </div>
+                </div>
+                <div class="service-links">
+                  <a class="service-link" href="workspace_database_hub.html">
+                    <span class="material-icons-round service-link-icon">storage</span>
+                    <span class="service-link-copy">
+                      <span class="service-link-title">Database</span>
+                      <span class="service-link-desc">데이터베이스 관리(MongoDB, PostgreSQL, Redis 등)</span>
+                    </span>
+                  </a>
+                  <a class="service-link" href="workspace_s3_hub.html">
+                    <span class="material-icons-round service-link-icon">folder</span>
+                    <span class="service-link-copy">
+                      <span class="service-link-title">Buckets</span>
+                      <span class="service-link-desc">S3 스토리지 및 버킷 관리</span>
+                    </span>
+                  </a>
+                </div>
+              </section>
+
+              <section class="service-group">
+                <div class="service-group-head">
+                  <div class="service-group-copy">
+                    <div class="service-group-title">Development</div>
+                  </div>
+                </div>
+                <div class="service-links">
+                  <a class="service-link" href="workspace_tools_hub.html">
+                    <span class="material-icons-round service-link-icon">web</span>
+                    <span class="service-link-copy">
+                      <span class="service-link-title">Consoles</span>
+                      <span class="service-link-desc">데이터베이스 웹 콘솔 모음</span>
+                    </span>
+                  </a>
+                  <a class="service-link" href="workspace_projects_hub.html">
+                    <span class="material-icons-round service-link-icon">public</span>
+                    <span class="service-link-copy">
+                      <span class="service-link-title">Project/Publish</span>
+                      <span class="service-link-desc">개발 프로젝트 관리(IDE 작업 공간)</span>
+                    </span>
+                  </a>
+                  <a class="service-link" href="#">
+                    <span class="material-icons-round service-link-icon">science</span>
+                    <span class="service-link-copy">
+                      <span class="service-link-title">Jupyter</span>
+                      <span class="service-link-desc">노트북 실험 및 분석 환경</span>
+                    </span>
+                  </a>
+                </div>
+              </section>
+
+              <section class="service-group">
+                <div class="service-group-head">
+                  <div class="service-group-copy">
+                    <div class="service-group-title">AI</div>
+                  </div>
+                </div>
+                <div class="service-links">
+                  <a class="service-link" href="workspace_agent_hub.html">
+                    <span class="material-icons-round service-link-icon">smart_toy</span>
+                    <span class="service-link-copy">
+                      <span class="service-link-title">Workflow</span>
+                      <span class="service-link-desc">Dify workflow와 승인형 자동화 런타임을 운영</span>
+                    </span>
+                  </a>
+                  <a class="service-link" href="workspace_chatbot_hub.html">
+                    <span class="material-icons-round service-link-icon">chat</span>
+                    <span class="service-link-copy">
+                      <span class="service-link-title">Chatbot</span>
+                      <span class="service-link-desc">API와 Frontend URL 기반 챗봇 엔드포인트를 관리</span>
+                    </span>
+                  </a>
+                  <a class="service-link" href="workspace_tool_inventory_hub.html">
+                    <span class="material-icons-round service-link-icon">inventory_2</span>
+                    <span class="service-link-copy">
+                      <span class="service-link-title">Tool Inventory</span>
+                      <span class="service-link-desc">에이전트가 사용하는 연결된 MCP 및 도구 자산을 관리</span>
+                    </span>
+                  </a>
+                  <a class="service-link" href="workspace_keycenter_hub.html">
+                    <span class="material-icons-round service-link-icon">vpn_key</span>
+                    <span class="service-link-copy">
+                      <span class="service-link-title">Keycenter</span>
+                      <span class="service-link-desc">발급된 LLM 키와 연결된 사용처를 관리</span>
+                    </span>
+                  </a>
+                </div>
+              </section>
+
+              <section class="service-group">
+                <div class="service-group-head">
+                  <div class="service-group-copy">
+                    <div class="service-group-title">Support</div>
+                  </div>
+                </div>
+                <div class="service-links">
+                  <a class="service-link" href="#">
+                    <span class="material-icons-round service-link-icon">description</span>
+                    <span class="service-link-copy">
+                      <span class="service-link-title">다큐먼트</span>
+                      <span class="service-link-desc">가이드와 운영 문서를 확인합니다</span>
+                    </span>
+                  </a>
+                  <a class="service-link" href="about_dej.html">
+                    <span class="material-icons-round service-link-icon">timeline</span>
+                    <span class="service-link-copy">
+                      <span class="service-link-title">About DEJ</span>
+                      <span class="service-link-desc">DEJ의 역사와 CEJ·DEJ 흐름을 확인합니다</span>
+                    </span>
+                  </a>
+                  <a class="service-link" href="dej_chatbot_trial.html">
+                    <span class="material-icons-round service-link-icon">chat_bubble_outline</span>
+                    <span class="service-link-copy">
+                      <span class="service-link-title">챗봇</span>
+                      <span class="service-link-desc">지원 챗봇으로 빠르게 문의합니다</span>
+                    </span>
+                  </a>
+                  <a class="service-link" href="#">
+                    <span class="material-icons-round service-link-icon">campaign</span>
+                    <span class="service-link-copy">
+                      <span class="service-link-title">요청하기</span>
+                      <span class="service-link-desc">기능 요청이나 지원 요청을 등록합니다</span>
+                    </span>
+                  </a>
+                </div>
+              </section>
+            </div>
+            <div class="service-outlinks" aria-label="외부 서비스 바로가기">
+              <div class="service-outlinks-title">DEJ 시스템</div>
+              <div class="service-outlink-list">
+                <a class="service-outlink" href="https://dej-chatbot.apps.hedej.lge.com" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">forum</span><span class="service-outlink-copy"><span class="service-outlink-title">DEJ 챗봇</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
+                <a class="service-outlink" href="https://workspace.hedej.lge.com/heans" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">open_in_new</span><span class="service-outlink-copy"><span class="service-outlink-title">HEANS</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
+                <a class="service-outlink" href="https://workspace.hedej.lge.com/hevpds" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">open_in_new</span><span class="service-outlink-copy"><span class="service-outlink-title">HEVPDS</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <form class="search-wrap" action="portal_launchpad_search.html">
+        <span class="material-icons-round ico">search</span>
+        <input id="topbarSearchInput" class="search-input" name="q" type="search" placeholder="서비스 검색 또는 챗봇에게 물어보세요" aria-label="서비스 검색 또는 챗봇에게 물어보세요" />
+        <input id="topbarSourceInput" type="hidden" name="source" value="launchpad" />
+        <input id="topbarSourceLabelInput" type="hidden" name="sourceLabel" value="Launchpad" />
+        <input id="topbarDefaultTypeInput" type="hidden" name="defaultType" value="all" />
+        <span class="search-ai" aria-hidden="true">
+          <span class="material-icons-round">auto_awesome</span>
+          <span>AI 검색 가능</span>
+        </span>
+      </form>
+      <div class="tb-spacer"></div>
+      <div class="tb-icon"><span class="material-icons-round">notifications_none</span><div class="dot"></div></div>
+      <div class="avatar">TN</div>
+    </div>
+  </header>
+
+  <div class="page">
+    <section class="ask-ai-banner">
+      <div class="ask-ai-copy">
+        <h2 class="ask-ai-title"><mark data-query></mark> 검색 결과</h2>
+        <p class="ask-ai-desc">현재는 시작한 위치를 기준으로 먼저 보여주고, 필터를 바꾸면 같은 검색어로 다른 범위 결과까지 바로 확장할 수 있습니다.</p>
+      </div>
+      <div class="ask-ai-meta">
+        <div class="ask-ai-meta-items">
+          <div class="ask-ai-chip"><span class="material-icons-round">tune</span><span>기본 범위 <strong data-default-type-label>전체</strong></span></div>
+        </div>
+        <a class="ask-ai-cta" data-ai-chat-link href="dej_chatbot_trial.html"><span class="material-icons-round">forum</span><span>AI에게 이어서 묻기</span></a>
+      </div>
+    </section>
+    <div class="layout">
+      <main class="stack">
+        <section class="panel">
+          <div class="panel-head">
+            <div class="title">AI 추천 결과</div>
+            <div class="meta">검색어와 가장 가까운 화면을 먼저 보여드려요</div>
+          </div>
+          <div class="featured-card">
+            <div class="featured-kicker"><span class="material-icons-round">auto_awesome</span>AI Pick</div>
+            <div class="featured-grid">
+              <div>
+                <h2 class="featured-title"><strong>MCP Hub</strong>에서 <span data-query></span> 흐름을 가장 빠르게 확인할 수 있습니다.</h2>
+                <p class="featured-desc">키 매핑, 허용된 MCP, 사용자별 접근 상태, 최근 실행 로그까지 한 번에 볼 수 있어 검색 결과의 중심 허브 역할을 합니다. Launchpad 검색 결과에서는 단순 상세 페이지보다 실제 의사결정에 가까운 화면을 최상단으로 배치했습니다.</p>
+                <div class="featured-tags">
+                  <span class="tag blue"><span class="material-icons-round">hub</span>MCP 연결 허브</span>
+                  <span class="tag violet"><span class="material-icons-round">shield</span>권한 제어</span>
+                  <span class="tag teal"><span class="material-icons-round">smart_toy</span>Agent 연동</span>
+                  <span class="tag amber"><span class="material-icons-round">travel_explore</span>실행 로그 탐색</span>
+                </div>
+              </div>
+              <div class="featured-actions">
+                <a class="action-primary" href="mcp_hub_v2.html"><span class="material-icons-round">open_in_new</span>MCP 허브 열기</a>
+                <a class="action-secondary" href="workspace_keycenter_hub.html"><span class="material-icons-round">vpn_key</span>Key Center 보기</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div class="title">검색 결과</div>
+            <div class="meta"><span data-visible-count>8</span> results</div>
+          </div>
+          <div class="filter-row" role="tablist" aria-label="검색 결과 타입 필터">
+            <button class="filter-chip is-active" type="button" data-filter="all"><span class="material-icons-round">apps</span>전체</button>
+            <button class="filter-chip" type="button" data-filter="hub"><span class="material-icons-round">hub</span>허브</button>
+            <button class="filter-chip" type="button" data-filter="project"><span class="material-icons-round">folder_open</span>프로젝트</button>
+            <button class="filter-chip" type="button" data-filter="guide"><span class="material-icons-round">menu_book</span>가이드</button>
+            <button class="filter-chip" type="button" data-filter="article"><span class="material-icons-round">article</span>문서</button>
+          </div>
+
+          <div class="result-list" id="resultList">
+            <a class="result-card" data-type="hub" href="mcp_hub_v2.html">
+              <div class="result-icon" style="background:linear-gradient(135deg,#b40e4d,#7c5fcf)"><span class="material-icons-round">hub</span></div>
+              <div class="result-copy">
+                <div class="result-type"><span class="material-icons-round">bolt</span>Hub Result</div>
+                <h3 class="result-title"><mark data-query></mark>과 가장 직접 연결되는 <strong>MCP Hub</strong></h3>
+                <p class="result-desc">사용 가능한 MCP 서버, LLM 키 매핑, 접근 허가 정책, 최근 실패 로그를 한 번에 확인할 수 있습니다.</p>
+                <div class="result-meta">
+                  <span class="meta-pill"><span class="material-icons-round">security</span>권한 확인</span>
+                  <span class="meta-pill"><span class="material-icons-round">lan</span>MCP 목록</span>
+                  <span class="meta-pill"><span class="material-icons-round">query_stats</span>실행 로그</span>
+                </div>
+              </div>
+              <div class="result-side">
+                <span class="score-pill"><span class="material-icons-round">verified</span>94% match</span>
+                <span class="route-pill"><span class="material-icons-round">open_in_new</span>허브 바로가기</span>
+              </div>
+            </a>
+
+            <a class="result-card" data-type="hub" href="workspace_keycenter_hub.html">
+              <div class="result-icon" style="background:linear-gradient(135deg,#2563eb,#06b6d4)"><span class="material-icons-round">vpn_key</span></div>
+              <div class="result-copy">
+                <div class="result-type"><span class="material-icons-round">key</span>Hub Result</div>
+                <h3 class="result-title">연결 키 상태를 확인하는 <strong>Key Center</strong></h3>
+                <p class="result-desc"><mark data-query></mark> 작업 전에 필요한 provider key, 만료 시점, consumer runtime 연결 상태를 점검하기 좋은 허브입니다.</p>
+                <div class="result-meta">
+                  <span class="meta-pill"><span class="material-icons-round">key</span>Provider Key</span>
+                  <span class="meta-pill"><span class="material-icons-round">schedule</span>만료 예정</span>
+                  <span class="meta-pill"><span class="material-icons-round">link</span>consumer 매핑</span>
+                </div>
+              </div>
+              <div class="result-side">
+                <span class="score-pill"><span class="material-icons-round">verified</span>88% match</span>
+                <span class="route-pill"><span class="material-icons-round">open_in_new</span>키 허브</span>
+              </div>
+            </a>
+
+            <a class="result-card" data-type="project" href="workspace_project_detail.html">
+              <div class="result-icon" style="background:linear-gradient(135deg,#4f8cff,#3b6fcf)"><span class="material-icons-round">folder_open</span></div>
+              <div class="result-copy">
+                <div class="result-type"><span class="material-icons-round">deployed_code</span>Project Result</div>
+                <h3 class="result-title"><strong>workspace.fe</strong> 프로젝트 상세에서 실제 연결 상태 보기</h3>
+                <p class="result-desc">검색 결과를 읽는 데서 끝나지 않고, 실제 앱과 문서 수집, 검색 대상, 배포 히스토리를 보는 실행 화면으로 이어집니다.</p>
+                <div class="result-meta">
+                  <span class="meta-pill"><span class="material-icons-round">terminal</span>Code Server</span>
+                  <span class="meta-pill"><span class="material-icons-round">menu_book</span>문서 수집</span>
+                  <span class="meta-pill"><span class="material-icons-round">rocket_launch</span>배포 이력</span>
+                </div>
+              </div>
+              <div class="result-side">
+                <span class="score-pill"><span class="material-icons-round">verified</span>83% match</span>
+                <span class="route-pill"><span class="material-icons-round">open_in_new</span>실행 화면</span>
+              </div>
+            </a>
+
+            <a class="result-card" data-type="hub" href="workspace_tools_hub.html">
+              <div class="result-icon" style="background:linear-gradient(135deg,#0d9488,#14b8a6)"><span class="material-icons-round">construction</span></div>
+              <div class="result-copy">
+                <div class="result-type"><span class="material-icons-round">build_circle</span>Hub Result</div>
+                <h3 class="result-title"><strong>Tools Hub</strong>에서 <mark data-query></mark>와 연결된 실행 도구 찾기</h3>
+                <p class="result-desc">Search Console, Kibana, pgAdmin, Redis Insight처럼 실제로 열어서 확인할 수 있는 도구들을 한데 모은 허브입니다.</p>
+                <div class="result-meta">
+                  <span class="meta-pill"><span class="material-icons-round">travel_explore</span>Search Console</span>
+                  <span class="meta-pill"><span class="material-icons-round">dashboard</span>Kibana</span>
+                  <span class="meta-pill"><span class="material-icons-round">tune</span>운영 도구</span>
+                </div>
+              </div>
+              <div class="result-side">
+                <span class="score-pill"><span class="material-icons-round">verified</span>80% match</span>
+                <span class="route-pill"><span class="material-icons-round">open_in_new</span>도구 허브</span>
+              </div>
+            </a>
+
+            <a class="result-card" data-type="guide" href="workspace_agent_hub.html">
+              <div class="result-icon" style="background:linear-gradient(135deg,#7c5fcf,#a78bfa)"><span class="material-icons-round">smart_toy</span></div>
+              <div class="result-copy">
+                <div class="result-type"><span class="material-icons-round">school</span>Guide Result</div>
+                <h3 class="result-title"><strong>Agent Hub</strong>로 이어지는 추천 학습 경로</h3>
+                <p class="result-desc"><mark data-query></mark>가 에이전트 연결이나 도구 사용과 맞물린다면, 어떤 LLM key와 agent 구성이 필요한지 함께 살펴보기 좋습니다.</p>
+                <div class="result-meta">
+                  <span class="meta-pill"><span class="material-icons-round">psychology</span>Agent 연결</span>
+                  <span class="meta-pill"><span class="material-icons-round">settings_suggest</span>실행 구성</span>
+                  <span class="meta-pill"><span class="material-icons-round">route</span>추천 경로</span>
+                </div>
+              </div>
+              <div class="result-side">
+                <span class="score-pill"><span class="material-icons-round">verified</span>77% match</span>
+                <span class="route-pill"><span class="material-icons-round">open_in_new</span>에이전트 허브</span>
+              </div>
+            </a>
+
+            <a class="result-card" data-type="guide" href="portal_launchpad.html">
+              <div class="result-icon" style="background:linear-gradient(135deg,#f59e0b,#f97316)"><span class="material-icons-round">rocket_launch</span></div>
+              <div class="result-copy">
+                <div class="result-type"><span class="material-icons-round">tips_and_updates</span>Guide Result</div>
+                <h3 class="result-title">Launchpad 첫 화면에서 자주 쓰는 흐름으로 다시 이동</h3>
+                <p class="result-desc">검색을 끝낸 뒤에는 앱 갤러리, AI 갤러리, 프로젝트 허브 같은 상위 동선으로 되돌아가 연속된 탐색을 이어갈 수 있습니다.</p>
+                <div class="result-meta">
+                  <span class="meta-pill"><span class="material-icons-round">home</span>홈 복귀</span>
+                  <span class="meta-pill"><span class="material-icons-round">apps</span>갤러리 탐색</span>
+                  <span class="meta-pill"><span class="material-icons-round">north_west</span>상위 동선</span>
+                </div>
+              </div>
+              <div class="result-side">
+                <span class="score-pill"><span class="material-icons-round">verified</span>71% match</span>
+                <span class="route-pill"><span class="material-icons-round">open_in_new</span>런치패드</span>
+              </div>
+            </a>
+
+            <a class="result-card" data-type="article" href="about_dej.html">
+              <div class="result-icon" style="background:linear-gradient(135deg,#0f172a,#334155)"><span class="material-icons-round">timeline</span></div>
+              <div class="result-copy">
+                <div class="result-type"><span class="material-icons-round">article</span>Document Result</div>
+                <h3 class="result-title"><strong>About DEJ</strong>에서 플랫폼 맥락 다시 보기</h3>
+                <p class="result-desc"><mark data-query></mark>가 왜 Launchpad 안에서 허브, 앱, 가이드 흐름으로 연결되는지 제품 철학과 역사 맥락을 함께 보여줍니다.</p>
+                <div class="result-meta">
+                  <span class="meta-pill"><span class="material-icons-round">account_tree</span>CEJ · DEJ</span>
+                  <span class="meta-pill"><span class="material-icons-round">history</span>히스토리</span>
+                  <span class="meta-pill"><span class="material-icons-round">lightbulb</span>배경 설명</span>
+                </div>
+              </div>
+              <div class="result-side">
+                <span class="score-pill"><span class="material-icons-round">verified</span>68% match</span>
+                <span class="route-pill"><span class="material-icons-round">open_in_new</span>배경 문서</span>
+              </div>
+            </a>
+
+            <a class="result-card" data-type="article" href="workspace_projects_hub.html">
+              <div class="result-icon" style="background:linear-gradient(135deg,#ef4444,#f97316)"><span class="material-icons-round">article</span></div>
+              <div class="result-copy">
+                <div class="result-type"><span class="material-icons-round">description</span>Document Result</div>
+                <h3 class="result-title"><strong>Projects Hub</strong>에서 연결된 사용자와 리소스 관점 확장</h3>
+                <p class="result-desc">검색어가 프로젝트 운영이나 협업 흐름과도 닿아 있다면, 프로젝트 허브에서 사람 검색, 리소스 상태, 초대 흐름까지 확장해서 볼 수 있습니다.</p>
+                <div class="result-meta">
+                  <span class="meta-pill"><span class="material-icons-round">group</span>사람 검색</span>
+                  <span class="meta-pill"><span class="material-icons-round">dns</span>리소스 연결</span>
+                  <span class="meta-pill"><span class="material-icons-round">manage_accounts</span>협업 관리</span>
+                </div>
+              </div>
+              <div class="result-side">
+                <span class="score-pill"><span class="material-icons-round">verified</span>65% match</span>
+                <span class="route-pill"><span class="material-icons-round">open_in_new</span>프로젝트 허브</span>
+              </div>
+            </a>
+          </div>
+
+          <div class="empty-state" id="emptyState" hidden>선택한 필터에 해당하는 결과가 없습니다. 다른 타입을 선택하거나 검색어를 바꿔보세요.</div>
+        </section>
+      </main>
+
+      <aside class="stack">
+        <section class="panel rail-panel">
+          <div class="panel-head">
+            <div class="title">빠른 액션</div>
+          </div>
+          <div class="quick-links">
+            <a class="quick-link" href="mcp_hub_v2.html">
+              <span class="quick-link-icon" style="background:linear-gradient(135deg,#b40e4d,#7c5fcf)"><span class="material-icons-round">hub</span></span>
+              <span><strong>MCP 허브 열기</strong><span>현재 검색어와 가장 가까운 연결 중심 화면</span></span>
+              <span class="material-icons-round trailing">chevron_right</span>
+            </a>
+            <a class="quick-link" href="workspace_keycenter_hub.html">
+              <span class="quick-link-icon" style="background:linear-gradient(135deg,#2563eb,#06b6d4)"><span class="material-icons-round">vpn_key</span></span>
+              <span><strong>Key Center 확인</strong><span>provider key와 consumer mapping 점검</span></span>
+              <span class="material-icons-round trailing">chevron_right</span>
+            </a>
+            <a class="quick-link" href="dej_agent_store.html">
+              <span class="quick-link-icon" style="background:linear-gradient(135deg,#0d9488,#14b8a6)"><span class="material-icons-round">smart_toy</span></span>
+              <span><strong>Agent Gallery 둘러보기</strong><span>연결 후 실제 활용 가능한 agent 시나리오 확인</span></span>
+              <span class="material-icons-round trailing">chevron_right</span>
+            </a>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const menuWrap = document.getElementById("serviceMenuWrap");
+      const menuButton = document.getElementById("serviceMenuButton");
+      const menuPopover = document.getElementById("serviceMenuPopover");
+
+      if (!menuWrap || !menuButton || !menuPopover) return;
+
+      const setOpen = (open) => {
+        menuWrap.classList.toggle("is-open", open);
+        menuButton.setAttribute("aria-expanded", String(open));
+        menuPopover.hidden = !open;
+      };
+
+      setOpen(false);
+
+      menuButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        setOpen(!menuWrap.classList.contains("is-open"));
+      });
+
+      menuPopover.addEventListener("click", (event) => {
+        if (event.target.closest(".service-link, .service-outlink")) {
+          setOpen(false);
+        }
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!menuWrap.contains(event.target)) {
+          setOpen(false);
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          setOpen(false);
+          menuButton.focus();
+        }
+      });
+    })();
+
+    (() => {
+      const params = new URLSearchParams(window.location.search);
+      const query = (params.get("q") || "").trim() || "MCP 연결";
+      const source = (params.get("source") || "launchpad").trim() || "launchpad";
+      const sourceLabelMap = {
+        launchpad: "Launchpad",
+        "workspace-projects-hub": "Projects Hub",
+        "mcp-hub": "MCP Hub"
+      };
+      const typeLabelMap = {
+        all: "전체",
+        hub: "허브",
+        project: "프로젝트",
+        guide: "가이드",
+        article: "문서"
+      };
+      const requestedDefaultType = (params.get("defaultType") || (source === "workspace-projects-hub" ? "project" : "all")).trim();
+      const defaultType = typeLabelMap[requestedDefaultType] ? requestedDefaultType : "all";
+      const sourceLabel = (params.get("sourceLabel") || sourceLabelMap[source] || "Launchpad").trim() || "Launchpad";
+      const queryTargets = Array.from(document.querySelectorAll("[data-query]"));
+      const sourceTargets = Array.from(document.querySelectorAll("[data-source-label]"));
+      const defaultTypeTargets = Array.from(document.querySelectorAll("[data-default-type-label]"));
+      const topbarInput = document.getElementById("topbarSearchInput");
+      const topbarSourceInput = document.getElementById("topbarSourceInput");
+      const topbarSourceLabelInput = document.getElementById("topbarSourceLabelInput");
+      const topbarDefaultTypeInput = document.getElementById("topbarDefaultTypeInput");
+      const aiChatLink = document.querySelector("[data-ai-chat-link]");
+
+      queryTargets.forEach((node) => {
+        node.textContent = query;
+      });
+      sourceTargets.forEach((node) => {
+        node.textContent = sourceLabel;
+      });
+      defaultTypeTargets.forEach((node) => {
+        node.textContent = typeLabelMap[defaultType] || typeLabelMap.all;
+      });
+
+      if (topbarInput) topbarInput.value = query;
+      if (topbarSourceInput) topbarSourceInput.value = source;
+      if (topbarSourceLabelInput) topbarSourceLabelInput.value = sourceLabel;
+      if (topbarDefaultTypeInput) topbarDefaultTypeInput.value = defaultType;
+      if (aiChatLink) {
+        const chatParams = new URLSearchParams({
+          q: query,
+          source,
+          sourceLabel,
+          mode: "search-assist"
+        });
+        aiChatLink.href = `dej_chatbot_trial.html?${chatParams.toString()}`;
+      }
+
+      const resultCards = Array.from(document.querySelectorAll(".result-card"));
+      const filterButtons = Array.from(document.querySelectorAll("[data-filter]"));
+      const visibleCountTargets = Array.from(document.querySelectorAll("[data-visible-count]"));
+      const emptyState = document.getElementById("emptyState");
+
+      const updateVisibleCount = () => {
+        const visible = resultCards.filter((card) => !card.hidden).length;
+        visibleCountTargets.forEach((node) => {
+          node.textContent = String(visible);
+        });
+        if (emptyState) emptyState.hidden = visible !== 0;
+      };
+
+      const setFilter = (type) => {
+        filterButtons.forEach((button) => {
+          const active = button.dataset.filter === type;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-selected", String(active));
+        });
+        if (topbarDefaultTypeInput) topbarDefaultTypeInput.value = type;
+
+        resultCards.forEach((card) => {
+          const visible = type === "all" || card.dataset.type === type;
+          card.hidden = !visible;
+        });
+
+        updateVisibleCount();
+      };
+
+      filterButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          setFilter(button.dataset.filter || "all");
+        });
+      });
+
+      updateVisibleCount();
+      setFilter(defaultType);
+    })();
+  </script>
+  <script src="concept_endpoint_overlay.js"></script>
+</body>
+</html>

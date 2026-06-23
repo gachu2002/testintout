@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Domain Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <style>
+    .domain-hub .resource-top > div:first-child,
+    .domain-hub .resource-name-row,
+    .domain-hub .resource-copy {
+      min-width: 0;
+    }
+
+    .domain-hub .resource-top > div:first-child {
+      flex: 1;
+    }
+
+    .domain-hub .resource-name,
+    .domain-hub .resource-meta,
+    .domain-hub .list-row-title,
+    .domain-hub .list-row-title a {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body class="domain-hub">
+  <div id="app"></div>
+  <script>
+    window.HUB_CONFIG = {
+      documentTitle: "Domain Hub",
+      activeKey: "domain",
+      theme: {
+        bg: "#f5f5ff",
+        brand: "#4f46e5",
+        brandH: "#4338ca",
+        brandBg: "#e0e7ff",
+        brandSoft: "rgba(79,70,229,.14)",
+        accent2: "#60a5fa"
+      },
+      searchPlaceholder: "도메인, 인증서 상태, 연결 프로젝트를 검색하세요...",
+      eyebrow: "Accessibility · Domain Provisioning",
+      title: "Domain Hub",
+      description: "워크스페이스 DNS 리소스 모음입니다. 각 도메인에 어떤 프로젝트가 연결되어 있는지, 인증서와 커넥션 상태가 어떤지 빠르게 찾는 구성을 목표로 합니다.",
+      primaryAction: { href: "workspace_project_detail.html?project=restaurant", icon: "add_circle", label: "새 도메인 생성" },
+      secondaryAction: { href: "workspace_projects_hub.html", icon: "inventory_2", label: "프로젝트 허브 보기" },
+      utilityAction: null,
+      createAction: null,
+      heroStats: [
+        { icon: "language", value: "6", label: "등록 도메인", note: "Connected 4 · Pending 2", color: "linear-gradient(135deg,#4f46e5,#6366f1)" },
+        { icon: "link", value: "6", label: "바인딩 프로젝트", note: "도메인당 1개 프로젝트", color: "linear-gradient(135deg,#6366f1,#818cf8)" },
+        { icon: "verified_user", value: "4", label: "정상 인증서", note: "발급 완료 기준", color: "linear-gradient(135deg,#4338ca,#60a5fa)" },
+        { icon: "cable", value: "4", label: "연결 완료", note: "ingress / cdn route 기준", color: "linear-gradient(135deg,#3730a3,#6366f1)" }
+      ],
+      filters: [
+        { id: "all", icon: "apps", label: "전체" },
+        { id: "pending", icon: "schedule", label: "대기" },
+        { id: "certificate", icon: "verified_user", label: "인증서" },
+        { id: "connected", icon: "lan", label: "연결 완료" }
+      ],
+      resourceSectionIcon: "language",
+      resourceSectionLabel: "DNS Fleet",
+      resourceTitle: "Domains",
+      resourceDescription: "워크스페이스에서 운영 중인 DNS 리소스를 한곳에 모았습니다. 각 도메인은 단일 프로젝트에만 바인딩되며, 카드에서는 인증서와 커넥션 상태를 빠르게 읽고 바로 Open할 수 있습니다.",
+      resourceHeaderLink: { href: "workspace_projects_hub.html", label: "프로젝트 연결 보기" },
+      resources: [
+        {
+          categories: ["all", "pending"],
+          status: { label: "Pending", tone: "pending" },
+          engine: "Preview DNS · Pending Route",
+          icon: "public",
+          name: "alpha.workspace.hedej.lge.com",
+          meta: "zone 생성 전",
+          color: "linear-gradient(135deg,#4f46e5,#60a5fa)",
+          connectionsLabel: "Bound Project",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 1,
+          connectionsLayoutClass: "is-fixed-consoles",
+          connections: [
+            { abbr: "AL", name: "alpha-web", meta: "preview app", color: "linear-gradient(135deg,#4f46e5,#60a5fa)" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_domain_detail.html?item=alpha" }
+          ]
+        },
+        {
+          categories: ["all", "pending", "certificate"],
+          status: { label: "Pending", tone: "pending" },
+          engine: "Preview DNS · Certificate Requested",
+          icon: "language",
+          name: "beta-review.workspace.hedej.lge.com",
+          meta: "인증서 요청 넣어둠",
+          color: "linear-gradient(135deg,#0f766e,#14b8a6)",
+          connectionsLabel: "Bound Project",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 1,
+          connectionsLayoutClass: "is-fixed-consoles",
+          connections: [
+            { abbr: "BR", name: "beta-review", meta: "preview route", color: "linear-gradient(135deg,#0f766e,#14b8a6)" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_domain_detail.html?item=beta-review" }
+          ]
+        },
+        {
+          categories: ["all", "certificate"],
+          status: { label: "Review", tone: "review" },
+          engine: "Preview DNS · Certificate Binding",
+          icon: "verified_user",
+          name: "preview.restaurant.workspace.hedej.lge.com",
+          meta: "SAN 승인 기다리는 중",
+          color: "linear-gradient(135deg,#2563eb,#06b6d4)",
+          connectionsLabel: "Bound Project",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 1,
+          connectionsLayoutClass: "is-fixed-consoles",
+          connections: [
+            { abbr: "RT", name: "restaurant", meta: "preview web", color: "linear-gradient(135deg,#2563eb,#06b6d4)" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_domain_detail.html?item=preview-restaurant" }
+          ]
+        },
+        {
+          categories: ["all", "certificate"],
+          status: { label: "Warn", tone: "warn" },
+          engine: "Service DNS · Certificate Renewal",
+          icon: "shield",
+          name: "coverity-ai.workspace.hedej.lge.com",
+          meta: "인증서 갱신 승인만 남음",
+          color: "linear-gradient(135deg,#f59e0b,#fbbf24)",
+          connectionsLabel: "Bound Project",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 1,
+          connectionsLayoutClass: "is-fixed-consoles",
+          connections: [
+            { abbr: "CA", name: "coverity-ai", meta: "internal service", color: "linear-gradient(135deg,#f59e0b,#fbbf24)" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_domain_detail.html?item=coverity-ai" }
+          ]
+        },
+        {
+          categories: ["all", "connected"],
+          status: { label: "Connected", tone: "healthy" },
+          engine: "Service DNS · Ingress Route",
+          icon: "lan",
+          name: "hermes-be.workspace.hedej.lge.com",
+          meta: "운영 연결 완료",
+          color: "linear-gradient(135deg,#4f46e5,#818cf8)",
+          connectionsLabel: "Bound Project",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 1,
+          connectionsLayoutClass: "is-fixed-consoles",
+          connections: [
+            { abbr: "HB", name: "hermes-be", meta: "primary api", color: "linear-gradient(135deg,#4f46e5,#818cf8)" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_domain_detail.html?item=hermes-be" }
+          ]
+        },
+        {
+          categories: ["all", "connected"],
+          status: { label: "Connected", tone: "healthy" },
+          engine: "Service DNS · CDN Route",
+          icon: "domain_verification",
+          name: "docs.workspace.hedej.lge.com",
+          meta: "배포 후 확인 완료",
+          color: "linear-gradient(135deg,#0f766e,#34d399)",
+          connectionsLabel: "Bound Project",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 1,
+          connectionsLayoutClass: "is-fixed-consoles",
+          connections: [
+            { abbr: "DC", name: "docs-center", meta: "public docs", color: "linear-gradient(135deg,#0f766e,#34d399)" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_domain_detail.html?item=docs" }
+          ]
+        }
+      ],
+      mainPanels: [
+        {
+          icon: "tips_and_updates",
+          label: "Tips",
+          title: "DNS 운영 팁",
+          description: "도메인 카드에서는 연결 판단에 필요한 정보만 남기고, 참고할 내용은 아래 패널에서 짧게 확인하는 구조로 맞췄습니다.",
+          rows: [
+            { title: "도메인은 단일 프로젝트에만 바인딩합니다", meta: "같은 DNS 리소스에 여러 프로젝트를 섞지 않고, 카드 안에서도 Bound Project를 하나만 보여주는 전제를 둡니다." },
+            { title: "인증서와 커넥션 상태를 같이 봅니다", meta: "도메인 오픈 전 인증서 발급/갱신 상태와 실제 ingress 또는 CDN 연결 상태를 함께 읽을 수 있어야 합니다." },
+            { title: "세부 운영 절차는 카드 밖으로 분리합니다", meta: "승인, 예외, 보안 절차는 카드 안에 넣지 않고 별도 가이드 링크에서 이어서 확인합니다." }
+          ],
+          footerLink: { href: "workspace_projects_hub.html", label: "연결 프로젝트 보기" }
+        },
+        {
+          icon: "menu_book",
+          label: "Guide Links",
+          title: "가이드 링크",
+          description: "운영 문서와 관련 허브 진입점은 카드 안에 넣지 않고, 링크 패널에서 분리해 여는 방식으로 정리했습니다.",
+          rows: [
+            { title: "프로젝트 허브", meta: "각 DNS 리소스가 어떤 프로젝트에 바인딩되는지 프로젝트 단위로 다시 확인합니다.", href: "workspace_projects_hub.html" },
+            { title: "권한/승인 가이드", meta: "인증서 갱신 승인과 예외 처리 흐름을 확인합니다.", href: "workspace_permission_hub.html" },
+            { title: "Bucket Hub", meta: "퍼블릭 버킷이 연결되는 도메인 노출 흐름을 함께 봅니다.", href: "workspace_s3_hub.html" }
+          ],
+          footerLink: { href: "portal_launchpad.html", label: "런치패드로 돌아가기" }
+        }
+      ],
+      summary: null,
+      sidebarPanels: [
+        {
+          icon: "verified_user",
+          label: "Certificate Status",
+          title: "현재 인증서 상태",
+          description: "우측 레일은 인증서 상태와 갱신/발급 진행 정도만 간단히 보여줍니다.",
+          rows: [
+            { title: "alpha.workspace.hedej.lge.com", meta: "SSL 미연결 · certificate request 전", pill: { label: "Pending", tone: "pending" } },
+            { title: "preview.restaurant.workspace.hedej.lge.com", meta: "SAN binding review 중", pill: { label: "Review", tone: "review" } },
+            { title: "coverity-ai.workspace.hedej.lge.com", meta: "만료 12일 전 · renewal pending", pill: { label: "Warn", tone: "warn" } },
+            { title: "docs.workspace.hedej.lge.com", meta: "valid 143d", pill: { label: "Valid", tone: "healthy" } }
+          ],
+          footerLink: { href: "workspace_permission_hub.html", label: "승인/예외 보기" }
+        },
+        {
+          icon: "cable",
+          label: "Connection Status",
+          title: "현재 커넥션 상태",
+          description: "실제 ingress, ELB, CDN 연결 여부만 빠르게 읽을 수 있도록 분리했습니다.",
+          rows: [
+            { title: "alpha.workspace.hedej.lge.com", meta: "DNS zone 생성 대기", pill: { label: "None", tone: "draft" } },
+            { title: "preview.restaurant.workspace.hedej.lge.com", meta: "ELB binding 준비 완료", pill: { label: "Ready", tone: "review" } },
+            { title: "hermes-be.workspace.hedej.lge.com", meta: "ingress 연결 완료", pill: { label: "Connected", tone: "healthy" } },
+            { title: "docs.workspace.hedej.lge.com", meta: "CDN 연결 완료", pill: { label: "Connected", tone: "healthy" } }
+          ]
+        }
+      ]
+    };
+  </script>
+  <script src="workspace_resource_hub_shared.js"></script>
+  <script src="ax_studio_topbar.js"></script>
+  <script src="concept_endpoint_overlay.js"></script>
+</body>
+</html>

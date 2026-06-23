@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bucket Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    window.HUB_CONFIG = {
+      documentTitle: "Bucket Hub",
+      activeKey: "s3",
+      theme: {
+        bg: "#f1fcfa",
+        brand: "#0f766e",
+        brandH: "#115e59",
+        brandBg: "#ccfbf1",
+        brandSoft: "rgba(15,118,110,.14)",
+        accent2: "#2dd4bf"
+      },
+      searchPlaceholder: "버킷 이름, 타입, 연결 프로젝트를 검색하세요...",
+      eyebrow: "Storage · Object Plane",
+      title: "Bucket Hub",
+      description: "오브젝트 스토리지 리소스 모음입니다. 실제 업로드 흐름과 퍼블릭 노출은 프로젝트/도메인 허브에서 보고, 여기서는 버킷 상태와 연결 대상을 빠르게 찾습니다.",
+      primaryAction: { href: "workspace_project_detail.html?project=restaurant", icon: "add_circle", label: "새 버킷 생성" },
+      secondaryAction: { href: "workspace_projects_hub.html", icon: "inventory_2", label: "프로젝트 허브 보기" },
+      heroStats: [
+        { icon: "folder", value: "6", label: "등록 버킷", note: "Active 5 · Review 1", color: "linear-gradient(135deg,#0f766e,#14b8a6)" },
+        { icon: "link", value: "15", label: "바인딩 프로젝트", note: "프로젝트/서비스 기준", color: "linear-gradient(135deg,#0d9488,#2dd4bf)" },
+        { icon: "storage", value: "19.4TB", label: "총 사용량", note: "월간 증가 2.3TB", color: "linear-gradient(135deg,#0f766e,#5eead4)" },
+        { icon: "visibility", value: "41", label: "주간 버킷 열람", note: "최근 7일 조회 기준", color: "linear-gradient(135deg,#14b8a6,#99f6e4)" }
+      ],
+      filters: [
+        { id: "all", icon: "apps", label: "전체" },
+        { id: "private", icon: "lock", label: "프라이빗" },
+        { id: "public", icon: "language", label: "퍼블릭" },
+        { id: "shared", icon: "hub", label: "공용" },
+        { id: "archive", icon: "archive", label: "아카이브" }
+      ],
+      resourceSectionIcon: "folder",
+      resourceSectionLabel: "Bucket Fleet",
+      resourceTitle: "Buckets",
+      resourceDescription: "워크스페이스에서 운영 중인 버킷 리소스를 한곳에 모았습니다. 버킷 종류, 바인딩된 프로젝트를 보고 바로 Open할 수 있습니다.",
+      resourceHeaderLink: { href: "workspace_domain_hub.html", label: "도메인 매핑 보기" },
+      resources: [
+        {
+          categories: ["all", "private", "shared"],
+          status: { label: "Active", tone: "healthy" },
+          engine: "Private Bucket · Build Artifacts",
+          icon: "inventory_2",
+          name: "workspace-build-artifacts",
+          meta: "빌드 결과물과 릴리즈 번들이 쌓이는 공용 아티팩트 버킷",
+          color: "linear-gradient(135deg,#0f766e,#2dd4bf)",
+          connectionsLabel: "Bound Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [
+            { abbr: "WF", name: "workspace-fe", meta: "release bundle", color: "linear-gradient(135deg,#0f766e,#2dd4bf)" },
+            { abbr: "RW", name: "release-worker", meta: "artifact sync", color: "linear-gradient(135deg,#0ea5e9,#22d3ee)" },
+            { abbr: "OD", name: "ops-deployer", meta: "rollback asset", color: "linear-gradient(135deg,#14b8a6,#5eead4)" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_bucket_detail.html?item=workspace-build-artifacts" }
+          ]
+        },
+        {
+          categories: ["all", "public"],
+          status: { label: "Active", tone: "healthy" },
+          engine: "Public Bucket · Static Assets",
+          icon: "language",
+          name: "restaurant-static-assets",
+          meta: "메뉴 이미지와 캠페인 에셋이 노출되는 퍼블릭 정적 버킷",
+          color: "linear-gradient(135deg,#0ea5e9,#22d3ee)",
+          connectionsLabel: "Bound Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [
+            { abbr: "RW", name: "restaurant-web", meta: "public media", color: "linear-gradient(135deg,#0ea5e9,#22d3ee)" },
+            { abbr: "RA", name: "restaurant-admin", meta: "asset upload", color: "linear-gradient(135deg,#0284c7,#67e8f9)" },
+            { abbr: "CS", name: "campaign-studio", meta: "campaign bundle", color: "linear-gradient(135deg,#38bdf8,#a5f3fc)" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_bucket_detail.html?item=restaurant-static-assets" }
+          ]
+        },
+        {
+          categories: ["all", "private"],
+          status: { label: "Review", tone: "review" },
+          engine: "Private Bucket · Prompt Assets",
+          icon: "psychology",
+          name: "prompt-catalog-private",
+          meta: "프롬프트 번들과 평가 스냅샷이 쌓이는 프라이빗 버킷",
+          color: "linear-gradient(135deg,#7c3aed,#a78bfa)",
+          connectionsLabel: "Bound Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [
+            { abbr: "AP", name: "ai-platform", meta: "prompt source", color: "linear-gradient(135deg,#7c3aed,#a78bfa)" },
+            { abbr: "PE", name: "prompt-evaluator", meta: "snapshot read", color: "linear-gradient(135deg,#8b5cf6,#c4b5fd)" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_bucket_detail.html?item=prompt-catalog-private" }
+          ]
+        },
+        {
+          categories: ["all", "archive"],
+          status: { label: "Active", tone: "healthy" },
+          engine: "Archive Bucket · Compliance",
+          icon: "archive",
+          name: "compliance-longterm-archive",
+          meta: "감사 대응과 장기 보관 데이터를 다루는 컴플라이언스 아카이브 버킷",
+          color: "linear-gradient(135deg,#f59e0b,#fbbf24)",
+          connectionsLabel: "Bound Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [
+            { abbr: "AC", name: "audit-center", meta: "audit export", color: "linear-gradient(135deg,#f59e0b,#fbbf24)" },
+            { abbr: "LE", name: "legal-export", meta: "compliance bundle", color: "linear-gradient(135deg,#f59e0b,#fcd34d)" },
+            { abbr: "SO", name: "security-ops", meta: "retrieval request", color: "linear-gradient(135deg,#fbbf24,#fde68a)" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_bucket_detail.html?item=compliance-longterm-archive" }
+          ]
+        },
+        {
+          categories: ["all", "private", "shared"],
+          status: { label: "Active", tone: "healthy" },
+          engine: "Shared Bucket · Upload Intake",
+          icon: "upload",
+          name: "media-ingest-dropzone",
+          meta: "업로드 게이트웨이와 워커가 함께 쓰는 공용 인입 버킷",
+          color: "linear-gradient(135deg,#0891b2,#5eead4)",
+          connectionsLabel: "Bound Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [
+            { abbr: "CS", name: "creator-studio", meta: "signed upload", color: "linear-gradient(135deg,#0891b2,#5eead4)" },
+            { abbr: "MW", name: "media-worker", meta: "image processing", color: "linear-gradient(135deg,#0f766e,#2dd4bf)" },
+            { abbr: "RS", name: "restaurant", meta: "media import", color: "linear-gradient(135deg,#14b8a6,#99f6e4)" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_bucket_detail.html?item=media-ingest-dropzone" }
+          ]
+        },
+        {
+          categories: ["all", "public", "shared"],
+          status: { label: "Active", tone: "healthy" },
+          engine: "Shared Bucket · Report Export",
+          icon: "bar_chart",
+          name: "analytics-report-export",
+          meta: "리포트와 다운로드 번들이 배포되는 공용 익스포트 버킷",
+          color: "linear-gradient(135deg,#14b8a6,#60a5fa)",
+          connectionsLabel: "Bound Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [
+            { abbr: "OD", name: "ops-dashboard", meta: "report export", color: "linear-gradient(135deg,#14b8a6,#60a5fa)" },
+            { abbr: "FO", name: "finance-ops", meta: "scheduled download", color: "linear-gradient(135deg,#0ea5e9,#67e8f9)" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_bucket_detail.html?item=analytics-report-export" }
+          ]
+        }
+      ],
+      mainPanels: [
+        {
+          icon: "tips_and_updates",
+          label: "Tips",
+          title: "버킷 운영 팁",
+          description: "버킷 카드에서는 제어에 필요한 정보만 남기고, 참고할 내용은 아래 패널에서 짧게 확인하는 구조로 맞췄습니다.",
+          rows: [
+            { title: "Bound Projects로 영향 범위를 먼저 확인합니다", meta: "어떤 프로젝트와 워커가 같은 버킷을 함께 쓰는지 카드 안에서 바로 읽히게 정리했습니다." },
+            { title: "권한/정책 검토는 카드 밖에서 분리합니다", meta: "버킷 카드에는 상태와 연결만 남기고, 세부 정책 예외는 Permission Hub 흐름에서 확인합니다." },
+            { title: "퍼블릭 노출 확인은 Domain Hub에서 이어서 봅니다", meta: "버킷 카드에서는 바인딩 프로젝트만 보고, 실제 노출 경로나 도메인 연결은 별도 허브에서 확인합니다." }
+          ],
+          footerLink: { href: "workspace_projects_hub.html", label: "연결 프로젝트 보기" }
+        },
+        {
+          icon: "menu_book",
+          label: "Guide Links",
+          title: "가이드 링크",
+          description: "운영 문서와 연관 허브 진입점은 카드 안에 넣지 않고, 링크 패널에서 분리해 여는 방식으로 정리했습니다.",
+          rows: [
+            { title: "Domain Hub", meta: "퍼블릭 버킷이 연결된 도메인과 노출 경로를 확인합니다.", href: "workspace_domain_hub.html" },
+            { title: "권한/접근 정책 가이드", meta: "버킷 접근 정책과 예외 승인 흐름을 확인합니다.", href: "workspace_permission_hub.html" },
+            { title: "프로젝트 허브", meta: "어떤 프로젝트가 어느 버킷을 사용하는지 프로젝트 단위로 다시 확인합니다.", href: "workspace_projects_hub.html" }
+          ],
+          footerLink: { href: "portal_launchpad.html", label: "런치패드로 돌아가기" }
+        }
+      ],
+      sidebarPanels: [
+        {
+          icon: "storage",
+          label: "Bucket Usage",
+          title: "현재 주요 버킷 사용량",
+          description: "우측 레일은 헬시 상태 대신 주요 버킷의 사용량과 점유율만 간단히 보여줍니다.",
+          rows: [
+            { title: "workspace-build-artifacts", meta: "3.8TB used · release asset / rollback bundle", pill: { label: "63%", tone: "info" } },
+            { title: "restaurant-static-assets", meta: "5.2TB used · public image / campaign asset", pill: { label: "58%", tone: "info" } },
+            { title: "compliance-longterm-archive", meta: "8.1TB used · archive / audit export", pill: { label: "81%", tone: "review" } },
+            { title: "media-ingest-dropzone", meta: "1.7TB used · upload intake / processing", pill: { label: "34%", tone: "healthy" } },
+            { title: "analytics-report-export", meta: "0.6TB used · report bundle / download", pill: { label: "22%", tone: "healthy" } }
+          ]
+        }
+      ]
+    };
+  </script>
+  <script src="workspace_resource_hub_shared.js"></script>
+  <script src="ax_studio_topbar.js"></script>
+  <script src="concept_endpoint_overlay.js"></script>
+</body>
+</html>

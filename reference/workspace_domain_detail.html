@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Domain Detail</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="workspace_detail_shared.css" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <style>
+    .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .side-col {
+      display: none;
+    }
+    .hero-stats {
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 320px;
+    }
+    .tls-summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .tls-metric {
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+    }
+    .tls-metric-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .tls-metric-value {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -.04em;
+      margin-bottom: 6px;
+    }
+    .tls-metric-meta {
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+    .mock-modal-backdrop[hidden] { display:none; }
+    .mock-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 320;
+      background: rgba(15,23,42,.48);
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      backdrop-filter: blur(6px);
+    }
+    .mock-modal {
+      width: min(560px, 100%);
+      border-radius: 24px;
+      background: #fff;
+      border: 1px solid rgba(226,232,240,.9);
+      box-shadow: 0 28px 80px rgba(15,23,42,.24);
+      overflow: hidden;
+    }
+    .mock-modal-head,
+    .mock-modal-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 20px 22px;
+    }
+    .mock-modal-head {
+      border-bottom: 1px solid #e6ebf2;
+      align-items: flex-start;
+    }
+    .mock-modal-title {
+      font-size: 22px;
+      line-height: 1.15;
+      letter-spacing: -.03em;
+      margin-bottom: 6px;
+    }
+    .mock-modal-desc {
+      color: #667085;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .mock-modal-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      border: 1px solid #e6ebf2;
+      background: #f8fafc;
+      display: grid;
+      place-items: center;
+      color: #475467;
+    }
+    .mock-modal-body {
+      padding: 22px;
+      display: grid;
+      gap: 16px;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+    }
+    .modal-field {
+      display: grid;
+      gap: 8px;
+    }
+    .modal-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: #667085;
+    }
+    .modal-input,
+    .modal-select,
+    .modal-textarea {
+      width: 100%;
+      height: 44px;
+      border-radius: 14px;
+      border: 1px solid #dbe3ee;
+      background: #fff;
+      padding: 0 14px;
+      color: #111827;
+      outline: none;
+      font-size: 14px;
+    }
+    .modal-textarea {
+      min-height: 120px;
+      height: auto;
+      padding: 12px 14px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      line-height: 1.45;
+    }
+    .modal-input:focus,
+    .modal-select:focus,
+    .modal-textarea:focus {
+      border-color: rgba(37,99,235,.45);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.08);
+    }
+    .mock-modal-foot {
+      border-top: 1px solid #e6ebf2;
+      justify-content: flex-end;
+      background: #fff;
+    }
+    .mock-inline-note {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    @media (max-width: 900px) {
+      .tls-summary {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <div class="mock-modal-backdrop" id="tlsEditModal" hidden>
+    <div class="mock-modal" role="dialog" aria-modal="true" aria-labelledby="tlsEditTitle">
+      <div class="mock-modal-head">
+        <div>
+          <div class="section-kicker"><span class="material-icons-round">verified_user</span>TLS Update</div>
+          <h2 class="mock-modal-title" id="tlsEditTitle">TLS 업데이트</h2>
+          <p class="mock-modal-desc">HTTPRoute가 참조하는 TLS 설정을 샘플로 업데이트합니다.</p>
+        </div>
+        <button class="mock-modal-close" type="button" data-modal-close>
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="mock-modal-body">
+        <label class="modal-field">
+          <span class="modal-label">Certificate Ref</span>
+          <input class="modal-input" id="tlsEditorCertRef" type="text" />
+        </label>
+        <label class="modal-field">
+          <span class="modal-label">TLS CRT</span>
+          <textarea class="modal-textarea" id="tlsEditorCrt" spellcheck="false" placeholder="-----BEGIN CERTIFICATE-----"></textarea>
+        </label>
+        <label class="modal-field">
+          <span class="modal-label">TLS Key</span>
+          <textarea class="modal-textarea" id="tlsEditorKey" spellcheck="false" placeholder="-----BEGIN PRIVATE KEY-----"></textarea>
+        </label>
+        <div class="mock-inline-note" id="tlsEditHint">실제 저장 없이 현재 샘플 화면만 갱신합니다.</div>
+      </div>
+      <div class="mock-modal-foot">
+        <button class="action-btn secondary" type="button" data-modal-close>
+          <span class="material-icons-round" style="font-size:18px;">close</span>
+          닫기
+        </button>
+        <button class="action-btn primary" type="button" id="tlsEditSaveButton">
+          <span class="material-icons-round" style="font-size:18px;">check</span>
+          업데이트
+        </button>
+      </div>
+    </div>
+  </div>
+  <script>
+    function formatPemState(value, emptyLabel) {
+      const trimmed = (value || "").trim();
+      return trimmed ? `입력됨 · ${trimmed.split("\n")[0]}` : emptyLabel;
+    }
+
+    function buildTlsSummary(item) {
+      return `
+        <div class="tls-summary">
+          <article class="tls-metric">
+            <div class="tls-metric-label">TLS Remaining</div>
+            <div class="tls-metric-value" data-tls-field="remainingDays">${item.remainingDays}</div>
+            <div class="tls-metric-meta">${item.remainingMeta}</div>
+          </article>
+          <article class="tls-metric">
+            <div class="tls-metric-label">Certificate Ref</div>
+            <div class="tls-metric-value" style="font-size:20px;" data-tls-field="certRef">${item.tlsEditor.certRef}</div>
+            <div class="tls-metric-meta">Gateway API HTTPRoute TLS reference</div>
+          </article>
+          <article class="tls-metric">
+            <div class="tls-metric-label">TLS Material</div>
+            <div class="tls-metric-value" style="font-size:20px;">PEM Input</div>
+            <div class="tls-metric-meta"><span data-tls-field="crtStatus">${formatPemState(item.tlsEditor.crt, "CRT 미입력")}</span><br /><span data-tls-field="keyStatus">${formatPemState(item.tlsEditor.key, "KEY 미입력")}</span></div>
+          </article>
+        </div>
+      `;
+    }
+
+    function buildItem(item) {
+      return {
+        ...item,
+        mainHtml: `
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">verified_user</span>TLS</div>
+                <h2 class="section-title">TLS 상태</h2>
+                <p class="section-desc">도메인은 Gateway API HTTPRoute를 사용하지만, 이 화면은 TLS 잔여 유효일과 TLS 업데이트만 확인하는 단순한 detail 샘플입니다.</p>
+              </div>
+              <button class="action-btn primary" type="button" data-action-key="tls-edit">
+                <span class="material-icons-round" style="font-size:18px;">edit</span>
+                TLS 업데이트
+              </button>
+            </div>
+            ${buildTlsSummary(item)}
+          </section>
+        `,
+        sidebarHtml: ``
+      };
+    }
+
+    const rawItems = [
+      {
+        key: "alpha",
+        title: "alpha.workspace.hedej.lge.com",
+        description: "아직 TLS가 연결되지 않은 preview 도메인 샘플입니다.",
+        heroIcon: "public",
+        typeLabel: "Gateway Route",
+        statusLabel: "Pending TLS",
+        statusTone: "muted",
+        theme: { bg: "#eef0ff", brand: "#4f46e5", brandH: "#4338ca", brandBg: "#d8dcff", brandSoft: "rgba(79,70,229,.18)", accent: "#60a5fa" },
+        actions: [
+          { label: "TLS 업데이트", icon: "edit", kind: "button", actionKey: "tls-edit", variant: "primary" }
+        ],
+        heroStats: [
+          { label: "TLS Remaining", value: "-", meta: "certificate 미연결" }
+        ],
+        remainingDays: "-",
+        remainingMeta: "TLS를 먼저 연결해야 유효일 계산이 가능합니다.",
+        tlsEditor: {
+          certRef: "preview-alpha-tls",
+          crt: "",
+          key: ""
+        },
+        facts: [
+          { key: "Certificate Ref", value: '<span class="mono" data-tls-field="certRef">preview-alpha-tls</span>' },
+          { key: "TLS CRT", value: '<span data-tls-field="crtStatus">CRT 미입력</span>' },
+          { key: "TLS Key", value: '<span data-tls-field="keyStatus">KEY 미입력</span>' }
+        ]
+      },
+      {
+        key: "beta-review",
+        title: "beta-review.workspace.hedej.lge.com",
+        description: "review용 preview 도메인으로 TLS 잔여 유효일과 갱신 기준만 단순하게 보는 샘플입니다.",
+        heroIcon: "language",
+        typeLabel: "Gateway Route",
+        statusLabel: "Review",
+        statusTone: "review",
+        theme: { bg: "#eef0ff", brand: "#4f46e5", brandH: "#4338ca", brandBg: "#d8dcff", brandSoft: "rgba(79,70,229,.18)", accent: "#60a5fa" },
+        actions: [
+          { label: "TLS 업데이트", icon: "edit", kind: "button", actionKey: "tls-edit", variant: "primary" }
+        ],
+        heroStats: [
+          { label: "TLS Remaining", value: "34d", meta: "renewal review 필요" }
+        ],
+        remainingDays: "34d",
+        remainingMeta: "만료까지 34일 남아 있어 검토 구간입니다.",
+        tlsEditor: {
+          certRef: "beta-review-tls",
+          crt: "-----BEGIN CERTIFICATE-----\nMIICbeta-review\n-----END CERTIFICATE-----",
+          key: "-----BEGIN PRIVATE KEY-----\nMIIEbeta-review\n-----END PRIVATE KEY-----"
+        },
+        facts: [
+          { key: "Certificate Ref", value: '<span class="mono" data-tls-field="certRef">beta-review-tls</span>' },
+          { key: "TLS CRT", value: '<span data-tls-field="crtStatus">입력됨 · -----BEGIN CERTIFICATE-----</span>' },
+          { key: "TLS Key", value: '<span data-tls-field="keyStatus">입력됨 · -----BEGIN PRIVATE KEY-----</span>' }
+        ]
+      },
+      {
+        key: "preview-restaurant",
+        title: "preview.restaurant.workspace.hedej.lge.com",
+        description: "TLS 만료가 임박한 preview 웹 도메인 샘플입니다.",
+        heroIcon: "verified_user",
+        typeLabel: "Gateway Route",
+        statusLabel: "Expiring Soon",
+        statusTone: "warning",
+        theme: { bg: "#eef0ff", brand: "#4f46e5", brandH: "#4338ca", brandBg: "#d8dcff", brandSoft: "rgba(79,70,229,.18)", accent: "#60a5fa" },
+        actions: [
+          { label: "TLS 업데이트", icon: "edit", kind: "button", actionKey: "tls-edit", variant: "primary" }
+        ],
+        heroStats: [
+          { label: "TLS Remaining", value: "9d", meta: "곧 만료" }
+        ],
+        remainingDays: "9d",
+        remainingMeta: "만료가 임박해 바로 갱신을 준비해야 합니다.",
+        tlsEditor: {
+          certRef: "restaurant-preview-tls",
+          crt: "-----BEGIN CERTIFICATE-----\nMIICrestaurant-preview\n-----END CERTIFICATE-----",
+          key: "-----BEGIN PRIVATE KEY-----\nMIIErestaurant-preview\n-----END PRIVATE KEY-----"
+        },
+        facts: [
+          { key: "Certificate Ref", value: '<span class="mono" data-tls-field="certRef">restaurant-preview-tls</span>' },
+          { key: "TLS CRT", value: '<span data-tls-field="crtStatus">입력됨 · -----BEGIN CERTIFICATE-----</span>' },
+          { key: "TLS Key", value: '<span data-tls-field="keyStatus">입력됨 · -----BEGIN PRIVATE KEY-----</span>' }
+        ]
+      },
+      {
+        key: "coverity-ai",
+        title: "coverity-ai.workspace.hedej.lge.com",
+        description: "운영 도메인이지만 TLS 잔여 유효일이 짧아 경고성으로 보는 샘플입니다.",
+        heroIcon: "shield",
+        typeLabel: "Gateway Route",
+        statusLabel: "Warn",
+        statusTone: "warning",
+        theme: { bg: "#eef0ff", brand: "#4f46e5", brandH: "#4338ca", brandBg: "#d8dcff", brandSoft: "rgba(79,70,229,.18)", accent: "#60a5fa" },
+        actions: [
+          { label: "TLS 업데이트", icon: "edit", kind: "button", actionKey: "tls-edit", variant: "primary" }
+        ],
+        heroStats: [
+          { label: "TLS Remaining", value: "12d", meta: "운영 경고 구간" }
+        ],
+        remainingDays: "12d",
+        remainingMeta: "운영 도메인이라 만료 전 갱신 우선순위가 높습니다.",
+        tlsEditor: {
+          certRef: "coverity-ai-tls",
+          crt: "-----BEGIN CERTIFICATE-----\nMIICcoverity-ai\n-----END CERTIFICATE-----",
+          key: "-----BEGIN PRIVATE KEY-----\nMIIEcoverity-ai\n-----END PRIVATE KEY-----"
+        },
+        facts: [
+          { key: "Certificate Ref", value: '<span class="mono" data-tls-field="certRef">coverity-ai-tls</span>' },
+          { key: "TLS CRT", value: '<span data-tls-field="crtStatus">입력됨 · -----BEGIN CERTIFICATE-----</span>' },
+          { key: "TLS Key", value: '<span data-tls-field="keyStatus">입력됨 · -----BEGIN PRIVATE KEY-----</span>' }
+        ]
+      },
+      {
+        key: "hermes-be",
+        title: "hermes-be.workspace.hedej.lge.com",
+        description: "가장 안정적인 healthy TLS 상태를 보여주는 운영 API 샘플입니다.",
+        heroIcon: "lan",
+        typeLabel: "Gateway Route",
+        statusLabel: "Healthy",
+        statusTone: "healthy",
+        theme: { bg: "#eef0ff", brand: "#4f46e5", brandH: "#4338ca", brandBg: "#d8dcff", brandSoft: "rgba(79,70,229,.18)", accent: "#60a5fa" },
+        actions: [
+          { label: "TLS 업데이트", icon: "edit", kind: "button", actionKey: "tls-edit", variant: "primary" }
+        ],
+        heroStats: [
+          { label: "TLS Remaining", value: "143d", meta: "여유 충분" }
+        ],
+        remainingDays: "143d",
+        remainingMeta: "현재는 갱신보다 기준값 확인 용도에 가깝습니다.",
+        tlsEditor: {
+          certRef: "hermes-be-tls",
+          crt: "-----BEGIN CERTIFICATE-----\nMIIChermes-be\n-----END CERTIFICATE-----",
+          key: "-----BEGIN PRIVATE KEY-----\nMIIEhermes-be\n-----END PRIVATE KEY-----"
+        },
+        facts: [
+          { key: "Certificate Ref", value: '<span class="mono" data-tls-field="certRef">hermes-be-tls</span>' },
+          { key: "TLS CRT", value: '<span data-tls-field="crtStatus">입력됨 · -----BEGIN CERTIFICATE-----</span>' },
+          { key: "TLS Key", value: '<span data-tls-field="keyStatus">입력됨 · -----BEGIN PRIVATE KEY-----</span>' }
+        ]
+      },
+      {
+        key: "docs",
+        title: "docs.workspace.hedej.lge.com",
+        description: "public docs 도메인의 단순 TLS 상태 샘플입니다.",
+        heroIcon: "domain_verification",
+        typeLabel: "Gateway Route",
+        statusLabel: "Healthy",
+        statusTone: "healthy",
+        theme: { bg: "#eef0ff", brand: "#4f46e5", brandH: "#4338ca", brandBg: "#d8dcff", brandSoft: "rgba(79,70,229,.18)", accent: "#60a5fa" },
+        actions: [
+          { label: "TLS 업데이트", icon: "edit", kind: "button", actionKey: "tls-edit", variant: "primary" }
+        ],
+        heroStats: [
+          { label: "TLS Remaining", value: "88d", meta: "정상 구간" }
+        ],
+        remainingDays: "88d",
+        remainingMeta: "공개 도메인이지만 아직 여유가 충분합니다.",
+        tlsEditor: {
+          certRef: "docs-public-tls",
+          crt: "-----BEGIN CERTIFICATE-----\nMIICdocs-public\n-----END CERTIFICATE-----",
+          key: "-----BEGIN PRIVATE KEY-----\nMIIEdocs-public\n-----END PRIVATE KEY-----"
+        },
+        facts: [
+          { key: "Certificate Ref", value: '<span class="mono" data-tls-field="certRef">docs-public-tls</span>' },
+          { key: "TLS CRT", value: '<span data-tls-field="crtStatus">입력됨 · -----BEGIN CERTIFICATE-----</span>' },
+          { key: "TLS Key", value: '<span data-tls-field="keyStatus">입력됨 · -----BEGIN PRIVATE KEY-----</span>' }
+        ]
+      }
+    ];
+
+    window.DETAIL_PAGE_CONFIG = {
+      paramName: "item",
+      pageTitle: "Domain Detail",
+      hubLabel: "Domain Hub",
+      hubHref: "workspace_domain_hub.html",
+      activeHubKey: "domain",
+      eyebrow: "Accessibility · TLS",
+      searchPlaceholder: "도메인과 tls 상태를 검색하세요...",
+      items: Object.fromEntries(rawItems.map((item) => [item.key, buildItem(item)]))
+    };
+  </script>
+  <script src="workspace_detail_shared.js"></script>
+  <script src="ax_studio_topbar.js"></script>
+  <script>
+    (function () {
+      const config = window.DETAIL_PAGE_CONFIG;
+      if (!config || !config.items) return;
+
+      const params = new URLSearchParams(window.location.search);
+      const requestedKey = params.get(config.paramName || "item");
+      const keys = Object.keys(config.items);
+      const currentKey = Object.prototype.hasOwnProperty.call(config.items, requestedKey) ? requestedKey : keys[0];
+      const currentItem = config.items[currentKey];
+
+      const modal = document.getElementById("tlsEditModal");
+      if (!modal || !currentItem) return;
+
+      const certRefInput = document.getElementById("tlsEditorCertRef");
+      const crtInput = document.getElementById("tlsEditorCrt");
+      const keyInput = document.getElementById("tlsEditorKey");
+      const saveButton = document.getElementById("tlsEditSaveButton");
+      const hint = document.getElementById("tlsEditHint");
+
+      function syncModal() {
+        certRefInput.value = currentItem.tlsEditor.certRef || "";
+        crtInput.value = currentItem.tlsEditor.crt || "";
+        keyInput.value = currentItem.tlsEditor.key || "";
+      }
+
+      function openModal() {
+        syncModal();
+        modal.hidden = false;
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal() {
+        modal.hidden = true;
+        document.body.style.overflow = "";
+      }
+
+      function applySummaryUpdates() {
+        const mapping = {
+          certRef: certRefInput.value,
+          crtStatus: formatPemState(crtInput.value, "CRT 미입력"),
+          keyStatus: formatPemState(keyInput.value, "KEY 미입력")
+        };
+
+        Object.entries(mapping).forEach(([key, value]) => {
+          document.querySelectorAll(`[data-tls-field="${key}"]`).forEach((node) => {
+            node.textContent = value;
+          });
+        });
+      }
+
+      document.querySelectorAll('[data-action-key="tls-edit"]').forEach((button) => {
+        button.addEventListener("click", openModal);
+      });
+
+      modal.querySelectorAll("[data-modal-close]").forEach((button) => {
+        button.addEventListener("click", closeModal);
+      });
+
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) closeModal();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !modal.hidden) closeModal();
+      });
+
+      saveButton.addEventListener("click", () => {
+        currentItem.tlsEditor.certRef = certRefInput.value;
+        currentItem.tlsEditor.crt = crtInput.value;
+        currentItem.tlsEditor.key = keyInput.value;
+        applySummaryUpdates();
+        hint.textContent = "TLS 업데이트 샘플이 현재 화면에 반영되었습니다.";
+        closeModal();
+      });
+    })();
+  </script>
+</body>
+</html>

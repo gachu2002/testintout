@@ -1,0 +1,5102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workspace Project Detail</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <style>
+    :root {
+      --bg:#ecf2f8;
+      --surface:#ffffff;
+      --surface-soft:#fbfcfe;
+      --border:#ebedf0;
+      --border-2:#d6d8db;
+      --t1:#2f3236;
+      --t2:#5f656d;
+      --t3:#9298a0;
+      --brand:#4c6a88;
+      --brand-h:#3d5873;
+      --brand-bg:#dce7f2;
+      --brand-soft:rgba(76,106,136,.16);
+      --blue:#0086cc;
+      --blue-bg:#e2f3ff;
+      --green:#0d9488;
+      --green-bg:#ecfdf5;
+      --purple:#7c5fcf;
+      --purple-bg:#f1e7ff;
+      --orange:#e07020;
+      --orange-bg:#fff1e7;
+      --red:#b91c1c;
+      --red-bg:#fee2e2;
+      --max:1280px;
+      --nav-max:1520px;
+      --r:18px;
+      --gap:20px;
+      --shadow:0 16px 34px rgba(15,23,42,.06);
+    }
+
+    html { scroll-behavior:smooth; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      font-family:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background:
+        radial-gradient(circle at top left, var(--brand-soft), transparent 26%),
+        linear-gradient(180deg, #f8fbfd 0%, var(--bg) 100%);
+      color:var(--t1);
+      min-height:100vh;
+      -webkit-font-smoothing:antialiased;
+    }
+    a { color:inherit; text-decoration:none; }
+    button { font:inherit; cursor:pointer; }
+
+    .topbar {
+      position:sticky;
+      top:0;
+      z-index:200;
+      height:56px;
+      background:var(--surface);
+      border-bottom:1px solid var(--border);
+    }
+    .topbar-inner {
+      max-width:var(--nav-max);
+      height:100%;
+      margin:0 auto;
+      padding:0 24px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      position:relative;
+    }
+    .topbar-brand {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-shrink:0;
+      padding-right:2px;
+    }
+    .brand-mark {
+      width:40px;
+      height:24px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .brand-mark img { width:35px; height:20px; display:block; }
+    .brand-name {
+      font-size:15px;
+      font-weight:800;
+      letter-spacing:-.35px;
+      white-space:nowrap;
+    }
+    .logo-menu {
+      flex-shrink:0;
+      display:flex;
+      align-items:center;
+    }
+    .menu-trigger {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      height:40px;
+      padding:0 11px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#fbfcfe;
+      font-size:13px;
+      font-weight:700;
+      color:var(--t1);
+      transition:background .15s, box-shadow .15s;
+    }
+    .menu-trigger:hover,
+    .logo-menu.is-open .menu-trigger {
+      background:var(--bg);
+      box-shadow:inset 0 0 0 1px var(--border);
+    }
+    .menu-trigger .material-icons-round:first-child {
+      font-size:18px;
+      color:var(--t2);
+    }
+    .menu-caret {
+      font-size:18px;
+      color:var(--t3);
+      transition:transform .18s ease, color .15s ease;
+    }
+    .logo-menu.is-open .menu-caret {
+      transform:rotate(180deg);
+      color:var(--brand);
+    }
+    .service-popover {
+      position:fixed;
+      left:0;
+      top:56px;
+      width:100vw;
+      background:
+        linear-gradient(180deg, rgba(247,248,251,.98) 0%, rgba(243,245,249,.98) 100%);
+      border-top:1px solid rgba(235,237,240,.9);
+      border-bottom:1px solid var(--border);
+      box-shadow:0 18px 36px rgba(15,23,42,.08);
+      padding:18px 0 20px;
+      z-index:240;
+    }
+    .service-popover[hidden] { display:none; }
+    .service-popover-inner {
+      max-width:var(--nav-max);
+      margin:0 auto;
+      padding:0 24px;
+    }
+    .service-groups {
+      display:grid;
+      grid-template-columns:repeat(6, minmax(0, 1fr));
+    }
+    .service-group {
+      min-width:0;
+      padding:0 30px;
+    }
+    .service-group + .service-group { border-left:1px solid var(--border); }
+    .service-group-title {
+      font-size:15px;
+      font-weight:700;
+      margin-bottom:18px;
+    }
+    .service-links { display:grid; gap:18px; }
+    .service-link {
+      display:grid;
+      grid-template-columns:18px minmax(0, 1fr);
+      gap:10px;
+      padding:7px 10px;
+      margin:0 -10px;
+      border-radius:10px;
+      font-size:13px;
+      font-weight:600;
+      transition:background .15s ease, color .15s ease;
+    }
+    .service-link:hover {
+      background:rgba(255,255,255,.84);
+      color:var(--brand);
+    }
+    .service-link.is-current {
+      background:rgba(255,255,255,.84);
+      color:var(--brand);
+      box-shadow:inset 0 0 0 1px rgba(76,106,136,.12);
+    }
+    .service-link-icon {
+      font-size:17px;
+      color:var(--t2);
+      margin-top:2px;
+    }
+    .service-link:hover .service-link-icon,
+    .service-link.is-current .service-link-icon { color:var(--brand); }
+    .service-link-copy { display:grid; gap:4px; min-width:0; }
+    .service-link-desc {
+      font-size:12px;
+      line-height:1.45;
+      color:var(--t2);
+      font-weight:400;
+    }
+    .service-link:hover .service-link-desc,
+    .service-link.is-current .service-link-desc { color:var(--t1); }
+
+
+.service-outlinks {
+  position:relative;
+  left:50%;
+  width:100vw;
+  box-sizing:border-box;
+  margin:16px 0 -20px;
+  padding:9px max(24px, calc((100vw - var(--nav-max)) / 2 + 24px)) 10px;
+  transform:translateX(-50%);
+  border-top:1px solid rgba(15,23,42,.10);
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  flex-wrap:wrap;
+  gap:10px;
+  background:rgba(248,250,252,.72);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+}
+.service-outlinks-title {
+  color:var(--t3);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  opacity:.72;
+}
+.service-outlink-list {
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  flex-wrap:wrap;
+  gap:0;
+}
+.service-outlink {
+  min-width:0;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:3px 8px;
+  color:var(--t2);
+  text-decoration:none;
+  font-size:12px;
+  font-weight:600;
+  transition:color .15s ease;
+}
+.service-outlink + .service-outlink {
+  border-left:1px solid var(--border);
+}
+.service-outlink:hover {
+  color:var(--brand);
+}
+.service-outlink-icon,
+.service-outlink-arrow {
+  color:currentColor;
+  font-size:13px;
+  opacity:.48;
+  transition:opacity .15s ease;
+}
+.service-outlink:hover .service-outlink-icon,
+.service-outlink:hover .service-outlink-arrow {
+  opacity:.8;
+}
+.service-outlink-copy {
+  min-width:0;
+  display:inline-flex;
+  align-items:center;
+}
+.service-outlink-title {
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.service-outlink-desc {
+  display:none;
+}
+
+.search-wrap {
+      flex:1;
+      max-width:440px;
+      min-width:0;
+      position:relative;
+    }
+    .search-wrap .ico {
+      position:absolute;
+      left:13px;
+      top:50%;
+      transform:translateY(-50%);
+      font-size:17px;
+      color:var(--t3);
+      pointer-events:none;
+    }
+    .search-input {
+      width:100%;
+      height:36px;
+      border:1.5px solid var(--border);
+      border-radius:20px;
+      padding:0 72px 0 38px;
+      background:var(--bg);
+      outline:none;
+      font-size:13px;
+      color:var(--t1);
+      transition:border .15s, box-shadow .15s;
+    }
+    .search-input:focus {
+      border-color:var(--brand);
+      background:var(--surface);
+      box-shadow:0 0 0 3px rgba(76,106,136,.12);
+    }
+    .search-ai {
+      position:absolute;
+      right:12px;
+      top:50%;
+      transform:translateY(-50%);
+      height:22px;
+      padding:0 7px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      gap:3px;
+      background:linear-gradient(135deg, #f6f0ff 0%, #eef4ff 100%);
+      border:1px solid rgba(124,95,207,.18);
+      font-size:10px;
+      font-weight:700;
+      color:var(--purple);
+      letter-spacing:.02em;
+      pointer-events:none;
+    }
+    .search-ai .material-icons-round { font-size:12px; }
+    .tb-spacer { flex:1; }
+    .tb-btn {
+      display:flex;
+      align-items:center;
+      gap:5px;
+      height:32px;
+      padding:0 12px;
+      border:1px solid var(--border-2);
+      border-radius:6px;
+      background:transparent;
+      color:var(--t2);
+      font-size:12px;
+      font-weight:500;
+    }
+    .tb-btn:hover {
+      background:var(--bg);
+      color:var(--t1);
+    }
+    .tb-btn-ai {
+      border-color:rgba(124,95,207,.18);
+      background:linear-gradient(135deg, #f6f0ff 0%, #eef4ff 100%);
+      color:var(--purple);
+      box-shadow:0 8px 18px rgba(124,95,207,.12);
+    }
+    .tb-icon {
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--t2);
+      position:relative;
+    }
+    .tb-icon:hover { background:var(--bg); }
+    .tb-icon .material-icons-round { font-size:20px; }
+    .tb-icon .dot {
+      position:absolute;
+      top:5px;
+      right:5px;
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:var(--brand);
+      border:2px solid var(--surface);
+    }
+    .avatar {
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      background:var(--brand);
+      color:#fff;
+      font-size:12px;
+      font-weight:600;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+
+    .page {
+      max-width:var(--max);
+      margin:0 auto;
+      padding:24px 24px 72px;
+    }
+    .breadcrumbs {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:18px;
+      font-size:12px;
+      color:var(--t3);
+    }
+    .breadcrumbs a {
+      color:var(--t2);
+      font-weight:700;
+    }
+    .breadcrumbs .material-icons-round {
+      font-size:15px;
+      color:#bcc6d4;
+    }
+
+    .hero {
+      position:relative;
+      overflow:hidden;
+      padding:26px;
+      border-radius:24px;
+      border:1px solid rgba(76,106,136,.14);
+      background:
+        radial-gradient(circle at top right, rgba(76,106,136,.12), transparent 28%),
+        radial-gradient(circle at left bottom, rgba(148,163,184,.16), transparent 26%),
+        linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(245,249,253,.96) 100%);
+      box-shadow:var(--shadow);
+      margin-bottom:var(--gap);
+    }
+    .hero::after {
+      content:"";
+      position:absolute;
+      inset:auto -60px -60px auto;
+      width:200px;
+      height:200px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(76,106,136,.1), transparent 64%);
+      pointer-events:none;
+    }
+    .hero-head {
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) auto;
+      gap:18px;
+      align-items:start;
+      margin-bottom:18px;
+      position:relative;
+      z-index:1;
+    }
+    .hero-title-wrap {
+      min-width:0;
+      display:grid;
+      gap:10px;
+    }
+    .hero-side {
+      display:grid;
+      justify-items:end;
+      align-content:start;
+      gap:12px;
+    }
+    .eyebrow {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .status-pill,
+    .mini-pill {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .status-pill::before,
+    .mini-pill::before {
+      content:"";
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:currentColor;
+      flex-shrink:0;
+    }
+    .project-title {
+      font-size:32px;
+      font-weight:800;
+      line-height:1.05;
+      letter-spacing:-.04em;
+    }
+    .hero-description {
+      max-width:760px;
+      font-size:14px;
+      line-height:1.7;
+      color:var(--t2);
+    }
+    .hero-meta {
+      display:flex;
+      align-items:center;
+      gap:8px 10px;
+      flex-wrap:wrap;
+      min-width:0;
+      font-size:12px;
+      color:var(--t3);
+    }
+    .hero-meta strong { color:var(--t2); }
+    .hero-members {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      justify-content:flex-end;
+      width:100%;
+      flex-shrink:0;
+      white-space:nowrap;
+    }
+    .hero-members-list {
+      display:flex;
+      align-items:center;
+      padding-left:8px;
+    }
+    .hero-member-avatar,
+    .hero-member-more {
+      width:30px;
+      height:30px;
+      margin-left:-8px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border:2px solid rgba(255,255,255,.92);
+      box-shadow:0 8px 18px rgba(15,23,42,.08);
+      flex-shrink:0;
+      font-size:10px;
+      font-weight:800;
+      color:#fff;
+    }
+    .hero-member-more {
+      background:rgba(15,23,42,.08);
+      color:var(--t2);
+    }
+    .hero-members-caption {
+      font-size:11px;
+      color:var(--t3);
+      white-space:nowrap;
+    }
+    .hero-members-add {
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      height:30px;
+      padding:0 10px;
+      border-radius:999px;
+      border:1px solid rgba(214,216,219,.92);
+      background:rgba(255,255,255,.84);
+      color:var(--t2);
+      font-size:11px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .hero-members-add .material-icons-round {
+      font-size:14px;
+    }
+    .hero-actions {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-end;
+    }
+    .hero-btn {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      height:40px;
+      padding:0 16px;
+      border-radius:11px;
+      border:1px solid transparent;
+      font-size:13px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .hero-btn.primary {
+      background:var(--brand);
+      color:#fff;
+      box-shadow:0 10px 24px rgba(76,106,136,.2);
+    }
+    .hero-btn.primary:hover { background:var(--brand-h); }
+    .hero-btn.ghost {
+      border-color:rgba(214,216,219,.95);
+      background:rgba(255,255,255,.8);
+      color:var(--t1);
+    }
+    .hero-btn.blue {
+      border-color:rgba(79,140,255,.16);
+      background:var(--blue-bg);
+      color:var(--blue);
+    }
+    .hero-btn.green {
+      border-color:rgba(13,148,136,.16);
+      background:var(--green-bg);
+      color:var(--green);
+    }
+    .hero-grid {
+      position:relative;
+      z-index:1;
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:12px;
+    }
+    .hero-overview {
+      position:relative;
+      z-index:1;
+      margin-top:18px;
+      padding-top:18px;
+      border-top:1px solid rgba(214,216,219,.72);
+    }
+    .hero-overview-copy {
+      display:grid;
+      gap:12px;
+    }
+    .hero-tag-strip {
+      display:grid;
+      align-content:start;
+      padding:8px 2px 0;
+    }
+    .hero-bottom-card {
+      display:grid;
+      gap:12px;
+      padding:16px;
+      border-radius:18px;
+      background:rgba(255,255,255,.78);
+      border:1px solid rgba(214,216,219,.82);
+    }
+    .hero-stat {
+      padding:14px 16px;
+      border-radius:16px;
+      background:rgba(255,255,255,.8);
+      border:1px solid rgba(214,216,219,.8);
+      display:grid;
+      gap:6px;
+    }
+    .hero-stat-label {
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      color:var(--t3);
+    }
+    .hero-stat-value {
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:-.03em;
+    }
+    .hero-stat-note {
+      font-size:11px;
+      color:var(--t3);
+      line-height:1.45;
+    }
+    .hero-version-name {
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:-.04em;
+      color:var(--t1);
+    }
+    .hero-version-copy {
+      font-size:12px;
+      line-height:1.6;
+      color:var(--t2);
+    }
+
+    .section-nav {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:var(--gap);
+    }
+    .nav-chip {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:10px 13px;
+      border-radius:999px;
+      background:rgba(255,255,255,.86);
+      border:1px solid var(--border);
+      font-size:12px;
+      font-weight:700;
+      color:var(--t2);
+      cursor:pointer;
+    }
+    .nav-chip .material-icons-round {
+      font-size:15px;
+      flex-shrink:0;
+    }
+    .nav-chip:hover {
+      border-color:rgba(76,106,136,.18);
+      background:var(--brand-bg);
+      color:var(--brand);
+    }
+    .nav-chip.is-active {
+      border-color:rgba(76,106,136,.18);
+      background:var(--brand-bg);
+      color:var(--brand);
+      box-shadow:0 10px 22px rgba(76,106,136,.08);
+    }
+    .view-panel[hidden] {
+      display:none !important;
+    }
+
+    .layout {
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) 364px;
+      gap:var(--gap);
+      align-items:start;
+    }
+    .main-col,
+    .side-col {
+      display:grid;
+      gap:var(--gap);
+    }
+    .side-persistent {
+      display:grid;
+      gap:var(--gap);
+      position:sticky;
+      top:76px;
+      align-self:start;
+    }
+    .timeline-panel {
+      min-height:calc(100vh - 120px);
+    }
+    .panel {
+      background:linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(250,251,253,.96) 100%);
+      border:1px solid var(--border);
+      border-radius:var(--r);
+      padding:20px;
+      box-shadow:0 10px 26px rgba(15,23,42,.04);
+    }
+    .panel-header {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:16px;
+    }
+    .panel-title-wrap {
+      display:grid;
+      gap:4px;
+    }
+    .panel-kicker {
+      display:flex;
+      align-items:center;
+      gap:6px;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--t3);
+    }
+    .panel-kicker .material-icons-round { font-size:14px; }
+    .panel-title {
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:-.03em;
+    }
+    .panel-subtitle {
+      font-size:12px;
+      line-height:1.55;
+      color:var(--t3);
+    }
+    .panel-action {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      height:34px;
+      padding:0 12px;
+      border-radius:10px;
+      border:1px solid rgba(214,216,219,.88);
+      background:#fff;
+      font-size:12px;
+      font-weight:700;
+      color:var(--t2);
+      white-space:nowrap;
+    }
+
+    .info-grid {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:12px;
+    }
+    .info-item {
+      padding:13px 14px;
+      border-radius:14px;
+      background:var(--surface-soft);
+      border:1px solid var(--border);
+      display:grid;
+      gap:6px;
+      min-width:0;
+    }
+    .info-label {
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--t3);
+    }
+    .info-value {
+      font-size:13px;
+      font-weight:700;
+      line-height:1.5;
+      color:var(--t1);
+      word-break:break-word;
+    }
+    .info-note {
+      font-size:11px;
+      line-height:1.5;
+      color:var(--t3);
+    }
+
+    .member-list,
+    .resource-list,
+    .timeline-list,
+    .log-list,
+    .harvest-list,
+    .security-list,
+    .port-list,
+    .var-list,
+    .permission-list,
+    .step-list {
+      display:grid;
+      gap:10px;
+    }
+    .member-row,
+    .resource-row,
+    .timeline-row,
+    .log-row,
+    .harvest-row,
+    .security-row,
+    .port-row,
+    .var-row,
+    .permission-row,
+    .step-row {
+      display:grid;
+      gap:8px;
+      padding:13px 14px;
+      border-radius:14px;
+      background:var(--surface-soft);
+      border:1px solid var(--border);
+    }
+    .member-row {
+      grid-template-columns:auto minmax(0, 1fr) auto;
+      align-items:center;
+      gap:12px;
+    }
+    .avatar-chip,
+    .resource-glyph {
+      width:36px;
+      height:36px;
+      border-radius:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-size:12px;
+      font-weight:800;
+      box-shadow:0 8px 18px rgba(15,23,42,.08);
+      flex-shrink:0;
+    }
+    .member-main,
+    .resource-main,
+    .timeline-main {
+      min-width:0;
+      display:grid;
+      gap:4px;
+    }
+    .member-name,
+    .resource-name,
+    .check-item-name,
+    .timeline-title,
+    .log-title,
+    .harvest-title,
+    .security-title-row,
+    .port-name,
+    .var-name,
+    .permission-name,
+    .step-title {
+      font-size:13px;
+      font-weight:800;
+      color:var(--t1);
+    }
+    .member-meta,
+    .resource-meta,
+    .check-item-meta,
+    .timeline-meta,
+    .log-meta,
+    .harvest-meta,
+    .security-meta,
+    .port-meta,
+    .var-meta,
+    .permission-meta,
+    .step-meta {
+      font-size:11px;
+      line-height:1.5;
+      color:var(--t3);
+    }
+    .check-list {
+      display:grid;
+      gap:10px;
+    }
+    .check-item {
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) auto;
+      gap:10px;
+      align-items:center;
+      padding:13px 14px;
+      border-radius:14px;
+      background:var(--surface-soft);
+      border:1px solid var(--border);
+    }
+    .check-item-main {
+      min-width:0;
+      display:grid;
+      gap:4px;
+    }
+    .check-badge {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:86px;
+      height:28px;
+      padding:0 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .check-badge.pass {
+      background:var(--green-bg);
+      color:var(--green);
+    }
+    .check-badge.warn {
+      background:var(--orange-bg);
+      color:var(--orange);
+    }
+    .timeline-list {
+      position:relative;
+      gap:0;
+    }
+    .timeline-row {
+      grid-template-columns:24px minmax(0, 1fr);
+      align-items:start;
+      gap:12px;
+      padding:0 0 18px;
+      border:none;
+      border-radius:0;
+      background:transparent;
+    }
+    .timeline-row:last-child {
+      padding-bottom:0;
+    }
+    .timeline-rail {
+      position:relative;
+      display:flex;
+      justify-content:center;
+      min-height:100%;
+    }
+    .timeline-rail::before {
+      content:"";
+      position:absolute;
+      left:50%;
+      top:0;
+      bottom:-18px;
+      width:2px;
+      transform:translateX(-50%);
+      background:linear-gradient(180deg, rgba(214,216,219,.18) 0%, rgba(214,216,219,.92) 14%, rgba(214,216,219,.24) 100%);
+    }
+    .timeline-row:last-child .timeline-rail::before {
+      bottom:10px;
+    }
+    .timeline-dot {
+      position:relative;
+      z-index:1;
+      width:14px;
+      height:14px;
+      margin-top:2px;
+      border:3px solid #fff;
+      border-radius:50%;
+      background:#94a3b8;
+      box-shadow:0 0 0 3px rgba(148,163,184,.12);
+    }
+    .timeline-card {
+      display:grid;
+      gap:6px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:#fff;
+      box-shadow:none;
+    }
+    .timeline-card-head {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .timeline-chip {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:54px;
+      height:24px;
+      padding:0 9px;
+      border-radius:999px;
+      font-size:10px;
+      font-weight:800;
+      white-space:nowrap;
+      flex-shrink:0;
+    }
+    .timeline-row[data-kind="created"] .timeline-dot {
+      background:var(--blue);
+      box-shadow:0 0 0 3px rgba(0,134,204,.14);
+    }
+    .timeline-row[data-kind="created"] .timeline-chip {
+      background:var(--blue-bg);
+      color:var(--blue);
+    }
+    .timeline-row[data-kind="deploy"] .timeline-dot {
+      background:var(--green);
+      box-shadow:0 0 0 3px rgba(13,148,136,.14);
+    }
+    .timeline-row[data-kind="deploy"] .timeline-chip {
+      background:var(--green-bg);
+      color:var(--green);
+    }
+    .timeline-row[data-kind="issue"] .timeline-dot {
+      background:var(--red);
+      box-shadow:0 0 0 3px rgba(185,28,28,.12);
+    }
+    .timeline-row[data-kind="issue"] .timeline-chip {
+      background:var(--red-bg);
+      color:var(--red);
+    }
+    .timeline-row[data-kind="issue"] .timeline-card {
+      border-color:rgba(185,28,28,.12);
+      background:#fff7f7;
+    }
+    .timeline-row[data-kind="warning"] .timeline-dot {
+      background:var(--orange);
+      box-shadow:0 0 0 3px rgba(224,112,32,.14);
+    }
+    .timeline-row[data-kind="warning"] .timeline-chip {
+      background:var(--orange-bg);
+      color:var(--orange);
+    }
+    .timeline-row[data-kind="activity"] .timeline-dot {
+      background:var(--t3);
+      box-shadow:0 0 0 3px rgba(146,152,160,.14);
+    }
+    .timeline-row[data-kind="activity"] .timeline-chip {
+      background:#f3f4f6;
+      color:var(--t2);
+    }
+    .resource-toolbar {
+      display:grid;
+      gap:10px;
+      margin-bottom:14px;
+    }
+    .resource-toolbar-copy {
+      font-size:12px;
+      line-height:1.55;
+      color:var(--t3);
+    }
+    .resource-actions {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .resource-add-btn {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      height:34px;
+      padding:0 12px;
+      border-radius:10px;
+      border:1px solid rgba(214,216,219,.92);
+      background:#fff;
+      color:var(--t1);
+      font-size:12px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .resource-add-btn .material-icons-round {
+      font-size:16px;
+      color:var(--brand);
+    }
+
+    .domain-picker {
+      display:grid;
+      gap:12px;
+    }
+    .domain-status-grid {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:10px;
+    }
+    .domain-status-card {
+      display:grid;
+      gap:8px;
+      padding:14px;
+      border-radius:14px;
+      background:var(--surface-soft);
+      border:1px solid var(--border);
+    }
+    .domain-status-head {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .domain-status-label {
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--t3);
+    }
+    .domain-status-badge {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:82px;
+      height:28px;
+      padding:0 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:800;
+    }
+    .domain-status-badge.pass {
+      background:var(--green-bg);
+      color:var(--green);
+    }
+    .domain-status-badge.warn {
+      background:var(--orange-bg);
+      color:var(--orange);
+    }
+    .domain-status-note {
+      font-size:12px;
+      line-height:1.5;
+      color:var(--t2);
+    }
+    .config-stack {
+      display:grid;
+      gap:0;
+    }
+    .config-block {
+      display:grid;
+      gap:12px;
+      padding:18px 0;
+    }
+    .config-block + .config-block {
+      border-top:1px solid var(--border);
+    }
+    .domain-select-wrap {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      padding:12px 14px;
+      border-radius:14px;
+      background:var(--surface-soft);
+      border:1px solid var(--border);
+    }
+    .domain-select-wrap label {
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--t3);
+    }
+    .domain-select {
+      min-width:240px;
+      height:40px;
+      padding:0 14px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--t1);
+      font-size:13px;
+      font-weight:700;
+      outline:none;
+    }
+    .domain-select:focus {
+      border-color:var(--brand);
+      box-shadow:0 0 0 3px rgba(76,106,136,.12);
+    }
+
+    .variable-toolbar {
+      display:grid;
+      gap:12px;
+    }
+    .variable-toolbar-top {
+      display:flex;
+      align-items:flex-end;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .variable-caption {
+      font-size:12px;
+      line-height:1.55;
+      color:var(--t3);
+    }
+    .prefix-control {
+      display:flex;
+      align-items:flex-end;
+      gap:10px;
+      flex-wrap:wrap;
+      padding:12px 14px;
+      border-radius:14px;
+      background:var(--surface-soft);
+      border:1px solid var(--border);
+    }
+    .prefix-field {
+      display:grid;
+      gap:6px;
+      min-width:200px;
+    }
+    .prefix-field label {
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--t3);
+    }
+    .prefix-field input {
+      width:100%;
+      height:38px;
+      padding:0 12px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--t1);
+      font-size:13px;
+      outline:none;
+    }
+    .prefix-field input:focus {
+      border-color:var(--brand);
+      box-shadow:0 0 0 3px rgba(76,106,136,.12);
+    }
+    .prefix-help {
+      font-size:11px;
+      line-height:1.5;
+      color:var(--t3);
+    }
+    .mini-action {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      height:34px;
+      padding:0 12px;
+      border-radius:10px;
+      border:1px solid rgba(76,106,136,.14);
+      background:var(--brand-bg);
+      color:var(--brand);
+      font-size:12px;
+      font-weight:800;
+    }
+    .variable-list {
+      display:grid;
+      gap:10px;
+    }
+    .variable-summary {
+      display:grid;
+      gap:8px;
+      min-width:0;
+    }
+    .variable-summary-head {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .variable-name {
+      font-size:13px;
+      font-weight:800;
+      color:var(--t1);
+      word-break:break-all;
+    }
+    .variable-badge {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      height:24px;
+      padding:0 9px;
+      border-radius:999px;
+      background:var(--green-bg);
+      color:var(--green);
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+    .variable-value {
+      font-size:12px;
+      line-height:1.55;
+      color:var(--t2);
+      word-break:break-all;
+    }
+    .variable-create {
+      display:grid;
+      grid-template-columns:180px minmax(0, .95fr) minmax(0, 1.25fr) auto;
+      gap:10px;
+      padding:12px;
+      border-radius:14px;
+      background:var(--surface-soft);
+      border:1px solid var(--border);
+      align-items:end;
+    }
+    .variable-row {
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) auto;
+      gap:10px;
+      padding:12px;
+      border-radius:14px;
+      background:var(--surface-soft);
+      border:1px solid var(--border);
+      align-items:center;
+    }
+    .variable-row.is-editing {
+      grid-template-columns:minmax(0, .95fr) minmax(0, 1.25fr) auto;
+      align-items:end;
+    }
+    .variable-preview {
+      grid-column:1 / -1;
+      font-size:11px;
+      color:var(--t3);
+      line-height:1.45;
+      word-break:break-all;
+      margin-bottom:2px;
+    }
+    .create-action {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      height:38px;
+      padding:0 14px;
+      border-radius:10px;
+      border:1px solid rgba(76,106,136,.14);
+      background:var(--brand-bg);
+      color:var(--brand);
+      font-size:12px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .field-shell {
+      display:grid;
+      gap:6px;
+      min-width:0;
+    }
+    .field-shell label {
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--t3);
+    }
+    .field-shell input {
+      width:100%;
+      height:38px;
+      padding:0 12px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--t1);
+      font-size:13px;
+      outline:none;
+    }
+    .field-shell input:focus {
+      border-color:var(--brand);
+      box-shadow:0 0 0 3px rgba(76,106,136,.12);
+    }
+    .variable-actions {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .row-action {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      height:34px;
+      padding:0 12px;
+      border-radius:10px;
+      border:1px solid transparent;
+      font-size:12px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .row-action.save {
+      background:var(--blue-bg);
+      color:var(--blue);
+      border-color:rgba(79,140,255,.18);
+    }
+    .row-action.delete {
+      background:#fff;
+      color:var(--red);
+      border-color:rgba(185,28,28,.14);
+    }
+    .member-role {
+      display:inline-flex;
+      align-items:center;
+      padding:6px 9px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid rgba(214,216,219,.88);
+      font-size:10px;
+      font-weight:800;
+      color:var(--t2);
+      white-space:nowrap;
+    }
+
+    .metric-grid {
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0, 1fr));
+      gap:12px;
+    }
+    .metrics-section {
+      display:grid;
+      gap:14px;
+    }
+    .analytics-block {
+      display:grid;
+      gap:16px;
+      padding:18px;
+      border-radius:24px;
+      border:1px solid var(--border);
+      margin-top:16px;
+    }
+    .analytics-block.user-block {
+      background:
+        radial-gradient(circle at top right, rgba(13,148,136,.08), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, #f7fcfb 100%);
+      border-color:rgba(13,148,136,.14);
+    }
+    .analytics-block.service-block {
+      background:
+        radial-gradient(circle at top right, rgba(79,140,255,.08), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+      border-color:rgba(79,140,255,.16);
+    }
+    .metrics-divider {
+      height:1px;
+      margin:4px 0;
+      background:transparent;
+    }
+    .metrics-section-head {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .metrics-section-copy {
+      display:grid;
+      gap:5px;
+    }
+    .metrics-section-title {
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      color:var(--t1);
+    }
+    .metrics-section-subtitle {
+      font-size:12px;
+      line-height:1.55;
+      color:var(--t3);
+    }
+    .metric-card {
+      padding:14px 16px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:
+        radial-gradient(circle at top right, rgba(79,140,255,.05), transparent 36%),
+        linear-gradient(180deg, #ffffff 0%, #f9fafc 100%);
+      display:grid;
+      gap:7px;
+    }
+    .metric-card.accent-green {
+      background:
+        radial-gradient(circle at top right, rgba(13,148,136,.08), transparent 36%),
+        linear-gradient(180deg, #ffffff 0%, #f7fcfb 100%);
+    }
+    .metric-card.accent-blue {
+      background:
+        radial-gradient(circle at top right, rgba(79,140,255,.08), transparent 36%),
+        linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    }
+    .metric-card.accent-orange {
+      background:
+        radial-gradient(circle at top right, rgba(234,88,12,.08), transparent 36%),
+        linear-gradient(180deg, #ffffff 0%, #fffaf6 100%);
+    }
+    .metric-card.accent-brand {
+      background:
+        radial-gradient(circle at top right, rgba(180,14,77,.08), transparent 36%),
+        linear-gradient(180deg, #ffffff 0%, #fff8fb 100%);
+    }
+    .metric-card-source {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:max-content;
+      min-width:86px;
+      height:24px;
+      padding:0 9px;
+      border-radius:999px;
+      background:rgba(15,23,42,.06);
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      color:var(--t2);
+    }
+    .metric-card-source.prometheus {
+      background:rgba(234,88,12,.1);
+      color:#c2410c;
+    }
+    .metric-card-source.matomo {
+      background:rgba(13,148,136,.1);
+      color:var(--green);
+    }
+    .metric-label {
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--t3);
+    }
+    .metric-value {
+      font-size:24px;
+      font-weight:800;
+      letter-spacing:-.04em;
+    }
+    .metric-note {
+      font-size:11px;
+      color:var(--t3);
+      line-height:1.45;
+    }
+    .metrics-source-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:14px;
+    }
+    .metric-source-chip {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(214,216,219,.88);
+      background:#fff;
+      font-size:11px;
+      font-weight:700;
+      color:var(--t2);
+    }
+    .metric-source-chip .material-icons-round {
+      font-size:14px;
+    }
+    .metric-panel {
+      display:grid;
+      gap:10px;
+    }
+    .metric-panel.fill-height {
+      height:100%;
+      align-content:stretch;
+    }
+    .metric-panel-head {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .user-analytics-layout {
+      display:grid;
+      grid-template-columns:minmax(0, 1.2fr) minmax(300px, .8fr);
+      gap:14px;
+      align-items:stretch;
+    }
+    .service-analysis-stack {
+      display:grid;
+      gap:14px;
+    }
+    .range-pills {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .range-pill {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:52px;
+      height:30px;
+      padding:0 12px;
+      border-radius:999px;
+      border:1px solid rgba(214,216,219,.88);
+      background:#fff;
+      font-size:11px;
+      font-weight:800;
+      color:var(--t2);
+      cursor:pointer;
+    }
+    .range-pill.is-active {
+      background:var(--brand-bg);
+      border-color:rgba(76,106,136,.16);
+      color:var(--brand);
+    }
+    .trend-bars {
+      display:grid;
+      grid-template-columns:repeat(7, minmax(0, 1fr));
+      gap:8px;
+      align-items:end;
+      height:220px;
+      padding:14px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:#fff;
+    }
+    .trend-bars.analytics {
+      background:linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(240,253,250,.92) 100%);
+    }
+    .trend-col {
+      display:grid;
+      gap:8px;
+      justify-items:center;
+      align-items:end;
+      height:100%;
+    }
+    .trend-bar {
+      width:100%;
+      max-width:28px;
+      border-radius:999px;
+      background:linear-gradient(180deg, rgba(76,106,136,.22) 0%, rgba(76,106,136,.88) 100%);
+      min-height:10px;
+    }
+    .trend-bar.analytics {
+      background:linear-gradient(180deg, rgba(13,148,136,.2) 0%, rgba(13,148,136,.88) 100%);
+    }
+    .trend-label {
+      font-size:10px;
+      color:var(--t3);
+      font-weight:700;
+    }
+    .signal-list {
+      display:grid;
+      gap:10px;
+    }
+    .signal-row {
+      display:grid;
+      gap:6px;
+      padding:13px 14px;
+      border-radius:14px;
+      background:var(--surface-soft);
+      border:1px solid var(--border);
+    }
+    .signal-head {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .signal-title {
+      font-size:13px;
+      font-weight:800;
+      color:var(--t1);
+    }
+    .signal-badge {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:76px;
+      height:24px;
+      padding:0 9px;
+      border-radius:999px;
+      font-size:10px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .signal-badge.prometheus {
+      background:rgba(234,88,12,.1);
+      color:#c2410c;
+    }
+    .signal-badge.matomo {
+      background:rgba(13,148,136,.1);
+      color:var(--green);
+    }
+    .signal-meta,
+    .signal-query {
+      font-size:11px;
+      line-height:1.55;
+      color:var(--t3);
+    }
+    .signal-query {
+      font-family:"IBM Plex Mono", monospace;
+      word-break:break-word;
+    }
+    .page-list {
+      display:grid;
+      gap:10px;
+    }
+    .page-row {
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) auto;
+      gap:12px;
+      align-items:center;
+      padding:12px 14px;
+      border-radius:14px;
+      background:var(--surface-soft);
+      border:1px solid var(--border);
+    }
+    .page-main {
+      min-width:0;
+      display:grid;
+      gap:5px;
+    }
+    .page-title {
+      font-size:13px;
+      font-weight:800;
+      color:var(--t1);
+      word-break:break-word;
+    }
+    .page-meta {
+      font-size:11px;
+      line-height:1.5;
+      color:var(--t3);
+    }
+    .page-value {
+      font-size:12px;
+      font-weight:800;
+      color:var(--brand);
+      white-space:nowrap;
+    }
+    .usage-chart {
+      padding:14px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:#fff;
+      display:grid;
+      gap:14px;
+    }
+    .chart-legend {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+    .legend-item {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:11px;
+      font-weight:700;
+      color:var(--t2);
+    }
+    .legend-swatch {
+      width:10px;
+      height:10px;
+      border-radius:999px;
+    }
+    .legend-swatch.cpu { background:#b40e4d; }
+    .legend-swatch.memory { background:#0d9488; }
+    .resource-chart-shell {
+      position:relative;
+      height:240px;
+      border-radius:14px;
+      background:linear-gradient(180deg, rgba(248,250,252,.9) 0%, rgba(255,255,255,1) 100%);
+      overflow:hidden;
+      border:1px solid rgba(214,216,219,.72);
+    }
+    .resource-chart-shell::before {
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(to bottom, rgba(214,216,219,.55) 1px, transparent 1px) 0 0 / 100% 25%,
+        linear-gradient(to right, rgba(214,216,219,.28) 1px, transparent 1px) 0 0 / 12.5% 100%;
+      pointer-events:none;
+    }
+    .resource-chart-svg {
+      position:relative;
+      z-index:1;
+      width:100%;
+      height:100%;
+      display:block;
+    }
+    .resource-chart-labels {
+      display:grid;
+      grid-template-columns:repeat(var(--label-count, 8), minmax(0, 1fr));
+      gap:8px;
+    }
+    .resource-chart-label {
+      font-size:10px;
+      font-weight:700;
+      color:var(--t3);
+      text-align:center;
+    }
+    .log-monitor {
+      display:grid;
+      grid-template-rows:auto minmax(0, 1fr);
+      align-content:start;
+      align-items:start;
+      gap:10px;
+      padding:14px;
+      border-radius:18px;
+      border:1px solid rgba(15,23,42,.16);
+      background:
+        radial-gradient(circle at top right, rgba(56,189,248,.08), transparent 28%),
+        linear-gradient(180deg, #0f172a 0%, #020617 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+      min-height:260px;
+    }
+    .terminal-head {
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      align-self:start;
+      gap:8px;
+      padding:7px 10px;
+      border:1px solid rgba(148,163,184,.14);
+      border-radius:10px;
+      background:rgba(15,23,42,.58);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+    }
+    .terminal-dots {
+      display:flex;
+      gap:5px;
+      align-items:center;
+      flex-shrink:0;
+    }
+    .terminal-dot {
+      width:9px;
+      height:9px;
+      border-radius:999px;
+    }
+    .terminal-dot.red { background:#fb7185; }
+    .terminal-dot.yellow { background:#fbbf24; }
+    .terminal-dot.green { background:#34d399; }
+    .terminal-title {
+      font-family:"IBM Plex Mono", monospace;
+      flex:1;
+      min-width:0;
+      font-size:9px;
+      color:#cbd5e1;
+      letter-spacing:.02em;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .terminal-body {
+      align-self:start;
+      min-height:0;
+      max-height:360px;
+      overflow:auto;
+      padding:2px 0 0;
+      font-family:"IBM Plex Mono", monospace;
+      font-size:12px;
+      line-height:1.6;
+      color:#e2e8f0;
+      white-space:pre-wrap;
+      word-break:break-word;
+      tab-size:2;
+      scrollbar-width:thin;
+      scrollbar-color:rgba(148,163,184,.35) transparent;
+    }
+    .terminal-body::-webkit-scrollbar {
+      width:10px;
+      height:10px;
+    }
+    .terminal-body::-webkit-scrollbar-thumb {
+      background:rgba(148,163,184,.3);
+      border-radius:999px;
+      border:2px solid transparent;
+      background-clip:padding-box;
+    }
+    .terminal-body::-webkit-scrollbar-track {
+      background:transparent;
+    }
+    .terminal-btn {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      height:36px;
+      padding:0 14px;
+      border:none;
+      border-radius:11px;
+      background:#111827;
+      color:#fff;
+      font-size:12px;
+      font-weight:800;
+      box-shadow:0 10px 24px rgba(15,23,42,.14);
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .terminal-launch {
+      display:flex;
+      justify-content:flex-end;
+    }
+
+    .inline-split {
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) minmax(0, 1fr);
+      gap:12px;
+    }
+
+    .tag-row,
+    .chip-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .tag {
+      display:inline-flex;
+      align-items:center;
+      padding:0;
+      border:none;
+      background:transparent;
+      font-size:12px;
+      font-weight:700;
+      color:var(--t2);
+      line-height:1.5;
+    }
+    .tag:hover { color:var(--brand); }
+    .chip {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:8px 10px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid rgba(214,216,219,.88);
+      font-size:11px;
+      font-weight:700;
+      color:var(--t2);
+    }
+    .chip {
+      background:var(--brand-bg);
+      border-color:rgba(76,106,136,.12);
+      color:var(--brand);
+    }
+
+    .search-row {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .search-shell {
+      position:relative;
+      flex:1;
+      min-width:0;
+    }
+    .search-shell .material-icons-round {
+      position:absolute;
+      left:12px;
+      top:50%;
+      transform:translateY(-50%);
+      font-size:16px;
+      color:var(--t3);
+    }
+    .search-shell input {
+      width:100%;
+      height:40px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#fff;
+      padding:0 14px 0 38px;
+      color:var(--t2);
+      font-size:13px;
+      outline:none;
+    }
+
+    .harvest-head,
+    .security-head {
+      display:grid;
+      grid-template-columns:minmax(0, 1.2fr) minmax(0, 1fr) auto auto;
+      gap:12px;
+      padding:0 14px 10px;
+      font-size:11px;
+      font-weight:800;
+      color:var(--t3);
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .harvest-row,
+    .security-row {
+      grid-template-columns:minmax(0, 1.2fr) minmax(0, 1fr) auto auto;
+      gap:12px;
+      align-items:center;
+    }
+    .security-row {
+      grid-template-columns:minmax(0, 1.2fr) auto minmax(0, .9fr) auto;
+    }
+    .security-score {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:66px;
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .row-link {
+      color:var(--blue);
+      font-size:12px;
+      font-weight:700;
+      word-break:break-all;
+    }
+    .mono {
+      font-family:ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size:12px;
+    }
+
+    .danger-panel {
+      border-color:rgba(185,28,28,.12);
+      background:linear-gradient(180deg, #ffffff 0%, #fff7f7 100%);
+    }
+    .danger-copy {
+      font-size:12px;
+      line-height:1.6;
+      color:var(--t2);
+      margin-bottom:14px;
+    }
+    .danger-btn {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      height:40px;
+      padding:0 15px;
+      border:none;
+      border-radius:12px;
+      background:var(--red);
+      color:#fff;
+      font-size:13px;
+      font-weight:700;
+      box-shadow:0 10px 22px rgba(185,28,28,.16);
+    }
+
+    .muted {
+      color:var(--t3);
+    }
+
+    .publish-modal-backdrop {
+      position:fixed;
+      inset:0;
+      z-index:420;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px 24px;
+      background:rgba(15,23,42,.48);
+      backdrop-filter:blur(8px);
+    }
+    .publish-modal-backdrop[hidden] {
+      display:none !important;
+    }
+    .publish-modal-shell {
+      width:min(1120px, 100%);
+      max-height:calc(100vh - 56px);
+      overflow:auto;
+      padding:28px;
+      border-radius:28px;
+      background:
+        radial-gradient(circle at top right, rgba(79,140,255,.08), transparent 28%),
+        linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border:1px solid rgba(214,216,219,.88);
+      box-shadow:0 32px 80px rgba(15,23,42,.22);
+    }
+    .publish-modal-head {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:18px;
+    }
+    .publish-modal-kicker {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-bottom:10px;
+      color:var(--brand);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+    .publish-modal-kicker .material-icons-round { font-size:15px; }
+    .publish-modal-copy h2 {
+      font-size:34px;
+      line-height:1.05;
+      letter-spacing:-.03em;
+      margin-bottom:8px;
+    }
+    .publish-modal-copy p {
+      max-width:720px;
+      color:var(--t2);
+      font-size:14px;
+      line-height:1.6;
+    }
+    .publish-close-btn {
+      width:42px;
+      height:42px;
+      border:none;
+      border-radius:14px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:#eef2f7;
+      color:var(--t2);
+      transition:background .15s ease, color .15s ease, transform .15s ease;
+    }
+    .publish-close-btn:hover {
+      background:#e5eaf1;
+      color:var(--t1);
+      transform:translateY(-1px);
+    }
+    .publish-mode-switch {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px;
+      margin-bottom:20px;
+      border-radius:16px;
+      background:#eef2f7;
+    }
+    .publish-mode-tab {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      height:42px;
+      padding:0 16px;
+      border:none;
+      border-radius:12px;
+      background:transparent;
+      color:var(--t2);
+      font-size:13px;
+      font-weight:800;
+      transition:background .15s ease, color .15s ease, box-shadow .15s ease;
+    }
+    .publish-mode-tab.is-active {
+      background:#fff;
+      color:var(--t1);
+      box-shadow:0 8px 18px rgba(15,23,42,.08);
+    }
+    .publish-modal-layout {
+      display:grid;
+      grid-template-columns:minmax(0, 1.6fr) 320px;
+      gap:18px;
+      align-items:start;
+    }
+    .publish-main,
+    .publish-side {
+      display:grid;
+      gap:18px;
+    }
+    .publish-panel {
+      padding:20px;
+      border-radius:22px;
+      border:1px solid rgba(214,216,219,.78);
+      background:rgba(255,255,255,.9);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+    }
+    .publish-banner {
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      padding:16px 18px;
+      margin-bottom:18px;
+      border-radius:18px;
+      border:1px solid rgba(79,140,255,.18);
+      background:linear-gradient(135deg, rgba(79,140,255,.08), rgba(34,211,238,.08));
+      color:var(--t1);
+      font-size:14px;
+      line-height:1.55;
+    }
+    .publish-banner.is-success {
+      border-color:rgba(13,148,136,.18);
+      background:linear-gradient(135deg, rgba(52,211,153,.12), rgba(13,148,136,.08));
+    }
+    .publish-banner .material-icons-round {
+      font-size:18px;
+      margin-top:2px;
+      color:var(--blue);
+    }
+    .publish-banner.is-success .material-icons-round {
+      color:var(--green);
+    }
+    .publish-step-grid {
+      display:grid;
+      grid-template-columns:repeat(5, minmax(0, 1fr));
+      gap:12px;
+    }
+    .publish-step {
+      min-width:0;
+      padding:16px;
+      border-radius:18px;
+      border:1px solid rgba(214,216,219,.84);
+      background:#fbfcfe;
+      display:grid;
+      gap:10px;
+    }
+    .publish-step.is-done {
+      border-color:rgba(13,148,136,.2);
+      background:linear-gradient(180deg, rgba(236,253,245,.9), rgba(255,255,255,.95));
+    }
+    .publish-step.is-active {
+      border-color:rgba(79,140,255,.22);
+      background:linear-gradient(180deg, rgba(226,243,255,.9), rgba(255,255,255,.95));
+      box-shadow:0 10px 20px rgba(79,140,255,.08);
+    }
+    .publish-step.is-warn {
+      border-color:rgba(224,112,32,.2);
+      background:linear-gradient(180deg, rgba(255,241,231,.94), rgba(255,255,255,.95));
+    }
+    .publish-step-top {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .publish-step-index {
+      width:28px;
+      height:28px;
+      border-radius:50%;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:#eef2f7;
+      color:var(--t2);
+      font-size:12px;
+      font-weight:800;
+    }
+    .publish-step-badge {
+      display:inline-flex;
+      align-items:center;
+      height:24px;
+      padding:0 9px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.02em;
+    }
+    .publish-step-badge.done {
+      background:var(--green-bg);
+      color:var(--green);
+    }
+    .publish-step-badge.active {
+      background:var(--blue-bg);
+      color:var(--blue);
+    }
+    .publish-step-badge.pending {
+      background:#f3f4f6;
+      color:#6b7280;
+    }
+    .publish-step-badge.warn {
+      background:var(--orange-bg);
+      color:var(--orange);
+    }
+    .publish-step-title {
+      font-size:14px;
+      font-weight:800;
+      line-height:1.35;
+    }
+    .publish-step-desc {
+      color:var(--t2);
+      font-size:12px;
+      line-height:1.55;
+    }
+    .publish-section-head {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:16px;
+    }
+    .publish-section-eyebrow {
+      color:var(--t3);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+    .publish-section-title {
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      line-height:1.15;
+    }
+    .publish-section-meta {
+      color:var(--t3);
+      font-size:12px;
+      line-height:1.4;
+      text-align:right;
+      max-width:220px;
+    }
+    .publish-form-grid {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:14px;
+    }
+    .publish-field {
+      display:grid;
+      gap:8px;
+      min-width:0;
+    }
+    .publish-field-full {
+      grid-column:1 / -1;
+    }
+    .publish-field span {
+      color:var(--t2);
+      font-size:12px;
+      font-weight:700;
+    }
+    .publish-input,
+    .publish-textarea {
+      width:100%;
+      border:1px solid rgba(214,216,219,.96);
+      border-radius:14px;
+      background:#fff;
+      color:var(--t1);
+      font:inherit;
+      padding:13px 14px;
+      outline:none;
+      transition:border .15s ease, box-shadow .15s ease;
+    }
+    .publish-input:focus,
+    .publish-textarea:focus {
+      border-color:rgba(76,106,136,.34);
+      box-shadow:0 0 0 4px rgba(76,106,136,.12);
+    }
+    .publish-textarea {
+      min-height:110px;
+      resize:vertical;
+      line-height:1.6;
+    }
+    .publish-chip-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .publish-chip {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      height:44px;
+      padding:0 14px;
+      border:1px solid rgba(214,216,219,.96);
+      border-radius:14px;
+      background:#fff;
+      color:var(--t2);
+      font-size:12px;
+      font-weight:800;
+      transition:all .15s ease;
+    }
+    .publish-chip.is-active {
+      border-color:rgba(76,106,136,.22);
+      background:var(--brand-bg);
+      color:var(--brand);
+      box-shadow:inset 0 0 0 1px rgba(76,106,136,.08);
+    }
+    .publish-inline-stats {
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:10px;
+    }
+    .publish-inline-card {
+      padding:14px;
+      border-radius:16px;
+      background:#f8fafc;
+      border:1px solid rgba(214,216,219,.76);
+    }
+    .publish-inline-card-label {
+      color:var(--t3);
+      font-size:11px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      margin-bottom:8px;
+    }
+    .publish-inline-card-value {
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.02em;
+      margin-bottom:6px;
+    }
+    .publish-inline-card-note {
+      color:var(--t2);
+      font-size:12px;
+      line-height:1.45;
+    }
+    .publish-checklist {
+      display:grid;
+      gap:10px;
+      list-style:none;
+    }
+    .publish-checklist li {
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      color:var(--t2);
+      font-size:13px;
+      line-height:1.5;
+    }
+    .publish-checklist .material-icons-round {
+      font-size:18px;
+      color:var(--green);
+      margin-top:1px;
+    }
+    .rollback-target-card {
+      display:grid;
+      gap:10px;
+      padding:16px;
+      border-radius:18px;
+      border:1px solid rgba(224,112,32,.18);
+      background:linear-gradient(180deg, rgba(255,241,231,.82), rgba(255,255,255,.96));
+    }
+    .rollback-target-head {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .rollback-target-version {
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:-.03em;
+    }
+    .rollback-target-note {
+      color:var(--t2);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .version-list {
+      display:grid;
+      gap:10px;
+    }
+    .version-card {
+      display:grid;
+      gap:10px;
+      padding:15px;
+      border-radius:18px;
+      border:1px solid rgba(214,216,219,.88);
+      background:#fbfcfe;
+      cursor:pointer;
+      transition:border .15s ease, box-shadow .15s ease, transform .15s ease;
+    }
+    .version-card:hover {
+      transform:translateY(-1px);
+      border-color:rgba(76,106,136,.16);
+    }
+    .version-card.is-selected {
+      border-color:rgba(76,106,136,.2);
+      background:linear-gradient(180deg, rgba(220,231,242,.72), rgba(255,255,255,.96));
+      box-shadow:0 12px 22px rgba(76,106,136,.08);
+    }
+    .version-card-top {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .version-card-version {
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:-.03em;
+    }
+    .version-card-badge {
+      display:inline-flex;
+      align-items:center;
+      height:24px;
+      padding:0 9px;
+      border-radius:999px;
+      background:#f3f4f6;
+      color:#6b7280;
+      font-size:11px;
+      font-weight:800;
+    }
+    .version-card-badge.live {
+      background:var(--green-bg);
+      color:var(--green);
+    }
+    .version-card-meta {
+      color:var(--t2);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .version-card-note {
+      color:var(--t3);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .publish-text-link {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      border:none;
+      background:transparent;
+      color:var(--t3);
+      font-size:12px;
+      font-weight:700;
+    }
+    .publish-summary-card {
+      display:grid;
+      gap:12px;
+    }
+    .publish-summary-top {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding-bottom:12px;
+      border-bottom:1px solid rgba(214,216,219,.72);
+    }
+    .publish-summary-title {
+      font-size:15px;
+      font-weight:800;
+    }
+    .publish-summary-badge {
+      display:inline-flex;
+      align-items:center;
+      height:26px;
+      padding:0 10px;
+      border-radius:999px;
+      background:var(--brand-bg);
+      color:var(--brand);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.02em;
+      text-transform:uppercase;
+    }
+    .publish-summary-row {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      color:var(--t2);
+      font-size:13px;
+    }
+    .publish-summary-row strong {
+      color:var(--t1);
+      font-size:14px;
+    }
+    .publish-summary-tip {
+      padding:14px;
+      border-radius:16px;
+      background:#f8fafc;
+      color:var(--t2);
+      font-size:12px;
+      line-height:1.55;
+    }
+    .publish-modal-actions {
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:20px;
+      padding-top:20px;
+      border-top:1px solid rgba(214,216,219,.74);
+    }
+    .publish-action {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      height:46px;
+      padding:0 18px;
+      border-radius:14px;
+      border:none;
+      font-size:13px;
+      font-weight:800;
+      transition:all .15s ease;
+    }
+    .publish-action.ghost {
+      border:1px solid rgba(214,216,219,.96);
+      background:#fff;
+      color:var(--t2);
+    }
+    .publish-action.secondary {
+      background:#eef2f7;
+      color:var(--t1);
+    }
+    .publish-action.primary {
+      background:var(--brand);
+      color:#fff;
+      box-shadow:0 12px 24px rgba(76,106,136,.18);
+    }
+    .publish-action.primary:hover {
+      background:var(--brand-h);
+    }
+
+    @media (max-width:1120px) {
+      .service-groups { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+      .service-group:nth-child(odd) { border-right:1px solid var(--border); }
+      .service-group:nth-child(n + 3) {
+        border-top:1px solid var(--border);
+        padding-top:18px;
+      }
+      .service-group + .service-group { border-left:none; }
+      .layout { grid-template-columns:1fr; }
+      .publish-modal-layout { grid-template-columns:1fr; }
+      .publish-step-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+      .side-persistent { position:static; }
+      .hero-grid,
+      .metric-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+      .user-analytics-layout { grid-template-columns:1fr; }
+    }
+    @media (max-width:800px) {
+      .topbar-inner { padding:0 16px; }
+      .tb-btn { display:none; }
+      .hero-head,
+      .search-row,
+      .inline-split { grid-template-columns:1fr; display:grid; }
+      .hero-side { justify-items:start; }
+      .hero-actions { justify-content:flex-start; }
+      .hero-members {
+        justify-content:flex-start;
+      }
+      .hero-tag-strip { padding-top:0; }
+      .service-groups { grid-template-columns:1fr; }
+      .publish-modal-shell { padding:22px; border-radius:24px; }
+      .publish-modal-copy h2 { font-size:28px; }
+      .publish-modal-head,
+      .publish-section-head { flex-direction:column; }
+      .publish-section-meta { text-align:left; max-width:none; }
+      .service-group {
+        padding:16px 18px;
+        border-right:none;
+        border-top:1px solid var(--border);
+      }
+      .service-group:first-child { border-top:none; }
+      .info-grid,
+      .metric-grid,
+      .hero-grid,
+      .domain-status-grid { grid-template-columns:1fr; }
+      .analytics-block { padding:16px; }
+      .variable-create,
+      .variable-row { grid-template-columns:1fr; }
+      .variable-row.is-editing { grid-template-columns:1fr; }
+      .publish-form-grid,
+      .publish-inline-stats,
+      .publish-step-grid { grid-template-columns:1fr; }
+      .variable-toolbar-top { align-items:flex-start; }
+      .member-row { grid-template-columns:auto minmax(0, 1fr); }
+      .member-role { grid-column:2; justify-self:start; }
+      .harvest-head,
+      .security-head,
+      .harvest-row,
+      .security-row { grid-template-columns:1fr; }
+    }
+    @media (max-width:640px) {
+      .page { padding:18px 16px 64px; }
+      .publish-modal-backdrop { padding:16px; }
+      .publish-modal-shell { max-height:calc(100vh - 24px); padding:18px; border-radius:22px; }
+      .publish-mode-switch,
+      .publish-modal-actions { width:100%; }
+      .publish-mode-tab,
+      .publish-action { flex:1; }
+      .search-ai { display:none; }
+      .service-popover { top:56px; padding:14px 0 16px; }
+      .service-popover-inner { padding:0 16px; }
+
+      .service-outlinks {
+        margin:14px 0 -16px;
+        padding:9px 16px;
+        justify-content:flex-start;
+        gap:8px;
+      }
+      .service-outlink-list {
+        justify-content:flex-start;
+      }
+      .service-outlink {
+        padding:3px 8px;
+      }
+      .project-title { font-size:28px; }
+      .hero,
+      .panel { padding:18px; }
+      .timeline-row { grid-template-columns:20px minmax(0, 1fr); gap:10px; }
+    }
+  </style>
+</head>
+<body>
+  <div
+    data-ax-topbar
+    data-active-key="projects"
+    data-search-placeholder="프로젝트 상세 내역, 연결 리소스 또는 보안 이슈를 찾으세요..."
+    data-search-source="workspace-project-detail"
+    data-search-source-label="Project Detail"
+    data-search-default-type="project"
+  ></div>
+  <template data-legacy-topbar>
+    <div class="topbar-inner">
+      <a class="topbar-brand" href="portal_launchpad.html" aria-label="AX Studio">
+        <span class="brand-mark" aria-hidden="true">
+          <img src="data:image/svg+xml,%3csvg%20width='35'%20height='20'%20viewBox='0%200%2035%2020'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M16.7961%2010.1421L21.022%2014.368C23.4543%2016.8004%2027.398%2016.8004%2029.8303%2014.368C32.2627%2011.9356%2032.2627%207.99197%2029.8303%205.5596C27.398%203.12723%2023.4543%203.12723%2021.022%205.5596L20.723%205.85861L18.7019%203.83756L19.0009%203.53856C22.5495%20-0.0100035%2028.3028%20-0.0100042%2031.8514%203.53856C35.4%207.08712%2035.4%2012.8405%2031.8514%2016.389C28.3028%2019.9376%2022.5495%2019.9376%2019.0009%2016.389L12.5757%209.96379L14.5948%207.9447L16.7941%2010.144L16.7961%2010.1421ZM17.6605%208.92103L19.6782%206.90332L17.6572%204.88228L15.6395%206.89998L17.6605%208.92103Z'%20fill='%236D6E72'/%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M14.3637%205.63217L18.6416%209.91016L18.6428%209.90899L20.7901%2012.0562L22.8099%2010.0364L16.3847%203.61113C12.8361%200.0625671%207.08278%200.0625666%203.53422%203.61113C-0.0143374%207.15969%20-0.0143374%2012.913%203.53422%2016.4616C7.08278%2020.0102%2012.8361%2020.0102%2016.3847%2016.4616L16.6801%2016.1662L14.6591%2014.1452L14.3637%2014.4406C11.9313%2016.8729%207.98764%2016.8729%205.55527%2014.4406C3.1229%2012.0082%203.1229%208.06454%205.55527%205.63217C7.98764%203.1998%2011.9313%203.1998%2014.3637%205.63217ZM15.7038%2013.1004L17.7248%2015.1215L19.7453%2013.101L17.7243%2011.0799L15.7038%2013.1004Z'%20fill='%23A50034'/%3e%3crect%20x='15.376'%20y='12.7714'%20width='2.85369'%20height='5.21909'%20transform='rotate(-45%2015.376%2012.7714)'%20fill='%236D6E72'/%3e%3c/svg%3e" alt="AX Studio" />
+        </span>
+        <span class="brand-name">AX Studio</span>
+      </a>
+      <div class="logo-menu" id="serviceMenuWrap">
+        <button class="menu-trigger" id="serviceMenuButton" type="button" aria-label="전체 메뉴 열기" aria-haspopup="true" aria-expanded="false" aria-controls="serviceMenuPopover">
+          <span class="material-icons-round">apps</span>
+          <span class="material-icons-round menu-caret">expand_more</span>
+        </button>
+        <div class="service-popover" id="serviceMenuPopover" aria-labelledby="serviceMenuButton" hidden>
+          <div class="service-popover-inner">
+            <div class="service-groups">
+              <section class="service-group">
+                <div class="service-group-title">Store</div>
+                <div class="service-links">
+                  <a class="service-link" href="dej_app_store.html"><span class="material-icons-round service-link-icon">widgets</span><span class="service-link-copy"><span class="service-link-title">App Gallery</span><span class="service-link-desc">실행형 개발 앱과 워크스페이스 도구를 발견하고 살펴보기</span></span></a>
+                  <a class="service-link" href="dej_agent_store.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">AI Gallery</span><span class="service-link-desc">챗봇과 tool 자산을 전시하고 재사용 흐름으로 연결</span></span></a>
+                </div>
+              </section>
+              <section class="service-group">
+                <div class="service-group-title">Accessibility</div>
+                <div class="service-links">
+                  <a class="service-link" href="workspace_domain_hub.html"><span class="material-icons-round service-link-icon">apartment</span><span class="service-link-copy"><span class="service-link-title">Domain</span><span class="service-link-desc">DNS 및 도메인 관리</span></span></a>
+                  <a class="service-link" href="workspace_permission_hub.html"><span class="material-icons-round service-link-icon">groups</span><span class="service-link-copy"><span class="service-link-title">Permission</span><span class="service-link-desc">IAM 및 권한 관리</span></span></a>
+                </div>
+              </section>
+              <section class="service-group">
+                <div class="service-group-title">Storage</div>
+                <div class="service-links">
+                  <a class="service-link" href="workspace_database_hub.html"><span class="material-icons-round service-link-icon">storage</span><span class="service-link-copy"><span class="service-link-title">Database</span><span class="service-link-desc">데이터베이스 관리(MongoDB, PostgreSQL, Redis 등)</span></span></a>
+                  <a class="service-link" href="workspace_s3_hub.html"><span class="material-icons-round service-link-icon">folder</span><span class="service-link-copy"><span class="service-link-title">Buckets</span><span class="service-link-desc">S3 스토리지 및 버킷 관리</span></span></a>
+                </div>
+              </section>
+              <section class="service-group">
+                <div class="service-group-title">Development</div>
+                <div class="service-links">
+                  <a class="service-link" href="workspace_tools_hub.html"><span class="material-icons-round service-link-icon">web</span><span class="service-link-copy"><span class="service-link-title">Consoles</span><span class="service-link-desc">데이터베이스 웹 콘솔 모음</span></span></a>
+                  <a class="service-link is-current" href="workspace_projects_hub.html"><span class="material-icons-round service-link-icon">public</span><span class="service-link-copy"><span class="service-link-title">Project/Publish</span><span class="service-link-desc">개발 프로젝트 관리(IDE 작업 공간)</span></span></a>
+                  <a class="service-link" href="#"><span class="material-icons-round service-link-icon">science</span><span class="service-link-copy"><span class="service-link-title">Jupyter</span><span class="service-link-desc">노트북 실험 및 분석 환경</span></span></a>
+                </div>
+              </section>
+              <section class="service-group">
+                <div class="service-group-title">AI</div>
+                <div class="service-links">
+                  <a class="service-link" href="workspace_agent_hub.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">Workflow</span><span class="service-link-desc">Dify workflow와 승인형 자동화 런타임을 운영</span></span></a>
+                  <a class="service-link" href="workspace_chatbot_hub.html"><span class="material-icons-round service-link-icon">chat</span><span class="service-link-copy"><span class="service-link-title">Chatbot</span><span class="service-link-desc">API와 Frontend URL 기반 챗봇 엔드포인트를 관리</span></span></a>
+                  <a class="service-link" href="workspace_tool_inventory_hub.html"><span class="material-icons-round service-link-icon">inventory_2</span><span class="service-link-copy"><span class="service-link-title">Tool Inventory</span><span class="service-link-desc">에이전트가 사용하는 연결된 MCP 및 도구 자산을 관리</span></span></a>
+                  <a class="service-link" href="workspace_keycenter_hub.html"><span class="material-icons-round service-link-icon">vpn_key</span><span class="service-link-copy"><span class="service-link-title">Keycenter</span><span class="service-link-desc">발급된 LLM 키와 연결 상태를 관리</span></span></a>
+                </div>
+              </section>
+              <section class="service-group">
+                <div class="service-group-title">Support</div>
+                <div class="service-links">
+                  <a class="service-link" href="#"><span class="material-icons-round service-link-icon">description</span><span class="service-link-copy"><span class="service-link-title">다큐먼트</span><span class="service-link-desc">가이드와 운영 문서를 확인합니다</span></span></a>
+                  <a class="service-link" href="about_dej.html"><span class="material-icons-round service-link-icon">timeline</span><span class="service-link-copy"><span class="service-link-title">About DEJ</span><span class="service-link-desc">DEJ의 역사와 CEJ·DEJ 흐름을 확인합니다</span></span></a>
+                  <a class="service-link" href="#"><span class="material-icons-round service-link-icon">chat_bubble_outline</span><span class="service-link-copy"><span class="service-link-title">챗봇</span><span class="service-link-desc">지원 챗봇으로 빠르게 문의합니다</span></span></a>
+                  <a class="service-link" href="#"><span class="material-icons-round service-link-icon">campaign</span><span class="service-link-copy"><span class="service-link-title">요청하기</span><span class="service-link-desc">기능 요청이나 지원 요청을 등록합니다</span></span></a>
+                </div>
+              </section>
+            </div>
+            <div class="service-outlinks" aria-label="외부 서비스 바로가기">
+              <div class="service-outlinks-title">DEJ 시스템</div>
+              <div class="service-outlink-list">
+                <a class="service-outlink" href="https://dej-chatbot.apps.hedej.lge.com" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">forum</span><span class="service-outlink-copy"><span class="service-outlink-title">DEJ 챗봇</span><span class="service-outlink-desc">Workspace 지원 챗봇</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
+                <a class="service-outlink" href="https://workspace.hedej.lge.com/heans" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">open_in_new</span><span class="service-outlink-copy"><span class="service-outlink-title">HEANS</span><span class="service-outlink-desc">HEANS 서비스 바로가기</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
+                <a class="service-outlink" href="https://workspace.hedej.lge.com/hevpds" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">open_in_new</span><span class="service-outlink-copy"><span class="service-outlink-title">HEVPDS</span><span class="service-outlink-desc">HEVPDS 서비스 바로가기</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="search-wrap">
+        <span class="material-icons-round ico">search</span>
+        <input class="search-input" placeholder="프로젝트 상세 내역, 연결 리소스 또는 보안 이슈를 찾으세요..." />
+        <div class="search-ai"><span class="material-icons-round">auto_awesome</span>AI</div>
+      </div>
+      <div class="tb-spacer"></div>
+      <div class="tb-icon"><span class="material-icons-round">notifications_none</span><div class="dot"></div></div>
+      <div class="avatar">TN</div>
+    </div>
+  </template>
+
+  <main class="page">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="portal_launchpad.html">Launchpad</a>
+      <span class="material-icons-round" aria-hidden="true">chevron_right</span>
+      <a href="workspace_projects_hub.html">Project/Publish</a>
+      <span class="material-icons-round" aria-hidden="true">chevron_right</span>
+      <span id="breadcrumbProject">Project</span>
+    </nav>
+
+    <section class="hero" id="overview">
+      <div class="hero-head">
+        <div class="hero-title-wrap">
+          <div class="eyebrow">
+            <span class="status-pill" id="heroStatus">Running</span>
+            <span class="mini-pill" id="heroPrivacy">Shared</span>
+            <span class="mini-pill" id="heroFavorite">Favorited</span>
+          </div>
+          <h1 class="project-title" id="heroTitle">hermes-be</h1>
+          <p class="hero-description" id="heroDescription"></p>
+          <div class="hero-meta" id="heroMeta"></div>
+        </div>
+        <div class="hero-side">
+          <div class="hero-actions">
+            <button class="hero-btn ghost" type="button"><span class="material-icons-round">arrow_back</span>목록으로</button>
+            <button class="hero-btn blue" type="button" id="openIdeButton"><span class="material-icons-round">open_in_new</span>Open IDE</button>
+            <button class="hero-btn green" type="button" id="runButton"><span class="material-icons-round">play_circle</span>Run</button>
+            <button class="hero-btn primary" type="button" id="publishButton"><span class="material-icons-round">publish</span>Publish</button>
+          </div>
+          <div class="hero-members" id="heroMembers"></div>
+        </div>
+      </div>
+      <div class="hero-grid" id="heroStats"></div>
+      <div class="hero-overview">
+        <div class="hero-tag-strip">
+          <div class="tag-row" id="tagRow"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-nav" id="detailViewTabs">
+      <button class="nav-chip is-active" type="button" data-detail-view="setup"><span class="material-icons-round">tune</span>Setup</button>
+      <button class="nav-chip" type="button" data-detail-view="observability"><span class="material-icons-round">monitor_heart</span>Observability</button>
+      <button class="nav-chip" type="button" data-detail-view="governance"><span class="material-icons-round">verified_user</span>Governance</button>
+    </div>
+
+    <div class="layout">
+      <div class="main-col">
+        <section class="panel view-panel" data-view-panel="setup">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <div class="panel-kicker"><span class="material-icons-round">hub</span>Connected Resources</div>
+              <div class="panel-title">Database, bucket, LLM, GitLab, permissions</div>
+            </div>
+          </div>
+          <div class="resource-toolbar">
+            <div class="resource-toolbar-copy">필요한 연결 자원을 바로 추가해서 현재 프로젝트 구성 샘플을 빠르게 늘려볼 수 있습니다.</div>
+            <div class="resource-actions" id="resourceActions">
+              <button class="resource-add-btn" type="button" data-resource-type="db"><span class="material-icons-round">add_circle</span>DB 추가</button>
+              <button class="resource-add-btn" type="button" data-resource-type="bucket"><span class="material-icons-round">add_circle</span>Bucket 추가</button>
+              <button class="resource-add-btn" type="button" data-resource-type="gitlab"><span class="material-icons-round">add_circle</span>GitLab 추가</button>
+              <button class="resource-add-btn" type="button" data-resource-type="permission"><span class="material-icons-round">add_circle</span>Permission 추가</button>
+              <button class="resource-add-btn" type="button" data-resource-type="llm"><span class="material-icons-round">add_circle</span>LLM Key 추가</button>
+              <button class="resource-add-btn" type="button" data-resource-type="analytics"><span class="material-icons-round">add_circle</span>Analytics 추가</button>
+            </div>
+          </div>
+          <div class="resource-list" id="resourceList"></div>
+        </section>
+
+        <section class="panel view-panel" id="config" data-view-panel="setup">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <div class="panel-kicker"><span class="material-icons-round">settings_suggest</span>Configuration</div>
+              <div class="panel-title">Domain, variables, ports</div>
+              <div class="panel-subtitle">도메인 선택, 변수 편집, 워커 포트 확인만 이 영역에서 바로 다룰 수 있게 정리했습니다.</div>
+            </div>
+          </div>
+          <div class="config-stack">
+            <div class="config-block">
+              <div class="panel-kicker"><span class="material-icons-round">language</span>Domain</div>
+              <div class="domain-picker">
+                <div class="domain-select-wrap">
+                  <label for="domainSelect">Selected Domain</label>
+                  <select class="domain-select" id="domainSelect"></select>
+                </div>
+                <div class="domain-status-grid" id="domainStatus"></div>
+              </div>
+            </div>
+
+            <div class="config-block">
+              <div class="panel-kicker"><span class="material-icons-round">key</span>Variables</div>
+              <div class="variable-toolbar">
+                <div class="variable-toolbar-top">
+                  <div class="variable-caption">전역 Prefix를 먼저 정하고, 아래 입력 폼으로 변수를 추가하면 완료된 항목이 바로 목록에 쌓입니다.</div>
+                </div>
+                <div class="prefix-control">
+                  <div class="prefix-field">
+                    <label for="prefixInput">Global Prefix</label>
+                    <input type="text" id="prefixInput" placeholder="REACT_APP_" />
+                  </div>
+                  <div class="prefix-help">여기서 입력한 Prefix가 모든 변수명 앞에 일괄 적용됩니다.</div>
+                </div>
+                <div class="variable-create">
+                  <div class="field-shell">
+                    <label>Preview</label>
+                    <input type="text" id="newVariablePreview" readonly value="" />
+                  </div>
+                  <div class="field-shell">
+                    <label>Key</label>
+                    <input type="text" id="newVariableKey" placeholder="API_BASE_URL" />
+                  </div>
+                  <div class="field-shell">
+                    <label>Value</label>
+                    <input type="text" id="newVariableValue" placeholder="https://api.example.com" />
+                  </div>
+                  <button class="create-action" type="button" id="addVariableButton"><span class="material-icons-round">add</span>추가 완료</button>
+                </div>
+              </div>
+              <div class="variable-list" id="varList"></div>
+            </div>
+
+            <div class="config-block">
+              <div class="panel-kicker"><span class="material-icons-round">settings_ethernet</span>Worker Ports</div>
+              <div class="port-list" id="portList"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel danger-panel view-panel" data-view-panel="setup">
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <div class="panel-kicker"><span class="material-icons-round">warning</span>Danger Zone</div>
+              <div class="panel-title">Delete This Project</div>
+            </div>
+          </div>
+          <p class="danger-copy">
+            샘플 상세 화면에서도 실제 상세 페이지처럼 삭제 영역을 따로 분리했습니다.
+            리소스 연결과 문서 수집, 배포 이력까지 함께 정리된 상태에서 마지막 결정을 내릴 수 있습니다.
+          </p>
+          <button class="danger-btn" type="button"><span class="material-icons-round">delete</span>프로젝트 삭제</button>
+        </section>
+
+        <section class="panel analytics-block user-block view-panel" id="metrics-user" data-view-panel="observability" hidden>
+          <div class="metrics-section">
+            <div class="metrics-section-head">
+              <div class="metrics-section-copy">
+                <div class="panel-kicker"><span class="material-icons-round">travel_explore</span>사용자 분석</div>
+                <div class="metrics-section-title">서비스 KPI, Top 10 페이지, 방문량</div>
+                <div class="metrics-section-subtitle">사용자가 어떤 페이지에 들어오고 어디에서 가장 많이 머무는지 한 번에 보이도록 구성했습니다.</div>
+              </div>
+              <button class="panel-action" type="button"><span class="material-icons-round">date_range</span>최근 7일</button>
+            </div>
+            <div class="metric-grid" id="matomoMetricGrid"></div>
+            <div class="user-analytics-layout">
+              <div class="metric-panel fill-height">
+                <div class="panel-kicker"><span class="material-icons-round">stacked_bar_chart</span>방문량 그래프</div>
+                <div class="trend-bars analytics" id="matomoTrendBars"></div>
+              </div>
+              <div class="metric-panel">
+                <div class="panel-kicker"><span class="material-icons-round">leaderboard</span>Top 10 페이지</div>
+                <div class="page-list" id="topPagesList"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel analytics-block service-block view-panel" id="metrics-service" data-view-panel="observability" hidden>
+          <div class="metrics-section">
+            <div class="metrics-section-head">
+              <div class="metrics-section-copy">
+                <div class="panel-kicker"><span class="material-icons-round">monitor_heart</span>서비스 분석</div>
+                <div class="metrics-section-title">리소스 사용량, 로그, 터미널 디버깅</div>
+                <div class="metrics-section-subtitle">선택한 시간 범위 동안 CPU/메모리 흐름을 보고, 바로 로그와 터미널 디버깅으로 이어질 수 있게 했습니다.</div>
+              </div>
+              <div class="range-pills" id="resourceRangeTabs">
+                <button class="range-pill is-active" type="button" data-resource-range="1h">1H</button>
+                <button class="range-pill" type="button" data-resource-range="6h">6H</button>
+                <button class="range-pill" type="button" data-resource-range="24h">24H</button>
+              </div>
+            </div>
+            <div class="service-analysis-stack">
+              <div class="metric-panel">
+                <div class="metric-panel-head">
+                  <div class="panel-kicker"><span class="material-icons-round">query_stats</span>CPU / Memory 사용량</div>
+                </div>
+                <div class="usage-chart">
+                  <div class="chart-legend">
+                    <span class="legend-item"><span class="legend-swatch cpu"></span>CPU 사용률</span>
+                    <span class="legend-item"><span class="legend-swatch memory"></span>메모리 사용률</span>
+                  </div>
+                  <div class="resource-chart-shell">
+                    <svg class="resource-chart-svg" id="resourceChartSvg" viewBox="0 0 640 220" preserveAspectRatio="none"></svg>
+                  </div>
+                  <div class="resource-chart-labels" id="resourceChartLabels"></div>
+                </div>
+              </div>
+              <div class="metric-panel">
+                <div class="metric-panel-head">
+                  <div class="panel-kicker"><span class="material-icons-round">terminal</span>실시간 로그</div>
+                </div>
+                <div class="log-monitor">
+                  <div class="terminal-head">
+                    <div class="terminal-dots">
+                      <span class="terminal-dot red"></span>
+                      <span class="terminal-dot yellow"></span>
+                      <span class="terminal-dot green"></span>
+                    </div>
+                    <div class="terminal-title">live-stream://service-log</div>
+                  </div>
+                  <div class="terminal-body" id="logList"></div>
+                </div>
+              </div>
+              <div class="terminal-launch">
+                <button class="terminal-btn" type="button" id="openTerminalButton"><span class="material-icons-round">terminal</span>터미널 연결</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel view-panel" id="harvest" data-view-panel="governance" hidden>
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <div class="panel-kicker"><span class="material-icons-round">topic</span>Harvest</div>
+              <div class="panel-title">문서 수집과 검색 대상</div>
+              <div class="panel-subtitle">Harvest 탭의 리스트 성격을 살려서 검색형 문서 목록으로 배치했습니다.</div>
+            </div>
+            <button class="panel-action" type="button"><span class="material-icons-round">delete_outline</span>삭제</button>
+          </div>
+          <div class="search-row">
+            <div class="search-shell">
+              <span class="material-icons-round">search</span>
+              <input type="text" value="keyword, url, 문서명을 검색하세요" readonly />
+            </div>
+            <span class="chip" id="harvestCountChip">0 Docs</span>
+          </div>
+          <div class="harvest-head">
+            <div>Keyword</div>
+            <div>URL</div>
+            <div>Created</div>
+            <div>Updated</div>
+          </div>
+          <div class="harvest-list" id="harvestList"></div>
+        </section>
+
+        <section class="panel view-panel" id="security" data-view-panel="governance" hidden>
+          <div class="panel-header">
+            <div class="panel-title-wrap">
+              <div class="panel-kicker"><span class="material-icons-round">verified_user</span>Security</div>
+              <div class="panel-title">취약점과 조치 버전</div>
+              <div class="panel-subtitle">Security 탭처럼 점수, 리소스, 수정 버전을 함께 보여주도록 구성했습니다.</div>
+            </div>
+            <span class="chip" id="securityCountChip">0 Findings</span>
+          </div>
+          <div class="security-head">
+            <div>Issue</div>
+            <div>Score</div>
+            <div>Resource</div>
+            <div>Link</div>
+          </div>
+          <div class="security-list" id="securityList"></div>
+        </section>
+      </div>
+
+      <aside class="side-col">
+        <div class="side-persistent">
+          <section class="panel timeline-panel">
+            <div class="panel-header">
+              <div class="panel-title-wrap">
+                <div class="panel-kicker"><span class="material-icons-round">event_note</span>Recent Activity</div>
+                <div class="panel-title">프로젝트 타임라인</div>
+                <div class="panel-subtitle">시간 순서대로 핵심 이벤트만 간단하게 이어 보이도록 정리했습니다.</div>
+              </div>
+            </div>
+            <div class="timeline-list" id="timelineList"></div>
+          </section>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div class="publish-modal-backdrop" id="publishModal" hidden>
+    <div class="publish-modal-shell" role="dialog" aria-modal="true" aria-labelledby="publishModalTitle">
+      <div class="publish-modal-head">
+        <div class="publish-modal-copy">
+          <div class="publish-modal-kicker"><span class="material-icons-round">rocket_launch</span>Release Control</div>
+          <h2 id="publishModalTitle">Publish Project</h2>
+          <p id="publishModalSubtitle">신규 버전 배포와 롤백을 한 화면에서 확인하고 실행할 수 있도록 단순한 흐름으로 정리했습니다.</p>
+        </div>
+        <button class="publish-close-btn" type="button" id="publishModalClose" aria-label="퍼블리시 모달 닫기">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+
+      <div class="publish-mode-switch" id="publishModeTabs" role="tablist" aria-label="배포 모드 선택">
+        <button class="publish-mode-tab is-active" type="button" data-publish-mode="release">신규 배포</button>
+        <button class="publish-mode-tab" type="button" data-publish-mode="rollback">버전 롤백</button>
+      </div>
+
+      <div class="publish-modal-layout">
+        <div class="publish-main">
+          <section class="publish-panel">
+            <div class="publish-banner" id="publishBanner"></div>
+            <div class="publish-step-grid" id="publishSteps"></div>
+          </section>
+
+          <section class="publish-panel">
+            <div class="publish-section-head">
+              <div>
+                <div class="publish-section-eyebrow">Release Form</div>
+                <div class="publish-section-title" id="publishFormTitle">신규 배포 설정</div>
+              </div>
+              <div class="publish-section-meta" id="publishFormMeta"></div>
+            </div>
+            <div id="publishForm"></div>
+          </section>
+        </div>
+
+        <aside class="publish-side">
+          <section class="publish-panel">
+            <div class="publish-section-head">
+              <div>
+                <div class="publish-section-eyebrow">Version History</div>
+                <div class="publish-section-title" style="font-size:20px;">최근 버전</div>
+              </div>
+              <button class="publish-text-link" type="button">
+                <span class="material-icons-round">history</span>전체 이력
+              </button>
+            </div>
+            <div class="version-list" id="publishVersionHistory"></div>
+          </section>
+
+          <section class="publish-panel">
+            <div class="publish-section-head">
+              <div>
+                <div class="publish-section-eyebrow">Summary</div>
+                <div class="publish-section-title" style="font-size:20px;">이번 작업 요약</div>
+              </div>
+            </div>
+            <div class="publish-summary-card" id="publishSummary"></div>
+          </section>
+        </aside>
+      </div>
+
+      <div class="publish-modal-actions">
+        <button class="publish-action ghost" type="button" id="publishCancelButton">닫기</button>
+        <button class="publish-action secondary" type="button" id="publishSecondaryAction">
+          <span class="material-icons-round">draft</span>초안 저장
+        </button>
+        <button class="publish-action primary" type="button" id="publishPrimaryAction">
+          <span class="material-icons-round">rocket_launch</span>신규 버전 배포
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PROJECTS = {
+      "aaa002": {
+        name: "aaa002",
+        runtime: "streamlit",
+        status: "Inactive",
+        favorite: false,
+        privacy: "Shared",
+        owner: "Taehun Nam",
+        updatedAt: "2026.04.22 12:04 PM",
+        description: "간단한 내부 분석 화면을 빠르게 검증하는 Streamlit 샌드박스입니다. QA와 함께 실험용 시나리오를 돌리며 위젯 동작과 결과 비교를 확인합니다.",
+        domain: "aaa002.workspace.hedej.lge.com",
+        ideUrl: "https://workspace.hedej.lge.com/development/aaa002/ide",
+        publishUrl: "https://workspace.hedej.lge.com/development/aaa002/publish",
+        repo: "gitlab/hedej/aaa002",
+        memory: "2GB",
+        cpu: "1vCPU",
+        pods: "2 Pods",
+        instance: "Single Dev Instance",
+        storage: "20GB",
+        devMode: "Manual start",
+        projectType: "Prototype",
+        runtimeVersion: "Python 3.11 / Streamlit 1.39",
+        tags: ["streamlit", "qa-check", "internal-demo"],
+        steps: [
+          { title: "CEJ 준비", meta: "기본 이미지와 requirements 검증 완료" },
+          { title: "DEJ 반영", meta: "QA 테스트용 환경 변수 템플릿 유지" }
+        ],
+        overview: [
+          ["Project Type", "Prototype", "작은 기능 검증용 샌드박스"],
+          ["Runtime", "Python 3.11 / Streamlit", "UI 위젯과 빠른 데이터 확인"],
+          ["Storage", "20GB ephemeral", "세션 캐시 중심"],
+          ["Development Instance", "Single / shared", "팀이 순차적으로 사용"]
+        ],
+        team: [
+          { name: "Taehun Nam", role: "Owner", meta: "UI prototype, prompt tuning", color: "linear-gradient(135deg,#f472b6,#b40e4d)" },
+          { name: "QA Engineer", role: "Reviewer", meta: "Scenario verification, regression sheet", color: "linear-gradient(135deg,#22d3ee,#0086cc)" }
+        ],
+        domains: [
+          ["Primary Domain", "aaa002.workspace.hedej.lge.com", "팀 공유용 미리보기 URL"],
+          ["IDE URL", "workspace / aaa002 / ide", "개발 인스턴스 진입"],
+          ["Publish Route", "publish / aaa002", "배포 준비 상태 확인"],
+          ["Public Access", "Internal only", "사내 접근만 허용"]
+        ],
+        ports: [
+          { name: "8501", meta: "Streamlit app main port" },
+          { name: "9090", meta: "health probe and debug endpoint" }
+        ],
+        variables: [
+          { name: "APP_MODE", meta: "sandbox" },
+          { name: "QA_PROFILE", meta: "streamlit-regression" },
+          { name: "DATA_SOURCE", meta: "mock://sample/aaa002" }
+        ],
+        permissions: [
+          { name: "workspace.development.read", meta: "모든 참여자 조회 가능" },
+          { name: "workspace.development.run", meta: "Owner, Reviewer 실행 가능" },
+          { name: "workspace.publish.request", meta: "Owner만 요청 가능" }
+        ],
+        metrics: [
+          ["Apps Deployed", "4", "최근 30일 기준 실험 배포"],
+          ["IDE Active Hrs", "18.4h", "이번 주 누적"],
+          ["App Logs", "1.2K", "경고 수준 이하"],
+          ["DB Metrics", "-", "연결된 데이터베이스 없음"]
+        ],
+        trend: [24, 38, 18, 50, 28, 14, 36],
+        logs: [
+          { title: "streamlit.runtime.state session restored", meta: "12:03 PM · pod tn-01 · info" },
+          { title: "qa profile loaded from preset", meta: "11:49 AM · pod qa-01 · info" },
+          { title: "cache miss on scenario list", meta: "11:25 AM · pod tn-01 · warn" }
+        ],
+        harvest: [
+          { keyword: "Regression checklist", url: "/docs/qa/streamlit-regression", created: "2026.04.18", updated: "2026.04.22" },
+          { keyword: "Widget edge cases", url: "/docs/qa/widget-edge-cases", created: "2026.04.14", updated: "2026.04.20" }
+        ],
+        security: [
+          { issue: "CVE-2025-1108 urllib3 low severity", score: "Low 2.8", resource: "urllib3 2.2.1", link: "advisory/python/urllib3" }
+        ],
+        quick: [
+          { icon: "deployed_code", name: "Publish readiness", meta: "Draft image only · approve pending", color: "linear-gradient(135deg,#4f8cff,#22d3ee)" },
+          { icon: "memory", name: "Container status", meta: "Stopped · warm cache disabled", color: "linear-gradient(135deg,#9ca3af,#6b7280)" },
+          { icon: "share", name: "Co-work visibility", meta: "All members can view every pod", color: "linear-gradient(135deg,#f472b6,#b40e4d)" }
+        ],
+        resources: [
+          { icon: "dns", name: "Domain", meta: "aaa002.workspace.hedej.lge.com", color: "linear-gradient(135deg,#4f8cff,#3b6fcf)" },
+          { icon: "vpn_key", name: "LLM Key", meta: "Not connected", color: "linear-gradient(135deg,#a78bfa,#7c5fcf)" },
+          { icon: "analytics", name: "Analytics", meta: "Matomo not connected", color: "linear-gradient(135deg,#34d399,#0d9488)" },
+          { icon: "folder", name: "Bucket", meta: "qa-snapshots / 2.1GB", color: "linear-gradient(135deg,#fbbf24,#e07020)" }
+        ],
+        timeline: [
+          { title: "QA checklist updated", meta: "2026.04.22 11:42 AM · QA Engineer" },
+          { title: "Sandbox env refreshed", meta: "2026.04.21 06:15 PM · Taehun Nam" },
+          { title: "New share policy applied", meta: "2026.04.21 03:20 PM · Workspace Admin" }
+        ]
+      },
+      "flysuperboardf": {
+        name: "flysuperboardf",
+        runtime: "fastapi",
+        status: "Running",
+        favorite: true,
+        privacy: "Shared",
+        owner: "Taehun Nam",
+        updatedAt: "2026.04.22 12:20 PM",
+        description: "FastAPI 기반의 보드 게임 지원 API입니다. 랭킹 계산, 경기 로그 집계, 운영 점검 API를 함께 묶어두고 여러 개발자가 동시에 각자 파드에서 작업합니다.",
+        domain: "flysuperboardf.workspace.hedej.lge.com",
+        ideUrl: "https://workspace.hedej.lge.com/development/flysuperboardf/ide",
+        publishUrl: "https://workspace.hedej.lge.com/development/flysuperboardf/publish",
+        repo: "gitlab/hedej/flysuperboardf",
+        memory: "8GB",
+        cpu: "4vCPU",
+        pods: "3 Pods",
+        instance: "Multi Dev Instance",
+        storage: "60GB",
+        devMode: "Always on",
+        projectType: "Backend API",
+        runtimeVersion: "Python 3.12 / FastAPI",
+        tags: ["fastapi", "ranking", "game-ops", "multi-pod"],
+        steps: [
+          { title: "CEJ prepare", meta: "gunicorn image and wheel cache finalized" },
+          { title: "DEJ sync", meta: "swagger schema and worker ports aligned" }
+        ],
+        overview: [
+          ["Project Type", "Backend API", "랭킹 계산과 로그 집계 API"],
+          ["Runtime", "Python 3.12 / FastAPI", "비동기 처리와 OpenAPI 문서"],
+          ["Storage", "60GB persistent", "경기 로그 샘플 및 캐시 유지"],
+          ["Development Instance", "3 pods shared", "개발자별 파드 동시 운영"]
+        ],
+        team: [
+          { name: "Taehun Nam", role: "Owner", meta: "API shape, deployment coordination", color: "linear-gradient(135deg,#4f8cff,#3b6fcf)" },
+          { name: "Jieun Lee", role: "Backend", meta: "match aggregation and auth", color: "linear-gradient(135deg,#34d399,#0d9488)" },
+          { name: "Minsu Seo", role: "Data", meta: "ranking calculation and cache", color: "linear-gradient(135deg,#a78bfa,#7c5fcf)" }
+        ],
+        domains: [
+          ["Primary Domain", "flysuperboardf.workspace.hedej.lge.com", "내부 QA와 staging 호출"],
+          ["OpenAPI", "/docs", "Swagger UI 노출"],
+          ["Publish Route", "publish / flysuperboardf", "릴리스 배포 준비"],
+          ["Ingress Policy", "Workspace internal", "세션 기반 접근 제어"]
+        ],
+        ports: [
+          { name: "8000", meta: "main FastAPI application" },
+          { name: "9100", meta: "metrics exporter" },
+          { name: "9229", meta: "debug profile port" }
+        ],
+        variables: [
+          { name: "MATCH_REGION", meta: "apac-seoul" },
+          { name: "REDIS_NAMESPACE", meta: "flysuperboardf:stg" },
+          { name: "LEADERBOARD_MODE", meta: "rolling-7d" }
+        ],
+        permissions: [
+          { name: "workspace.development.read", meta: "프로젝트 멤버 전체" },
+          { name: "workspace.development.run", meta: "Owner, Backend, Data" },
+          { name: "workspace.domain.edit", meta: "Owner only" }
+        ],
+        metrics: [
+          ["Apps Deployed", "17", "최근 30일 기준"],
+          ["IDE Active Hrs", "61.2h", "이번 주 누적"],
+          ["App Logs", "14.8K", "활성 운영 API"],
+          ["DB Metrics", "92%", "Redis hit ratio"]
+        ],
+        trend: [28, 44, 58, 65, 54, 72, 61],
+        logs: [
+          { title: "POST /api/v1/matches 201 43ms", meta: "12:18 PM · pod tn-01 · info" },
+          { title: "redis latency above threshold 82ms", meta: "11:54 AM · pod ms-01 · warn" },
+          { title: "rank cache rebuilt for season-12", meta: "11:10 AM · pod jl-01 · info" }
+        ],
+        harvest: [
+          { keyword: "Leaderboard spec", url: "/docs/game/leaderboard-spec", created: "2026.03.29", updated: "2026.04.21" },
+          { keyword: "Ops fallback checklist", url: "/docs/ops/flysuperboardf-fallback", created: "2026.04.01", updated: "2026.04.22" },
+          { keyword: "API contracts", url: "/docs/api/flysuperboardf-contract", created: "2026.04.05", updated: "2026.04.20" }
+        ],
+        security: [
+          { issue: "CVE-2026-0041 openssl transitive dependency", score: "Medium 5.4", resource: "openssl 3.1.x", link: "advisory/linux/openssl" },
+          { issue: "PyJWT signature validation edge case", score: "Low 3.1", resource: "pyjwt 2.9.0", link: "advisory/python/pyjwt" }
+        ],
+        quick: [
+          { icon: "deployed_code", name: "Publish readiness", meta: "Build green · smoke test pending", color: "linear-gradient(135deg,#34d399,#0d9488)" },
+          { icon: "view_in_ar", name: "Pods", meta: "3 pods running and healthy", color: "linear-gradient(135deg,#4f8cff,#22d3ee)" },
+          { icon: "database", name: "Data layer", meta: "Redis connected · 1 replica", color: "linear-gradient(135deg,#fbbf24,#e07020)" }
+        ],
+        resources: [
+          { icon: "storage", name: "Database", meta: "Redis ranking-cache / connected", color: "linear-gradient(135deg,#4f8cff,#3b6fcf)" },
+          { icon: "folder", name: "Bucket", meta: "flysuperboardf-logs / 18GB", color: "linear-gradient(135deg,#fbbf24,#e07020)" },
+          { icon: "account_tree", name: "GitLab", meta: "main branch protected / MR checks on", color: "linear-gradient(135deg,#111827,#4b5563)" },
+          { icon: "analytics", name: "Analytics", meta: "Matomo connected", color: "linear-gradient(135deg,#34d399,#0d9488)" }
+        ],
+        timeline: [
+          { title: "Leaderboard fallback deployed to staging", meta: "2026.04.22 12:08 PM · Taehun Nam" },
+          { title: "Cache TTL tuned for season-12", meta: "2026.04.22 09:46 AM · Minsu Seo" },
+          { title: "Auth middleware patch merged", meta: "2026.04.21 08:21 PM · Jieun Lee" }
+        ]
+      },
+      "lgloganalyzer": {
+        name: "lgloganalyzer",
+        runtime: "fastapi",
+        status: "Inactive",
+        favorite: false,
+        privacy: "Admin Visible",
+        owner: "Hyunki Kim",
+        updatedAt: "2026.04.22 11:55 AM",
+        description: "대용량 로그를 정리하고 패턴을 추출하는 실험형 분석 API입니다. 운영자와 CI 파드 중심으로 관리되며, 로그 파싱 파이프라인 검증이 주 목적입니다.",
+        domain: "lgloganalyzer.workspace.hedej.lge.com",
+        ideUrl: "https://workspace.hedej.lge.com/development/lgloganalyzer/ide",
+        publishUrl: "https://workspace.hedej.lge.com/development/lgloganalyzer/publish",
+        repo: "gitlab/hedej/lgloganalyzer",
+        memory: "2GB",
+        cpu: "1vCPU",
+        pods: "1 Pod",
+        instance: "Single Dev Instance",
+        storage: "30GB",
+        devMode: "On demand",
+        projectType: "Log Analyzer",
+        runtimeVersion: "Python 3.11 / FastAPI",
+        tags: ["logs", "parser", "admin", "ci"],
+        steps: [
+          { title: "CEJ draft", meta: "parser base image only" },
+          { title: "DEJ pending", meta: "pattern library refresh needed" }
+        ],
+        overview: [
+          ["Project Type", "Log Analyzer", "운영 로그 패턴 탐지"],
+          ["Runtime", "Python 3.11 / FastAPI", "batch endpoint + parsing worker"],
+          ["Storage", "30GB scratch", "압축 로그 업로드 임시 저장"],
+          ["Development Instance", "1 pod", "관리용 파드만 유지"]
+        ],
+        team: [
+          { name: "Hyunki Kim", role: "Owner", meta: "pipeline design and parser review", color: "linear-gradient(135deg,#22d3ee,#0086cc)" },
+          { name: "CI Bot", role: "Automation", meta: "scheduled parser smoke tests", color: "linear-gradient(135deg,#f472b6,#b40e4d)" }
+        ],
+        domains: [
+          ["Primary Domain", "lgloganalyzer.workspace.hedej.lge.com", "관리자 전용 접속"],
+          ["Upload API", "/api/v1/logs/upload", "압축 로그 업로드"],
+          ["Publish Route", "publish / lgloganalyzer", "비활성 상태"],
+          ["Visibility", "Admin focused", "샘플 상에서는 모두 조회 가능"]
+        ],
+        ports: [
+          { name: "8000", meta: "analysis API" },
+          { name: "9091", meta: "parser health checks" }
+        ],
+        variables: [
+          { name: "PARSER_MODE", meta: "strict" },
+          { name: "LOG_CHUNK_SIZE", meta: "5000" }
+        ],
+        permissions: [
+          { name: "workspace.development.read", meta: "Owner, admin" },
+          { name: "workspace.development.run", meta: "Owner, CI Bot" }
+        ],
+        metrics: [
+          ["Apps Deployed", "3", "최근 60일"],
+          ["IDE Active Hrs", "7.5h", "이번 달 누적"],
+          ["App Logs", "3.8K", "분석 시점 집중 발생"],
+          ["DB Metrics", "-", "DB 미연결"]
+        ],
+        trend: [8, 12, 9, 18, 10, 6, 14],
+        logs: [
+          { title: "parser worker dry run complete", meta: "11:50 AM · ci-bot · info" },
+          { title: "gzip batch upload rejected size > 1GB", meta: "11:11 AM · hk-01 · warn" }
+        ],
+        harvest: [
+          { keyword: "Known parser patterns", url: "/docs/logs/parser-patterns", created: "2026.03.12", updated: "2026.04.18" }
+        ],
+        security: [
+          { issue: "Busybox package update recommended", score: "Low 2.4", resource: "busybox 1.36", link: "advisory/linux/busybox" }
+        ],
+        quick: [
+          { icon: "pause_circle", name: "Run status", meta: "Inactive · last run 11:50 AM", color: "linear-gradient(135deg,#9ca3af,#6b7280)" },
+          { icon: "science", name: "Analysis profile", meta: "Strict parser profile active", color: "linear-gradient(135deg,#4f8cff,#22d3ee)" },
+          { icon: "share", name: "Visibility", meta: "현재 샘플에서는 전체 공개 상태", color: "linear-gradient(135deg,#f472b6,#b40e4d)" }
+        ],
+        resources: [
+          { icon: "folder", name: "Bucket", meta: "raw-log-drop / 8GB", color: "linear-gradient(135deg,#fbbf24,#e07020)" },
+          { icon: "account_tree", name: "GitLab", meta: "parser-lab branch open", color: "linear-gradient(135deg,#111827,#4b5563)" },
+          { icon: "analytics", name: "Analytics", meta: "disabled", color: "linear-gradient(135deg,#34d399,#0d9488)" }
+        ],
+        timeline: [
+          { title: "Batch pattern update uploaded", meta: "2026.04.22 11:31 AM · Hyunki Kim" },
+          { title: "CI smoke scenario revised", meta: "2026.04.21 05:10 PM · CI Bot" }
+        ]
+      },
+      "coverity-ai": {
+        name: "coverity-ai",
+        runtime: "streamlit",
+        status: "Inactive",
+        favorite: true,
+        privacy: "Shared",
+        owner: "Taehun Nam",
+        updatedAt: "2026.04.22 10:54 AM",
+        description: "취약점 결과를 사람이 읽기 쉽게 요약해 주는 Streamlit 기반 보안 리포트 도우미입니다. 정적 분석 결과를 문서와 대시보드 형태로 빠르게 확인합니다.",
+        domain: "coverity-ai.workspace.hedej.lge.com",
+        ideUrl: "https://workspace.hedej.lge.com/development/coverity-ai/ide",
+        publishUrl: "https://workspace.hedej.lge.com/development/coverity-ai/publish",
+        repo: "gitlab/hedej/coverity-ai",
+        memory: "2GB",
+        cpu: "1vCPU",
+        pods: "2 Pods",
+        instance: "Shared Streamlit",
+        storage: "25GB",
+        devMode: "Manual start",
+        projectType: "Security Assistant",
+        runtimeVersion: "Python 3.11 / Streamlit",
+        tags: ["security", "coverity", "summarizer", "streamlit"],
+        steps: [
+          { title: "CEJ aligned", meta: "security image dependencies pinned" },
+          { title: "DEJ review", meta: "summary prompt and export template synced" }
+        ],
+        overview: [
+          ["Project Type", "Security Assistant", "정적 분석 결과 해석 UI"],
+          ["Runtime", "Python 3.11 / Streamlit", "보안 보고서 중심 인터페이스"],
+          ["Storage", "25GB", "scan snapshot files"],
+          ["Development Instance", "2 pods shared", "작성자와 리뷰어 분리"]
+        ],
+        team: [
+          { name: "Taehun Nam", role: "Owner", meta: "prompt flow and dashboard layout", color: "linear-gradient(135deg,#34d399,#0d9488)" },
+          { name: "Ara Kim", role: "Security Reviewer", meta: "issue triage and export review", color: "linear-gradient(135deg,#a78bfa,#7c5fcf)" }
+        ],
+        domains: [
+          ["Primary Domain", "coverity-ai.workspace.hedej.lge.com", "내부 보안 검토용"],
+          ["Report Export", "/export/report", "pdf / csv 추출"],
+          ["Publish Route", "publish / coverity-ai", "rc build 준비 중"],
+          ["Access Level", "Workspace shared", "보안팀 포함 조회 가능"]
+        ],
+        ports: [
+          { name: "8501", meta: "streamlit report app" },
+          { name: "9090", meta: "health and preview port" }
+        ],
+        variables: [
+          { name: "SUMMARY_STYLE", meta: "executive-brief" },
+          { name: "SCAN_SOURCE", meta: "coverity-nightly" },
+          { name: "EXPORT_THEME", meta: "workspace-light" }
+        ],
+        permissions: [
+          { name: "workspace.security.read", meta: "보안팀, Owner" },
+          { name: "workspace.development.run", meta: "Owner, Reviewer" },
+          { name: "workspace.harvest.read", meta: "문서 수집 결과 조회 가능" }
+        ],
+        metrics: [
+          ["Apps Deployed", "9", "최근 30일"],
+          ["IDE Active Hrs", "24.7h", "이번 주 누적"],
+          ["App Logs", "5.1K", "export and summary actions"],
+          ["DB Metrics", "71%", "document cache usage"]
+        ],
+        trend: [12, 26, 18, 34, 29, 24, 40],
+        logs: [
+          { title: "summary prompt applied to nightly findings", meta: "10:44 AM · tn-01 · info" },
+          { title: "export theme mismatch fallback used", meta: "10:16 AM · ar-01 · warn" },
+          { title: "document embedding refresh complete", meta: "09:38 AM · tn-01 · info" }
+        ],
+        harvest: [
+          { keyword: "Coverity onboarding", url: "/docs/security/coverity-onboarding", created: "2026.04.02", updated: "2026.04.18" },
+          { keyword: "False positive guide", url: "/docs/security/false-positive-guide", created: "2026.03.27", updated: "2026.04.20" },
+          { keyword: "Executive summary template", url: "/docs/security/executive-summary-template", created: "2026.04.08", updated: "2026.04.22" }
+        ],
+        security: [
+          { issue: "Markdown rendering package update recommended", score: "Low 3.0", resource: "markdown-it 14.1", link: "advisory/js/markdown-it" },
+          { issue: "Image parser library bounds check", score: "Medium 5.1", resource: "pillow 10.x", link: "advisory/python/pillow" }
+        ],
+        quick: [
+          { icon: "shield", name: "Security posture", meta: "2 findings require package refresh", color: "linear-gradient(135deg,#f472b6,#b40e4d)" },
+          { icon: "article", name: "Harvest docs", meta: "3 indexed guides synced", color: "linear-gradient(135deg,#4f8cff,#22d3ee)" },
+          { icon: "draw", name: "Report export", meta: "pdf and csv template ready", color: "linear-gradient(135deg,#34d399,#0d9488)" }
+        ],
+        resources: [
+          { icon: "vpn_key", name: "LLM Key", meta: "security-summary-key / connected", color: "linear-gradient(135deg,#a78bfa,#7c5fcf)" },
+          { icon: "folder", name: "Bucket", meta: "coverity-reports / 5.4GB", color: "linear-gradient(135deg,#fbbf24,#e07020)" },
+          { icon: "account_tree", name: "GitLab", meta: "report-ui branch under review", color: "linear-gradient(135deg,#111827,#4b5563)" },
+          { icon: "analytics", name: "Analytics", meta: "Matomo connected", color: "linear-gradient(135deg,#34d399,#0d9488)" }
+        ],
+        timeline: [
+          { title: "Executive summary export updated", meta: "2026.04.22 10:41 AM · Ara Kim" },
+          { title: "Prompt package pinned for release candidate", meta: "2026.04.21 07:18 PM · Taehun Nam" },
+          { title: "Nightly document ingest completed", meta: "2026.04.21 02:04 AM · System" }
+        ]
+      },
+      "hermes-be": {
+        name: "hermes-be",
+        runtime: "fastapi",
+        status: "Running",
+        favorite: true,
+        privacy: "Shared",
+        owner: "Taehun Nam",
+        updatedAt: "2026.04.22 12:45 PM",
+        description: "메시지 중계와 퍼블리시 연동을 담당하는 핵심 FastAPI 백엔드입니다. 멀티 파드 상태에서 배포 준비, 로그 확인, 연동 자원 상태를 계속 봐야 하는 대표 프로젝트입니다.",
+        domain: "hermes-be.workspace.hedej.lge.com",
+        ideUrl: "https://workspace.hedej.lge.com/development/hermes-be/ide",
+        publishUrl: "https://workspace.hedej.lge.com/development/hermes-be/publish",
+        repo: "gitlab/hedej/hermes-be",
+        memory: "8GB",
+        cpu: "4vCPU",
+        pods: "4 Pods",
+        instance: "Multi Dev Instance",
+        storage: "80GB",
+        devMode: "Always on",
+        projectType: "Messaging Backend",
+        runtimeVersion: "Python 3.12 / FastAPI / Celery",
+        tags: ["backend", "publish", "messaging", "critical"],
+        steps: [
+          { title: "CEJ locked", meta: "release image and dependency lockfile green" },
+          { title: "DEJ ready", meta: "publish manifest approved for staging" }
+        ],
+        overview: [
+          ["Project Type", "Messaging Backend", "퍼블리시와 서비스 이벤트 중계"],
+          ["Runtime", "Python 3.12 / FastAPI / Celery", "API + background job 조합"],
+          ["Storage", "80GB persistent", "event snapshots and worker queue dumps"],
+          ["Development Instance", "4 pods shared", "owner, bot, backend members 동시 사용"]
+        ],
+        team: [
+          { name: "Taehun Nam", role: "Owner", meta: "publish orchestration and backend coordination", color: "linear-gradient(135deg,#4f8cff,#22d3ee)" },
+          { name: "CI Bot", role: "Automation", meta: "image build and publish verification", color: "linear-gradient(135deg,#fbbf24,#e07020)" },
+          { name: "Minki Kang", role: "Backend", meta: "queue worker and webhook endpoint", color: "linear-gradient(135deg,#34d399,#0d9488)" }
+        ],
+        domains: [
+          ["Primary Domain", "hermes-be.workspace.hedej.lge.com", "주요 내부 API 진입점"],
+          ["Webhook Endpoint", "/api/v1/hooks/publish", "퍼블리시 이벤트 수신"],
+          ["Publish Route", "publish / hermes-be", "현재 빌드 큐 진행 중"],
+          ["Public Access", "Internal protected", "권한 기반 접근"]
+        ],
+        ports: [
+          { name: "8000", meta: "main API server" },
+          { name: "8081", meta: "publish bridge callback" },
+          { name: "9100", meta: "prometheus metrics" },
+          { name: "5555", meta: "celery flower internal monitor" }
+        ],
+        variables: [
+          { name: "QUEUE_MODE", meta: "priority-routing" },
+          { name: "PUBLISH_CHANNEL", meta: "workspace-release" },
+          { name: "WEBHOOK_RETRY", meta: "3" }
+        ],
+        permissions: [
+          { name: "workspace.development.read", meta: "참여자 전체" },
+          { name: "workspace.development.run", meta: "Owner, Backend, CI Bot" },
+          { name: "workspace.publish.execute", meta: "Owner, Release Manager" }
+        ],
+        metrics: [
+          ["Apps Deployed", "29", "최근 30일"],
+          ["IDE Active Hrs", "74.5h", "이번 주 누적"],
+          ["App Logs", "38.2K", "API + worker combined"],
+          ["DB Metrics", "63%", "PostgreSQL avg connection usage"]
+        ],
+        trend: [34, 48, 61, 52, 70, 76, 68],
+        logs: [
+          { title: "publish manifest build started v2.4.1", meta: "12:43 PM · ci-bot · info" },
+          { title: "worker queue retry on webhook timeout", meta: "12:22 PM · mk-01 · warn" },
+          { title: "GET /api/v1/release/status 200 21ms", meta: "12:15 PM · tn-01 · info" }
+        ],
+        harvest: [
+          { keyword: "Publish rollback guide", url: "/docs/publish/rollback-guide", created: "2026.03.18", updated: "2026.04.22" },
+          { keyword: "Webhook contract", url: "/docs/backend/webhook-contract", created: "2026.03.29", updated: "2026.04.20" },
+          { keyword: "Queue routing policy", url: "/docs/backend/queue-routing-policy", created: "2026.04.09", updated: "2026.04.22" }
+        ],
+        security: [
+          { issue: "Celery dependency kombu refresh recommended", score: "Medium 5.8", resource: "kombu 5.3", link: "advisory/python/kombu" },
+          { issue: "openssl image base patch", score: "High 7.2", resource: "openssl 3.1.x", link: "advisory/linux/openssl" },
+          { issue: "nginx sidecar package update", score: "Low 3.2", resource: "nginx 1.27", link: "advisory/linux/nginx" }
+        ],
+        quick: [
+          { icon: "rocket_launch", name: "Publish queue", meta: "Build stage in progress · v2.4.1", color: "linear-gradient(135deg,#fbbf24,#e07020)" },
+          { icon: "view_in_ar", name: "Pods", meta: "4 pods healthy · 1 worker busy", color: "linear-gradient(135deg,#4f8cff,#22d3ee)" },
+          { icon: "storage", name: "Database load", meta: "PostgreSQL stable · 63% usage", color: "linear-gradient(135deg,#34d399,#0d9488)" }
+        ],
+        resources: [
+          { icon: "storage", name: "Database", meta: "PostgreSQL hermes-main / connected", color: "linear-gradient(135deg,#4f8cff,#3b6fcf)" },
+          { icon: "folder", name: "Bucket", meta: "publish-artifacts / 41GB", color: "linear-gradient(135deg,#fbbf24,#e07020)" },
+          { icon: "vpn_key", name: "LLM Key", meta: "ops-summarizer / connected", color: "linear-gradient(135deg,#a78bfa,#7c5fcf)" },
+          { icon: "account_tree", name: "GitLab", meta: "release branch protected", color: "linear-gradient(135deg,#111827,#4b5563)" },
+          { icon: "analytics", name: "Analytics", meta: "Matomo connected · release funnel", color: "linear-gradient(135deg,#34d399,#0d9488)" }
+        ],
+        timeline: [
+          { title: "v2.4.1 build entered queue", meta: "2026.04.22 12:40 PM · CI Bot" },
+          { title: "Webhook retry policy adjusted", meta: "2026.04.22 11:56 AM · Minki Kang" },
+          { title: "Release blockers reviewed", meta: "2026.04.22 09:32 AM · Taehun Nam" }
+        ]
+      },
+      "restaurant": {
+        name: "restaurant",
+        runtime: "react",
+        status: "Inactive",
+        favorite: false,
+        privacy: "Shared",
+        owner: "Taehun Nam",
+        updatedAt: "2026.04.22 09:13 AM",
+        description: "매장 검색과 주문 흐름을 검증하는 React 프론트엔드입니다. 큰 리소스를 쓰는 대신 화면 밀도와 상태 전환을 자주 확인해야 하는 프로젝트라 상세 상태 요약이 중요합니다.",
+        domain: "restaurant.workspace.hedej.lge.com",
+        ideUrl: "https://workspace.hedej.lge.com/development/restaurant/ide",
+        publishUrl: "https://workspace.hedej.lge.com/development/restaurant/publish",
+        repo: "gitlab/hedej/restaurant",
+        memory: "16GB",
+        cpu: "8vCPU",
+        pods: "2 Pods",
+        instance: "Frontend Shared",
+        storage: "40GB",
+        devMode: "Manual start",
+        projectType: "Frontend App",
+        runtimeVersion: "Node.js 22 / React 19",
+        tags: ["react", "frontend", "ordering", "design-system"],
+        steps: [
+          { title: "CEJ ready", meta: "frontend image cache optimized" },
+          { title: "DEJ review", meta: "staging visual QA pending" }
+        ],
+        overview: [
+          ["Project Type", "Frontend App", "매장 검색과 주문 UI"],
+          ["Runtime", "Node.js 22 / React 19", "SPA and design system"],
+          ["Storage", "40GB", "asset build cache and screenshots"],
+          ["Development Instance", "2 pods shared", "개인 IDE와 FE 팀 파드"]
+        ],
+        team: [
+          { name: "Taehun Nam", role: "Owner", meta: "hub integration and layout review", color: "linear-gradient(135deg,#34d399,#0d9488)" },
+          { name: "Frontend Team", role: "Frontend", meta: "design system, cart flow, QA fixes", color: "linear-gradient(135deg,#22d3ee,#0086cc)" }
+        ],
+        domains: [
+          ["Primary Domain", "restaurant.workspace.hedej.lge.com", "staging preview"],
+          ["Preview Route", "/preview/home", "주요 시나리오 진입"],
+          ["Publish Route", "publish / restaurant", "artifact ready"],
+          ["CDN Access", "Internal CDN", "정적 자산 캐시 연결"]
+        ],
+        ports: [
+          { name: "3000", meta: "react dev server" },
+          { name: "6006", meta: "storybook preview" }
+        ],
+        variables: [
+          { name: "VITE_API_BASE", meta: "https://api.stg.restaurant" },
+          { name: "VITE_THEME", meta: "workspace-light" },
+          { name: "VITE_FEATURE_CART_V2", meta: "true" }
+        ],
+        permissions: [
+          { name: "workspace.development.read", meta: "팀 전체" },
+          { name: "workspace.development.run", meta: "Owner, Frontend Team" },
+          { name: "workspace.publish.request", meta: "Owner only" }
+        ],
+        metrics: [
+          ["Apps Deployed", "12", "최근 30일"],
+          ["IDE Active Hrs", "42.3h", "이번 주 누적"],
+          ["App Logs", "8.7K", "frontend console aggregate"],
+          ["DB Metrics", "-", "frontend only project"]
+        ],
+        trend: [18, 22, 36, 41, 38, 45, 33],
+        logs: [
+          { title: "cart-v2 feature flag enabled in preview", meta: "09:03 AM · tn-01 · info" },
+          { title: "storybook build cache restored", meta: "08:44 AM · fe-team · info" },
+          { title: "image asset oversized warning", meta: "08:18 AM · fe-team · warn" }
+        ],
+        harvest: [
+          { keyword: "Checkout UX notes", url: "/docs/frontend/checkout-ux-notes", created: "2026.04.03", updated: "2026.04.21" },
+          { keyword: "Menu taxonomy", url: "/docs/frontend/menu-taxonomy", created: "2026.03.30", updated: "2026.04.19" }
+        ],
+        security: [
+          { issue: "vite dev dependency refresh", score: "Low 2.9", resource: "vite 6.x", link: "advisory/js/vite" }
+        ],
+        quick: [
+          { icon: "palette", name: "UI readiness", meta: "visual QA pending on mobile", color: "linear-gradient(135deg,#4f8cff,#22d3ee)" },
+          { icon: "deployed_code", name: "Publish status", meta: "artifact ready · final click needed", color: "linear-gradient(135deg,#34d399,#0d9488)" },
+          { icon: "photo_library", name: "Asset cache", meta: "storybook and static cache warmed", color: "linear-gradient(135deg,#fbbf24,#e07020)" }
+        ],
+        resources: [
+          { icon: "account_tree", name: "GitLab", meta: "frontend release branch open", color: "linear-gradient(135deg,#111827,#4b5563)" },
+          { icon: "analytics", name: "Analytics", meta: "Matomo pageflow connected", color: "linear-gradient(135deg,#34d399,#0d9488)" },
+          { icon: "folder", name: "Bucket", meta: "restaurant-static / 13GB", color: "linear-gradient(135deg,#fbbf24,#e07020)" }
+        ],
+        timeline: [
+          { title: "Mobile spacing fixes merged", meta: "2026.04.22 08:58 AM · Frontend Team" },
+          { title: "Cart v2 preview turned on", meta: "2026.04.22 08:40 AM · Taehun Nam" },
+          { title: "Design token export updated", meta: "2026.04.21 06:12 PM · Frontend Team" }
+        ]
+      }
+    };
+
+    (() => {
+      const menuWrap = document.getElementById("serviceMenuWrap");
+      const menuButton = document.getElementById("serviceMenuButton");
+      const menuPopover = document.getElementById("serviceMenuPopover");
+
+      if (!menuWrap || !menuButton || !menuPopover) return;
+
+      const setOpen = (open) => {
+        menuWrap.classList.toggle("is-open", open);
+        menuButton.setAttribute("aria-expanded", String(open));
+        menuPopover.hidden = !open;
+      };
+
+      setOpen(false);
+
+      menuButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        setOpen(!menuWrap.classList.contains("is-open"));
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!menuWrap.contains(event.target)) setOpen(false);
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          setOpen(false);
+          menuButton.focus();
+        }
+      });
+    })();
+
+    (() => {
+      const params = new URLSearchParams(window.location.search);
+      const projectKey = params.get("project") || "hermes-be";
+      const project = PROJECTS[projectKey] || PROJECTS["hermes-be"];
+      const defaultPrefix = project.runtime === "react" ? "REACT_APP_" : project.runtime === "fastapi" ? "APP_" : "";
+      const domainOptions = [
+        {
+          label: "Primary Domain",
+          value: project.domain,
+          ssl: { status: "정상", tone: "pass", note: "인증서가 연결되어 안전하게 접근할 수 있습니다." },
+          healthy: { status: "Healthy", tone: "pass", note: "현재 라우팅과 응답 상태가 안정적으로 유지되고 있습니다." }
+        },
+        {
+          label: "Preview Domain",
+          value: `preview.${project.domain}`,
+          ssl: { status: "정상", tone: "pass", note: "프리뷰 도메인에도 SSL 인증서가 적용되어 있습니다." },
+          healthy: { status: "확인 필요", tone: "warn", note: "최근 배포 반영 직후라 헬스 체크를 다시 확인하는 상태입니다." }
+        },
+        {
+          label: "Canary Domain",
+          value: `canary.${project.domain}`,
+          ssl: { status: "정상", tone: "pass", note: "카나리 도메인도 동일한 SSL 정책을 사용합니다." },
+          healthy: { status: "Healthy", tone: "pass", note: "검증용 트래픽에 대해 정상 응답을 유지하고 있습니다." }
+        }
+      ];
+      let selectedDomain = domainOptions[0];
+      let globalPrefix = defaultPrefix;
+      let configUpdatedAt = project.updatedAt;
+      let variableState = project.variables.map(variable => ({
+        key: variable.key || variable.name || "",
+        value: variable.value || variable.meta || "",
+        editing: false,
+        draftKey: variable.key || variable.name || "",
+        draftValue: variable.value || variable.meta || ""
+      }));
+      let resourceState = project.resources.map(item => ({ ...item, eventAt: null }));
+      let permissionState = project.permissions.map(item => ({ ...item, eventAt: null }));
+      const resourceTemplates = {
+        db: {
+          icon: "storage",
+          name: "Database",
+          meta: "new-db-cluster / connected",
+          color: "linear-gradient(135deg,#4f8cff,#3b6fcf)"
+        },
+        bucket: {
+          icon: "folder",
+          name: "Bucket",
+          meta: "new-bucket / empty",
+          color: "linear-gradient(135deg,#fbbf24,#e07020)"
+        },
+        gitlab: {
+          icon: "account_tree",
+          name: "GitLab",
+          meta: "new repository binding",
+          color: "linear-gradient(135deg,#111827,#4b5563)"
+        },
+        llm: {
+          icon: "vpn_key",
+          name: "LLM Key",
+          meta: "new-llm-key / connected",
+          color: "linear-gradient(135deg,#a78bfa,#7c5fcf)"
+        },
+        analytics: {
+          icon: "analytics",
+          name: "Analytics",
+          meta: "tracking source connected",
+          color: "linear-gradient(135deg,#34d399,#0d9488)"
+        }
+      };
+      const permissionTemplate = {
+        name: "workspace.resource.manage",
+        meta: "Owner, invited members"
+      };
+
+      const renderInfoGrid = (targetId, rows) => {
+        const container = document.getElementById(targetId);
+        if (!container) return;
+        container.innerHTML = rows.map(([label, value, note]) => `
+          <div class="info-item">
+            <div class="info-label">${label}</div>
+            <div class="info-value">${value}</div>
+            <div class="info-note">${note}</div>
+          </div>
+        `).join("");
+      };
+
+      const severityClass = (score) => {
+        if (score.startsWith("High")) return "background:var(--red-bg);color:var(--red)";
+        if (score.startsWith("Medium")) return "background:var(--orange-bg);color:var(--orange)";
+        return "background:var(--blue-bg);color:var(--blue)";
+      };
+      const renderDomainStatus = () => {
+        const container = document.getElementById("domainStatus");
+        if (!container) return;
+        container.innerHTML = [
+          ["SSL 체크", selectedDomain.ssl],
+          ["Healthy 체크", selectedDomain.healthy]
+        ].map(([label, state]) => `
+          <div class="domain-status-card">
+            <div class="domain-status-head">
+              <div class="domain-status-label">${label}</div>
+              <div class="domain-status-badge ${state.tone}">${state.status}</div>
+            </div>
+            <div class="domain-status-note">${state.note}</div>
+          </div>
+        `).join("");
+      };
+
+      const renderVariables = () => {
+        const container = document.getElementById("varList");
+        if (!container) return;
+        container.innerHTML = variableState.map((variable, index) => `
+          <div class="variable-row ${variable.editing ? "is-editing" : ""}" data-variable-index="${index}">
+            ${variable.editing ? `
+              <div class="variable-preview mono">${globalPrefix}${variable.draftKey || "YOUR_KEY"}</div>
+              <div class="field-shell">
+                <label>Key</label>
+                <input type="text" data-field="draftKey" value="${variable.draftKey}" placeholder="API_BASE_URL" />
+              </div>
+              <div class="field-shell">
+                <label>Value</label>
+                <input type="text" data-field="draftValue" value="${variable.draftValue}" placeholder="https://api.example.com" />
+              </div>
+            ` : `
+              <div class="variable-summary">
+                <div class="variable-summary-head">
+                  <div class="variable-name mono">${globalPrefix}${variable.key || "YOUR_KEY"}</div>
+                  <div class="variable-badge">적용 완료</div>
+                </div>
+                <div class="variable-value">${variable.value || "-"}</div>
+              </div>
+            `}
+            <div class="variable-actions">
+              ${variable.editing
+                ? '<button class="row-action save" type="button" data-action="save"><span class="material-icons-round">check</span>저장</button><button class="row-action" type="button" data-action="cancel"><span class="material-icons-round">close</span>취소</button>'
+                : '<button class="row-action save" type="button" data-action="edit"><span class="material-icons-round">edit</span>수정</button>'
+              }
+              <button class="row-action delete" type="button" data-action="delete"><span class="material-icons-round">delete_outline</span>삭제</button>
+            </div>
+          </div>
+        `).join("");
+      };
+
+      const renderResourceState = () => {
+        const resourceList = document.getElementById("resourceList");
+        if (resourceList) {
+          const permissionSummary = {
+            icon: "admin_panel_settings",
+            name: "Permission",
+            meta: permissionState.length
+              ? `${permissionState.length} rules · ${permissionState[0].name}`
+              : "No permission rules",
+            color: "linear-gradient(135deg,#f472b6,#b40e4d)"
+          };
+          resourceList.innerHTML = [...resourceState, permissionSummary].map(item => `
+            <div class="resource-row" style="grid-template-columns:auto minmax(0,1fr); align-items:center;">
+              <div class="resource-glyph" style="background:${item.color}"><span class="material-icons-round">${item.icon}</span></div>
+              <div class="resource-main">
+                <div class="resource-name">${item.name}</div>
+                <div class="resource-meta">${item.meta}</div>
+              </div>
+            </div>
+          `).join("");
+        }
+      };
+
+      const DAY_MS = 24 * 60 * 60 * 1000;
+      const HOUR_MS = 60 * 60 * 1000;
+      const timelineKindMeta = {
+        created: "생성",
+        deploy: "배포",
+        issue: "이슈",
+        activity: "활동",
+        warning: "경고"
+      };
+
+      const shiftDate = (date, days = 0, hours = 0, minutes = 0) => {
+        return new Date(date.getTime() + days * DAY_MS + hours * HOUR_MS + minutes * 60 * 1000);
+      };
+
+      const formatTimelineStamp = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const hours = date.getHours();
+        const mins = String(date.getMinutes()).padStart(2, "0");
+        const meridiem = hours >= 12 ? "PM" : "AM";
+        const hour12 = hours % 12 || 12;
+        return `${year}.${month}.${day} ${hour12}:${mins} ${meridiem}`;
+      };
+
+      const extractMetaParts = (meta) => {
+        return String(meta || "").split("·").map((token) => token.trim()).filter(Boolean);
+      };
+
+      const parseTimelineDate = (value, fallbackValue = project.updatedAt) => {
+        const raw = String(value || "").trim();
+        if (!raw) return null;
+
+        const fallbackDate = String(fallbackValue || "").match(/\d{4}\.\d{2}\.\d{2}/)?.[0];
+        const fullMatch = raw.match(/(\d{4}\.\d{2}\.\d{2})(?:\s+(\d{1,2}:\d{2})\s*(AM|PM))?/i);
+        const timeOnlyMatch = raw.match(/(\d{1,2}:\d{2})\s*(AM|PM)/i);
+
+        let datePart = null;
+        let timePart = "09:00";
+        let meridiem = "AM";
+
+        if (fullMatch) {
+          datePart = fullMatch[1];
+          if (fullMatch[2]) timePart = fullMatch[2];
+          if (fullMatch[3]) meridiem = fullMatch[3].toUpperCase();
+        } else if (timeOnlyMatch && fallbackDate) {
+          datePart = fallbackDate;
+          timePart = timeOnlyMatch[1];
+          meridiem = timeOnlyMatch[2].toUpperCase();
+        } else {
+          return null;
+        }
+
+        const [year, month, day] = datePart.split(".").map(Number);
+        let [hours, minutes] = timePart.split(":").map(Number);
+        if (meridiem === "PM" && hours < 12) hours += 12;
+        if (meridiem === "AM" && hours === 12) hours = 0;
+        return new Date(year, month - 1, day, hours, minutes);
+      };
+
+      const classifyTimelineKind = (title, detail = "") => {
+        const text = `${title} ${detail}`.toLowerCase();
+        if (/(crash|error|timeout|blocked|failure|rejected|장애|크래쉬|중단)/.test(text)) return "issue";
+        if (/(warn|warning|retry|fallback|latency|취약|경고|지연|주의)/.test(text)) return "warning";
+        if (/(release|publish|deploy|build|artifact|staging|version|queue|smoke|릴리즈|배포|ready)/.test(text)) return "deploy";
+        if (/(create|created|bootstrap|initial|생성)/.test(text)) return "created";
+        return "activity";
+      };
+
+      const buildTimelineEntries = (project) => {
+        const explicitDates = [
+          parseTimelineDate(project.updatedAt),
+          ...project.timeline.map((item) => parseTimelineDate(extractMetaParts(item.meta)[0], project.updatedAt)),
+          ...project.logs.map((item) => parseTimelineDate(extractMetaParts(item.meta)[0], project.updatedAt)),
+          ...project.harvest.flatMap((item) => [
+            parseTimelineDate(item.created, project.updatedAt),
+            parseTimelineDate(item.updated, project.updatedAt)
+          ])
+        ].filter(Boolean);
+
+        const latestKnownDate = explicitDates.length
+          ? new Date(Math.max(...explicitDates.map((item) => item.getTime())))
+          : new Date();
+        const earliestKnownDate = explicitDates.length
+          ? new Date(Math.min(...explicitDates.map((item) => item.getTime())))
+          : shiftDate(latestKnownDate, -14, 0, 0);
+        const createdAt = shiftDate(earliestKnownDate, -3, -2, 0);
+        const versionInfo = getLatestVersionInfo(project);
+
+        const events = [
+          {
+            at: createdAt,
+            title: `${project.name} 프로젝트 생성`,
+            detail: `${project.projectType} · ${project.owner} owner assigned`,
+            kind: "created"
+          },
+          {
+            at: shiftDate(createdAt, 0, 4, 0),
+            title: "초기 런타임 및 개발 모드 구성",
+            detail: `${project.runtimeVersion} · ${project.devMode}`,
+            kind: "activity"
+          },
+          ...project.steps.map((item, index) => ({
+            at: shiftDate(createdAt, index + 1, 2 + index, 0),
+            title: item.title,
+            detail: item.meta,
+            kind: classifyTimelineKind(item.title, item.meta)
+          })),
+          ...project.harvest.slice(0, 2).map((item) => ({
+            at: parseTimelineDate(item.created, project.updatedAt) || shiftDate(createdAt, 2, 8, 0),
+            title: `문서 등록: ${item.keyword}`,
+            detail: item.url,
+            kind: "activity"
+          })),
+          ...resourceState.map((item, index) => ({
+            at: parseTimelineDate(item.eventAt, project.updatedAt) || shiftDate(createdAt, index + 2, 12, 0),
+            title: `${item.name} 연결`,
+            detail: item.meta,
+            kind: "activity"
+          })),
+          ...permissionState.slice(0, 2).map((item, index) => ({
+            at: parseTimelineDate(item.eventAt, project.updatedAt) || shiftDate(createdAt, index + 3, 15, 0),
+            title: "권한 규칙 반영",
+            detail: `${item.name} · ${item.meta}`,
+            kind: "activity"
+          })),
+          ...project.timeline.map((item) => {
+            const metaParts = extractMetaParts(item.meta);
+            return {
+              at: parseTimelineDate(metaParts[0], project.updatedAt) || latestKnownDate,
+              title: item.title,
+              detail: metaParts.slice(1).join(" · ") || item.meta,
+              kind: classifyTimelineKind(item.title, item.meta)
+            };
+          }),
+          ...project.logs.map((item) => {
+            const metaParts = extractMetaParts(item.meta);
+            return {
+              at: parseTimelineDate(metaParts[0], project.updatedAt) || shiftDate(latestKnownDate, 0, -2, 0),
+              title: item.title,
+              detail: metaParts.slice(1).join(" · ") || item.meta,
+              kind: classifyTimelineKind(item.title, item.meta)
+            };
+          }),
+          {
+            at: shiftDate(parseTimelineDate(project.updatedAt) || latestKnownDate, 0, -1, -10),
+            title: `${versionInfo.version} 버전 릴리즈 상태`,
+            detail: versionInfo.summary,
+            kind: "deploy"
+          },
+          {
+            at: parseTimelineDate(configUpdatedAt, project.updatedAt) || latestKnownDate,
+            title: "현재 설정 스냅샷",
+            detail: `${selectedDomain.value} · ${variableState.length} vars · Prefix ${globalPrefix || "none"}`,
+            kind: "activity"
+          },
+          {
+            at: parseTimelineDate(project.updatedAt) || latestKnownDate,
+            title: "운영 정보 동기화",
+            detail: `${project.status} · ${project.runtimeVersion} · ${project.pods}`,
+            kind: "activity"
+          }
+        ];
+
+        const seen = new Set();
+        return events
+          .filter((item) => item?.title && item?.detail && item?.at instanceof Date && !Number.isNaN(item.at.getTime()))
+          .sort((a, b) => a.at.getTime() - b.at.getTime())
+          .filter((item) => {
+            const key = `${item.title}::${item.detail}::${item.at.getTime()}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          })
+          .map((item) => ({ ...item, kindLabel: timelineKindMeta[item.kind] || timelineKindMeta.activity }));
+      };
+
+      const renderTimeline = () => {
+        const timelineList = document.getElementById("timelineList");
+        if (!timelineList) return;
+        const entries = buildTimelineEntries(project);
+        timelineList.innerHTML = entries.map((item) => `
+          <div class="timeline-row" data-kind="${item.kind}">
+            <div class="timeline-rail"><span class="timeline-dot" aria-hidden="true"></span></div>
+            <div class="timeline-card">
+              <div class="timeline-card-head">
+                <div class="timeline-main">
+                  <div class="timeline-title">${item.title}</div>
+                  <div class="timeline-meta">${item.detail}</div>
+                </div>
+                <div class="timeline-chip">${item.kindLabel}</div>
+              </div>
+            </div>
+          </div>
+        `).join("");
+      };
+
+      const syncVariablePreview = () => {
+        const keyInput = document.getElementById("newVariableKey");
+        const previewInput = document.getElementById("newVariablePreview");
+        if (!keyInput || !previewInput) return;
+        previewInput.value = `${globalPrefix}${keyInput.value || "YOUR_KEY"}`;
+      };
+
+      const deriveDeploymentType = (project) => {
+        const mode = (project.devMode || "").toLowerCase();
+        if (mode.includes("always")) return "Autoscale";
+        if (mode.includes("on demand")) return "Schedule";
+        if (mode.includes("manual")) return "Static";
+        return "Static";
+      };
+
+      const getLatestVersionInfo = (project) => {
+        const candidates = [
+          project.timeline?.[0]?.title,
+          project.logs?.[0]?.title,
+          project.steps?.[1]?.meta,
+          project.steps?.[0]?.meta,
+          project.runtimeVersion
+        ].filter(Boolean);
+        const matched = candidates
+          .map(text => text.match(/\bv\d+(?:\.\d+){0,2}\b/i))
+          .find(Boolean);
+        return {
+          version: matched ? matched[0] : project.runtimeVersion,
+          summary: project.timeline?.[0]?.title || project.steps?.[0]?.meta || "최근 배포 메모가 아직 없습니다.",
+          meta: [
+            `Updated ${project.updatedAt}`,
+            `${project.runtimeVersion}`,
+            `${project.status} status`
+          ]
+        };
+      };
+
+      const parseLeadingNumber = (value) => {
+        const matched = String(value || "").match(/[\d.]+/);
+        return matched ? Number(matched[0]) : 0;
+      };
+
+      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+      const average = (values) => values.reduce((sum, value) => sum + value, 0) / Math.max(values.length, 1);
+
+      const formatCompactNumber = (value) => {
+        if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
+        if (value >= 1000) return `${(value / 1000).toFixed(value >= 10000 ? 0 : 1)}K`;
+        return `${value}`;
+      };
+
+      const formatDuration = (seconds) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        if (!mins) return `${secs}s`;
+        return `${mins}m ${String(secs).padStart(2, "0")}s`;
+      };
+
+      const buildMetricsDashboard = (project) => {
+        const trend = project.trend?.length ? project.trend : [18, 24, 20, 28, 32, 26, 30];
+        const avgTrend = average(trend);
+        const pods = Math.max(1, parseLeadingNumber(project.pods));
+        const cpu = Math.max(1, parseLeadingNumber(project.cpu));
+        const memory = Math.max(1, parseLeadingNumber(project.memory));
+        const visits = Math.round(avgTrend * (project.runtime === "react" ? 210 : project.runtime === "streamlit" ? 110 : 145));
+        const uniqueVisitors = Math.round(visits * (project.runtime === "react" ? 0.66 : project.runtime === "streamlit" ? 0.54 : 0.58));
+        const bounceRate = Math.round(clamp(project.runtime === "react" ? 28 + pods : project.runtime === "streamlit" ? 36 + project.security.length : 24 + project.security.length * 2, 19, 58));
+        const actionsPerVisit = Number((project.runtime === "react" ? 4.2 : project.runtime === "streamlit" ? 2.4 : 3.1).toFixed(1));
+        const avgVisitSeconds = Math.round(clamp((project.runtime === "react" ? 184 : project.runtime === "streamlit" ? 131 : 156) + avgTrend, 70, 420));
+        const returningUsers = Math.round(uniqueVisitors * (project.runtime === "react" ? 0.38 : project.runtime === "streamlit" ? 0.29 : 0.34));
+        const visitTrend = trend.map((value, index) => Math.round(clamp(value * 3 + index * 8 + (project.runtime === "react" ? 28 : project.runtime === "streamlit" ? 14 : 22), 26, 118)));
+        const pageSeeds = project.runtime === "react"
+          ? ["/preview/home", "/menu", "/store/seocho", "/cart", "/checkout", "/orders", "/mypage", "/events/spring", "/help", "/search"]
+          : project.runtime === "streamlit"
+            ? ["/", "/dashboard", "/compare", "/report", "/summary", "/history", "/qa-checklist", "/docs", "/settings", "/export"]
+            : ["/docs", "/api/v1/release/status", "/api/v1/messages", "/api/v1/hooks/publish", "/api/v1/health", "/api/v1/jobs", "/api/v1/events", "/api/v1/webhooks", "/api/v1/admin", "/openapi.json"];
+        const topPages = pageSeeds.map((path, index) => {
+          const weight = visitTrend[index % visitTrend.length] * (1.28 - index * 0.07);
+          const pageVisits = Math.max(44, Math.round(weight * (project.runtime === "react" ? 15 : 9)));
+          return {
+            path,
+            visits: pageVisits,
+            share: `${Math.max(3, Math.round((pageVisits / visits) * 100))}%`,
+            meta: index === 0
+              ? "가장 많이 유입되는 진입 페이지"
+              : index < 3
+                ? "탐색과 재방문이 몰리는 핵심 화면"
+                : "주요 탐색 흐름에서 자주 열리는 화면"
+          };
+        });
+
+        const buildUsageRange = (count, labelBuilder, cpuBias, memoryBias) => {
+          const cpuSeries = Array.from({ length: count }, (_, index) => {
+            const source = trend[index % trend.length];
+            const wave = Math.sin((index + 1) * 0.85) * 7 + Math.cos((index + 2) * 0.45) * 4;
+            return Math.round(clamp(24 + source * 0.62 + pods * 3.2 + cpuBias + wave - cpu * 1.1, 18, 92));
+          });
+          const memorySeries = Array.from({ length: count }, (_, index) => {
+            const source = trend[(index + 2) % trend.length];
+            const wave = Math.cos((index + 1) * 0.75) * 6 + Math.sin((index + 3) * 0.38) * 3;
+            return Math.round(clamp(34 + source * 0.45 + pods * 2.6 + memoryBias + wave - memory * 0.5, 22, 95));
+          });
+          return {
+            labels: Array.from({ length: count }, (_, index) => labelBuilder(index, count)),
+            cpu: cpuSeries,
+            memory: memorySeries
+          };
+        };
+
+        const liveLogs = (project.logs || []).map((item, index) => {
+          const metaTokens = String(item.meta || "").split("·").map((token) => token.trim()).filter(Boolean);
+          const relativeTime = ["방금 전", "2분 전", "7분 전", "12분 전", "18분 전"][index] || `${(index + 1) * 6}분 전`;
+          return `${relativeTime} | ${metaTokens.join(" | ")} | ${item.title}`;
+        });
+
+        return {
+          userKpis: [
+            { label: "서비스 KPI", value: formatCompactNumber(visits), note: "최근 7일 누적 방문 수", tone: "accent-green" },
+            { label: "활성 사용자", value: formatCompactNumber(uniqueVisitors), note: "중복 제거 방문자", tone: "accent-blue" },
+            { label: "재방문 사용자", value: formatCompactNumber(returningUsers), note: `재방문 비중 ${Math.round((returningUsers / Math.max(uniqueVisitors, 1)) * 100)}%`, tone: "accent-brand" },
+            { label: "평균 체류 시간", value: formatDuration(avgVisitSeconds), note: `이탈률 ${bounceRate}% · 방문당 ${actionsPerVisit.toFixed(1)} 액션`, tone: "accent-orange" }
+          ],
+          visitTrend,
+          topPages,
+          resourceRanges: {
+            "1h": buildUsageRange(12, (index, count) => `${(count - index - 1) * 5}m`, 6, 4),
+            "6h": buildUsageRange(7, (index, count) => `${count - index - 1}h`, 2, 0),
+            "24h": buildUsageRange(9, (index, count) => `${(count - index - 1) * 3}h`, -2, -4)
+          },
+          liveLogs,
+          terminalUrl: `${project.ideUrl}?tab=terminal`
+        };
+      };
+
+      const renderTrendBars = (targetId, values, tone) => {
+        const trendLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+        const container = document.getElementById(targetId);
+        if (!container) return;
+        container.innerHTML = values.map((height, index) => `
+          <div class="trend-col">
+            <div class="trend-bar ${tone}" style="height:${height + 6}px"></div>
+            <div class="trend-label">${trendLabels[index]}</div>
+          </div>
+        `).join("");
+      };
+
+      const renderPageList = (targetId, items) => {
+        const container = document.getElementById(targetId);
+        if (!container) return;
+        container.innerHTML = items.map((item) => `
+          <div class="page-row">
+            <div class="page-main">
+              <div class="page-title">${item.path}</div>
+              <div class="page-meta">${item.meta} · 점유율 ${item.share}</div>
+            </div>
+            <div class="page-value">${formatCompactNumber(item.visits)}</div>
+          </div>
+        `).join("");
+      };
+
+      const renderResourceChart = (svgId, labelsId, payload) => {
+        const svg = document.getElementById(svgId);
+        const labels = document.getElementById(labelsId);
+        if (!svg || !labels || !payload) return;
+
+        const width = 640;
+        const height = 220;
+        const paddingX = 16;
+        const paddingTop = 18;
+        const paddingBottom = 26;
+        const chartHeight = height - paddingTop - paddingBottom;
+        const chartWidth = width - paddingX * 2;
+        const maxValue = 100;
+        const toPoint = (value, index, list) => {
+          const x = paddingX + (chartWidth * index) / Math.max(list.length - 1, 1);
+          const y = paddingTop + chartHeight - (value / maxValue) * chartHeight;
+          return `${x},${y}`;
+        };
+        const cpuPoints = payload.cpu.map((value, index, list) => toPoint(value, index, list)).join(" ");
+        const memoryPoints = payload.memory.map((value, index, list) => toPoint(value, index, list)).join(" ");
+        const cpuArea = `${paddingX},${height - paddingBottom} ${cpuPoints} ${paddingX + chartWidth},${height - paddingBottom}`;
+        const memoryArea = `${paddingX},${height - paddingBottom} ${memoryPoints} ${paddingX + chartWidth},${height - paddingBottom}`;
+        const gridLines = [0, 25, 50, 75, 100].map((tick) => {
+          const y = paddingTop + chartHeight - (tick / maxValue) * chartHeight;
+          return `<line x1="${paddingX}" y1="${y}" x2="${paddingX + chartWidth}" y2="${y}" stroke="rgba(148,163,184,.18)" stroke-width="1" stroke-dasharray="4 4"></line>
+            <text x="4" y="${y + 4}" fill="#94a3b8" font-size="10">${tick}%</text>`;
+        }).join("");
+
+        svg.innerHTML = `
+          <defs>
+            <linearGradient id="cpuFill" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="rgba(79,140,255,.30)"></stop>
+              <stop offset="100%" stop-color="rgba(79,140,255,0)"></stop>
+            </linearGradient>
+            <linearGradient id="memoryFill" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="rgba(52,211,153,.30)"></stop>
+              <stop offset="100%" stop-color="rgba(52,211,153,0)"></stop>
+            </linearGradient>
+          </defs>
+          ${gridLines}
+          <polygon points="${memoryArea}" fill="url(#memoryFill)"></polygon>
+          <polygon points="${cpuArea}" fill="url(#cpuFill)"></polygon>
+          <polyline points="${memoryPoints}" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
+          <polyline points="${cpuPoints}" fill="none" stroke="#4f8cff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        `;
+
+        labels.innerHTML = payload.labels.map((label) => `
+          <div class="resource-chart-label">${label}</div>
+        `).join("");
+      };
+
+      const inviteMemberPool = [
+        { name: "Sujin Park", role: "Author", color: "linear-gradient(135deg,#fb7185,#e11d48)" },
+        { name: "Dongho Kim", role: "Author", color: "linear-gradient(135deg,#22d3ee,#0284c7)" },
+        { name: "Yuna Choi", role: "Author", color: "linear-gradient(135deg,#fbbf24,#ea580c)" },
+        { name: "Jisoo Han", role: "Author", color: "linear-gradient(135deg,#34d399,#0d9488)" }
+      ];
+
+      const setDetailView = (view) => {
+        document.querySelectorAll("[data-detail-view]").forEach((button) => {
+          button.classList.toggle("is-active", button.dataset.detailView === view);
+        });
+        document.querySelectorAll("[data-view-panel]").forEach((panel) => {
+          panel.hidden = panel.dataset.viewPanel !== view;
+        });
+      };
+
+      const renderHeroMembers = () => {
+        const heroMembers = document.getElementById("heroMembers");
+        if (!heroMembers) return;
+        const visibleMembers = project.team.slice(0, 4);
+        const extraMembers = Math.max(project.team.length - visibleMembers.length, 0);
+        heroMembers.innerHTML = `
+          <div class="hero-members-list">
+            ${visibleMembers.map(member => `
+              <div class="hero-member-avatar" style="background:${member.color}" title="${member.name}">
+                ${member.name.split(" ").map(word => word[0]).join("").slice(0, 2)}
+              </div>
+            `).join("")}
+            ${extraMembers ? `<div class="hero-member-more">+${extraMembers}</div>` : ""}
+          </div>
+          <div class="hero-members-caption">${project.team.length} collaborators</div>
+          <button class="hero-members-add" type="button" id="addHeroMemberButton"><span class="material-icons-round">person_add</span>추가</button>
+        `;
+
+        const addHeroMemberButton = document.getElementById("addHeroMemberButton");
+        if (!addHeroMemberButton) return;
+        addHeroMemberButton.addEventListener("click", () => {
+          const nextCandidate = inviteMemberPool.find(candidate => !project.team.some(member => member.name === candidate.name));
+          const fallbackIndex = project.team.length + 1;
+          const nextMember = nextCandidate || {
+            name: `Guest ${fallbackIndex}`,
+            role: "Author",
+            color: "linear-gradient(135deg,#a78bfa,#7c3aed)"
+          };
+          project.team.push(nextMember);
+          renderHeroMembers();
+        });
+      };
+
+      document.title = `${project.name} Detail`;
+      document.getElementById("breadcrumbProject").textContent = project.name;
+      document.getElementById("heroTitle").textContent = project.name;
+      document.getElementById("heroDescription").textContent = project.description;
+
+      const statusEl = document.getElementById("heroStatus");
+      statusEl.textContent = project.status;
+      statusEl.style.background = project.status === "Running" ? "var(--green-bg)" : "#f3f4f6";
+      statusEl.style.color = project.status === "Running" ? "var(--green)" : "#6b7280";
+
+      const privacyEl = document.getElementById("heroPrivacy");
+      privacyEl.textContent = project.privacy;
+      privacyEl.style.background = "var(--blue-bg)";
+      privacyEl.style.color = "var(--blue)";
+
+      const favoriteEl = document.getElementById("heroFavorite");
+      favoriteEl.textContent = project.favorite ? "Favorited" : "Not Favorite";
+      favoriteEl.style.background = project.favorite ? "var(--brand-bg)" : "#f3f4f6";
+      favoriteEl.style.color = project.favorite ? "var(--brand)" : "#6b7280";
+
+      document.getElementById("heroMeta").innerHTML = `
+        <span><strong>Owner</strong> ${project.owner}</span>
+        <span>•</span>
+        <span><strong>Last update</strong> ${project.updatedAt}</span>
+        <span>•</span>
+        <span><strong>Repo</strong> ${project.repo}</span>
+        <span>•</span>
+        <span><strong>Domain</strong> ${project.domain}</span>
+      `;
+
+      const publishModal = document.getElementById("publishModal");
+      const publishModalClose = document.getElementById("publishModalClose");
+      const publishCancelButton = document.getElementById("publishCancelButton");
+      const publishModeTabs = document.getElementById("publishModeTabs");
+      const publishBanner = document.getElementById("publishBanner");
+      const publishSteps = document.getElementById("publishSteps");
+      const publishForm = document.getElementById("publishForm");
+      const publishFormTitle = document.getElementById("publishFormTitle");
+      const publishFormMeta = document.getElementById("publishFormMeta");
+      const publishSummary = document.getElementById("publishSummary");
+      const publishVersionHistory = document.getElementById("publishVersionHistory");
+      const publishPrimaryAction = document.getElementById("publishPrimaryAction");
+      const publishSecondaryAction = document.getElementById("publishSecondaryAction");
+      const publishModalSubtitle = document.getElementById("publishModalSubtitle");
+      const liveVersionInfo = getLatestVersionInfo(project);
+      const laneLabels = {
+        canary: "Canary 10%",
+        staging: "Staging",
+        production: "Production 100%"
+      };
+      const parseVersionParts = (value) => {
+        const matched = String(value || "").match(/v?(\d+)(?:\.(\d+))?(?:\.(\d+))?/i);
+        return matched
+          ? [Number(matched[1] || 0), Number(matched[2] || 0), Number(matched[3] || 0)]
+          : [2, 4, 1];
+      };
+      const formatVersionParts = ([major, minor, patch]) => `v${major}.${minor}.${patch}`;
+      const bumpVersion = (value, type = "patch", offset = 1) => {
+        let [major, minor, patch] = parseVersionParts(value);
+        if (type === "major") {
+          major = Math.max(0, major + offset);
+          minor = 0;
+          patch = 0;
+        } else if (type === "minor") {
+          minor = Math.max(0, minor + offset);
+          patch = 0;
+        } else {
+          patch = Math.max(0, patch + offset);
+        }
+        return formatVersionParts([major, minor, patch]);
+      };
+      const liveVersionMatch = String(liveVersionInfo.version || "").match(/\bv\d+(?:\.\d+){0,2}\b/i);
+      const liveVersion = liveVersionMatch ? liveVersionMatch[0] : "v2.4.1";
+      const versionHistory = [
+        {
+          version: liveVersion,
+          label: "현재 운영",
+          meta: `${project.updatedAt} · Production 100%`,
+          note: liveVersionInfo.summary,
+          tone: "live"
+        },
+        {
+          version: bumpVersion(liveVersion, "patch", -1),
+          label: "직전 안정 버전",
+          meta: "2일 전 · rollback ready",
+          note: "Smoke test 통과, artifact 보관 완료",
+          tone: "stable"
+        },
+        {
+          version: bumpVersion(liveVersion, "minor", -1),
+          label: "지난 주 릴리스",
+          meta: "7일 전 · stable lane",
+          note: "트래픽 100% 반영 이력과 운영 메모 유지",
+          tone: "stable"
+        },
+        {
+          version: bumpVersion(liveVersion, "minor", -2),
+          label: "장기 보관 버전",
+          meta: "14일 전 · archived",
+          note: "문서와 롤백 가이드가 함께 저장된 기준 버전",
+          tone: "archive"
+        }
+      ];
+      let publishMode = "release";
+      let selectedRollbackVersion = versionHistory[1]?.version || versionHistory[0].version;
+      let publishToast = "";
+      const releaseDraft = {
+        version: bumpVersion(liveVersion, "minor", 1),
+        lane: "production",
+        notes: `${project.name} 신규 릴리스 배포. 연결 자원과 라우팅 확인 후 진행.`
+      };
+      const rollbackDraft = {
+        reason: `${selectedRollbackVersion} 버전으로 빠르게 복구`,
+        impact: "세션 유지 후 순차 전환"
+      };
+
+      const getStepToneLabel = (state) => {
+        if (state === "done") return "완료";
+        if (state === "active") return "진행";
+        if (state === "warn") return "확인";
+        return "대기";
+      };
+
+      const getReleaseSteps = () => ([
+        {
+          title: "런타임 상태",
+          desc: project.status === "Running" ? "서비스가 실행 중이며 헬스 체크 응답도 안정적입니다." : "배포 전에 런타임을 먼저 실행해 상태를 확인하는 편이 안전합니다.",
+          state: project.status === "Running" ? "done" : "warn"
+        },
+        {
+          title: "빌드 산출물",
+          desc: `${project.runtimeVersion} 기준 아티팩트와 이미지 태그가 준비되어 있습니다.`,
+          state: "done"
+        },
+        {
+          title: "환경 설정",
+          desc: `변수 ${variableState.length}개와 권한 ${permissionState.length}개 연결 상태를 다시 확인합니다.`,
+          state: "done"
+        },
+        {
+          title: "라우팅 선택",
+          desc: `${laneLabels[releaseDraft.lane]} 기준으로 배포 범위를 확정합니다.`,
+          state: "active"
+        },
+        {
+          title: "릴리스 메모",
+          desc: "변경사항과 승인 메모를 남기면 큐에 바로 전달할 수 있습니다.",
+          state: "pending"
+        }
+      ]);
+
+      const getRollbackSteps = () => ([
+        {
+          title: "대상 버전 선택",
+          desc: `${selectedRollbackVersion} 버전을 복구 대상으로 지정했습니다.`,
+          state: "done"
+        },
+        {
+          title: "설정 차이 검토",
+          desc: "현재 운영 변수와 선택한 버전의 manifest 차이를 비교합니다.",
+          state: "active"
+        },
+        {
+          title: "트래픽 영향 점검",
+          desc: "세션 유지, 사용자 영향, 알림 범위를 다시 확인합니다.",
+          state: "pending"
+        },
+        {
+          title: "데이터 호환성",
+          desc: "DB migration과 정적 자산 캐시가 역호환되는지 확인합니다.",
+          state: "pending"
+        },
+        {
+          title: "롤백 실행",
+          desc: "선택 버전으로 트래픽을 되돌리고 모니터링을 시작합니다.",
+          state: "pending"
+        }
+      ]);
+
+      const renderPublishSteps = () => {
+        if (!publishSteps) return;
+        const steps = publishMode === "release" ? getReleaseSteps() : getRollbackSteps();
+        publishSteps.innerHTML = steps.map((step, index) => `
+          <article class="publish-step is-${step.state}">
+            <div class="publish-step-top">
+              <div class="publish-step-index">${index + 1}</div>
+              <div class="publish-step-badge ${step.state}">${getStepToneLabel(step.state)}</div>
+            </div>
+            <div class="publish-step-title">${step.title}</div>
+            <div class="publish-step-desc">${step.desc}</div>
+          </article>
+        `).join("");
+      };
+
+      const renderPublishForm = () => {
+        if (!publishForm || !publishPrimaryAction || !publishSecondaryAction) return;
+
+        if (publishMode === "release") {
+          publishFormTitle.textContent = "신규 배포 설정";
+          publishFormMeta.textContent = `${project.owner} owner · ${project.domain}`;
+          publishSecondaryAction.innerHTML = '<span class="material-icons-round">draft</span>초안 저장';
+          publishPrimaryAction.innerHTML = '<span class="material-icons-round">rocket_launch</span>신규 버전 배포';
+          publishForm.innerHTML = `
+            <div class="publish-form-grid">
+              <label class="publish-field">
+                <span>신규 버전</span>
+                <input class="publish-input" type="text" value="${releaseDraft.version}" data-publish-input="version" />
+              </label>
+              <div class="publish-field">
+                <span>배포 대상</span>
+                <div class="publish-chip-row">
+                  ${Object.entries(laneLabels).map(([lane, label]) => `
+                    <button class="publish-chip ${releaseDraft.lane === lane ? "is-active" : ""}" type="button" data-release-lane="${lane}">${label}</button>
+                  `).join("")}
+                </div>
+              </div>
+              <label class="publish-field publish-field-full">
+                <span>릴리스 메모</span>
+                <textarea class="publish-textarea" data-publish-input="notes">${releaseDraft.notes}</textarea>
+              </label>
+              <div class="publish-inline-stats publish-field-full">
+                <div class="publish-inline-card">
+                  <div class="publish-inline-card-label">Current Live</div>
+                  <div class="publish-inline-card-value">${liveVersion}</div>
+                  <div class="publish-inline-card-note">${liveVersionInfo.summary}</div>
+                </div>
+                <div class="publish-inline-card">
+                  <div class="publish-inline-card-label">Next Release</div>
+                  <div class="publish-inline-card-value">${releaseDraft.version}</div>
+                  <div class="publish-inline-card-note">${laneLabels[releaseDraft.lane]} 기준으로 라우팅됩니다.</div>
+                </div>
+                <div class="publish-inline-card">
+                  <div class="publish-inline-card-label">Linked Resources</div>
+                  <div class="publish-inline-card-value">${resourceState.length + 1} Connected</div>
+                  <div class="publish-inline-card-note">DB, bucket, GitLab, permission까지 함께 점검합니다.</div>
+                </div>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        const rollbackTarget = versionHistory.find((item) => item.version === selectedRollbackVersion) || versionHistory[1] || versionHistory[0];
+        publishFormTitle.textContent = "버전 롤백 설정";
+        publishFormMeta.textContent = `${rollbackTarget.label} · ${rollbackTarget.meta}`;
+        publishSecondaryAction.innerHTML = '<span class="material-icons-round">compare_arrows</span>차이 보기';
+        publishPrimaryAction.innerHTML = '<span class="material-icons-round">undo</span>선택 버전으로 롤백';
+        publishForm.innerHTML = `
+          <div class="publish-form-grid">
+            <div class="publish-field publish-field-full">
+              <span>선택된 롤백 버전</span>
+              <div class="rollback-target-card">
+                <div class="rollback-target-head">
+                  <div class="rollback-target-version">${rollbackTarget.version}</div>
+                  <div class="version-card-badge">${rollbackTarget.label}</div>
+                </div>
+                <div class="rollback-target-note">${rollbackTarget.note}</div>
+              </div>
+            </div>
+            <label class="publish-field publish-field-full">
+              <span>롤백 사유</span>
+              <textarea class="publish-textarea" data-rollback-input="reason">${rollbackDraft.reason}</textarea>
+            </label>
+            <div class="publish-inline-stats publish-field-full">
+              <div class="publish-inline-card">
+                <div class="publish-inline-card-label">Target</div>
+                <div class="publish-inline-card-value">${rollbackTarget.version}</div>
+                <div class="publish-inline-card-note">${rollbackTarget.meta}</div>
+              </div>
+              <div class="publish-inline-card">
+                <div class="publish-inline-card-label">Traffic</div>
+                <div class="publish-inline-card-value">${rollbackDraft.impact}</div>
+                <div class="publish-inline-card-note">운영 트래픽을 순차적으로 안정 버전으로 되돌립니다.</div>
+              </div>
+              <div class="publish-inline-card">
+                <div class="publish-inline-card-label">Artifact</div>
+                <div class="publish-inline-card-value">Ready</div>
+                <div class="publish-inline-card-note">선택 버전의 이미지와 정적 자산이 보관되어 있습니다.</div>
+              </div>
+            </div>
+            <ul class="publish-checklist publish-field-full">
+              <li><span class="material-icons-round">check_circle</span><span>DB migration 역호환 여부를 먼저 확인합니다.</span></li>
+              <li><span class="material-icons-round">check_circle</span><span>정적 자산 캐시 무효화 시점과 API 스키마 버전을 함께 검토합니다.</span></li>
+              <li><span class="material-icons-round">check_circle</span><span>복구 후 10분 동안 오류율과 응답시간을 집중 모니터링합니다.</span></li>
+            </ul>
+          </div>
+        `;
+      };
+
+      const renderVersionHistory = () => {
+        if (!publishVersionHistory) return;
+        publishVersionHistory.innerHTML = versionHistory.map((item) => {
+          const isSelected = publishMode === "rollback"
+            ? item.version === selectedRollbackVersion
+            : item.version === liveVersion;
+          return `
+            <button class="version-card ${isSelected ? "is-selected" : ""}" type="button" data-version-card="${item.version}">
+              <div class="version-card-top">
+                <div class="version-card-version">${item.version}</div>
+                <div class="version-card-badge ${item.tone === "live" ? "live" : ""}">${item.label}</div>
+              </div>
+              <div class="version-card-meta">${item.meta}</div>
+              <div class="version-card-note">${item.note}</div>
+            </button>
+          `;
+        }).join("");
+      };
+
+      const renderPublishSummary = () => {
+        if (!publishSummary) return;
+        const rollbackTarget = versionHistory.find((item) => item.version === selectedRollbackVersion) || versionHistory[1] || versionHistory[0];
+        const targetVersion = publishMode === "release" ? releaseDraft.version : rollbackTarget.version;
+        const targetScope = publishMode === "release" ? laneLabels[releaseDraft.lane] : rollbackDraft.impact;
+        publishSummary.innerHTML = `
+          <div class="publish-summary-top">
+            <div class="publish-summary-title">실행 예정 작업</div>
+            <div class="publish-summary-badge">${publishMode === "release" ? "New Release" : "Rollback"}</div>
+          </div>
+          <div class="publish-summary-row"><span>프로젝트</span><strong>${project.name}</strong></div>
+          <div class="publish-summary-row"><span>현재 운영</span><strong>${liveVersion}</strong></div>
+          <div class="publish-summary-row"><span>${publishMode === "release" ? "배포 예정" : "복구 대상"}</span><strong>${targetVersion}</strong></div>
+          <div class="publish-summary-row"><span>${publishMode === "release" ? "배포 범위" : "전환 방식"}</span><strong>${targetScope}</strong></div>
+          <div class="publish-summary-row"><span>Owner</span><strong>${project.owner}</strong></div>
+          <div class="publish-summary-tip">
+            버전 이력 카드를 선택하면 해당 버전을 롤백 대상으로 바로 잡을 수 있고, 신규 배포일 때는 현재 운영 버전과 다음 배포 버전을 한 눈에 비교할 수 있습니다.
+          </div>
+        `;
+      };
+
+      const renderPublishBanner = () => {
+        if (!publishBanner || !publishModalSubtitle) return;
+        publishModalSubtitle.textContent = `${project.name} · ${project.domain} · ${project.repo}`;
+        const isSuccess = Boolean(publishToast);
+        const message = publishToast || (publishMode === "release"
+          ? `현재 운영 버전 <strong>${liveVersion}</strong> 기준으로 <strong>${releaseDraft.version}</strong> 신규 배포를 준비합니다. 다섯 단계만 확인하면 바로 퍼블리시 큐에 넣을 수 있습니다.`
+          : `최근 안정 버전 <strong>${selectedRollbackVersion}</strong>으로 되돌리는 흐름입니다. 영향 범위와 호환성만 다시 보면 빠르게 복구할 수 있습니다.`);
+        publishBanner.classList.toggle("is-success", isSuccess);
+        publishBanner.innerHTML = `
+          <span class="material-icons-round">${isSuccess ? "check_circle" : publishMode === "release" ? "deployed_code" : "undo"}</span>
+          <div>${message}</div>
+        `;
+      };
+
+      const renderPublishModal = () => {
+        if (!publishModeTabs) return;
+        publishModeTabs.querySelectorAll("[data-publish-mode]").forEach((button) => {
+          button.classList.toggle("is-active", button.dataset.publishMode === publishMode);
+        });
+        renderPublishBanner();
+        renderPublishSteps();
+        renderPublishForm();
+        renderVersionHistory();
+        renderPublishSummary();
+      };
+
+      const setPublishModalOpen = (isOpen) => {
+        if (!publishModal) return;
+        publishModal.hidden = !isOpen;
+        document.body.style.overflow = isOpen ? "hidden" : "";
+        if (isOpen) {
+          renderPublishModal();
+          window.setTimeout(() => publishPrimaryAction?.focus(), 0);
+        }
+      };
+
+      const backButton = document.querySelector(".hero-btn.ghost");
+      if (backButton) {
+        backButton.addEventListener("click", () => {
+          window.location.href = "workspace_projects_hub.html";
+        });
+      }
+
+      const openIdeButton = document.getElementById("openIdeButton");
+      if (openIdeButton) {
+        openIdeButton.addEventListener("click", () => {
+          window.open(project.ideUrl, "_blank", "noopener,noreferrer");
+        });
+      }
+
+      const publishButton = document.getElementById("publishButton");
+      if (publishButton) {
+        publishButton.addEventListener("click", () => {
+          publishMode = "release";
+          publishToast = "";
+          setPublishModalOpen(true);
+        });
+      }
+
+      if (publishModal) {
+        publishModal.addEventListener("click", (event) => {
+          if (event.target === publishModal) {
+            setPublishModalOpen(false);
+          }
+        });
+      }
+
+      [publishModalClose, publishCancelButton].forEach((button) => {
+        if (!button) return;
+        button.addEventListener("click", () => {
+          setPublishModalOpen(false);
+          publishButton?.focus();
+        });
+      });
+
+      if (publishModeTabs) {
+        publishModeTabs.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-publish-mode]");
+          if (!button) return;
+          publishMode = button.dataset.publishMode;
+          publishToast = "";
+          renderPublishModal();
+        });
+      }
+
+      if (publishForm) {
+        publishForm.addEventListener("click", (event) => {
+          const laneButton = event.target.closest("[data-release-lane]");
+          if (!laneButton) return;
+          releaseDraft.lane = laneButton.dataset.releaseLane;
+          publishToast = "";
+          renderPublishModal();
+        });
+
+        publishForm.addEventListener("input", (event) => {
+          if (event.target.matches("[data-publish-input='version']")) {
+            releaseDraft.version = event.target.value.trim() || bumpVersion(liveVersion, "minor", 1);
+            publishToast = "";
+            renderPublishSteps();
+            renderPublishSummary();
+            renderPublishBanner();
+          }
+          if (event.target.matches("[data-publish-input='notes']")) {
+            releaseDraft.notes = event.target.value;
+          }
+          if (event.target.matches("[data-rollback-input='reason']")) {
+            rollbackDraft.reason = event.target.value;
+          }
+        });
+      }
+
+      if (publishVersionHistory) {
+        publishVersionHistory.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-version-card]");
+          if (!button) return;
+          if (button.dataset.version === liveVersion && publishMode === "release") return;
+          selectedRollbackVersion = button.dataset.version;
+          rollbackDraft.reason = `${selectedRollbackVersion} 버전으로 빠르게 복구`;
+          publishMode = "rollback";
+          publishToast = "";
+          renderPublishModal();
+        });
+      }
+
+      if (publishSecondaryAction) {
+        publishSecondaryAction.addEventListener("click", () => {
+          publishToast = publishMode === "release"
+            ? `${releaseDraft.version} 배포 초안을 저장했습니다. 큐에 넣기 전에 메모만 더 다듬으면 됩니다.`
+            : `${selectedRollbackVersion} 기준 차이 비교 화면으로 이어질 수 있는 상태를 준비했습니다.`;
+          renderPublishBanner();
+        });
+      }
+
+      if (publishPrimaryAction) {
+        publishPrimaryAction.addEventListener("click", () => {
+          publishToast = publishMode === "release"
+            ? `${releaseDraft.version} 신규 배포 요청이 Publish Queue에 추가되었습니다. ${laneLabels[releaseDraft.lane]} 기준으로 진행됩니다.`
+            : `${selectedRollbackVersion} 롤백 준비가 완료되었습니다. 영향 범위를 다시 확인한 뒤 바로 실행할 수 있습니다.`;
+          renderPublishBanner();
+        });
+      }
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && publishModal && !publishModal.hidden) {
+          setPublishModalOpen(false);
+        }
+      });
+
+      const runButton = document.getElementById("runButton");
+      if (runButton) {
+        const isRunning = project.status === "Running";
+        runButton.innerHTML = isRunning
+          ? '<span class="material-icons-round">stop_circle</span>Stop'
+          : '<span class="material-icons-round">play_circle</span>Run';
+        runButton.className = `hero-btn ${isRunning ? "ghost" : "green"}`;
+      }
+
+      const deploymentType = deriveDeploymentType(project);
+      document.getElementById("heroStats").innerHTML = [
+        ["Runtime", project.runtimeVersion, project.projectType],
+        ["Resource", `${project.memory} / ${project.cpu}`, `${project.pods} provisioned · ${project.storage} storage`],
+        ["Type", deploymentType, `${project.devMode} mode`]
+      ].map(([label, value, note]) => `
+        <div class="hero-stat">
+          <div class="hero-stat-label">${label}</div>
+          <div class="hero-stat-value">${value}</div>
+          <div class="hero-stat-note">${note}</div>
+        </div>
+      `).join("");
+      const domainSelect = document.getElementById("domainSelect");
+      if (domainSelect) {
+        domainSelect.innerHTML = domainOptions.map((option, index) => `
+          <option value="${index}">${option.label} · ${option.value}</option>
+        `).join("");
+        domainSelect.addEventListener("change", (event) => {
+          selectedDomain = domainOptions[Number(event.target.value)] || domainOptions[0];
+          configUpdatedAt = formatTimelineStamp(new Date());
+          renderDomainStatus();
+          renderTimeline();
+        });
+      }
+      renderDomainStatus();
+      const prefixInput = document.getElementById("prefixInput");
+      if (prefixInput) {
+        prefixInput.value = globalPrefix;
+        prefixInput.addEventListener("input", (event) => {
+          globalPrefix = event.target.value;
+          configUpdatedAt = formatTimelineStamp(new Date());
+          renderVariables();
+          syncVariablePreview();
+          renderTimeline();
+        });
+      }
+      const newVariableKey = document.getElementById("newVariableKey");
+      if (newVariableKey) {
+        newVariableKey.addEventListener("input", () => {
+          syncVariablePreview();
+        });
+      }
+      syncVariablePreview();
+
+      document.getElementById("tagRow").innerHTML = project.tags.map(tag => `<span class="tag">#${tag}</span>`).join("");
+      renderHeroMembers();
+
+      document.getElementById("portList").innerHTML = project.ports.map(port => `
+        <div class="port-row">
+          <div class="port-name mono">${port.name}</div>
+          <div class="port-meta">${port.meta}</div>
+        </div>
+      `).join("");
+      renderVariables();
+
+      const variableList = document.getElementById("varList");
+      if (variableList) {
+        variableList.addEventListener("input", (event) => {
+          const row = event.target.closest("[data-variable-index]");
+          if (!row) return;
+          const index = Number(row.dataset.variableIndex);
+          const field = event.target.dataset.field;
+          if (Number.isNaN(index) || !field || !variableState[index]) return;
+          variableState[index][field] = event.target.value;
+        });
+
+        variableList.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-action]");
+          const row = event.target.closest("[data-variable-index]");
+          if (!button || !row) return;
+          const index = Number(row.dataset.variableIndex);
+          const action = button.dataset.action;
+          if (Number.isNaN(index) || !variableState[index]) return;
+
+          if (action === "delete") {
+            variableState.splice(index, 1);
+            configUpdatedAt = formatTimelineStamp(new Date());
+            renderVariables();
+            renderTimeline();
+            return;
+          }
+
+          if (action === "edit") {
+            variableState[index].editing = true;
+            variableState[index].draftKey = variableState[index].key;
+            variableState[index].draftValue = variableState[index].value;
+            renderVariables();
+            return;
+          }
+
+          if (action === "cancel") {
+            variableState[index].editing = false;
+            variableState[index].draftKey = variableState[index].key;
+            variableState[index].draftValue = variableState[index].value;
+            renderVariables();
+            return;
+          }
+
+          if (action === "save") {
+            const nextKey = (variableState[index].draftKey || "").trim();
+            const nextValue = (variableState[index].draftValue || "").trim();
+            if (!nextKey || !nextValue) return;
+            variableState[index].key = nextKey;
+            variableState[index].value = nextValue;
+            variableState[index].draftKey = nextKey;
+            variableState[index].draftValue = nextValue;
+            variableState[index].editing = false;
+            configUpdatedAt = formatTimelineStamp(new Date());
+            renderVariables();
+            renderTimeline();
+          }
+        });
+      }
+
+      const addVariableButton = document.getElementById("addVariableButton");
+      if (addVariableButton) {
+        addVariableButton.addEventListener("click", () => {
+          const keyInput = document.getElementById("newVariableKey");
+          const valueInput = document.getElementById("newVariableValue");
+          if (!keyInput || !valueInput) return;
+          const nextKey = keyInput.value.trim();
+          const nextValue = valueInput.value.trim();
+          if (!nextKey || !nextValue) return;
+          variableState.unshift({
+            key: nextKey,
+            value: nextValue,
+            editing: false,
+            draftKey: nextKey,
+            draftValue: nextValue
+          });
+          configUpdatedAt = formatTimelineStamp(new Date());
+          renderVariables();
+          renderTimeline();
+          keyInput.value = "";
+          valueInput.value = "";
+          syncVariablePreview();
+          addVariableButton.innerHTML = '<span class="material-icons-round">check</span>추가됨';
+          window.setTimeout(() => {
+          addVariableButton.innerHTML = '<span class="material-icons-round">add</span>추가 완료';
+          }, 900);
+        });
+      }
+
+      const metricsDashboard = buildMetricsDashboard(project);
+      let activeResourceRange = "1h";
+
+      document.getElementById("matomoMetricGrid").innerHTML = metricsDashboard.userKpis.map((item) => `
+        <div class="metric-card ${item.tone}">
+          <div class="metric-label">${item.label}</div>
+          <div class="metric-value">${item.value}</div>
+          <div class="metric-note">${item.note}</div>
+        </div>
+      `).join("");
+
+      renderTrendBars("matomoTrendBars", metricsDashboard.visitTrend, "analytics");
+      renderPageList("topPagesList", metricsDashboard.topPages);
+
+      const renderServiceAnalysis = () => {
+        renderResourceChart("resourceChartSvg", "resourceChartLabels", metricsDashboard.resourceRanges[activeResourceRange]);
+      };
+
+      renderServiceAnalysis();
+
+      const logList = document.getElementById("logList");
+      if (logList) {
+        logList.textContent = metricsDashboard.liveLogs.join("\n");
+      }
+
+      const resourceRangeTabs = document.getElementById("resourceRangeTabs");
+      if (resourceRangeTabs) {
+        resourceRangeTabs.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-resource-range]");
+          if (!button) return;
+          activeResourceRange = button.dataset.resourceRange;
+          resourceRangeTabs.querySelectorAll("[data-resource-range]").forEach((item) => {
+            item.classList.toggle("is-active", item.dataset.resourceRange === activeResourceRange);
+          });
+          renderServiceAnalysis();
+        });
+      }
+
+      const openTerminalButton = document.getElementById("openTerminalButton");
+      if (openTerminalButton) {
+        openTerminalButton.addEventListener("click", () => {
+          window.open(metricsDashboard.terminalUrl, "_blank", "noopener,noreferrer");
+        });
+      }
+
+      const detailViewTabs = document.getElementById("detailViewTabs");
+      if (detailViewTabs) {
+        detailViewTabs.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-detail-view]");
+          if (!button) return;
+          setDetailView(button.dataset.detailView);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      }
+      setDetailView("setup");
+
+      document.getElementById("harvestCountChip").textContent = `${project.harvest.length} Docs`;
+      document.getElementById("harvestList").innerHTML = project.harvest.map(item => `
+        <div class="harvest-row">
+          <div>
+            <div class="harvest-title">${item.keyword}</div>
+          </div>
+          <div><a class="row-link" href="#">${item.url}</a></div>
+          <div class="harvest-meta">${item.created}</div>
+          <div class="harvest-meta">${item.updated}</div>
+        </div>
+      `).join("");
+
+      document.getElementById("securityCountChip").textContent = `${project.security.length} Findings`;
+      document.getElementById("securityList").innerHTML = project.security.map(item => `
+        <div class="security-row">
+          <div>
+            <div class="security-title-row">${item.issue}</div>
+          </div>
+          <div><span class="security-score" style="${severityClass(item.score)}">${item.score}</span></div>
+          <div class="security-meta">${item.resource}</div>
+          <div><a class="row-link" href="#">${item.link}</a></div>
+        </div>
+      `).join("");
+
+      renderResourceState();
+
+      const resourceActions = document.getElementById("resourceActions");
+      if (resourceActions) {
+        resourceActions.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-resource-type]");
+          if (!button) return;
+          const type = button.dataset.resourceType;
+          if (type === "permission") {
+            permissionState.unshift({ ...permissionTemplate, eventAt: formatTimelineStamp(new Date()) });
+          } else if (resourceTemplates[type]) {
+            resourceState.unshift({ ...resourceTemplates[type], eventAt: formatTimelineStamp(new Date()) });
+          }
+          renderResourceState();
+          renderTimeline();
+
+          const originalHtml = button.innerHTML;
+          button.innerHTML = '<span class="material-icons-round">check_circle</span>추가됨';
+          window.setTimeout(() => {
+            button.innerHTML = originalHtml;
+          }, 900);
+        });
+      }
+
+      renderTimeline();
+    })();
+  </script>
+  <script src="ax_studio_topbar.js"></script>
+  <script src="concept_endpoint_overlay.js"></script>
+</body>
+</html>

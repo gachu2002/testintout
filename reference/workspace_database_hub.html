@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Database Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    window.HUB_CONFIG = {
+      documentTitle: "Database Hub",
+      activeKey: "database",
+      theme: {
+        bg: "#f4f8ff",
+        brand: "#2563eb",
+        brandH: "#1d4ed8",
+        brandBg: "#dbeafe",
+        brandSoft: "rgba(37,99,235,.14)",
+        accent2: "#06b6d4"
+      },
+      searchPlaceholder: "DB 이름, 엔진, 연결 프로젝트를 검색하세요...",
+      eyebrow: "Storage · Data Plane",
+      title: "Database Hub",
+      description: "데이터베이스 리소스 모음입니다. 실제 접속과 운영 콘솔은 Consoles Hub에서 열고, 여기서는 리소스 상태와 연결 프로젝트를 빠르게 찾습니다.",
+      primaryAction: { href: "workspace_project_detail.html?project=hermes-be", icon: "add_circle", label: "새 데이터베이스 생성" },
+      secondaryAction: { href: "workspace_tools_hub.html", icon: "web", label: "Consoles Hub 보기" },
+      heroStats: [
+        { icon: "storage", value: "6", label: "등록 리소스", note: "Running 5 · Stopped 1", color: "linear-gradient(135deg,#2563eb,#3b82f6)" },
+        { icon: "link", value: "13", label: "연결된 프로젝트", note: "프로젝트/서비스 기준", color: "linear-gradient(135deg,#3b82f6,#38bdf8)" },
+        { icon: "dataset", value: "5", label: "Healthy 리소스", note: "현재 실행 중 기준", color: "linear-gradient(135deg,#1d4ed8,#60a5fa)" },
+        { icon: "visibility", value: "82", label: "주간 리소스 열람", note: "최근 7일 조회 기준", color: "linear-gradient(135deg,#0ea5e9,#67e8f9)" }
+      ],
+      filters: [
+        { id: "all", icon: "apps", label: "전체" },
+        { id: "relational", icon: "table_chart", label: "관계형" },
+        { id: "document", icon: "account_tree", label: "문서형" },
+        { id: "cache", icon: "bolt", label: "캐시" },
+        { id: "search", icon: "travel_explore", label: "검색" },
+        { id: "vector", icon: "hub", label: "벡터" }
+      ],
+      resourceSectionIcon: "storage",
+      resourceSectionLabel: "Database Fleet",
+      resourceTitle: "Databases",
+      resourceDescription: "워크스페이스에서 운영 중인 데이터베이스 리소스를 한곳에 모았습니다. 리소스 종류, 연결된 프로젝트, 현재 런타임 상태를 보고 필요 시 Restart를 판단할 수 있습니다.",
+      resourceHeaderLink: { href: "workspace_projects_hub.html", label: "프로젝트 연결 보기" },
+      resources: [
+        {
+          categories: ["all", "relational"],
+          status: { label: "Running", tone: "healthy" },
+          engine: "Relational DB · MySQL / MariaDB",
+          icon: "table_view",
+          name: "payments-mysql",
+          meta: "결제/정산 서비스가 공통으로 사용하는 MySQL 운영 리소스",
+          color: "linear-gradient(135deg,#0891b2,#22d3ee)",
+          connectionsLabel: "Connected Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [
+            { abbr: "PA", name: "payment-api", meta: "billing write", color: "linear-gradient(135deg,#0891b2,#22d3ee)" },
+            { abbr: "BA", name: "billing-admin", meta: "ops console", color: "linear-gradient(135deg,#0f766e,#2dd4bf)" }
+          ],
+          secondaryConnectionsLabel: "Connected Consoles",
+          secondaryConnectionsMaxItems: 1,
+          secondaryConnectionsLayoutClass: "is-fixed-consoles",
+          secondaryConnections: [
+            { abbr: "PM", name: "phpMyAdmin", meta: "MySQL admin", color: "linear-gradient(135deg,#0891b2,#22d3ee)" }
+          ],
+          actions: [
+            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_database_detail.html?db=payments-mysql" },
+            { label: "Restart", icon: "restart_alt", kind: "restart" }
+          ]
+        },
+        {
+          categories: ["all", "relational"],
+          status: { label: "Running", tone: "healthy" },
+          engine: "Relational DB · PostgreSQL",
+          icon: "database",
+          name: "hermes-main-postgres",
+          meta: "주요 트랜잭션과 운영 백오피스가 붙는 PostgreSQL 메인 리소스",
+          color: "linear-gradient(135deg,#2563eb,#60a5fa)",
+          connectionsLabel: "Connected Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [
+            { abbr: "HB", name: "hermes-be", meta: "primary app", color: "linear-gradient(135deg,#2563eb,#60a5fa)" },
+            { abbr: "OW", name: "ops-worker", meta: "batch / cron", color: "linear-gradient(135deg,#1d4ed8,#38bdf8)" },
+            { abbr: "OA", name: "ops-admin", meta: "readonly admin", color: "linear-gradient(135deg,#0ea5e9,#67e8f9)" }
+          ],
+          secondaryConnectionsLabel: "Connected Consoles",
+          secondaryConnectionsMaxItems: 1,
+          secondaryConnectionsLayoutClass: "is-fixed-consoles",
+          secondaryConnections: [
+            { abbr: "PG", name: "PG Admin", meta: "Postgres admin", color: "linear-gradient(135deg,#2563eb,#60a5fa)" }
+          ],
+          actions: [
+            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_database_detail.html?db=hermes-main-postgres" },
+            { label: "Restart", icon: "restart_alt", kind: "restart" }
+          ]
+        },
+        {
+          categories: ["all", "document"],
+          status: { label: "Running", tone: "healthy" },
+          engine: "Document DB · MongoDB",
+          icon: "account_tree",
+          name: "customer-profile-mongo",
+          meta: "프로필 문서와 이벤트 샘플이 쌓이는 MongoDB 리소스",
+          color: "linear-gradient(135deg,#16a34a,#4ade80)",
+          connectionsLabel: "Connected Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [
+            { abbr: "CP", name: "profile-api", meta: "customer profile", color: "linear-gradient(135deg,#16a34a,#4ade80)" },
+            { abbr: "RS", name: "restaurant", meta: "feature consume", color: "linear-gradient(135deg,#15803d,#86efac)" }
+          ],
+          secondaryConnectionsLabel: "Connected Consoles",
+          secondaryConnectionsMaxItems: 1,
+          secondaryConnectionsLayoutClass: "is-fixed-consoles",
+          secondaryConnections: [
+            { abbr: "MG", name: "Mongo GUI", meta: "Mongo explorer", color: "linear-gradient(135deg,#16a34a,#4ade80)" }
+          ],
+          actions: [
+            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_database_detail.html?db=customer-profile-mongo" },
+            { label: "Restart", icon: "restart_alt", kind: "restart" }
+          ]
+        },
+        {
+          categories: ["all", "cache"],
+          status: { label: "Running", tone: "healthy" },
+          engine: "Cache DB · Redis",
+          icon: "memory",
+          name: "workspace-session-redis",
+          meta: "세션, 웹소켓, 랭킹 캐시가 함께 붙는 공용 Redis 리소스",
+          color: "linear-gradient(135deg,#f97316,#fb923c)",
+          connectionsLabel: "Connected Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [
+            { abbr: "WW", name: "workspace-web", meta: "session", color: "linear-gradient(135deg,#f97316,#fb923c)" },
+            { abbr: "RG", name: "realtime-gateway", meta: "fanout", color: "linear-gradient(135deg,#ea580c,#fdba74)" },
+            { abbr: "RS", name: "restaurant", meta: "ranking cache", color: "linear-gradient(135deg,#fb923c,#fed7aa)" }
+          ],
+          secondaryConnectionsLabel: "Connected Consoles",
+          secondaryConnectionsMaxItems: 1,
+          secondaryConnectionsLayoutClass: "is-fixed-consoles",
+          secondaryConnections: [
+            { abbr: "RD", name: "Redis Insight", meta: "Redis console", color: "linear-gradient(135deg,#f97316,#fb923c)" }
+          ],
+          actions: [
+            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_database_detail.html?db=workspace-session-redis" },
+            { label: "Restart", icon: "restart_alt", kind: "restart" }
+          ]
+        },
+        {
+          categories: ["all", "search"],
+          status: { label: "Running", tone: "healthy" },
+          engine: "Search DB · Elasticsearch",
+          icon: "travel_explore",
+          name: "ops-search",
+          meta: "운영 로그와 감사 검색이 붙는 Elasticsearch 리소스",
+          color: "linear-gradient(135deg,#7c3aed,#a78bfa)",
+          connectionsLabel: "Connected Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [
+            { abbr: "LG", name: "lgloganalyzer", meta: "service logs", color: "linear-gradient(135deg,#7c3aed,#a78bfa)" },
+            { abbr: "OD", name: "ops-dashboard", meta: "saved search", color: "linear-gradient(135deg,#6d28d9,#c4b5fd)" }
+          ],
+          secondaryConnectionsLabel: "Connected Consoles",
+          secondaryConnectionsMaxItems: 1,
+          secondaryConnectionsLayoutClass: "is-fixed-consoles",
+          secondaryConnections: [
+            { abbr: "KB", name: "Kibana", meta: "Elastic console", color: "linear-gradient(135deg,#7c3aed,#a78bfa)" }
+          ],
+          actions: [
+            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_database_detail.html?db=ops-search" },
+            { label: "Restart", icon: "restart_alt", kind: "restart" }
+          ]
+        },
+        {
+          categories: ["all", "vector"],
+          status: { label: "Stopped", tone: "muted" },
+          engine: "Vector DB · Milvus",
+          icon: "hub",
+          name: "search-embedding",
+          meta: "검색 임베딩과 카탈로그 벡터가 쌓이는 Milvus 리소스",
+          color: "linear-gradient(135deg,#0f766e,#5eead4)",
+          connectionsLabel: "Connected Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [
+            { abbr: "CA", name: "coverity-ai", meta: "embedding retrieval", color: "linear-gradient(135deg,#0f766e,#5eead4)" },
+            { abbr: "CI", name: "catalog-ai", meta: "semantic catalog", color: "linear-gradient(135deg,#0d9488,#99f6e4)" }
+          ],
+          secondaryConnectionsLabel: "Connected Consoles",
+          secondaryConnectionsMaxItems: 1,
+          secondaryConnectionsLayoutClass: "is-fixed-consoles",
+          secondaryConnections: [
+            { abbr: "AT", name: "Attu", meta: "Milvus console", color: "linear-gradient(135deg,#0f766e,#5eead4)" }
+          ],
+          actions: [
+            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_database_detail.html?db=search-embedding" },
+            { label: "Restart", icon: "restart_alt", kind: "restart", disabled: true }
+          ]
+        }
+      ],
+      mainPanels: [
+        {
+          icon: "tips_and_updates",
+          label: "Tips",
+          title: "데이터 리소스 운영 팁",
+          description: "리소스 카드에서는 제어에 필요한 정보만 남기고, 참고할 내용은 아래 패널에서 짧게 확인하는 구조로 맞췄습니다.",
+          rows: [
+            { title: "Running 리소스는 Restart 판단만 보면 됩니다", meta: "현재 떠 있는 리소스는 연결 프로젝트를 먼저 보고 재기동 영향 범위를 빠르게 판단합니다." },
+            { title: "Stopped 리소스는 별도 운영 흐름으로 접근합니다", meta: "Milvus 같은 비상시/실험성 리소스는 허브 카드에서 직접 기동하지 않는 전제를 둡니다." },
+            { title: "연결된 프로젝트로 영향 범위를 먼저 확인합니다", meta: "리소스 변경 전 프로젝트 연결 관계를 카드 안에서 바로 확인합니다." }
+          ],
+          footerLink: { href: "workspace_projects_hub.html", label: "연결 프로젝트 보기" }
+        },
+        {
+          icon: "menu_book",
+          label: "Guide Links",
+          title: "가이드 링크",
+          description: "운영 문서와 콘솔 진입점 링크를 별도 패널에 둡니다.",
+          rows: [
+            { title: "Consoles Hub", meta: "각 DB 리소스에 연결된 운영 콘솔을 열고 제어합니다.", href: "workspace_tools_hub.html" },
+            { title: "권한/접근 정책 가이드", meta: "운영 DB 접근 방식과 read-only 기준을 확인합니다.", href: "workspace_permission_hub.html" },
+            { title: "프로젝트 허브", meta: "리소스가 어떤 프로젝트에 붙어 있는지 프로젝트 단위로 다시 확인합니다.", href: "workspace_projects_hub.html" }
+          ],
+          footerLink: { href: "portal_launchpad.html", label: "런치패드로 돌아가기" }
+        }
+      ],
+      sidebarPanels: [
+        {
+          icon: "health_and_safety",
+          label: "Running Health",
+          title: "현재 Running 리소스 Healthy",
+          description: "세부 이상 감지는 K8s/infra 이벤트 기준으로 확인합니다. 우측 레일은 지금 실행 중인 데이터 리소스의 헬시 상태만 보여줍니다.",
+          rows: [
+            { title: "payments-mysql", meta: "payment-api · billing-admin", pill: { label: "Healthy", tone: "healthy" } },
+            { title: "hermes-main-postgres", meta: "hermes-be · ops-worker · ops-admin", pill: { label: "Healthy", tone: "healthy" } },
+            { title: "customer-profile-mongo", meta: "profile-api · restaurant", pill: { label: "Healthy", tone: "healthy" } },
+            { title: "workspace-session-redis", meta: "workspace-web · realtime-gateway · restaurant", pill: { label: "Healthy", tone: "healthy" } },
+            { title: "ops-search", meta: "lgloganalyzer · ops-dashboard", pill: { label: "Healthy", tone: "healthy" } }
+          ]
+        }
+      ]
+    };
+  </script>
+  <script src="workspace_resource_hub_shared.js"></script>
+  <script src="ax_studio_topbar.js"></script>
+  <script src="concept_endpoint_overlay.js"></script>
+</body>
+</html>

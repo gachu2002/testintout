@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Keycenter Detail</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+    <link rel="stylesheet" href="workspace_detail_shared.css" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      function cards(rows) {
+        return rows
+          .map(
+            (row) =>
+              `<article class="card"><div class="card-title">${row.title}</div><div class="card-desc">${row.desc}</div><div class="tag-row">${row.tags.map((tag) => `<span class="tag">${tag}</span>`).join('')}</div></article>`,
+          )
+          .join('');
+      }
+      function list(rows) {
+        return rows
+          .map(
+            (row) =>
+              `<div class="list-row"><div class="list-main"><div class="list-title">${row.title}</div><div class="list-meta">${row.meta}</div></div>${row.side ? `<div class="list-side">${row.side}</div>` : ''}</div>`,
+          )
+          .join('');
+      }
+      function table(rows) {
+        return `<div class="table-wrap"><table><thead><tr><th>Provider</th><th>Models</th><th>Quota / Limit</th><th>Main Consumers</th></tr></thead><tbody>${rows.map((row) => `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td></tr>`).join('')}</tbody></table></div>`;
+      }
+      function progress(rows) {
+        return rows
+          .map(
+            (row) =>
+              `<article class="progress-card"><div class="progress-top"><div class="progress-title">${row.title}</div><div class="progress-value">${row.value}</div></div><div class="progress-bar"><div class="progress-fill" style="width:${row.percent}%;"></div></div><div class="progress-meta">${row.meta}</div></article>`,
+          )
+          .join('');
+      }
+      function timeline(rows) {
+        return rows
+          .map(
+            (row) =>
+              `<div class="timeline-row"><div class="timeline-rail"><span class="timeline-dot"></span></div><div class="timeline-card"><div class="timeline-title">${row.title}</div><div class="timeline-meta">${row.meta}</div></div></div>`,
+          )
+          .join('');
+      }
+      function kv(rows) {
+        return rows
+          .map(
+            (row) =>
+              `<div class="kv-item"><div class="kv-key">${row.key}</div><div class="kv-value">${row.value}</div></div>`,
+          )
+          .join('');
+      }
+      function buildItem(item) {
+        return {
+          ...item,
+          mainHtml: `
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">vpn_key</span>Tier Snapshot</div>
+                <h2 class="section-title">tier 구성과 사용 맥락</h2>
+                <p class="section-desc">provider, quota, model 묶음, 주요 consumer를 tier 중심으로 정리했습니다.</p>
+              </div>
+              <a class="section-link" href="${item.relatedHref}"><span class="material-icons-round">arrow_outward</span>연결 허브</a>
+            </div>
+            <div class="card-grid three">${cards(item.cards)}</div>
+          </section>
+          <section class="panel section">
+            <div class="section-kicker"><span class="material-icons-round">model_training</span>Provider Coverage</div>
+            <h2 class="section-title">provider와 모델 범위</h2>
+            <p class="section-desc">detail 페이지에서는 tier별 provider 구성과 주요 consumer를 구체적으로 보여줍니다.</p>
+            ${table(item.providers)}
+          </section>
+          <section class="panel section">
+            <div class="list-grid two">
+              <div class="subpanel">
+                <div class="panel-title" style="font-size:16px;">Governance Notes</div>
+                <div class="info-list">${list(item.notes)}</div>
+              </div>
+              <div class="subpanel">
+                <div class="panel-title" style="font-size:16px;">Main Consumers</div>
+                <div class="info-list">${list(item.relatedLinks)}</div>
+              </div>
+            </div>
+          </section>
+        `,
+          sidebarHtml: `
+          <section class="panel section">
+            <div class="section-kicker"><span class="material-icons-round">donut_large</span>Quota Pulse</div>
+            <h3 class="section-title" style="font-size:18px;">사용량 지표</h3>
+            <div class="stats-grid">${progress(item.progress)}</div>
+          </section>
+          <section class="panel timeline-panel">
+            <div class="panel-kicker"><span class="material-icons-round">history</span>Recent Policy</div>
+            <h3 class="panel-title" style="font-size:18px;">최근 정책 변경</h3>
+            <div class="timeline-list">${timeline(item.timeline)}</div>
+          </section>
+          <section class="panel section">
+            <div class="section-kicker"><span class="material-icons-round">info</span>Tier Facts</div>
+            <div class="kv-list">${kv(item.facts)}</div>
+          </section>
+        `,
+        };
+      }
+
+      const rawItems = [
+        {
+          key: 'free-tier',
+          title: 'Free Tier',
+          description:
+            '입문용 기본 tier입니다. 제한된 quota와 소형 모델 위주로 제공되는 샘플 detail입니다.',
+          heroIcon: 'eco',
+          typeLabel: 'Free Tier',
+          statusLabel: 'Active',
+          statusTone: 'healthy',
+          theme: {
+            brand: '#f59e0b',
+            brandH: '#d97706',
+            brandBg: '#fef3c7',
+            brandSoft: 'rgba(245,158,11,.14)',
+            accent: '#f97316',
+          },
+          relatedHref: 'workspace_chatbot_hub.html',
+          actions: [
+            { label: 'Chatbot Hub', icon: 'chat', href: 'workspace_chatbot_hub.html' },
+            {
+              label: 'Agent Hub',
+              icon: 'arrow_outward',
+              variant: 'primary',
+              href: 'workspace_agent_hub.html',
+            },
+          ],
+          heroStats: [
+            { label: 'Usage', value: '38%', meta: 'quota 여유 충분' },
+            { label: 'Active Keys', value: '124', meta: '입문/테스트 중심' },
+            { label: 'Providers', value: '2', meta: 'OpenAI / Azure' },
+            { label: 'Models', value: '4', meta: 'mini / haiku 중심' },
+          ],
+          cards: [
+            {
+              title: 'Purpose',
+              desc: '입문, 경량 챗봇, 실험용 샘플에 적합한 기본 tier입니다.',
+              tags: ['entry', 'lightweight'],
+            },
+            {
+              title: 'Policy',
+              desc: '낮은 quota와 제한된 모델로 비용을 통제합니다.',
+              tags: ['cheap', 'limited'],
+            },
+            {
+              title: 'Consumer',
+              desc: '초기 챗봇과 내부 테스트용 automation이 주 소비자입니다.',
+              tags: ['starter', 'internal'],
+            },
+          ],
+          providers: [
+            ['OpenAI', 'gpt-4.1-mini, gpt-4o-mini', 'shared quota / low cap', 'starter chatbots'],
+            ['Azure', 'azure-gpt-4o-mini', 'backup quota', 'internal testing'],
+          ],
+          notes: [
+            {
+              title: '비용 통제용 baseline',
+              meta: '모든 사용자를 상위 tier로 올리지 않기 위한 완충 역할입니다.',
+              side: 'Cost',
+            },
+            {
+              title: 'mini 모델 중심',
+              meta: '응답 품질보다 접근성과 실험성이 중요합니다.',
+              side: 'Light',
+            },
+            {
+              title: '교육/샘플 적합',
+              meta: '신규 사용자가 시작하기 좋은 티어입니다.',
+              side: 'Onboarding',
+            },
+          ],
+          relatedLinks: [
+            {
+              title: 'support-assistant-api',
+              meta: '일부 비핵심 fallback에서 참조 가능',
+              side: 'Chatbot',
+            },
+            { title: 'ASF Playground Tier', meta: '실험용 상위 단계와 비교 대상', side: 'Tier' },
+            {
+              title: 'workspace-knowledge',
+              meta: '저비용 검색 보조 시나리오에서 사용',
+              side: 'Tool',
+            },
+          ],
+          progress: [
+            { title: 'Quota Usage', value: '38%', percent: 38, meta: '현재 여유 충분' },
+            { title: 'Model Diversity', value: '52%', percent: 52, meta: '선택 가능한 모델 범위' },
+          ],
+          timeline: [
+            { title: '오늘 08:00 · usage audit', meta: 'free tier 사용량 점검' },
+            { title: '6월 12일 · model allowlist update', meta: 'mini 모델 정책 정리' },
+            { title: '6월 7일 · quota note refresh', meta: '입문자 가이드 문구 갱신' },
+          ],
+          facts: [
+            { key: 'Owner', value: 'platform ai' },
+            { key: 'Scope', value: 'starter / low-cost use cases' },
+            { key: 'Allocation', value: '<span class="mono">free-tier-default</span>' },
+          ],
+        },
+        {
+          key: 'paid-tier',
+          title: 'Paid Tier',
+          description:
+            '운영 워크로드와 대량 요청용으로 확장된 모델 선택권을 제공하는 tier입니다. 생산계 대표 tier 샘플입니다.',
+          heroIcon: 'paid',
+          typeLabel: 'Paid Tier',
+          statusLabel: 'Active',
+          statusTone: 'healthy',
+          theme: {
+            brand: '#2563eb',
+            brandH: '#1d4ed8',
+            brandBg: '#dbeafe',
+            brandSoft: 'rgba(37,99,235,.14)',
+            accent: '#60a5fa',
+          },
+          relatedHref: 'workspace_agent_hub.html',
+          actions: [
+            { label: 'Agent Hub', icon: 'smart_toy', href: 'workspace_agent_hub.html' },
+            {
+              label: 'Chatbot Hub',
+              icon: 'arrow_outward',
+              variant: 'primary',
+              href: 'workspace_chatbot_hub.html',
+            },
+          ],
+          heroStats: [
+            { label: 'Usage', value: '71%', meta: '모니터링 필요' },
+            { label: 'Active Keys', value: '46', meta: '운영용' },
+            { label: 'Providers', value: '3', meta: 'OpenAI / Anthropic / Gemini' },
+            { label: 'Models', value: '5', meta: '상위 품질 모델 중심' },
+          ],
+          cards: [
+            {
+              title: 'Purpose',
+              desc: '핵심 챗봇과 automation이 참조하는 생산계 tier입니다.',
+              tags: ['production', 'quality'],
+            },
+            {
+              title: 'Policy',
+              desc: '비용은 높지만 정확도와 범용성이 중요할 때 사용합니다.',
+              tags: ['high quality', 'monitored'],
+            },
+            {
+              title: 'Consumer',
+              desc: '지원 API, 릴리즈 노트 automation, 파트너 bot이 대표 소비자입니다.',
+              tags: ['api', 'agent', 'partner'],
+            },
+          ],
+          providers: [
+            ['OpenAI', 'gpt-4.1, gpt-4o', 'prod quota / shared pool', 'support-assistant-api'],
+            ['Anthropic', 'claude-3.7-sonnet', 'reasoning quota', 'release-notes-pilot'],
+            ['Gemini', 'gemini-2.5-pro', 'special request quota', 'partner pilots'],
+          ],
+          notes: [
+            {
+              title: '품질 우선 티어',
+              meta: '정확도와 신뢰성이 핵심인 워크로드가 붙습니다.',
+              side: 'Premium',
+            },
+            {
+              title: 'usage 감시 필요',
+              meta: '현재 사용률이 높아 증설/분산 검토가 필요합니다.',
+              side: '71%',
+            },
+            {
+              title: '핵심 서비스 집중',
+              meta: '비핵심 소비자는 lower tier로 보내는 것이 바람직합니다.',
+              side: 'Prioritized',
+            },
+          ],
+          relatedLinks: [
+            {
+              title: 'support-assistant-api',
+              meta: '고객 응답 품질이 중요한 API bot',
+              side: 'Chatbot',
+            },
+            {
+              title: 'release-notes-pilot',
+              meta: '정확한 문서 초안 생성에 사용하는 agent',
+              side: 'Agent',
+            },
+            { title: 'pricing-advisor-bot', meta: 'partner 대상 고품질 응답 bot', side: 'Chatbot' },
+          ],
+          progress: [
+            { title: 'Quota Usage', value: '71%', percent: 71, meta: '증설 검토 필요' },
+            {
+              title: 'Provider Diversity',
+              value: '83%',
+              percent: 83,
+              meta: '여러 상위 모델 사용 가능',
+            },
+          ],
+          timeline: [
+            { title: '오늘 09:20 · usage review', meta: '운영 트래픽 증가로 headroom 점검' },
+            { title: '6월 13일 · provider mix update', meta: 'Gemini high-tier quota 조정' },
+            { title: '6월 8일 · new consumer approved', meta: 'pricing advisor 연결 승인' },
+          ],
+          facts: [
+            { key: 'Owner', value: 'core infra' },
+            { key: 'Scope', value: 'production / high quality workloads' },
+            { key: 'Allocation', value: '<span class="mono">paid-prod-shared</span>' },
+          ],
+        },
+        {
+          key: 'hw-deposit-tier',
+          title: 'HW Deposit Tier',
+          description:
+            '사전 예치 기반으로 운용하는 티어입니다. 사용량과 자원 관리가 비교적 명확한 샘플입니다.',
+          heroIcon: 'savings',
+          typeLabel: 'HW Deposit',
+          statusLabel: 'Active',
+          statusTone: 'healthy',
+          theme: {
+            brand: '#7c3aed',
+            brandH: '#6d28d9',
+            brandBg: '#ede9fe',
+            brandSoft: 'rgba(124,58,237,.14)',
+            accent: '#a78bfa',
+          },
+          relatedHref: 'workspace_agent_hub.html',
+          actions: [
+            { label: 'Agent Hub', icon: 'smart_toy', href: 'workspace_agent_hub.html' },
+            {
+              label: 'Keycenter Hub',
+              icon: 'arrow_outward',
+              variant: 'primary',
+              href: 'workspace_keycenter_hub.html',
+            },
+          ],
+          heroStats: [
+            { label: 'Usage', value: '64%', meta: '예치 자원 대비 안정적' },
+            { label: 'Active Keys', value: '18', meta: '제한된 고정 pool' },
+            { label: 'Providers', value: '2', meta: 'OpenAI / internal' },
+            { label: 'Models', value: '4', meta: 'balanced set' },
+          ],
+          cards: [
+            {
+              title: 'Purpose',
+              desc: '예치형 계약 기반 워크로드를 위해 쓰는 tier입니다.',
+              tags: ['deposit', 'predictable'],
+            },
+            {
+              title: 'Policy',
+              desc: '자원 예치 대비 사용량을 엄격히 추적합니다.',
+              tags: ['tracked', 'bounded'],
+            },
+            {
+              title: 'Consumer',
+              desc: '특정 hardware-linked 팀과 안정형 workload가 사용합니다.',
+              tags: ['dedicated', 'stable'],
+            },
+          ],
+          providers: [
+            ['OpenAI', 'gpt-4o', 'deposit quota', 'hw-linked assistants'],
+            ['Internal', 'internal-rag-1', 'fixed budget', 'private retrieval apps'],
+          ],
+          notes: [
+            {
+              title: '예측 가능한 사용량',
+              meta: 'burst보다는 안정적이고 반복적인 사용에 맞습니다.',
+              side: 'Stable',
+            },
+            {
+              title: '계약형 quota 관리',
+              meta: '소비량이 계약 리소스와 직접 연결됩니다.',
+              side: 'Budgeted',
+            },
+            {
+              title: '특정 팀 대상',
+              meta: '전사 공용보다 목적형 팀 사용이 많습니다.',
+              side: 'Scoped',
+            },
+          ],
+          relatedLinks: [
+            {
+              title: 'repo-review-guard',
+              meta: '일부 안정형 추론에 사용할 수 있는 후보',
+              side: 'Agent',
+            },
+            {
+              title: 'internal-rag workloads',
+              meta: '사내 전용 retrieval bot과의 연결',
+              side: 'Chatbot',
+            },
+            {
+              title: 'Tool Inventory',
+              meta: 'private tool 호출과 함께 쓰는 경계 확인',
+              side: 'Tool',
+            },
+          ],
+          progress: [
+            { title: 'Quota Usage', value: '64%', percent: 64, meta: '예치 범위 내 안정적' },
+            {
+              title: 'Provider Diversity',
+              value: '47%',
+              percent: 47,
+              meta: '선택 모델 범위는 좁은 편',
+            },
+          ],
+          timeline: [
+            { title: '오늘 07:40 · monthly usage sync', meta: '예치 사용량 집계' },
+            { title: '6월 11일 · consumer quota adjust', meta: 'hardware ops 팀 할당 조정' },
+            { title: '6월 5일 · model note update', meta: 'internal-rag 설명 보강' },
+          ],
+          facts: [
+            { key: 'Owner', value: 'hardware ops' },
+            { key: 'Scope', value: 'deposit-backed workloads' },
+            { key: 'Allocation', value: '<span class="mono">hw-deposit-fixed</span>' },
+          ],
+        },
+        {
+          key: 'asf-playground-tier',
+          title: 'ASF Playground Tier',
+          description:
+            '실험과 프로토타이핑에 초점을 둔 ASF 티어입니다. review 상태의 실험성 샘플로 구성했습니다.',
+          heroIcon: 'science',
+          typeLabel: 'ASF Playground',
+          statusLabel: 'Review',
+          statusTone: 'review',
+          theme: {
+            brand: '#0f766e',
+            brandH: '#115e59',
+            brandBg: '#ccfbf1',
+            brandSoft: 'rgba(15,118,110,.14)',
+            accent: '#34d399',
+          },
+          relatedHref: 'workspace_agent_hub.html',
+          actions: [
+            { label: 'Agent Hub', icon: 'smart_toy', href: 'workspace_agent_hub.html' },
+            {
+              label: 'Chatbot Hub',
+              icon: 'arrow_outward',
+              variant: 'primary',
+              href: 'workspace_chatbot_hub.html',
+            },
+          ],
+          heroStats: [
+            { label: 'Usage', value: '52%', meta: '실험 수요 변동성' },
+            { label: 'Active Keys', value: '33', meta: 'lab 사용 중심' },
+            { label: 'Providers', value: '3', meta: 'mini/faster mix' },
+            { label: 'Models', value: '4', meta: '실험용 구성' },
+          ],
+          cards: [
+            {
+              title: 'Purpose',
+              desc: '프로토타입과 실험용 agent/chatbot이 빠르게 시작하는 tier입니다.',
+              tags: ['experiment', 'lab'],
+            },
+            {
+              title: 'Policy',
+              desc: '너무 넓게 열리면 비용이 튈 수 있어 review 상태를 자주 유지합니다.',
+              tags: ['reviewed', 'sandboxed'],
+            },
+            {
+              title: 'Consumer',
+              desc: 'incident-triage 같은 시범 운영 agent가 대표 사례입니다.',
+              tags: ['pilot', 'prototype'],
+            },
+          ],
+          providers: [
+            ['OpenAI', 'gpt-4.1-mini, gpt-4o-mini', 'lab quota', 'prototype agents'],
+            ['Anthropic', 'claude-3.5-haiku', 'limited quota', 'draft experiments'],
+            ['Gemini', 'gemini-2.0-flash', 'playground quota', 'speed-focused tests'],
+          ],
+          notes: [
+            {
+              title: '실험 가속이 목적',
+              meta: '승인보다 시도 속도를 올리는 데 초점이 있습니다.',
+              side: 'Fast',
+            },
+            {
+              title: 'review를 자주 거침',
+              meta: '실험이 production으로 흘러들지 않도록 경계를 관리합니다.',
+              side: 'Boundary',
+            },
+            {
+              title: 'mini/flash 모델 중심',
+              meta: '비용과 속도의 균형을 우선합니다.',
+              side: 'Lean',
+            },
+          ],
+          relatedLinks: [
+            { title: 'incident-triage-bot', meta: '대표 실험성 consumer', side: 'Agent' },
+            { title: 'Free Tier', meta: '입문 티어와의 차이 비교', side: 'Tier' },
+            {
+              title: 'workspace-knowledge',
+              meta: '실험 chatbot이 자주 붙는 inventory',
+              side: 'Tool',
+            },
+          ],
+          progress: [
+            { title: 'Quota Usage', value: '52%', percent: 52, meta: '변동성 있는 수준' },
+            {
+              title: 'Experiment Breadth',
+              value: '78%',
+              percent: 78,
+              meta: '시도 가능한 모델 다양성',
+            },
+          ],
+          timeline: [
+            { title: '오늘 09:10 · sandbox usage review', meta: 'pilot workload 점검' },
+            { title: '6월 12일 · lab policy note update', meta: 'playground 안내 문구 정리' },
+            { title: '6월 6일 · experiment pool cleanup', meta: '미사용 key 정리' },
+          ],
+          facts: [
+            { key: 'Owner', value: 'asf lab' },
+            { key: 'Scope', value: 'prototype / sandbox workloads' },
+            { key: 'Allocation', value: '<span class="mono">asf-playground-shared</span>' },
+          ],
+        },
+        {
+          key: 'asf-base-tier',
+          title: 'ASF Base Tier',
+          description:
+            '표준 업무 자동화와 일반 챗봇에 사용하는 기본 ASF tier입니다. 가장 균형적인 shared tier 샘플입니다.',
+          heroIcon: 'layers',
+          typeLabel: 'ASF Base',
+          statusLabel: 'Active',
+          statusTone: 'healthy',
+          theme: {
+            brand: '#14b8a6',
+            brandH: '#0f766e',
+            brandBg: '#d5fbf5',
+            brandSoft: 'rgba(20,184,166,.14)',
+            accent: '#06b6d4',
+          },
+          relatedHref: 'workspace_chatbot_hub.html',
+          actions: [
+            { label: 'Chatbot Hub', icon: 'chat', href: 'workspace_chatbot_hub.html' },
+            {
+              label: 'Tool Inventory',
+              icon: 'arrow_outward',
+              variant: 'primary',
+              href: 'workspace_tool_inventory_hub.html',
+            },
+          ],
+          heroStats: [
+            { label: 'Usage', value: '67%', meta: '지속 사용 중' },
+            { label: 'Active Keys', value: '58', meta: '공용 base pool' },
+            { label: 'Providers', value: '3', meta: '주요 provider 혼합' },
+            { label: 'Models', value: '4', meta: '업무 자동화 기본 구성' },
+          ],
+          cards: [
+            {
+              title: 'Purpose',
+              desc: '일반적인 챗봇/agent가 가장 많이 사용하는 baseline tier입니다.',
+              tags: ['default', 'balanced'],
+            },
+            {
+              title: 'Policy',
+              desc: '품질과 비용의 균형을 맞춘 공용 tier입니다.',
+              tags: ['shared', 'balanced'],
+            },
+            {
+              title: 'Consumer',
+              desc: 'docs widget, ops briefing, review guard가 대표적인 consumer입니다.',
+              tags: ['common', 'multi-surface'],
+            },
+          ],
+          providers: [
+            ['OpenAI', 'gpt-4.1, gpt-4o', 'shared base quota', 'ops/chatbot surfaces'],
+            ['Anthropic', 'claude-3.7-sonnet', 'reasoning allowance', 'review guard'],
+            ['Internal', 'asf-rag-base', 'retrieval quota', 'docs/search bots'],
+          ],
+          notes: [
+            {
+              title: '가장 넓은 공용 tier',
+              meta: '많은 surface가 붙기 때문에 contract 안정성이 중요합니다.',
+              side: 'Shared',
+            },
+            {
+              title: '비용/품질 균형',
+              meta: '대부분의 일반 업무는 이 tier에서 해결됩니다.',
+              side: 'Balanced',
+            },
+            {
+              title: '상위 tier 전환 기준 필요',
+              meta: '특별히 품질이 중요한 경우만 advanced/paid로 올립니다.',
+              side: 'Escalate',
+            },
+          ],
+          relatedLinks: [
+            { title: 'docs-guide-widget', meta: '대표적인 base tier chatbot', side: 'Chatbot' },
+            { title: 'ops-briefing-bot', meta: '운영 브리핑용 chatbot', side: 'Chatbot' },
+            { title: 'repo-review-guard', meta: '대량 MR 이벤트를 처리하는 agent', side: 'Agent' },
+          ],
+          progress: [
+            { title: 'Quota Usage', value: '67%', percent: 67, meta: '지속 사용 중인 수준' },
+            {
+              title: 'Consumer Spread',
+              value: '82%',
+              percent: 82,
+              meta: '다양한 surface가 사용하는 정도',
+            },
+          ],
+          timeline: [
+            { title: '오늘 08:30 · shared pool check', meta: '주요 consumer 사용량 확인' },
+            { title: '6월 13일 · provider priority tune', meta: '기본 provider 순서 조정' },
+            { title: '6월 7일 · asf-rag-base note update', meta: 'retrieval model 설명 갱신' },
+          ],
+          facts: [
+            { key: 'Owner', value: 'asf core' },
+            { key: 'Scope', value: 'default shared workloads' },
+            { key: 'Allocation', value: '<span class="mono">asf-base-shared</span>' },
+          ],
+        },
+        {
+          key: 'asf-advanced-tier',
+          title: 'ASF Advanced Tier',
+          description:
+            '고급 추론, 대규모 분석, 핵심 서비스에 쓰는 상위 ASF tier입니다. 최고 성능 tier 샘플로 구성했습니다.',
+          heroIcon: 'rocket_launch',
+          typeLabel: 'ASF Advanced',
+          statusLabel: 'Active',
+          statusTone: 'healthy',
+          theme: {
+            brand: '#ef4444',
+            brandH: '#dc2626',
+            brandBg: '#fee2e2',
+            brandSoft: 'rgba(239,68,68,.14)',
+            accent: '#f97316',
+          },
+          relatedHref: 'workspace_agent_hub.html',
+          actions: [
+            { label: 'Agent Hub', icon: 'smart_toy', href: 'workspace_agent_hub.html' },
+            {
+              label: 'Chatbot Hub',
+              icon: 'arrow_outward',
+              variant: 'primary',
+              href: 'workspace_chatbot_hub.html',
+            },
+          ],
+          heroStats: [
+            { label: 'Usage', value: '79%', meta: '증설 검토 권장' },
+            { label: 'Active Keys', value: '22', meta: '고성능 pool' },
+            { label: 'Providers', value: '4', meta: '최상위 모델 포함' },
+            { label: 'Models', value: '5', meta: 'gpt-5 포함' },
+          ],
+          cards: [
+            {
+              title: 'Purpose',
+              desc: '핵심 서비스와 고난도 분석에 쓰는 최상위 ASF tier입니다.',
+              tags: ['advanced', 'critical'],
+            },
+            {
+              title: 'Policy',
+              desc: '비용과 영향이 크므로 consumer를 엄격히 제한합니다.',
+              tags: ['restricted', 'premium'],
+            },
+            {
+              title: 'Consumer',
+              desc: '고난도 reasoning, 전략 분석, 핵심 bot이 대표 사례입니다.',
+              tags: ['high value', 'limited'],
+            },
+          ],
+          providers: [
+            ['OpenAI', 'gpt-5, gpt-4.1', 'advanced quota', 'critical reasoning bots'],
+            ['Anthropic', 'claude-3.7-sonnet', 'premium quota', 'strategy automation'],
+            ['Gemini', 'gemini-2.5-pro', 'premium quota', 'analysis workloads'],
+            ['Azure', 'azure-gpt-4.1', 'fallback quota', 'regulated workloads'],
+          ],
+          notes: [
+            {
+              title: '최고 성능 tier',
+              meta: '가장 좋은 품질을 제공하지만 비용과 리스크도 큽니다.',
+              side: 'Premium',
+            },
+            {
+              title: '사용률 높음',
+              meta: '현재 79%로 headroom이 적어 신규 연결은 신중해야 합니다.',
+              side: '79%',
+            },
+            {
+              title: 'consumer 제한 필요',
+              meta: '모든 surface가 아니라 핵심 use case에 집중해야 합니다.',
+              side: 'Selective',
+            },
+          ],
+          relatedLinks: [
+            {
+              title: 'pricing-advisor-bot',
+              meta: '고품질 응답이 필요한 파트너 bot 후보',
+              side: 'Chatbot',
+            },
+            {
+              title: 'campaign-orchestrator',
+              meta: '고난도 승인 reasoning을 확장할 수 있는 agent',
+              side: 'Agent',
+            },
+            {
+              title: 'billing-service',
+              meta: '고정확도 tool reasoning과 결합 가능한 inventory',
+              side: 'Tool',
+            },
+          ],
+          progress: [
+            { title: 'Quota Usage', value: '79%', percent: 79, meta: '증설 검토 권장' },
+            { title: 'Provider Breadth', value: '94%', percent: 94, meta: '최상위 모델 범위 넓음' },
+          ],
+          timeline: [
+            { title: '오늘 09:55 · headroom review', meta: '신규 consumer 연결 가능성 점검' },
+            { title: '6월 12일 · gpt-5 access note', meta: '상위 모델 사용 가이드 갱신' },
+            { title: '6월 6일 · premium quota tune', meta: 'advanced pool 분배 조정' },
+          ],
+          facts: [
+            { key: 'Owner', value: 'asf advanced' },
+            { key: 'Scope', value: 'critical / advanced reasoning' },
+            { key: 'Allocation', value: '<span class="mono">asf-advanced-premium</span>' },
+          ],
+        },
+      ];
+
+      window.DETAIL_PAGE_CONFIG = {
+        paramName: 'item',
+        pageTitle: 'Keycenter Detail',
+        hubLabel: 'Keycenter',
+        hubHref: 'workspace_keycenter_hub.html',
+        activeHubKey: 'keycenter',
+        eyebrow: 'AI · Keys & Providers',
+        searchPlaceholder: 'tier 이름, provider, consumer를 검색하세요...',
+        items: Object.fromEntries(rawItems.map((item) => [item.key, buildItem(item)])),
+      };
+    </script>
+    <script src="workspace_detail_shared.js"></script>
+  </body>
+</html>

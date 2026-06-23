@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About DEJ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#031426;
+      --surface:#081d31;
+      --surface-2:#0b263d;
+      --surface-glass:rgba(255,255,255,.08);
+      --border:rgba(255,255,255,.14);
+      --border-2:rgba(125,211,252,.28);
+      --t1:#f8fbff;
+      --t2:rgba(232,244,255,.74);
+      --t3:rgba(232,244,255,.48);
+      --brand:#0284c7;
+      --brand-h:#22d3ee;
+      --brand-bg:rgba(14,165,233,.16);
+      --cyan:#7dd3fc;
+      --cyan-2:#22d3ee;
+      --blue:#38bdf8;
+      --green:#34d399;
+      --purple:#a78bfa;
+      --orange:#fb923c;
+      --max:1280px;
+      --r:18px;
+      --gap:22px;
+    }
+
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body {
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 12% 16%, rgba(56,189,248,.18), transparent 26%),
+        radial-gradient(circle at 84% 20%, rgba(14,165,233,.18), transparent 28%),
+        radial-gradient(circle at 68% 80%, rgba(34,211,238,.12), transparent 28%),
+        linear-gradient(135deg, #020b17 0%, #031426 42%, #04182d 100%);
+      color:var(--t1);
+      font-family:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
+    body::before {
+      content:'';
+      position:fixed;
+      inset:0;
+      z-index:-2;
+      background:
+        linear-gradient(28deg, transparent 0 22%, rgba(125,211,252,.13) 22.2%, transparent 22.7% 42%, rgba(125,211,252,.07) 42.2%, transparent 42.7%),
+        linear-gradient(147deg, transparent 0 30%, rgba(255,255,255,.08) 30.2%, transparent 30.7% 58%, rgba(34,211,238,.08) 58.2%, transparent 58.8%),
+        radial-gradient(circle at 5% 28%, rgba(125,211,252,.8) 0 1.4px, transparent 2.8px),
+        radial-gradient(circle at 18% 78%, rgba(255,255,255,.62) 0 1.3px, transparent 2.8px),
+        radial-gradient(circle at 31% 18%, rgba(125,211,252,.62) 0 1.3px, transparent 2.8px),
+        radial-gradient(circle at 47% 62%, rgba(255,255,255,.62) 0 1.4px, transparent 2.8px),
+        radial-gradient(circle at 67% 32%, rgba(125,211,252,.58) 0 1.4px, transparent 2.8px),
+        radial-gradient(circle at 86% 78%, rgba(255,255,255,.5) 0 1.2px, transparent 2.8px);
+      opacity:.45;
+      pointer-events:none;
+    }
+    body::after {
+      content:'';
+      position:fixed;
+      inset:0;
+      z-index:-1;
+      background:linear-gradient(180deg, rgba(2,11,23,.1) 0%, rgba(2,11,23,.5) 100%);
+      pointer-events:none;
+    }
+    a { color:inherit; text-decoration:none; }
+    button { font:inherit; cursor:pointer; }
+
+    .page {
+      max-width:var(--max);
+      margin:0 auto;
+      padding:28px 24px 72px;
+    }
+
+    .portal-hero {
+      position:relative;
+      min-height:520px;
+      overflow:hidden;
+      display:grid;
+      align-items:center;
+      margin-bottom:var(--gap);
+      padding:46px 44px 40px;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:28px;
+      background:
+        radial-gradient(circle at 50% 48%, rgba(125,211,252,.14), transparent 36%),
+        radial-gradient(circle at 16% 72%, rgba(34,211,238,.14), transparent 25%),
+        radial-gradient(circle at 82% 30%, rgba(59,130,246,.18), transparent 27%),
+        linear-gradient(135deg, rgba(2,14,28,.96) 0%, rgba(5,43,69,.92) 48%, rgba(4,24,45,.96) 100%);
+      box-shadow:0 24px 70px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    .portal-hero::before {
+      content:'';
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 12% 20%, rgba(255,255,255,.52) 0 1.3px, transparent 2.8px),
+        radial-gradient(circle at 26% 63%, rgba(125,211,252,.66) 0 1.5px, transparent 3px),
+        radial-gradient(circle at 44% 18%, rgba(255,255,255,.48) 0 1.2px, transparent 3px),
+        radial-gradient(circle at 63% 70%, rgba(125,211,252,.56) 0 1.3px, transparent 3px),
+        radial-gradient(circle at 82% 22%, rgba(255,255,255,.42) 0 1.2px, transparent 3px),
+        linear-gradient(35deg, transparent 0 25%, rgba(125,211,252,.14) 25.2%, transparent 25.7% 44%, rgba(125,211,252,.08) 44.2%, transparent 44.7%),
+        linear-gradient(145deg, transparent 0 35%, rgba(255,255,255,.1) 35.2%, transparent 35.7% 68%, rgba(34,211,238,.08) 68.2%, transparent 68.8%);
+      opacity:.56;
+    }
+    .hero-copy {
+      position:relative;
+      z-index:2;
+      display:grid;
+      justify-items:center;
+      gap:14px;
+      text-align:center;
+      margin-bottom:28px;
+    }
+    .eyebrow {
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:7px 11px;
+      border-radius:999px;
+      background:rgba(255,255,255,.11);
+      color:#d9f4ff;
+      border:1px solid rgba(255,255,255,.12);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+    .eyebrow .material-icons-round { font-size:15px; color:var(--cyan); }
+    .hero-title {
+      max-width:900px;
+      font-size:42px;
+      line-height:1.1;
+      letter-spacing:-.055em;
+      font-weight:800;
+      text-shadow:0 10px 34px rgba(0,0,0,.34);
+    }
+    .hero-desc {
+      max-width:760px;
+      color:rgba(232,244,255,.74);
+      font-size:14px;
+      line-height:1.75;
+    }
+    .hero-actions { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:4px; }
+    .btn {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      height:40px;
+      padding:0 15px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.1);
+      color:#fff;
+      font-size:13px;
+      font-weight:800;
+      transition:all .15s ease;
+      backdrop-filter:blur(8px);
+    }
+    .btn.primary { border-color:rgba(125,211,252,.5); background:linear-gradient(135deg, var(--brand), var(--brand-h)); }
+    .btn:hover { transform:translateY(-1px); box-shadow:0 14px 28px rgba(0,0,0,.22); }
+    .btn .material-icons-round { font-size:18px; }
+
+    .journey-stage {
+      position:relative;
+      z-index:1;
+      min-height:270px;
+      display:grid;
+      place-items:center;
+    }
+    .infinity-map {
+      position:relative;
+      width:min(720px, 78vw);
+      height:240px;
+      opacity:.9;
+      filter:drop-shadow(0 0 24px rgba(125,211,252,.18));
+    }
+    .loop {
+      position:absolute;
+      top:42px;
+      width:272px;
+      height:166px;
+      border:24px solid rgba(188,218,232,.28);
+      border-radius:50%;
+      box-shadow:inset 0 0 0 9px rgba(255,255,255,.08), 0 0 0 1px rgba(255,255,255,.12), 0 0 36px rgba(125,211,252,.16);
+    }
+    .loop.left { left:84px; transform:rotate(31deg); }
+    .loop.right { right:84px; transform:rotate(-31deg); }
+    .loop::before,
+    .loop::after {
+      content:'';
+      position:absolute;
+      width:28px;
+      height:28px;
+      border-top:10px solid rgba(218,239,249,.58);
+      border-right:10px solid rgba(218,239,249,.58);
+      border-radius:6px;
+    }
+    .loop.left::before { left:22px; top:26px; transform:rotate(-12deg); }
+    .loop.left::after { right:26px; bottom:20px; transform:rotate(162deg); }
+    .loop.right::before { left:26px; bottom:20px; transform:rotate(-18deg); }
+    .loop.right::after { right:22px; top:26px; transform:rotate(102deg); }
+    .loop-knot {
+      position:absolute;
+      left:50%;
+      top:51%;
+      width:132px;
+      height:62px;
+      border:20px solid rgba(188,218,232,.24);
+      border-left-color:rgba(188,218,232,.14);
+      border-right-color:rgba(188,218,232,.14);
+      border-radius:24px;
+      transform:translate(-50%, -50%) rotate(-8deg);
+    }
+    .map-label {
+      position:absolute;
+      top:94px;
+      display:grid;
+      justify-items:center;
+      gap:3px;
+      min-width:110px;
+      text-align:center;
+      text-shadow:0 5px 18px rgba(0,0,0,.42);
+    }
+    .map-label.cej { left:162px; }
+    .map-label.dej { right:162px; }
+    .map-label strong { font-size:28px; font-weight:500; line-height:1; }
+    .map-label span { max-width:86px; color:rgba(255,255,255,.72); font-size:10px; line-height:1.14; }
+    .map-side {
+      position:absolute;
+      z-index:2;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:rgba(255,255,255,.76);
+      font-size:14px;
+      font-weight:600;
+      text-shadow:0 5px 18px rgba(0,0,0,.35);
+    }
+    .map-side::before {
+      content:'';
+      width:44px;
+      height:44px;
+      border-radius:50%;
+      background:rgba(255,255,255,.11);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:inset 0 0 0 10px rgba(255,255,255,.08), 0 0 20px rgba(125,211,252,.1);
+    }
+    .map-side.connectivity { left:24%; top:27%; }
+    .map-side.customization { left:16%; top:41%; }
+    .map-side.care { left:18%; top:55%; }
+    .map-side.servitization { left:22%; top:69%; }
+    .map-side.sustainability { left:32%; top:82%; }
+    .map-side.speed { right:22%; top:27%; }
+    .map-side.decision { right:13%; top:41%; }
+    .map-side.quality { right:15%; top:55%; }
+    .map-side.just { right:21%; top:69%; }
+    .map-side.member { right:30%; top:82%; }
+    .map-side.data,
+    .map-side.value {
+      display:block;
+      max-width:150px;
+      line-height:1.35;
+      color:rgba(255,255,255,.86);
+      font-size:16px;
+      font-weight:700;
+    }
+    .map-side.data { left:4%; top:56%; }
+    .map-side.value { right:3%; top:56%; }
+    .map-side.data::before,
+    .map-side.value::before { display:none; }
+
+    .section { margin-top:var(--gap); }
+    .section-head {
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:20px;
+      margin-bottom:14px;
+    }
+    .section-kicker {
+      display:flex;
+      align-items:center;
+      gap:6px;
+      color:var(--cyan);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+    }
+    .section-kicker .material-icons-round { font-size:15px; }
+    .section-title { margin-top:8px; font-size:25px; font-weight:800; letter-spacing:-.045em; }
+    .section-desc { max-width:670px; color:var(--t2); font-size:13px; line-height:1.7; }
+
+    .pipeline-panel,
+    .timeline-panel,
+    .card {
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:var(--r);
+      background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.055));
+      box-shadow:0 18px 44px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.08);
+      backdrop-filter:blur(12px);
+    }
+    .pipeline-panel { padding:24px; overflow:hidden; }
+    .pipeline {
+      display:grid;
+      grid-template-columns:repeat(5, minmax(0, 1fr));
+      gap:12px;
+      align-items:stretch;
+    }
+    .pipe-step {
+      position:relative;
+      min-height:164px;
+      display:grid;
+      align-content:start;
+      gap:12px;
+      padding:18px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;
+      background:rgba(3,20,38,.62);
+      overflow:hidden;
+    }
+    .pipe-step::before {
+      content:'';
+      position:absolute;
+      inset:auto -20px -40px auto;
+      width:100px;
+      height:100px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(125,211,252,.16), transparent 62%);
+      pointer-events:none;
+    }
+    .pipe-step:not(:last-child)::after {
+      content:'arrow_forward';
+      position:absolute;
+      top:50%;
+      right:-22px;
+      z-index:2;
+      width:32px;
+      height:32px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:999px;
+      background:rgba(3,20,38,.9);
+      border:1px solid rgba(125,211,252,.24);
+      color:var(--cyan);
+      font-family:'Material Icons Round';
+      font-size:18px;
+      transform:translateY(-50%);
+      box-shadow:0 0 18px rgba(125,211,252,.14);
+    }
+    .pipe-icon {
+      position:relative;
+      z-index:1;
+      width:44px;
+      height:44px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:inset 0 0 0 10px rgba(255,255,255,.07);
+    }
+    .pipe-icon.blue { color:#d9f4ff; }
+    .pipe-icon.green { color:#d1fae5; }
+    .pipe-icon.purple { color:#ede9fe; }
+    .pipe-icon.orange { color:#ffedd5; }
+    .pipe-title { position:relative; z-index:1; font-size:16px; font-weight:800; letter-spacing:-.03em; }
+    .pipe-sub { position:relative; z-index:1; color:var(--cyan); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
+    .pipe-desc { position:relative; z-index:1; color:var(--t2); font-size:12px; line-height:1.6; }
+
+    .content-grid {
+      display:grid;
+      grid-template-columns:minmax(0, 1.1fr) minmax(320px, .9fr);
+      gap:var(--gap);
+      align-items:start;
+    }
+    .timeline-panel { padding:22px; }
+    .timeline { display:grid; gap:0; }
+    .timeline-item {
+      display:grid;
+      grid-template-columns:92px minmax(0, 1fr);
+      gap:18px;
+      position:relative;
+      padding:0 0 22px;
+    }
+    .timeline-item:last-child { padding-bottom:0; }
+    .timeline-item:not(:last-child)::before {
+      content:'';
+      position:absolute;
+      left:110px;
+      top:28px;
+      bottom:0;
+      width:1px;
+      background:linear-gradient(180deg, rgba(125,211,252,.45), rgba(125,211,252,.08));
+    }
+    .time-label { color:var(--cyan); font-size:12px; font-weight:800; letter-spacing:.03em; }
+    .time-copy { position:relative; padding-left:28px; }
+    .time-copy::before {
+      content:'';
+      position:absolute;
+      left:0;
+      top:2px;
+      width:13px;
+      height:13px;
+      border-radius:50%;
+      background:#031426;
+      border:4px solid var(--cyan);
+      box-shadow:0 0 0 4px rgba(125,211,252,.12), 0 0 18px rgba(125,211,252,.24);
+    }
+    .time-title { font-size:15px; font-weight:800; letter-spacing:-.025em; }
+    .time-desc { margin-top:6px; color:var(--t2); font-size:13px; line-height:1.65; }
+
+    .card-stack { display:grid; gap:var(--gap); }
+    .card { padding:20px; }
+    .card-title { display:flex; align-items:center; gap:8px; font-size:16px; font-weight:800; letter-spacing:-.03em; }
+    .card-title .material-icons-round { color:var(--cyan); font-size:20px; }
+    .card-desc { margin-top:10px; color:var(--t2); font-size:13px; line-height:1.7; }
+    .value-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px; margin-top:14px; }
+    .value-chip {
+      min-height:78px;
+      padding:13px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:14px;
+      background:rgba(3,20,38,.58);
+    }
+    .value-chip strong { display:block; font-size:13px; letter-spacing:-.02em; color:#fff; }
+    .value-chip span { display:block; margin-top:5px; color:var(--t2); font-size:11px; line-height:1.45; }
+    .link-list { display:grid; gap:10px; margin-top:14px; }
+    .quick-link {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:13px 14px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:14px;
+      background:rgba(3,20,38,.58);
+      color:#fff;
+      font-size:13px;
+      font-weight:800;
+      transition:all .15s ease;
+    }
+    .quick-link:hover { color:var(--cyan); background:rgba(255,255,255,.08); box-shadow:0 14px 28px rgba(0,0,0,.16); }
+    .quick-link .material-icons-round { font-size:18px; color:var(--cyan); }
+
+    @media (max-width: 1080px) {
+      .portal-hero { min-height:auto; }
+      .journey-stage { min-height:260px; }
+      .map-side { display:none; }
+      .pipeline { grid-template-columns:1fr; }
+      .pipe-step { min-height:auto; }
+      .pipe-step:not(:last-child)::after {
+        top:auto;
+        right:50%;
+        bottom:-23px;
+        transform:translateX(50%) rotate(90deg);
+      }
+      .content-grid { grid-template-columns:1fr; }
+    }
+    @media (max-width: 720px) {
+      .page { padding:20px 16px 56px; }
+      .portal-hero { padding:28px 20px; border-radius:20px; }
+      .hero-title { font-size:30px; }
+      .hero-desc { font-size:13px; }
+      .infinity-map { width:100%; height:190px; transform:scale(.74); }
+      .journey-stage { min-height:190px; }
+      .section-head { display:grid; }
+      .timeline-item { grid-template-columns:1fr; gap:8px; }
+      .timeline-item:not(:last-child)::before { left:6px; top:52px; }
+      .time-copy { padding-left:28px; }
+      .value-grid { grid-template-columns:1fr; }
+      .hero-actions .btn { flex:1; min-width:180px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="portal-hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="material-icons-round">timeline</span>About DEJ</div>
+        <h1 class="hero-title">Development Experience Journey</h1>
+        <p class="hero-desc">고객중심의 개발 플랫폼 / 고객경험 혁신을 위한 일하는 방식의 변화. DEJ는 CEJ에서 발견한 3C 2S 고객경험 데이터를 개발자가 바로 실행할 수 있는 과제·도구·프로젝트 흐름으로 전환하는 AX Studio의 개발 경험 여정입니다.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="portal_launchpad.html"><span class="material-icons-round">rocket_launch</span>Get Started</a>
+          <a class="btn" href="#pipeline"><span class="material-icons-round">account_tree</span>CEJ·DEJ 파이프라인</a>
+          <a class="btn" href="#history"><span class="material-icons-round">history</span>히스토리</a>
+        </div>
+      </div>
+
+      <div class="journey-stage" aria-label="CEJ DEJ 인피니티 파이프라인">
+        <span class="map-side data">3C 2S 고객경험 영역의 데이터</span>
+        <span class="map-side value">Core Value</span>
+        <span class="map-side connectivity">Connectivity</span>
+        <span class="map-side customization">Customization</span>
+        <span class="map-side care">Care</span>
+        <span class="map-side servitization">Servitization</span>
+        <span class="map-side sustainability">Sustainability</span>
+        <span class="map-side speed">신속한 탐지</span>
+        <span class="map-side decision">빠른의사결정</span>
+        <span class="map-side quality">품질무결성</span>
+        <span class="map-side just">제때개발</span>
+        <span class="map-side member">구성원만족도</span>
+        <div class="infinity-map">
+          <span class="loop left"></span>
+          <span class="loop right"></span>
+          <span class="loop-knot"></span>
+          <span class="map-label cej"><strong>CEJ</strong><span>Customer Experience Journey</span></span>
+          <span class="map-label dej"><strong>DEJ</strong><span>Development Experience Journey</span></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="pipeline">
+      <div class="section-head">
+        <div>
+          <div class="section-kicker"><span class="material-icons-round">account_tree</span>Pipeline</div>
+          <h2 class="section-title">CEJ 데이터가 DEJ 실행으로 바뀌는 흐름</h2>
+        </div>
+        <p class="section-desc">포털 인트로의 CEJ·DEJ 인피니티 구조를 서비스 관점으로 다시 풀었습니다. 3C 2S 고객경험 영역의 데이터가 신속한 탐지, 빠른 의사결정, 품질무결성, 제때개발, 구성원 만족도로 이어지는 파이프라인입니다.</p>
+      </div>
+      <div class="pipeline-panel">
+        <div class="pipeline">
+          <article class="pipe-step">
+            <div class="pipe-icon blue"><span class="material-icons-round">groups</span></div>
+            <div><div class="pipe-sub">CEJ</div><h3 class="pipe-title">Customer Experience Journey</h3></div>
+            <p class="pipe-desc">고객 접점, 업무 맥락, 서비스 사용 흐름에서 경험 신호를 발견합니다.</p>
+          </article>
+          <article class="pipe-step">
+            <div class="pipe-icon green"><span class="material-icons-round">dataset</span></div>
+            <div><div class="pipe-sub">3C 2S</div><h3 class="pipe-title">고객경험 영역 데이터</h3></div>
+            <p class="pipe-desc">Connectivity, Customization, Care, Servitization, Sustainability 관점으로 신호를 분류합니다.</p>
+          </article>
+          <article class="pipe-step">
+            <div class="pipe-icon"><span class="material-icons-round">code_blocks</span></div>
+            <div><div class="pipe-sub">DEJ</div><h3 class="pipe-title">Development Experience Journey</h3></div>
+            <p class="pipe-desc">발견된 고객 신호를 개발자가 이해하고 설계하고 구현할 수 있는 작업 흐름으로 바꿉니다.</p>
+          </article>
+          <article class="pipe-step">
+            <div class="pipe-icon purple"><span class="material-icons-round">widgets</span></div>
+            <div><div class="pipe-sub">AX Studio</div><h3 class="pipe-title">Apps · AI · Projects</h3></div>
+            <p class="pipe-desc">App Gallery, AI Gallery, 프로젝트 허브와 연결해 필요한 도구를 바로 선택하게 합니다.</p>
+          </article>
+          <article class="pipe-step">
+            <div class="pipe-icon orange"><span class="material-icons-round">rocket_launch</span></div>
+            <div><div class="pipe-sub">Core Value</div><h3 class="pipe-title">제때개발과 품질 개선</h3></div>
+            <p class="pipe-desc">빠른 의사결정과 품질무결성을 바탕으로 필요한 순간에 필요한 기능을 제공합니다.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section content-grid" id="history">
+      <div>
+        <div class="section-head">
+          <div>
+            <div class="section-kicker"><span class="material-icons-round">history</span>History</div>
+            <h2 class="section-title">DEJ 콘셉트의 변화</h2>
+          </div>
+        </div>
+        <div class="timeline-panel">
+          <div class="timeline">
+            <article class="timeline-item">
+              <div class="time-label">CEJ</div>
+              <div class="time-copy"><h3 class="time-title">고객경험 여정에서 출발</h3><p class="time-desc">고객 접점과 서비스 사용 흐름을 관찰하고, 3C 2S 고객경험 영역의 데이터로 개선 신호를 찾는 관점에서 시작했습니다.</p></div>
+            </article>
+            <article class="timeline-item">
+              <div class="time-label">Portal</div>
+              <div class="time-copy"><h3 class="time-title">DEJ Portal 인트로로 철학을 시각화</h3><p class="time-desc">Development Experience Journey라는 이름 아래 CEJ와 DEJ를 인피니티 루프로 연결하고, Connectivity부터 Core Value까지 핵심 키워드를 소개했습니다.</p></div>
+            </article>
+            <article class="timeline-item">
+              <div class="time-label">AX</div>
+              <div class="time-copy"><h3 class="time-title">AX Studio 안의 실행형 경험으로 통합</h3><p class="time-desc">별도 포털의 설명 페이지가 아니라 App Gallery, AI Gallery, 프로젝트 허브, 챗봇으로 바로 이어지는 업무 진입점으로 전환합니다.</p></div>
+            </article>
+            <article class="timeline-item">
+              <div class="time-label">Value</div>
+              <div class="time-copy"><h3 class="time-title">신속한 탐지와 제때개발로 환류</h3><p class="time-desc">빠른 의사결정, 품질무결성, 구성원만족도를 함께 높이며 고객 경험 개선 결과가 다시 CEJ 데이터로 돌아오게 합니다.</p></div>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <aside class="card-stack">
+        <section class="card">
+          <h2 class="card-title"><span class="material-icons-round">diamond</span>Core Ideas</h2>
+          <p class="card-desc">포털 인트로의 키워드는 3C 2S 데이터와 Core Value 흐름으로 압축해 남깁니다.</p>
+          <div class="value-grid">
+            <div class="value-chip"><strong>Connectivity</strong><span>데이터, 도구, 팀, 서비스가 끊기지 않게 연결되는 구조</span></div>
+            <div class="value-chip"><strong>Customization</strong><span>업무 맥락과 사용자 목적에 맞게 경험을 조정하는 방식</span></div>
+            <div class="value-chip"><strong>Care</strong><span>고객과 구성원이 느끼는 불편을 빠르게 발견하고 돌보는 관점</span></div>
+            <div class="value-chip"><strong>Servitization</strong><span>개발 결과를 기능이 아닌 지속 가능한 서비스 경험으로 연결</span></div>
+            <div class="value-chip"><strong>Sustainability</strong><span>반복 가능한 개선 체계를 만들어 품질과 운영을 함께 유지</span></div>
+            <div class="value-chip"><strong>Core Value</strong><span>신속한 탐지, 빠른 의사결정, 품질무결성, 제때개발, 구성원만족도</span></div>
+          </div>
+        </section>
+        <section class="card">
+          <h2 class="card-title"><span class="material-icons-round">open_in_new</span>Continue in AX Studio</h2>
+          <p class="card-desc">DEJ는 소개에서 끝나지 않고 AX Studio의 실제 기능으로 이어집니다. 필요한 도구를 고르고, AI 도움을 받고, 프로젝트로 실행하세요.</p>
+          <div class="link-list">
+            <a class="quick-link" href="dej_app_store.html">App Gallery <span class="material-icons-round">chevron_right</span></a>
+            <a class="quick-link" href="dej_agent_store.html">AI Gallery <span class="material-icons-round">chevron_right</span></a>
+            <a class="quick-link" href="workspace_projects_hub.html">Project / Publish <span class="material-icons-round">chevron_right</span></a>
+            <a class="quick-link" href="dej_chatbot_trial.html">지원 챗봇 <span class="material-icons-round">chevron_right</span></a>
+          </div>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <script src="concept_endpoint_overlay.js"></script>
+</body>
+</html>

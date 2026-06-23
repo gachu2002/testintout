@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keycenter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    window.HUB_CONFIG = {
+      documentTitle: "Keycenter",
+      activeKey: "keycenter",
+      theme: {
+        bg: "#fff9ed",
+        brand: "#f59e0b",
+        brandH: "#d97706",
+        brandBg: "#fef3c7",
+        brandSoft: "rgba(245,158,11,.14)",
+        accent2: "#f97316"
+      },
+      searchPlaceholder: "key 이름, tier, model, connected surface를 검색하세요...",
+      eyebrow: "AI · Issued LLM Keys",
+      title: "Keycenter",
+      description: "LLM key를 발급하고 key tier, model 범위, 회전 주기, 연결된 사용처를 함께 관리합니다. 예시 tier는 free, paid, asf, dej-base 기준으로 정리했습니다.",
+      primaryAction: { href: "workspace_project_detail.html?project=coverity-ai", icon: "vpn_key", label: "새 Key 발급 요청" },
+      secondaryAction: { href: "workspace_chatbot_hub.html", icon: "chat", label: "Chatbot Hub 보기" },
+      heroStats: [
+        { icon: "vpn_key", value: "32", label: "Issued Keys", note: "active and review", color: "linear-gradient(135deg,#f59e0b,#f97316)" },
+        { icon: "layers", value: "4", label: "Key Tier", note: "free · paid · asf · dej-base", color: "linear-gradient(135deg,#d97706,#f59e0b)" },
+        { icon: "published_with_changes", value: "5", label: "Rotate Soon", note: "14일 이내 교체 예정", color: "linear-gradient(135deg,#ea580c,#fb923c)" },
+        { icon: "link", value: "14", label: "Bound Surfaces", note: "chatbot · agent · tool inventory", color: "linear-gradient(135deg,#f59e0b,#fbbf24)" }
+      ],
+      filters: [
+        { id: "all", icon: "apps", label: "전체" },
+        { id: "openai", icon: "auto_awesome", label: "OpenAI" },
+        { id: "anthropic", icon: "psychology", label: "Anthropic" },
+        { id: "azure", icon: "cloud", label: "Azure" },
+        { id: "internal", icon: "apartment", label: "Internal" },
+        { id: "production", icon: "rocket_launch", label: "Production" },
+        { id: "review", icon: "fact_check", label: "Review" }
+      ],
+      resourceSectionIcon: "vpn_key",
+      resourceSectionLabel: "Issued Key Inventory",
+      resourceTitle: "LLM Keys",
+      resourceDescription: "각 카드는 하나의 발급된 key를 나타냅니다. key tier, 허용 모델, 회전 일정, 연결된 사용처를 함께 확인한 뒤 상세 페이지에서 key별 상태를 이어서 볼 수 있습니다.",
+      resourceHeaderLink: { href: "workspace_tool_inventory_hub.html", label: "Tool Inventory 연결 보기" },
+      resources: [
+        {
+          categories: ["all", "openai", "production"],
+          status: { label: "Active", tone: "healthy" },
+          engine: "paid",
+          icon: "vpn_key",
+          name: "openai-support-prod-key",
+          meta: "support-assistant-api와 campaign-orchestrator가 함께 사용하는 paid tier key입니다.",
+          color: "linear-gradient(135deg,#f59e0b,#f97316)",
+          usage: {
+            label: "Usage",
+            value: 74,
+            meta: "주요 운영 surface에서 지속 사용 중",
+            color: "linear-gradient(90deg,#f59e0b,#fbbf24)"
+          },
+          details: [
+            { icon: "model_training", text: "Models 2" },
+            { icon: "link", text: "Bound Surfaces 3" }
+          ],
+          owner: {
+            label: "Owner",
+            initials: "TN",
+            name: "Taehun Nam",
+            meta: "Support Platform",
+            color: "linear-gradient(135deg,#f59e0b,#f97316)"
+          },
+          tagsLabel: "Allowed Models",
+          tags: [
+            { icon: "model_training", text: "gpt-4.1" },
+            { icon: "model_training", text: "gpt-4o" },
+            { icon: "schedule", text: "rotate 11d" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?item=openai-support-prod-key" }
+          ]
+        },
+        {
+          categories: ["all", "anthropic", "production"],
+          status: { label: "Active", tone: "healthy" },
+          engine: "paid",
+          icon: "vpn_key",
+          name: "anthropic-review-guard-key",
+          meta: "repo-review-guard와 release-notes-pilot이 참조하는 reasoning 중심 key입니다.",
+          color: "linear-gradient(135deg,#2563eb,#60a5fa)",
+          usage: {
+            label: "Usage",
+            value: 62,
+            meta: "review와 문서 자동화 흐름에서 사용",
+            color: "linear-gradient(90deg,#2563eb,#60a5fa)"
+          },
+          details: [
+            { icon: "model_training", text: "Models 1" },
+            { icon: "link", text: "Bound Surfaces 2" }
+          ],
+          owner: {
+            label: "Owner",
+            initials: "HK",
+            name: "Hyunki Kim",
+            meta: "Core Infra",
+            color: "linear-gradient(135deg,#2563eb,#60a5fa)"
+          },
+          tagsLabel: "Allowed Models",
+          tags: [
+            { icon: "model_training", text: "claude-3.7-sonnet" },
+            { icon: "schedule", text: "rotate 18d" },
+            { icon: "psychology", text: "reasoning" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?item=anthropic-review-guard-key" }
+          ]
+        },
+        {
+          categories: ["all", "internal", "production"],
+          status: { label: "Active", tone: "healthy" },
+          engine: "asf",
+          icon: "vpn_key",
+          name: "internal-docs-rag-key",
+          meta: "docs-guide-widget와 workspace-knowledge가 함께 참조하는 asf tier key입니다.",
+          color: "linear-gradient(135deg,#14b8a6,#06b6d4)",
+          usage: {
+            label: "Usage",
+            value: 57,
+            meta: "문서 검색과 보강 응답에서 안정적으로 사용 중",
+            color: "linear-gradient(90deg,#14b8a6,#06b6d4)"
+          },
+          details: [
+            { icon: "model_training", text: "Models 2" },
+            { icon: "link", text: "Bound Surfaces 3" }
+          ],
+          owner: {
+            label: "Owner",
+            initials: "MK",
+            name: "Mina Kim",
+            meta: "Docs Experience",
+            color: "linear-gradient(135deg,#14b8a6,#06b6d4)"
+          },
+          tagsLabel: "Allowed Models",
+          tags: [
+            { icon: "model_training", text: "asf-rag-base" },
+            { icon: "model_training", text: "rerank-lite" },
+            { icon: "schedule", text: "rotate 24d" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?item=internal-docs-rag-key" }
+          ]
+        },
+        {
+          categories: ["all", "azure", "production"],
+          status: { label: "Active", tone: "healthy" },
+          engine: "paid",
+          icon: "vpn_key",
+          name: "azure-ops-briefing-key",
+          meta: "ops-briefing-bot과 incident-triage-bot이 공유하는 paid tier key입니다.",
+          color: "linear-gradient(135deg,#7c3aed,#a78bfa)",
+          usage: {
+            label: "Usage",
+            value: 69,
+            meta: "운영 브리핑 시간대에 요청이 집중됩니다",
+            color: "linear-gradient(90deg,#7c3aed,#a78bfa)"
+          },
+          details: [
+            { icon: "model_training", text: "Models 2" },
+            { icon: "link", text: "Bound Surfaces 2" }
+          ],
+          owner: {
+            label: "Owner",
+            initials: "JP",
+            name: "Jiho Park",
+            meta: "Site Reliability",
+            color: "linear-gradient(135deg,#7c3aed,#a78bfa)"
+          },
+          tagsLabel: "Allowed Models",
+          tags: [
+            { icon: "model_training", text: "azure-gpt-4.1" },
+            { icon: "model_training", text: "azure-gpt-4o-mini" },
+            { icon: "schedule", text: "rotate 9d" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?item=azure-ops-briefing-key" }
+          ]
+        },
+        {
+          categories: ["all", "openai", "review"],
+          status: { label: "Review", tone: "review" },
+          engine: "free",
+          icon: "vpn_key",
+          name: "partner-pricing-review-key",
+          meta: "pricing-advisor-bot 파일럿 검토에 사용하는 파트너 상담용 key입니다.",
+          color: "linear-gradient(135deg,#ef4444,#f97316)",
+          usage: {
+            label: "Usage",
+            value: 28,
+            meta: "파일럿 구간만 제한적으로 호출 중",
+            color: "linear-gradient(90deg,#ef4444,#f97316)"
+          },
+          details: [
+            { icon: "model_training", text: "Models 2" },
+            { icon: "link", text: "Bound Surfaces 1" }
+          ],
+          owner: {
+            label: "Owner",
+            initials: "SL",
+            name: "Sora Lee",
+            meta: "Partner Solutions",
+            color: "linear-gradient(135deg,#ef4444,#f97316)"
+          },
+          tagsLabel: "Allowed Models",
+          tags: [
+            { icon: "model_training", text: "gpt-4.1" },
+            { icon: "model_training", text: "gpt-4o" },
+            { icon: "fact_check", text: "review state" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?item=partner-pricing-review-key" }
+          ]
+        },
+        {
+          categories: ["all", "internal", "production"],
+          status: { label: "Active", tone: "healthy" },
+          engine: "dej-base",
+          icon: "vpn_key",
+          name: "internal-tool-runtime-key",
+          meta: "workspace-knowledge와 billing-service가 공유하는 dej-base tier key입니다.",
+          color: "linear-gradient(135deg,#0f766e,#34d399)",
+          usage: {
+            label: "Usage",
+            value: 48,
+            meta: "tool inventory에서 다수의 호출을 안정적으로 처리합니다",
+            color: "linear-gradient(90deg,#0f766e,#34d399)"
+          },
+          details: [
+            { icon: "model_training", text: "Models 2" },
+            { icon: "link", text: "Bound Surfaces 3" }
+          ],
+          owner: {
+            label: "Owner",
+            initials: "AR",
+            name: "Aaron Ryu",
+            meta: "ASF Lab",
+            color: "linear-gradient(135deg,#0f766e,#34d399)"
+          },
+          tagsLabel: "Allowed Models",
+          tags: [
+            { icon: "model_training", text: "internal-rag-1" },
+            { icon: "model_training", text: "function-router" },
+            { icon: "schedule", text: "rotate 21d" }
+          ],
+          actions: [
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?item=internal-tool-runtime-key" }
+          ]
+        }
+      ],
+      mainPanels: [
+        {
+          icon: "tips_and_updates",
+          label: "Usage Guide",
+          title: "키를 볼 때 먼저 확인할 항목",
+          description: "Keycenter에서는 key 이름보다도 현재 free, paid, asf, dej-base 중 어떤 tier로 운영되고, 어떤 model 범위를 열어주며, 어떤 surface에 연결되어 있는지가 더 중요합니다.",
+          rows: [
+            { title: "연결된 사용처를 먼저 확인합니다", meta: "같은 tier key라도 chatbot, agent, tool inventory마다 영향 범위가 다를 수 있습니다." },
+            { title: "회전 일정과 사용량을 함께 봅니다", meta: "사용량이 높은 key는 회전 시점과 교체 범위를 같이 확인해야 안전합니다." },
+            { title: "허용 모델 범위를 같이 확인합니다", meta: "같은 tier라도 허용된 모델이 다르면 실제 연결 가능 surface가 달라집니다." }
+          ],
+          footerLink: { href: "workspace_keycenter_detail.html?item=openai-support-prod-key", label: "예시 key 보기" }
+        },
+        {
+          icon: "menu_book",
+          label: "Connected Hubs",
+          title: "연결된 허브",
+          description: "Keycenter는 실제 사용처와 함께 봐야 이해가 빠릅니다. 어떤 chatbot, agent, tool이 이 key를 쓰는지 연결된 허브에서 이어서 확인할 수 있습니다.",
+          rows: [
+            { title: "Chatbot Hub", meta: "Bot API와 Bot Web이 어떤 key를 참조하는지 확인합니다.", href: "workspace_chatbot_hub.html" },
+            { title: "Agent Hub", meta: "workflow와 runtime이 어떤 key로 실행되는지 확인합니다.", href: "workspace_agent_hub.html" },
+            { title: "Tool Inventory Hub", meta: "tool 호출과 retrieval 경계가 어떤 key로 보호되는지 확인합니다.", href: "workspace_tool_inventory_hub.html" }
+          ],
+          footerLink: { href: "portal_launchpad.html", label: "런치패드로 돌아가기" }
+        }
+      ],
+      sidebarPanels: [
+        {
+          icon: "published_with_changes",
+          label: "Rotate Soon",
+          title: "회전 예정 Key",
+          description: "곧 교체가 필요한 key를 먼저 확인할 수 있습니다.",
+          rows: [
+            { title: "azure-ops-briefing-key", meta: "9일 후 회전 예정 · ops-briefing-bot", pill: { label: "Soon", tone: "review" } },
+            { title: "openai-support-prod-key", meta: "11일 후 회전 예정 · support-assistant-api", pill: { label: "Soon", tone: "review" } },
+            { title: "partner-pricing-review-key", meta: "검토 완료 후 정식 key 발급 필요", pill: { label: "Review", tone: "review" } }
+          ]
+        },
+        {
+          icon: "model_training",
+          label: "Model Mix",
+          title: "주요 모델 연결 현황",
+          description: "현재 가장 많이 연결된 모델 범위를 요약해서 볼 수 있습니다.",
+          rows: [
+            { title: "gpt-4.1", meta: "support, pricing, ops key에서 공통 사용", pill: { label: "Wide", tone: "healthy" } },
+            { title: "gpt-4o", meta: "지원 응답과 고속 처리 흐름에 연결", pill: { label: "Active", tone: "info" } },
+            { title: "claude-3.7-sonnet", meta: "review와 문서 reasoning에 사용", pill: { label: "Focused", tone: "healthy" } },
+            { title: "internal-rag-1", meta: "retrieval 및 tool runtime 전용", pill: { label: "Scoped", tone: "pending" } }
+          ]
+        }
+      ]
+    };
+  </script>
+  <script src="workspace_resource_hub_shared.js"></script>
+  <script src="ax_studio_topbar.js"></script>
+  <script src="concept_endpoint_overlay.js"></script>
+</body>
+</html>
