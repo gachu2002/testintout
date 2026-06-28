@@ -944,31 +944,31 @@ export const appGalleryHeroResponse = {
   data: {
     title: 'App Gallery',
     subtitle:
-      'Curated app templates that connect directly to project starts, operations portals, and analytics dashboards.',
+      '프로젝트 시작, 운영 포털, 분석 대시보드까지 바로 이어지는 앱 템플릿을 큐레이션합니다.',
     stats: [
       {
         id: 'catalog',
         label: 'Curated Apps',
         value: '6',
-        note: 'Currently available app catalog',
+        note: '현재 제공 중인 앱 카탈로그',
       },
       {
         id: 'published',
         label: 'Published Apps',
         value: '0',
-        note: 'Public projects currently deployed',
+        note: '현재 배포 중인 공개 프로젝트',
       },
       {
         id: 'projects',
         label: 'Target Projects',
-        value: '64',
-        note: 'Total projects that can connect install flows',
+        value: '60',
+        note: '설치 흐름을 연결할 수 있는 전체 프로젝트',
       },
       {
         id: 'categories',
         label: 'Categories',
         value: '4',
-        note: 'Development, operations, workspace, and analytics categories',
+        note: '개발, 운영, 워크스페이스, 분석 카테고리',
       },
     ],
     primaryCta: {
@@ -983,32 +983,32 @@ export const appGalleryCategoriesResponse = {
     items: [
       {
         id: 'all',
-        label: 'All',
-        description: 'Full app catalog connected to operations and development',
+        label: '전체',
+        description: '운영과 개발에 바로 연결되는 전체 앱 카탈로그',
         count: 6,
       },
       {
         id: 'development',
         label: 'Development',
-        description: 'Apps that connect project creation and IDE entry quickly',
+        description: '프로젝트 생성과 IDE 진입을 빠르게 연결하는 앱',
         count: 1,
       },
       {
         id: 'workspace',
         label: 'Workspace',
-        description: 'Collaboration, documentation, and portal-style workspace apps',
+        description: '협업, 문서, 포털 성격의 운영 앱',
         count: 2,
       },
       {
         id: 'operations',
         label: 'Operations',
-        description: 'Deployment, status checks, and operations automation flows',
+        description: '배포와 상태 점검, 운영 자동화 흐름',
         count: 2,
       },
       {
         id: 'analytics',
         label: 'Analytics',
-        description: 'Apps for reading traffic and service metrics',
+        description: '트래픽과 서비스 지표를 읽는 앱',
         count: 1,
       },
     ],
@@ -1026,8 +1026,8 @@ export const appGalleryCatalogItems = [
     icon: 'terminal',
     iconColor: '#2563eb',
     tags: ['codeserver', 'ide', 'starter'],
-    summary: 'Install a basic development workspace for opening and editing projects quickly.',
-    installTargetLabel: 'Project',
+    summary: '프로젝트를 바로 열고 수정할 수 있는 기본 개발 워크스페이스를 설치합니다.',
+    installTargetLabel: '프로젝트',
     capabilities: { canInstall: true, canPreview: true },
   },
   {
@@ -1039,9 +1039,8 @@ export const appGalleryCatalogItems = [
     icon: 'rocket_launch',
     iconColor: '#ea580c',
     tags: ['deploy', 'readiness', 'release'],
-    summary:
-      'An operations dashboard for deployment readiness, recent releases, and rollback flows.',
-    installTargetLabel: 'Project',
+    summary: '배포 준비 상태, 최근 릴리즈, rollback 흐름을 한 번에 보는 운영 대시보드입니다.',
+    installTargetLabel: '프로젝트',
     capabilities: { canInstall: true, canPreview: true },
   },
   {
@@ -1053,8 +1052,8 @@ export const appGalleryCatalogItems = [
     icon: 'menu_book',
     iconColor: '#0f766e',
     tags: ['docs', 'readme', 'guide'],
-    summary: 'Organize project docs and guides into a readable portal for operators and users.',
-    installTargetLabel: 'Project',
+    summary: '프로젝트 문서와 가이드를 정리해 운영자와 사용자 모두가 읽기 쉬운 포털 형태로 제공합니다.',
+    installTargetLabel: '프로젝트',
     capabilities: { canInstall: true, canPreview: true },
   },
   {
@@ -1066,8 +1065,8 @@ export const appGalleryCatalogItems = [
     icon: 'query_stats',
     iconColor: '#7c3aed',
     tags: ['analytics', 'matomo', 'insights'],
-    summary: 'Organize visits and service usage into an experimental analytics dashboard.',
-    installTargetLabel: 'Project',
+    summary: '사용자 방문량과 서비스 사용량을 정리해 실험형 분석 대시보드로 연결합니다.',
+    installTargetLabel: '프로젝트',
     capabilities: { canInstall: true, canPreview: true },
   },
   {
@@ -1079,8 +1078,8 @@ export const appGalleryCatalogItems = [
     icon: 'support_agent',
     iconColor: '#be123c',
     tags: ['support', 'approval', 'intake'],
-    summary: 'A support app template for intake, approval requests, and follow-up action links.',
-    installTargetLabel: 'Project',
+    summary: '문의 접수, 승인 요청, 후속 액션 링크를 한 화면에 정리하는 지원용 앱 템플릿입니다.',
+    installTargetLabel: '프로젝트',
     capabilities: { canInstall: true, canPreview: true },
   },
   {
@@ -1092,8 +1091,8 @@ export const appGalleryCatalogItems = [
     icon: 'developer_board',
     iconColor: '#1d4ed8',
     tags: ['console', 'runtime', 'terminal'],
-    summary: 'An operations toolkit that shortens paths to service status, logs, and terminals.',
-    installTargetLabel: 'Project',
+    summary: '서비스 상태 확인, 로그 확인, 터미널 진입 동선을 줄여 주는 운영용 도구 묶음입니다.',
+    installTargetLabel: '프로젝트',
     capabilities: { canInstall: true, canPreview: true },
   },
 ];
@@ -1113,15 +1112,15 @@ export const appGalleryFeaturedResponse = {
     items: [
       {
         ...appGalleryCatalogItems[0],
-        badge: 'Fastest starting point',
+        badge: '가장 빠른 시작점',
       },
       {
         ...appGalleryCatalogItems[1],
-        badge: 'Improves operations visibility',
+        badge: '운영 가시성 강화',
       },
       {
         ...appGalleryCatalogItems[2],
-        badge: 'Best for documentation-focused teams',
+        badge: '문서화가 중요한 팀에 적합',
       },
     ],
   },
@@ -1133,7 +1132,7 @@ export const appGalleryRelatedAiResponse = {
       {
         slug: 'release-review-agent',
         title: 'Release Review Agent',
-        subtitle: 'Agent for pre-deployment checks and approval points',
+        subtitle: '배포 전 체크와 승인 포인트를 정리하는 agent',
         category: 'agent',
         href: '/workspace/ai-gallery',
         tags: ['agent', 'release', 'review'],
@@ -1141,7 +1140,7 @@ export const appGalleryRelatedAiResponse = {
       {
         slug: 'workspace-helper-pack',
         title: 'Workspace Helper Pack',
-        subtitle: 'Workflow pack for docs, guides, and MCP connections',
+        subtitle: '문서, 가이드, MCP 연결을 묶은 workflow pack',
         category: 'workflow-pack',
         href: '/workspace/ai-gallery',
         tags: ['workflow-pack', 'docs', 'mcp'],
@@ -1149,7 +1148,7 @@ export const appGalleryRelatedAiResponse = {
       {
         slug: 'insight-analyst-agent',
         title: 'Insight Analyst Agent',
-        subtitle: 'Analytics agent for quickly reading usage and trends',
+        subtitle: '사용량과 트렌드를 빠르게 읽어 주는 분석 agent',
         category: 'agent',
         href: '/workspace/ai-gallery',
         tags: ['agent', 'analytics', 'insight'],
@@ -1163,18 +1162,14 @@ export const appGalleryAppDetailsBySlug = {
     data: {
       ...appGalleryCatalogItems[0],
       description:
-        'Connect a Code Server-based development environment, basic README template, and pre-deployment checklist links to new projects.',
+        '신규 프로젝트에 Code Server 중심의 개발 환경, 기본 README 템플릿, 배포 전 점검 링크를 함께 연결합니다.',
       highlights: [
-        'Provides IDE entry links and the basic project structure together.',
-        'Connects naturally with Run and Open IDE flows in project details.',
-        'Shortens the starting path between Launchpad and Projects Hub.',
+        'IDE 진입 링크와 프로젝트 기본 구조를 함께 제공합니다.',
+        '프로젝트 상세의 Run, Open IDE 흐름과 자연스럽게 연결됩니다.',
+        'Launchpad와 Projects Hub 사이의 시작 동선을 줄여 줍니다.',
       ],
-      useCases: [
-        'Project bootstrap',
-        'Shared team development environment',
-        'New collaborator onboarding',
-      ],
-      prerequisites: ['Access to the target project', 'Code Server-based IDE usage'],
+      useCases: ['프로젝트 부트스트랩', '팀 공통 개발 환경 표준화', '신규 협업자 온보딩'],
+      prerequisites: ['설치 대상 프로젝트 접근 권한', 'Code Server 기반 IDE 사용'],
       install: {
         method: 'POST',
         path: '/api/v2/app-gallery/apps/code-studio/install',
@@ -1188,18 +1183,13 @@ export const appGalleryAppDetailsBySlug = {
     data: {
       ...appGalleryCatalogItems[1],
       description:
-        'Show release status and deployment readiness in one view so operators can choose the next action quickly.',
+        'Project Detail의 Publish 섹션과 Job 상태 추적을 중심으로 운영자용 배포 모니터를 구성합니다.',
       highlights: [
-        'Shows recent releases and rollback flows in the same context.',
-        'Prioritizes readiness items that operators need to verify.',
-        'Works as an operations hub connecting project details and deployment history.',
+        '배포 readiness 체크와 Job 추적 흐름을 연결합니다.',
+        '최근 릴리즈 히스토리와 위험 신호를 같은 컨텍스트에서 읽을 수 있습니다.',
       ],
-      useCases: [
-        'Release readiness checks',
-        'Deployment dashboard',
-        'Pre-approval operations review',
-      ],
-      prerequisites: ['Access to the deployment target project', 'Project release history data'],
+      useCases: ['배포 워룸', '운영 체크리스트 패널', '프로젝트 상태 브리핑'],
+      prerequisites: ['배포 이력이 있는 프로젝트가 권장됩니다.'],
       install: {
         method: 'POST',
         path: '/api/v2/app-gallery/apps/launch-monitor/install',
@@ -1213,39 +1203,33 @@ export const appGalleryAppDetailsBySlug = {
     data: {
       ...appGalleryCatalogItems[2],
       description:
-        'Organize README files, operations guides, and onboarding docs into a project-level portal shared by users and operators.',
+        'README, 공통 가이드 링크, 배포 이력 패널을 묶어 문서 중심 프로젝트를 빠르게 구성합니다.',
       highlights: [
-        'Presents document links and guide structure in one view.',
-        'Can expose operations docs and developer README files together.',
-        'Helps new collaborators understand project context quickly.',
+        'Launchpad Guides, Project Detail README와 문서 흐름을 맞춥니다.',
+        '운영 가이드와 사용자 문서를 한 프로젝트로 정리하기 좋습니다.',
       ],
-      useCases: [
-        'Project documentation portal',
-        'Operations guide organization',
-        'Onboarding materials',
-      ],
-      prerequisites: ['Document source repository', 'Project operator permission'],
+      useCases: ['팀 운영 문서 허브', '프로젝트 온보딩 사이트', '내부 포털 MVP'],
+      prerequisites: ['프로젝트 README 또는 문서 콘텐츠 준비'],
       install: {
         method: 'POST',
         path: '/api/v2/app-gallery/apps/docs-portal/install',
         requiredFields: ['projectId'],
         targetType: 'project',
       },
-      relatedAi: [appGalleryRelatedAiResponse.data.items[1]],
+      relatedAi: [],
     },
   },
   'analytics-lab': {
     data: {
       ...appGalleryCatalogItems[3],
       description:
-        'Connect visits, usage flows, and service metrics quickly to start an experimental analytics dashboard.',
+        'Project Observability와 Launchpad Hero 지표를 참고해 KPI 중심의 대시보드를 빠르게 시작합니다.',
       highlights: [
-        'Shows traffic and service usage together.',
-        'Makes it easy to start a Matomo-based analytics flow.',
-        'Exposes key metrics quickly in an experimental dashboard.',
+        '방문량, 서비스 사용량, KPI 패널을 함께 배치할 수 있습니다.',
+        '운영 회고와 실험 리포트 흐름에 적합합니다.',
       ],
-      useCases: ['Service usage analysis', 'Visit trend review', 'Experiment metric checks'],
-      prerequisites: ['Analytics target project', 'Traffic collection setup'],
+      useCases: ['주간 운영 리포트', 'KPI 실험 대시보드', '서비스 분석 허브'],
+      prerequisites: ['분석 소스 연결 또는 샘플 데이터 준비'],
       install: {
         method: 'POST',
         path: '/api/v2/app-gallery/apps/analytics-lab/install',
@@ -1296,6 +1280,13 @@ export const appGalleryAppDetailsBySlug = {
       },
       relatedAi: [appGalleryRelatedAiResponse.data.items[0]],
     },
+  },
+};
+
+export const appGalleryInstallResponse = {
+  data: {
+    jobId: '6a3a02a5dc684c9fde7e52e1',
+    status: 'queued',
   },
 };
 

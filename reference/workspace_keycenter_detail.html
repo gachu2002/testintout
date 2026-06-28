@@ -1,738 +1,1292 @@
 <!doctype html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Keycenter Detail</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
-    <link rel="stylesheet" href="workspace_detail_shared.css" />
-  </head>
-  <body>
-    <div id="app"></div>
-    <script>
-      function cards(rows) {
-        return rows
-          .map(
-            (row) =>
-              `<article class="card"><div class="card-title">${row.title}</div><div class="card-desc">${row.desc}</div><div class="tag-row">${row.tags.map((tag) => `<span class="tag">${tag}</span>`).join('')}</div></article>`,
-          )
-          .join('');
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keycenter Detail</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="workspace_detail_shared.css" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <style>
+    .usage-card {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--surface-soft);
+      padding: 20px;
+    }
+    .usage-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .usage-name {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+    }
+    .usage-meta {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      margin-top: 4px;
+    }
+    .usage-value {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -.04em;
+      text-align: right;
+    }
+    .mini-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .mini-stat {
+      padding: 14px;
+      border-radius: 16px;
+      background: #fff;
+      border: 1px solid var(--border);
+    }
+    .mini-stat-label {
+      color: var(--subtle);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .mini-stat-value {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      margin-bottom: 4px;
+    }
+    .mini-stat-meta {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .access-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .project-list {
+      display: grid;
+      gap: 12px;
+    }
+    .project-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 16px 18px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--surface-soft);
+    }
+    .project-main {
+      min-width: 0;
+      display: grid;
+      gap: 7px;
+    }
+    .project-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+    .project-name {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+    }
+    .project-meta {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .project-side {
+      display: grid;
+      gap: 8px;
+      justify-items: end;
+      text-align: right;
+    }
+    .tiny-label {
+      color: var(--subtle);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .tiny-value {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+    }
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--brand);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .section-card-spacer {
+      margin-top: 18px;
+    }
+    .usage-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .usage-range {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .usage-detail-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+      gap: 18px;
+    }
+    .key-stack {
+      display: grid;
+      gap: 12px;
+    }
+    .key-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+    }
+    .key-row:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+    .key-row:first-child {
+      padding-top: 0;
+    }
+    .key-row-label {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      margin-bottom: 4px;
+    }
+    .key-row-meta {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .key-row-value {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
+      white-space: normal;
+      word-break: break-word;
+    }
+    .key-row-value .material-icons-round {
+      font-size: 16px;
+      color: var(--subtle);
+    }
+    .model-chip-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .model-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .usage-total-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .usage-total-card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #fff;
+      padding: 16px;
+      min-height: 104px;
+    }
+    .usage-total-label {
+      color: var(--subtle);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .usage-total-value {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -.04em;
+      margin-bottom: 6px;
+    }
+    .usage-total-meta {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .usage-chart-shell {
+      display: grid;
+      gap: 18px;
+    }
+    .usage-chart-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 2px;
+    }
+    .usage-filter {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .usage-filter select {
+      min-width: 180px;
+      padding: 9px 36px 9px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      appearance: none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--subtle) 50%),
+        linear-gradient(135deg, var(--subtle) 50%, transparent 50%);
+      background-position:
+        calc(100% - 18px) calc(50% - 2px),
+        calc(100% - 13px) calc(50% - 2px);
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+    }
+    .usage-chart-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .usage-chart-card {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #fff;
+      padding: 16px 16px 14px;
+    }
+    .usage-chart-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .usage-chart-title {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+    }
+    .usage-chart-meta {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      margin-top: 4px;
+    }
+    .usage-chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+    }
+    .usage-chart-svg {
+      width: 100%;
+      height: 220px;
+      display: block;
+    }
+    .usage-chart-labels {
+      margin-top: 6px;
+      display: grid;
+      grid-template-columns: repeat(var(--chart-columns, 8), minmax(0, 1fr));
+      gap: 8px;
+    }
+    .usage-chart-label {
+      color: var(--subtle);
+      font-size: 11px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    @media (max-width: 920px) {
+      .mini-stats,
+      .access-grid,
+      .usage-detail-grid,
+      .usage-chart-grid,
+      .usage-total-grid {
+        grid-template-columns: 1fr;
       }
-      function list(rows) {
-        return rows
-          .map(
-            (row) =>
-              `<div class="list-row"><div class="list-main"><div class="list-title">${row.title}</div><div class="list-meta">${row.meta}</div></div>${row.side ? `<div class="list-side">${row.side}</div>` : ''}</div>`,
-          )
-          .join('');
+      .project-card {
+        grid-template-columns: 1fr;
       }
-      function table(rows) {
-        return `<div class="table-wrap"><table><thead><tr><th>Provider</th><th>Models</th><th>Quota / Limit</th><th>Main Consumers</th></tr></thead><tbody>${rows.map((row) => `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td></tr>`).join('')}</tbody></table></div>`;
+      .project-side {
+        justify-items: start;
+        text-align: left;
       }
-      function progress(rows) {
-        return rows
-          .map(
-            (row) =>
-              `<article class="progress-card"><div class="progress-top"><div class="progress-title">${row.title}</div><div class="progress-value">${row.value}</div></div><div class="progress-bar"><div class="progress-fill" style="width:${row.percent}%;"></div></div><div class="progress-meta">${row.meta}</div></article>`,
-          )
-          .join('');
+      .usage-head {
+        flex-direction: column;
+        align-items: flex-start;
       }
-      function timeline(rows) {
-        return rows
-          .map(
-            (row) =>
-              `<div class="timeline-row"><div class="timeline-rail"><span class="timeline-dot"></span></div><div class="timeline-card"><div class="timeline-title">${row.title}</div><div class="timeline-meta">${row.meta}</div></div></div>`,
-          )
-          .join('');
+      .usage-value {
+        text-align: left;
       }
-      function kv(rows) {
-        return rows
-          .map(
-            (row) =>
-              `<div class="kv-item"><div class="kv-key">${row.key}</div><div class="kv-value">${row.value}</div></div>`,
-          )
-          .join('');
+      .key-row {
+        grid-template-columns: 1fr;
       }
-      function buildItem(item) {
-        return {
-          ...item,
-          mainHtml: `
+      .usage-chart-head,
+      .usage-chart-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .usage-filter {
+        margin-left: 0;
+      }
+      .usage-filter select {
+        min-width: 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    function list(rows) {
+      return rows.map((row) => `<div class="list-row"><div class="list-main"><div class="list-title">${row.title}</div><div class="list-meta">${row.meta}</div></div>${row.side ? `<div class="list-side">${row.side}</div>` : ""}</div>`).join("");
+    }
+    function kv(rows) {
+      return rows.map((row) => `<div class="kv-item"><div class="kv-key">${row.key}</div><div class="kv-value">${row.value}</div></div>`).join("");
+    }
+    function secretGrid(rows) {
+      return `<div class="secret-grid two">${rows.map((row) => `
+        <article class="secret-card">
+          <div class="secret-label">${row.label}</div>
+          <div class="secret-value"><span class="mono">${row.value}</span></div>
+          <div class="secret-meta">${row.meta || ""}</div>
+        </article>
+      `).join("")}</div>`;
+    }
+    function metricSummary(rows) {
+      return `<div class="mini-stats">${rows.map((row) => `
+        <article class="mini-stat">
+          <div class="mini-stat-label">${row.label}</div>
+          <div class="mini-stat-value">${row.value}</div>
+          <div class="mini-stat-meta">${row.meta}</div>
+        </article>
+      `).join("")}</div>`;
+    }
+    function healthSummary(rows) {
+      return `<div class="info-list">${rows.map((row) => `<div class="list-row"><div class="list-main"><div class="list-title">${row.title}</div><div class="list-meta">${row.meta}</div></div><div class="list-side">${row.value}</div></div>`).join("")}</div>`;
+    }
+    function connectionCards(rows) {
+      return `<div class="project-list">${rows.map((row) => `
+        <article class="project-card">
+          <div class="project-main">
+            <div class="project-top">
+              <div class="project-name">${row.title}</div>
+              <span class="tag">${row.badge}</span>
+            </div>
+            <div class="project-meta">${row.meta}</div>
+            <div class="project-tags">${(row.tags || []).map((tag) => `<span class="tag">${tag}</span>`).join("")}</div>
+          </div>
+          <div class="project-side">
+            <div class="tiny-label">${row.sideLabel}</div>
+            <div class="tiny-value">${row.sideValue}</div>
+            ${row.href ? `<a class="project-link" href="${row.href}">${row.linkLabel || "자세히 보기"}<span class="material-icons-round">chevron_right</span></a>` : ""}
+          </div>
+        </article>
+      `).join("")}</div>`;
+    }
+    function keyRows(rows) {
+      return `<div class="key-stack">${rows.map((row) => `
+        <div class="key-row">
+          <div>
+            <div class="key-row-label">${row.label}</div>
+            <div class="key-row-meta">${row.meta}</div>
+          </div>
+          <div class="key-row-value">${row.value}${row.actionIcon ? `<span class="material-icons-round">${row.actionIcon}</span>` : ""}</div>
+        </div>
+      `).join("")}</div>`;
+    }
+    function modelChips(models) {
+      return `<div class="model-chip-grid">${models.map((model) => `<span class="model-chip"><span class="material-icons-round" style="font-size:14px;color:var(--brand)">model_training</span>${model}</span>`).join("")}</div>`;
+    }
+    function usageTotals(rows) {
+      return `<div class="usage-total-grid">${rows.map((row) => `
+        <article class="usage-total-card">
+          <div class="usage-total-label">${row.label}</div>
+          <div class="usage-total-value">${row.value}</div>
+          <div class="usage-total-meta">${row.meta}</div>
+        </article>
+      `).join("")}</div>`;
+    }
+    function linePath(values, width, height, paddingX, paddingTop, paddingBottom, maxValue) {
+      return values.map((value, index) => {
+        const x = paddingX + ((width - paddingX * 2) * index) / Math.max(values.length - 1, 1);
+        const usableHeight = height - paddingTop - paddingBottom;
+        const y = paddingTop + usableHeight - (Math.max(value, 0) / maxValue) * usableHeight;
+        return `${index === 0 ? "M" : "L"}${x} ${y}`;
+      }).join(" ");
+    }
+    function pointDots(values, color, width, height, paddingX, paddingTop, paddingBottom, maxValue) {
+      const usableHeight = height - paddingTop - paddingBottom;
+      return values.map((value, index) => {
+        const x = paddingX + ((width - paddingX * 2) * index) / Math.max(values.length - 1, 1);
+        const y = paddingTop + usableHeight - (Math.max(value, 0) / maxValue) * usableHeight;
+        return `<circle cx="${x}" cy="${y}" r="3.5" fill="#fff" stroke="${color}" stroke-width="2"></circle>`;
+      }).join("");
+    }
+    function usageChart(chart) {
+      const width = 420;
+      const height = 220;
+      const paddingX = 20;
+      const paddingTop = 18;
+      const paddingBottom = 26;
+      const values = chart.series.flatMap((serie) => serie.values);
+      const maxValue = Math.max(chart.max || 0, ...values, 1);
+      const grid = [0, 0.25, 0.5, 0.75, 1].map((tick) => {
+        const y = paddingTop + (height - paddingTop - paddingBottom) * tick;
+        return `<line x1="${paddingX}" y1="${y}" x2="${width - paddingX}" y2="${y}" stroke="rgba(148,163,184,.2)" stroke-width="1" stroke-dasharray="4 4"></line>`;
+      }).join("");
+      const svg = chart.series.map((serie) => `
+        <path d="${linePath(serie.values, width, height, paddingX, paddingTop, paddingBottom, maxValue)}" fill="none" stroke="${serie.color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        ${pointDots(serie.values, serie.color, width, height, paddingX, paddingTop, paddingBottom, maxValue)}
+      `).join("");
+
+      return `
+        <article class="usage-chart-card">
+          <div class="usage-chart-head">
+            <div>
+              <div class="usage-chart-title">${chart.title}</div>
+              ${chart.meta ? `<div class="usage-chart-meta">${chart.meta}</div>` : ""}
+            </div>
+            <div class="usage-chart-legend">${chart.series.map((serie) => `<span class="legend-item"><span class="legend-dot" style="background:${serie.color}"></span>${serie.label}</span>`).join("")}</div>
+          </div>
+          <svg class="usage-chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" role="img" aria-label="${chart.title}">
+            ${grid}
+            ${svg}
+          </svg>
+          <div class="usage-chart-labels" style="--chart-columns:${chart.labels.length}">${chart.labels.map((label) => `<div class="usage-chart-label">${label}</div>`).join("")}</div>
+        </article>
+      `;
+    }
+    function buildUsageSection(item) {
+      const usage = usageInsightsByKey[item.key];
+      const primaryMetric = item.statusCards[1];
+      return `
+        <section class="panel section">
+          <div class="usage-toolbar">
+            <div>
+              <div class="section-kicker"><span class="material-icons-round">stacked_bar_chart</span>Usage Overview</div>
+              <h2 class="section-title">키 사용 상세</h2>
+              <p class="section-desc">선택한 기간 기준으로 key 사용량과 모델 범위를 함께 확인할 수 있습니다.</p>
+            </div>
+            <div class="usage-range"><span class="material-icons-round">calendar_month</span>${usage.period}</div>
+          </div>
+          <article class="usage-card">
+            <div class="usage-head">
+              <div>
+                <div class="usage-name">${primaryMetric.title}</div>
+                <div class="usage-meta">${primaryMetric.meta}</div>
+              </div>
+              <div class="usage-value">${primaryMetric.value}</div>
+            </div>
+            ${metricSummary(item.usageSummary)}
+          </article>
+          <article class="card section-card-spacer">
+            <div class="card-title">상태 요약</div>
+            <div class="card-desc">현재 발급 상태와 사용 흐름을 한 번에 볼 수 있습니다.</div>
+            <div class="section-stack">${healthSummary(item.statusCards)}</div>
+          </article>
+        </section>
+        <section class="panel section">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker"><span class="material-icons-round">vpn_key</span>Key Scope</div>
+              <h2 class="section-title">키와 모델 범위</h2>
+              <p class="section-desc">현재 연결된 key 정보와 호출 가능한 모델 범위를 함께 확인할 수 있습니다.</p>
+            </div>
+          </div>
+          <div class="usage-detail-grid">
+            <article class="card">
+              <div class="card-title">키 정보</div>
+              <div class="card-desc">현재 사용 중인 key와 연결 방식입니다.</div>
+              ${keyRows(usage.keyInfo)}
+            </article>
+            <article class="card">
+              <div class="card-title">사용 가능 모델</div>
+              <div class="card-desc">이 key로 바로 호출할 수 있는 모델 범위입니다.</div>
+              ${modelChips(usage.models)}
+            </article>
+          </div>
+        </section>
+        <section class="panel section">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker"><span class="material-icons-round">summarize</span>Usage Totals</div>
+              <h2 class="section-title">총 사용량</h2>
+              <p class="section-desc">선택한 기간 동안 누적된 요청, 세션, 토큰, 비용을 확인할 수 있습니다.</p>
+            </div>
+          </div>
+          <article class="card">
+            <div class="card-title">총 사용량</div>
+            <div class="card-desc">선택한 기간 동안 누적된 사용량입니다.</div>
+            ${usageTotals(usage.totals)}
+          </article>
+        </section>
+        <section class="panel section">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker"><span class="material-icons-round">monitoring</span>Usage Charts</div>
+              <h2 class="section-title">모델별 사용량</h2>
+              <p class="section-desc">요청, 토큰, 비용, 성공률 흐름을 패널 단위로 나눠 확인할 수 있습니다.</p>
+            </div>
+          </div>
+          <article class="card">
+            <div class="usage-chart-toolbar">
+              <div>
+                <div class="card-title">모델별 사용량</div>
+                <div class="card-desc">요청, 토큰, 비용, 성공률 흐름을 함께 볼 수 있습니다.</div>
+              </div>
+              <label class="usage-filter">모델
+                <select>
+                  ${usage.filters.map((filter) => `<option${filter === usage.selectedFilter ? " selected" : ""}>${filter}</option>`).join("")}
+                </select>
+              </label>
+            </div>
+            <div class="usage-chart-shell">
+              <div class="usage-chart-grid">${usage.charts.map((chart) => usageChart(chart)).join("")}</div>
+            </div>
+          </article>
+        </section>
+      `;
+    }
+    function buildAccessSection(item) {
+      return `
+        <section class="panel section">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker"><span class="material-icons-round">vpn_key</span>Access</div>
+              <h2 class="section-title">접근 정보</h2>
+              <p class="section-desc">이 key의 tier, 연결 정보, 발급 메타를 함께 확인할 수 있습니다.</p>
+            </div>
+            <a class="section-link" href="${item.accessLink.href}">${item.accessLink.label}<span class="material-icons-round">chevron_right</span></a>
+          </div>
+          <div class="access-grid">
+            <article class="card">
+              <div class="card-title">연결 정보</div>
+              <div class="kv-list">${kv(item.accessInfo)}</div>
+            </article>
+            <article class="card">
+              <div class="card-title">발급 정보</div>
+              ${secretGrid(item.registration)}
+            </article>
+          </div>
+        </section>
+      `;
+    }
+    function buildItem(item) {
+      return {
+        ...item,
+        layoutMode: "full-width",
+        mainHtml: `
+          ${buildUsageSection(item)}
+          ${buildAccessSection(item)}
           <section class="panel section">
             <div class="section-head">
               <div>
-                <div class="section-kicker"><span class="material-icons-round">vpn_key</span>Tier Snapshot</div>
-                <h2 class="section-title">tier 구성과 사용 맥락</h2>
-                <p class="section-desc">provider, quota, model 묶음, 주요 consumer를 tier 중심으로 정리했습니다.</p>
+                <div class="section-kicker"><span class="material-icons-round">link</span>Connection Status</div>
+                <h2 class="section-title">연결 상태</h2>
+                <p class="section-desc">이 key가 어떤 chatbot, agent, tool surface와 연결되어 있는지 확인할 수 있습니다.</p>
               </div>
-              <a class="section-link" href="${item.relatedHref}"><span class="material-icons-round">arrow_outward</span>연결 허브</a>
+              <a class="section-link" href="${item.connectedLink.href}">${item.connectedLink.label}<span class="material-icons-round">chevron_right</span></a>
             </div>
-            <div class="card-grid three">${cards(item.cards)}</div>
+            ${connectionCards(item.connectedItems)}
           </section>
           <section class="panel section">
-            <div class="section-kicker"><span class="material-icons-round">model_training</span>Provider Coverage</div>
-            <h2 class="section-title">provider와 모델 범위</h2>
-            <p class="section-desc">detail 페이지에서는 tier별 provider 구성과 주요 consumer를 구체적으로 보여줍니다.</p>
-            ${table(item.providers)}
-          </section>
-          <section class="panel section">
-            <div class="list-grid two">
-              <div class="subpanel">
-                <div class="panel-title" style="font-size:16px;">Governance Notes</div>
-                <div class="info-list">${list(item.notes)}</div>
-              </div>
-              <div class="subpanel">
-                <div class="panel-title" style="font-size:16px;">Main Consumers</div>
-                <div class="info-list">${list(item.relatedLinks)}</div>
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">lightbulb</span>Usage Tips</div>
+                <h2 class="section-title">사용 팁</h2>
+                <p class="section-desc">연결 전 확인하면 좋은 항목을 빠르게 볼 수 있습니다.</p>
               </div>
             </div>
+            <div class="info-list">${list(item.guideTips)}</div>
           </section>
         `,
-          sidebarHtml: `
-          <section class="panel section">
-            <div class="section-kicker"><span class="material-icons-round">donut_large</span>Quota Pulse</div>
-            <h3 class="section-title" style="font-size:18px;">사용량 지표</h3>
-            <div class="stats-grid">${progress(item.progress)}</div>
-          </section>
-          <section class="panel timeline-panel">
-            <div class="panel-kicker"><span class="material-icons-round">history</span>Recent Policy</div>
-            <h3 class="panel-title" style="font-size:18px;">최근 정책 변경</h3>
-            <div class="timeline-list">${timeline(item.timeline)}</div>
-          </section>
-          <section class="panel section">
-            <div class="section-kicker"><span class="material-icons-round">info</span>Tier Facts</div>
-            <div class="kv-list">${kv(item.facts)}</div>
-          </section>
-        `,
-        };
-      }
-
-      const rawItems = [
-        {
-          key: 'free-tier',
-          title: 'Free Tier',
-          description:
-            '입문용 기본 tier입니다. 제한된 quota와 소형 모델 위주로 제공되는 샘플 detail입니다.',
-          heroIcon: 'eco',
-          typeLabel: 'Free Tier',
-          statusLabel: 'Active',
-          statusTone: 'healthy',
-          theme: {
-            brand: '#f59e0b',
-            brandH: '#d97706',
-            brandBg: '#fef3c7',
-            brandSoft: 'rgba(245,158,11,.14)',
-            accent: '#f97316',
-          },
-          relatedHref: 'workspace_chatbot_hub.html',
-          actions: [
-            { label: 'Chatbot Hub', icon: 'chat', href: 'workspace_chatbot_hub.html' },
-            {
-              label: 'Agent Hub',
-              icon: 'arrow_outward',
-              variant: 'primary',
-              href: 'workspace_agent_hub.html',
-            },
-          ],
-          heroStats: [
-            { label: 'Usage', value: '38%', meta: 'quota 여유 충분' },
-            { label: 'Active Keys', value: '124', meta: '입문/테스트 중심' },
-            { label: 'Providers', value: '2', meta: 'OpenAI / Azure' },
-            { label: 'Models', value: '4', meta: 'mini / haiku 중심' },
-          ],
-          cards: [
-            {
-              title: 'Purpose',
-              desc: '입문, 경량 챗봇, 실험용 샘플에 적합한 기본 tier입니다.',
-              tags: ['entry', 'lightweight'],
-            },
-            {
-              title: 'Policy',
-              desc: '낮은 quota와 제한된 모델로 비용을 통제합니다.',
-              tags: ['cheap', 'limited'],
-            },
-            {
-              title: 'Consumer',
-              desc: '초기 챗봇과 내부 테스트용 automation이 주 소비자입니다.',
-              tags: ['starter', 'internal'],
-            },
-          ],
-          providers: [
-            ['OpenAI', 'gpt-4.1-mini, gpt-4o-mini', 'shared quota / low cap', 'starter chatbots'],
-            ['Azure', 'azure-gpt-4o-mini', 'backup quota', 'internal testing'],
-          ],
-          notes: [
-            {
-              title: '비용 통제용 baseline',
-              meta: '모든 사용자를 상위 tier로 올리지 않기 위한 완충 역할입니다.',
-              side: 'Cost',
-            },
-            {
-              title: 'mini 모델 중심',
-              meta: '응답 품질보다 접근성과 실험성이 중요합니다.',
-              side: 'Light',
-            },
-            {
-              title: '교육/샘플 적합',
-              meta: '신규 사용자가 시작하기 좋은 티어입니다.',
-              side: 'Onboarding',
-            },
-          ],
-          relatedLinks: [
-            {
-              title: 'support-assistant-api',
-              meta: '일부 비핵심 fallback에서 참조 가능',
-              side: 'Chatbot',
-            },
-            { title: 'ASF Playground Tier', meta: '실험용 상위 단계와 비교 대상', side: 'Tier' },
-            {
-              title: 'workspace-knowledge',
-              meta: '저비용 검색 보조 시나리오에서 사용',
-              side: 'Tool',
-            },
-          ],
-          progress: [
-            { title: 'Quota Usage', value: '38%', percent: 38, meta: '현재 여유 충분' },
-            { title: 'Model Diversity', value: '52%', percent: 52, meta: '선택 가능한 모델 범위' },
-          ],
-          timeline: [
-            { title: '오늘 08:00 · usage audit', meta: 'free tier 사용량 점검' },
-            { title: '6월 12일 · model allowlist update', meta: 'mini 모델 정책 정리' },
-            { title: '6월 7일 · quota note refresh', meta: '입문자 가이드 문구 갱신' },
-          ],
-          facts: [
-            { key: 'Owner', value: 'platform ai' },
-            { key: 'Scope', value: 'starter / low-cost use cases' },
-            { key: 'Allocation', value: '<span class="mono">free-tier-default</span>' },
-          ],
-        },
-        {
-          key: 'paid-tier',
-          title: 'Paid Tier',
-          description:
-            '운영 워크로드와 대량 요청용으로 확장된 모델 선택권을 제공하는 tier입니다. 생산계 대표 tier 샘플입니다.',
-          heroIcon: 'paid',
-          typeLabel: 'Paid Tier',
-          statusLabel: 'Active',
-          statusTone: 'healthy',
-          theme: {
-            brand: '#2563eb',
-            brandH: '#1d4ed8',
-            brandBg: '#dbeafe',
-            brandSoft: 'rgba(37,99,235,.14)',
-            accent: '#60a5fa',
-          },
-          relatedHref: 'workspace_agent_hub.html',
-          actions: [
-            { label: 'Agent Hub', icon: 'smart_toy', href: 'workspace_agent_hub.html' },
-            {
-              label: 'Chatbot Hub',
-              icon: 'arrow_outward',
-              variant: 'primary',
-              href: 'workspace_chatbot_hub.html',
-            },
-          ],
-          heroStats: [
-            { label: 'Usage', value: '71%', meta: '모니터링 필요' },
-            { label: 'Active Keys', value: '46', meta: '운영용' },
-            { label: 'Providers', value: '3', meta: 'OpenAI / Anthropic / Gemini' },
-            { label: 'Models', value: '5', meta: '상위 품질 모델 중심' },
-          ],
-          cards: [
-            {
-              title: 'Purpose',
-              desc: '핵심 챗봇과 automation이 참조하는 생산계 tier입니다.',
-              tags: ['production', 'quality'],
-            },
-            {
-              title: 'Policy',
-              desc: '비용은 높지만 정확도와 범용성이 중요할 때 사용합니다.',
-              tags: ['high quality', 'monitored'],
-            },
-            {
-              title: 'Consumer',
-              desc: '지원 API, 릴리즈 노트 automation, 파트너 bot이 대표 소비자입니다.',
-              tags: ['api', 'agent', 'partner'],
-            },
-          ],
-          providers: [
-            ['OpenAI', 'gpt-4.1, gpt-4o', 'prod quota / shared pool', 'support-assistant-api'],
-            ['Anthropic', 'claude-3.7-sonnet', 'reasoning quota', 'release-notes-pilot'],
-            ['Gemini', 'gemini-2.5-pro', 'special request quota', 'partner pilots'],
-          ],
-          notes: [
-            {
-              title: '품질 우선 티어',
-              meta: '정확도와 신뢰성이 핵심인 워크로드가 붙습니다.',
-              side: 'Premium',
-            },
-            {
-              title: 'usage 감시 필요',
-              meta: '현재 사용률이 높아 증설/분산 검토가 필요합니다.',
-              side: '71%',
-            },
-            {
-              title: '핵심 서비스 집중',
-              meta: '비핵심 소비자는 lower tier로 보내는 것이 바람직합니다.',
-              side: 'Prioritized',
-            },
-          ],
-          relatedLinks: [
-            {
-              title: 'support-assistant-api',
-              meta: '고객 응답 품질이 중요한 API bot',
-              side: 'Chatbot',
-            },
-            {
-              title: 'release-notes-pilot',
-              meta: '정확한 문서 초안 생성에 사용하는 agent',
-              side: 'Agent',
-            },
-            { title: 'pricing-advisor-bot', meta: 'partner 대상 고품질 응답 bot', side: 'Chatbot' },
-          ],
-          progress: [
-            { title: 'Quota Usage', value: '71%', percent: 71, meta: '증설 검토 필요' },
-            {
-              title: 'Provider Diversity',
-              value: '83%',
-              percent: 83,
-              meta: '여러 상위 모델 사용 가능',
-            },
-          ],
-          timeline: [
-            { title: '오늘 09:20 · usage review', meta: '운영 트래픽 증가로 headroom 점검' },
-            { title: '6월 13일 · provider mix update', meta: 'Gemini high-tier quota 조정' },
-            { title: '6월 8일 · new consumer approved', meta: 'pricing advisor 연결 승인' },
-          ],
-          facts: [
-            { key: 'Owner', value: 'core infra' },
-            { key: 'Scope', value: 'production / high quality workloads' },
-            { key: 'Allocation', value: '<span class="mono">paid-prod-shared</span>' },
-          ],
-        },
-        {
-          key: 'hw-deposit-tier',
-          title: 'HW Deposit Tier',
-          description:
-            '사전 예치 기반으로 운용하는 티어입니다. 사용량과 자원 관리가 비교적 명확한 샘플입니다.',
-          heroIcon: 'savings',
-          typeLabel: 'HW Deposit',
-          statusLabel: 'Active',
-          statusTone: 'healthy',
-          theme: {
-            brand: '#7c3aed',
-            brandH: '#6d28d9',
-            brandBg: '#ede9fe',
-            brandSoft: 'rgba(124,58,237,.14)',
-            accent: '#a78bfa',
-          },
-          relatedHref: 'workspace_agent_hub.html',
-          actions: [
-            { label: 'Agent Hub', icon: 'smart_toy', href: 'workspace_agent_hub.html' },
-            {
-              label: 'Keycenter Hub',
-              icon: 'arrow_outward',
-              variant: 'primary',
-              href: 'workspace_keycenter_hub.html',
-            },
-          ],
-          heroStats: [
-            { label: 'Usage', value: '64%', meta: '예치 자원 대비 안정적' },
-            { label: 'Active Keys', value: '18', meta: '제한된 고정 pool' },
-            { label: 'Providers', value: '2', meta: 'OpenAI / internal' },
-            { label: 'Models', value: '4', meta: 'balanced set' },
-          ],
-          cards: [
-            {
-              title: 'Purpose',
-              desc: '예치형 계약 기반 워크로드를 위해 쓰는 tier입니다.',
-              tags: ['deposit', 'predictable'],
-            },
-            {
-              title: 'Policy',
-              desc: '자원 예치 대비 사용량을 엄격히 추적합니다.',
-              tags: ['tracked', 'bounded'],
-            },
-            {
-              title: 'Consumer',
-              desc: '특정 hardware-linked 팀과 안정형 workload가 사용합니다.',
-              tags: ['dedicated', 'stable'],
-            },
-          ],
-          providers: [
-            ['OpenAI', 'gpt-4o', 'deposit quota', 'hw-linked assistants'],
-            ['Internal', 'internal-rag-1', 'fixed budget', 'private retrieval apps'],
-          ],
-          notes: [
-            {
-              title: '예측 가능한 사용량',
-              meta: 'burst보다는 안정적이고 반복적인 사용에 맞습니다.',
-              side: 'Stable',
-            },
-            {
-              title: '계약형 quota 관리',
-              meta: '소비량이 계약 리소스와 직접 연결됩니다.',
-              side: 'Budgeted',
-            },
-            {
-              title: '특정 팀 대상',
-              meta: '전사 공용보다 목적형 팀 사용이 많습니다.',
-              side: 'Scoped',
-            },
-          ],
-          relatedLinks: [
-            {
-              title: 'repo-review-guard',
-              meta: '일부 안정형 추론에 사용할 수 있는 후보',
-              side: 'Agent',
-            },
-            {
-              title: 'internal-rag workloads',
-              meta: '사내 전용 retrieval bot과의 연결',
-              side: 'Chatbot',
-            },
-            {
-              title: 'Tool Inventory',
-              meta: 'private tool 호출과 함께 쓰는 경계 확인',
-              side: 'Tool',
-            },
-          ],
-          progress: [
-            { title: 'Quota Usage', value: '64%', percent: 64, meta: '예치 범위 내 안정적' },
-            {
-              title: 'Provider Diversity',
-              value: '47%',
-              percent: 47,
-              meta: '선택 모델 범위는 좁은 편',
-            },
-          ],
-          timeline: [
-            { title: '오늘 07:40 · monthly usage sync', meta: '예치 사용량 집계' },
-            { title: '6월 11일 · consumer quota adjust', meta: 'hardware ops 팀 할당 조정' },
-            { title: '6월 5일 · model note update', meta: 'internal-rag 설명 보강' },
-          ],
-          facts: [
-            { key: 'Owner', value: 'hardware ops' },
-            { key: 'Scope', value: 'deposit-backed workloads' },
-            { key: 'Allocation', value: '<span class="mono">hw-deposit-fixed</span>' },
-          ],
-        },
-        {
-          key: 'asf-playground-tier',
-          title: 'ASF Playground Tier',
-          description:
-            '실험과 프로토타이핑에 초점을 둔 ASF 티어입니다. review 상태의 실험성 샘플로 구성했습니다.',
-          heroIcon: 'science',
-          typeLabel: 'ASF Playground',
-          statusLabel: 'Review',
-          statusTone: 'review',
-          theme: {
-            brand: '#0f766e',
-            brandH: '#115e59',
-            brandBg: '#ccfbf1',
-            brandSoft: 'rgba(15,118,110,.14)',
-            accent: '#34d399',
-          },
-          relatedHref: 'workspace_agent_hub.html',
-          actions: [
-            { label: 'Agent Hub', icon: 'smart_toy', href: 'workspace_agent_hub.html' },
-            {
-              label: 'Chatbot Hub',
-              icon: 'arrow_outward',
-              variant: 'primary',
-              href: 'workspace_chatbot_hub.html',
-            },
-          ],
-          heroStats: [
-            { label: 'Usage', value: '52%', meta: '실험 수요 변동성' },
-            { label: 'Active Keys', value: '33', meta: 'lab 사용 중심' },
-            { label: 'Providers', value: '3', meta: 'mini/faster mix' },
-            { label: 'Models', value: '4', meta: '실험용 구성' },
-          ],
-          cards: [
-            {
-              title: 'Purpose',
-              desc: '프로토타입과 실험용 agent/chatbot이 빠르게 시작하는 tier입니다.',
-              tags: ['experiment', 'lab'],
-            },
-            {
-              title: 'Policy',
-              desc: '너무 넓게 열리면 비용이 튈 수 있어 review 상태를 자주 유지합니다.',
-              tags: ['reviewed', 'sandboxed'],
-            },
-            {
-              title: 'Consumer',
-              desc: 'incident-triage 같은 시범 운영 agent가 대표 사례입니다.',
-              tags: ['pilot', 'prototype'],
-            },
-          ],
-          providers: [
-            ['OpenAI', 'gpt-4.1-mini, gpt-4o-mini', 'lab quota', 'prototype agents'],
-            ['Anthropic', 'claude-3.5-haiku', 'limited quota', 'draft experiments'],
-            ['Gemini', 'gemini-2.0-flash', 'playground quota', 'speed-focused tests'],
-          ],
-          notes: [
-            {
-              title: '실험 가속이 목적',
-              meta: '승인보다 시도 속도를 올리는 데 초점이 있습니다.',
-              side: 'Fast',
-            },
-            {
-              title: 'review를 자주 거침',
-              meta: '실험이 production으로 흘러들지 않도록 경계를 관리합니다.',
-              side: 'Boundary',
-            },
-            {
-              title: 'mini/flash 모델 중심',
-              meta: '비용과 속도의 균형을 우선합니다.',
-              side: 'Lean',
-            },
-          ],
-          relatedLinks: [
-            { title: 'incident-triage-bot', meta: '대표 실험성 consumer', side: 'Agent' },
-            { title: 'Free Tier', meta: '입문 티어와의 차이 비교', side: 'Tier' },
-            {
-              title: 'workspace-knowledge',
-              meta: '실험 chatbot이 자주 붙는 inventory',
-              side: 'Tool',
-            },
-          ],
-          progress: [
-            { title: 'Quota Usage', value: '52%', percent: 52, meta: '변동성 있는 수준' },
-            {
-              title: 'Experiment Breadth',
-              value: '78%',
-              percent: 78,
-              meta: '시도 가능한 모델 다양성',
-            },
-          ],
-          timeline: [
-            { title: '오늘 09:10 · sandbox usage review', meta: 'pilot workload 점검' },
-            { title: '6월 12일 · lab policy note update', meta: 'playground 안내 문구 정리' },
-            { title: '6월 6일 · experiment pool cleanup', meta: '미사용 key 정리' },
-          ],
-          facts: [
-            { key: 'Owner', value: 'asf lab' },
-            { key: 'Scope', value: 'prototype / sandbox workloads' },
-            { key: 'Allocation', value: '<span class="mono">asf-playground-shared</span>' },
-          ],
-        },
-        {
-          key: 'asf-base-tier',
-          title: 'ASF Base Tier',
-          description:
-            '표준 업무 자동화와 일반 챗봇에 사용하는 기본 ASF tier입니다. 가장 균형적인 shared tier 샘플입니다.',
-          heroIcon: 'layers',
-          typeLabel: 'ASF Base',
-          statusLabel: 'Active',
-          statusTone: 'healthy',
-          theme: {
-            brand: '#14b8a6',
-            brandH: '#0f766e',
-            brandBg: '#d5fbf5',
-            brandSoft: 'rgba(20,184,166,.14)',
-            accent: '#06b6d4',
-          },
-          relatedHref: 'workspace_chatbot_hub.html',
-          actions: [
-            { label: 'Chatbot Hub', icon: 'chat', href: 'workspace_chatbot_hub.html' },
-            {
-              label: 'Tool Inventory',
-              icon: 'arrow_outward',
-              variant: 'primary',
-              href: 'workspace_tool_inventory_hub.html',
-            },
-          ],
-          heroStats: [
-            { label: 'Usage', value: '67%', meta: '지속 사용 중' },
-            { label: 'Active Keys', value: '58', meta: '공용 base pool' },
-            { label: 'Providers', value: '3', meta: '주요 provider 혼합' },
-            { label: 'Models', value: '4', meta: '업무 자동화 기본 구성' },
-          ],
-          cards: [
-            {
-              title: 'Purpose',
-              desc: '일반적인 챗봇/agent가 가장 많이 사용하는 baseline tier입니다.',
-              tags: ['default', 'balanced'],
-            },
-            {
-              title: 'Policy',
-              desc: '품질과 비용의 균형을 맞춘 공용 tier입니다.',
-              tags: ['shared', 'balanced'],
-            },
-            {
-              title: 'Consumer',
-              desc: 'docs widget, ops briefing, review guard가 대표적인 consumer입니다.',
-              tags: ['common', 'multi-surface'],
-            },
-          ],
-          providers: [
-            ['OpenAI', 'gpt-4.1, gpt-4o', 'shared base quota', 'ops/chatbot surfaces'],
-            ['Anthropic', 'claude-3.7-sonnet', 'reasoning allowance', 'review guard'],
-            ['Internal', 'asf-rag-base', 'retrieval quota', 'docs/search bots'],
-          ],
-          notes: [
-            {
-              title: '가장 넓은 공용 tier',
-              meta: '많은 surface가 붙기 때문에 contract 안정성이 중요합니다.',
-              side: 'Shared',
-            },
-            {
-              title: '비용/품질 균형',
-              meta: '대부분의 일반 업무는 이 tier에서 해결됩니다.',
-              side: 'Balanced',
-            },
-            {
-              title: '상위 tier 전환 기준 필요',
-              meta: '특별히 품질이 중요한 경우만 advanced/paid로 올립니다.',
-              side: 'Escalate',
-            },
-          ],
-          relatedLinks: [
-            { title: 'docs-guide-widget', meta: '대표적인 base tier chatbot', side: 'Chatbot' },
-            { title: 'ops-briefing-bot', meta: '운영 브리핑용 chatbot', side: 'Chatbot' },
-            { title: 'repo-review-guard', meta: '대량 MR 이벤트를 처리하는 agent', side: 'Agent' },
-          ],
-          progress: [
-            { title: 'Quota Usage', value: '67%', percent: 67, meta: '지속 사용 중인 수준' },
-            {
-              title: 'Consumer Spread',
-              value: '82%',
-              percent: 82,
-              meta: '다양한 surface가 사용하는 정도',
-            },
-          ],
-          timeline: [
-            { title: '오늘 08:30 · shared pool check', meta: '주요 consumer 사용량 확인' },
-            { title: '6월 13일 · provider priority tune', meta: '기본 provider 순서 조정' },
-            { title: '6월 7일 · asf-rag-base note update', meta: 'retrieval model 설명 갱신' },
-          ],
-          facts: [
-            { key: 'Owner', value: 'asf core' },
-            { key: 'Scope', value: 'default shared workloads' },
-            { key: 'Allocation', value: '<span class="mono">asf-base-shared</span>' },
-          ],
-        },
-        {
-          key: 'asf-advanced-tier',
-          title: 'ASF Advanced Tier',
-          description:
-            '고급 추론, 대규모 분석, 핵심 서비스에 쓰는 상위 ASF tier입니다. 최고 성능 tier 샘플로 구성했습니다.',
-          heroIcon: 'rocket_launch',
-          typeLabel: 'ASF Advanced',
-          statusLabel: 'Active',
-          statusTone: 'healthy',
-          theme: {
-            brand: '#ef4444',
-            brandH: '#dc2626',
-            brandBg: '#fee2e2',
-            brandSoft: 'rgba(239,68,68,.14)',
-            accent: '#f97316',
-          },
-          relatedHref: 'workspace_agent_hub.html',
-          actions: [
-            { label: 'Agent Hub', icon: 'smart_toy', href: 'workspace_agent_hub.html' },
-            {
-              label: 'Chatbot Hub',
-              icon: 'arrow_outward',
-              variant: 'primary',
-              href: 'workspace_chatbot_hub.html',
-            },
-          ],
-          heroStats: [
-            { label: 'Usage', value: '79%', meta: '증설 검토 권장' },
-            { label: 'Active Keys', value: '22', meta: '고성능 pool' },
-            { label: 'Providers', value: '4', meta: '최상위 모델 포함' },
-            { label: 'Models', value: '5', meta: 'gpt-5 포함' },
-          ],
-          cards: [
-            {
-              title: 'Purpose',
-              desc: '핵심 서비스와 고난도 분석에 쓰는 최상위 ASF tier입니다.',
-              tags: ['advanced', 'critical'],
-            },
-            {
-              title: 'Policy',
-              desc: '비용과 영향이 크므로 consumer를 엄격히 제한합니다.',
-              tags: ['restricted', 'premium'],
-            },
-            {
-              title: 'Consumer',
-              desc: '고난도 reasoning, 전략 분석, 핵심 bot이 대표 사례입니다.',
-              tags: ['high value', 'limited'],
-            },
-          ],
-          providers: [
-            ['OpenAI', 'gpt-5, gpt-4.1', 'advanced quota', 'critical reasoning bots'],
-            ['Anthropic', 'claude-3.7-sonnet', 'premium quota', 'strategy automation'],
-            ['Gemini', 'gemini-2.5-pro', 'premium quota', 'analysis workloads'],
-            ['Azure', 'azure-gpt-4.1', 'fallback quota', 'regulated workloads'],
-          ],
-          notes: [
-            {
-              title: '최고 성능 tier',
-              meta: '가장 좋은 품질을 제공하지만 비용과 리스크도 큽니다.',
-              side: 'Premium',
-            },
-            {
-              title: '사용률 높음',
-              meta: '현재 79%로 headroom이 적어 신규 연결은 신중해야 합니다.',
-              side: '79%',
-            },
-            {
-              title: 'consumer 제한 필요',
-              meta: '모든 surface가 아니라 핵심 use case에 집중해야 합니다.',
-              side: 'Selective',
-            },
-          ],
-          relatedLinks: [
-            {
-              title: 'pricing-advisor-bot',
-              meta: '고품질 응답이 필요한 파트너 bot 후보',
-              side: 'Chatbot',
-            },
-            {
-              title: 'campaign-orchestrator',
-              meta: '고난도 승인 reasoning을 확장할 수 있는 agent',
-              side: 'Agent',
-            },
-            {
-              title: 'billing-service',
-              meta: '고정확도 tool reasoning과 결합 가능한 inventory',
-              side: 'Tool',
-            },
-          ],
-          progress: [
-            { title: 'Quota Usage', value: '79%', percent: 79, meta: '증설 검토 권장' },
-            { title: 'Provider Breadth', value: '94%', percent: 94, meta: '최상위 모델 범위 넓음' },
-          ],
-          timeline: [
-            { title: '오늘 09:55 · headroom review', meta: '신규 consumer 연결 가능성 점검' },
-            { title: '6월 12일 · gpt-5 access note', meta: '상위 모델 사용 가이드 갱신' },
-            { title: '6월 6일 · premium quota tune', meta: 'advanced pool 분배 조정' },
-          ],
-          facts: [
-            { key: 'Owner', value: 'asf advanced' },
-            { key: 'Scope', value: 'critical / advanced reasoning' },
-            { key: 'Allocation', value: '<span class="mono">asf-advanced-premium</span>' },
-          ],
-        },
-      ];
-
-      window.DETAIL_PAGE_CONFIG = {
-        paramName: 'item',
-        pageTitle: 'Keycenter Detail',
-        hubLabel: 'Keycenter',
-        hubHref: 'workspace_keycenter_hub.html',
-        activeHubKey: 'keycenter',
-        eyebrow: 'AI · Keys & Providers',
-        searchPlaceholder: 'tier 이름, provider, consumer를 검색하세요...',
-        items: Object.fromEntries(rawItems.map((item) => [item.key, buildItem(item)])),
+        sidebarHtml: ""
       };
-    </script>
-    <script src="workspace_detail_shared.js"></script>
-  </body>
+    }
+
+    const usageInsightsByKey = {
+      "openai-support-prod-key": {
+        period: "2026.06.01 - 2026.06.16",
+        keyInfo: [
+          { label: "API 키", value: '<span class="mono">sk-proj-su••••</span>', meta: "support-assistant-api와 gateway가 공통으로 참조하는 운영 key입니다.", actionIcon: "content_copy" },
+          { label: "연결 런타임", value: "OpenAI Responses API", meta: "운영 응답 생성과 요약 생성 흐름에 함께 사용합니다.", actionIcon: "open_in_new" }
+        ],
+        models: ["gpt-4.1", "gpt-4o", "gpt-4o-mini", "text-embedding-3-large"],
+        totals: [
+          { label: "총 요청 수", value: "18.4K", meta: "운영 chatbot와 gateway 호출 포함" },
+          { label: "총 세션 수", value: "432", meta: "일별 사용자 세션 기준" },
+          { label: "총 토큰", value: "18.2M", meta: "input + output token 합계" },
+          { label: "총 지출", value: "$1,842", meta: "선택 기간 사용 비용" }
+        ],
+        filters: ["all", "gpt-4.1", "gpt-4o", "gpt-4o-mini"],
+        selectedFilter: "all",
+        charts: [
+          { title: "Token Consumption", meta: "일별 token 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Total", color: "#14b8a6", values: [820, 910, 980, 1060, 1140, 1210, 1320, 1410] },
+            { label: "Completion", color: "#2563eb", values: [470, 510, 560, 590, 650, 680, 730, 790] },
+            { label: "Prompt", color: "#f59e0b", values: [350, 400, 420, 470, 490, 530, 590, 620] }
+          ]},
+          { title: "Requests per Day", meta: "일별 요청 수", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Requests", color: "#38bdf8", values: [820, 860, 910, 950, 980, 1040, 1090, 1150] }
+          ]},
+          { title: "Daily Expenditure (USD)", meta: "일별 비용 추이", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Spend", color: "#10b981", values: [74, 81, 88, 94, 101, 108, 116, 123] }
+          ]},
+          { title: "Success vs Failed Requests", meta: "성공과 실패 요청 비율", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Success", color: "#14b8a6", values: [812, 851, 900, 939, 968, 1034, 1082, 1143] },
+            { label: "Failed", color: "#ef4444", values: [8, 9, 10, 11, 12, 11, 8, 7] }
+          ]}
+        ]
+      },
+      "anthropic-review-guard-key": {
+        period: "2026.06.01 - 2026.06.16",
+        keyInfo: [
+          { label: "API 키", value: '<span class="mono">sk-ant-re••••</span>', meta: "review agent가 reasoning 호출에 사용하는 공유 key입니다.", actionIcon: "content_copy" },
+          { label: "연결 런타임", value: "Anthropic Messages API", meta: "긴 문맥 요약과 리뷰 생성 흐름에 연결됩니다.", actionIcon: "open_in_new" }
+        ],
+        models: ["claude-3.7-sonnet", "claude-3.5-sonnet", "claude-3.5-haiku"],
+        totals: [
+          { label: "총 요청 수", value: "7.9K", meta: "리뷰 agent와 문서 요약 흐름 포함" },
+          { label: "총 세션 수", value: "164", meta: "검토 단위 실행 세션 기준" },
+          { label: "총 토큰", value: "9.6M", meta: "reasoning token 포함" },
+          { label: "총 지출", value: "$968", meta: "선택 기간 사용 비용" }
+        ],
+        filters: ["all", "claude-3.7-sonnet", "claude-3.5-sonnet"],
+        selectedFilter: "all",
+        charts: [
+          { title: "Token Consumption", meta: "reasoning token 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Total", color: "#14b8a6", values: [430, 455, 470, 520, 560, 590, 620, 655] },
+            { label: "Completion", color: "#2563eb", values: [245, 258, 271, 298, 320, 338, 356, 372] },
+            { label: "Prompt", color: "#f59e0b", values: [185, 197, 199, 222, 240, 252, 264, 283] }
+          ]},
+          { title: "Requests per Day", meta: "리뷰 실행 요청 수", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Requests", color: "#38bdf8", values: [290, 301, 312, 344, 356, 379, 394, 410] }
+          ]},
+          { title: "Daily Expenditure (USD)", meta: "review 실행 비용", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Spend", color: "#10b981", values: [41, 43, 45, 49, 52, 57, 60, 64] }
+          ]},
+          { title: "Success vs Failed Requests", meta: "성공/실패 요청 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Success", color: "#14b8a6", values: [288, 299, 309, 340, 353, 376, 391, 409] },
+            { label: "Failed", color: "#ef4444", values: [2, 2, 3, 4, 3, 3, 3, 1] }
+          ]}
+        ]
+      },
+      "internal-docs-rag-key": {
+        period: "2026.06.01 - 2026.06.16",
+        keyInfo: [
+          { label: "API 키", value: '<span class="mono">ik-doc-ra••••</span>', meta: "docs widget와 inventory retrieval이 함께 쓰는 내부 key입니다.", actionIcon: "content_copy" },
+          { label: "연결 런타임", value: "Internal Retrieval API", meta: "검색, rerank, 문맥 보강 호출에 사용합니다.", actionIcon: "open_in_new" }
+        ],
+        models: ["asf-rag-base", "rerank-lite", "embed-doc-v2", "summarize-lite"],
+        totals: [
+          { label: "총 요청 수", value: "142K", meta: "검색 및 rerank 요청 합계" },
+          { label: "총 세션 수", value: "3.2K", meta: "문서 검색 세션 기준" },
+          { label: "총 토큰", value: "4.8M", meta: "문맥 보강 응답 포함" },
+          { label: "총 지출", value: "$412", meta: "내부 정산 기준 비용" }
+        ],
+        filters: ["all", "asf-rag-base", "rerank-lite", "embed-doc-v2"],
+        selectedFilter: "all",
+        charts: [
+          { title: "Token Consumption", meta: "검색/응답 token 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Total", color: "#14b8a6", values: [120, 138, 144, 151, 165, 172, 184, 196] },
+            { label: "Completion", color: "#2563eb", values: [42, 48, 52, 55, 61, 66, 69, 74] },
+            { label: "Prompt", color: "#f59e0b", values: [78, 90, 92, 96, 104, 106, 115, 122] }
+          ]},
+          { title: "Requests per Day", meta: "검색 요청 수", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Requests", color: "#38bdf8", values: [7200, 7600, 8120, 8450, 9020, 9300, 9680, 10120] }
+          ]},
+          { title: "Daily Expenditure (USD)", meta: "내부 비용 추이", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Spend", color: "#10b981", values: [18, 20, 21, 23, 25, 26, 28, 31] }
+          ]},
+          { title: "Success vs Failed Requests", meta: "성공/실패 요청 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Success", color: "#14b8a6", values: [7156, 7554, 8071, 8401, 8974, 9251, 9632, 10058] },
+            { label: "Failed", color: "#ef4444", values: [44, 46, 49, 49, 46, 49, 48, 62] }
+          ]}
+        ]
+      },
+      "azure-ops-briefing-key": {
+        period: "2026.06.01 - 2026.06.16",
+        keyInfo: [
+          { label: "API 키", value: '<span class="mono">az-op-br••••</span>', meta: "ops-briefing-bot과 incident-triage-bot이 공유하는 regional key입니다.", actionIcon: "content_copy" },
+          { label: "연결 런타임", value: "Azure OpenAI Chat Completions", meta: "브리핑 요약과 incident 응답 초안 생성에 사용합니다.", actionIcon: "open_in_new" }
+        ],
+        models: ["azure-gpt-4.1", "azure-gpt-4o-mini", "text-embedding-3-large"],
+        totals: [
+          { label: "총 요청 수", value: "6.1K", meta: "운영 브리핑과 triage 요청 포함" },
+          { label: "총 세션 수", value: "138", meta: "ops 브리핑 세션 기준" },
+          { label: "총 토큰", value: "6.4M", meta: "요약 및 응답 생성 token 합계" },
+          { label: "총 지출", value: "$624", meta: "선택 기간 사용 비용" }
+        ],
+        filters: ["all", "azure-gpt-4.1", "azure-gpt-4o-mini"],
+        selectedFilter: "all",
+        charts: [
+          { title: "Token Consumption", meta: "브리핑 시간대 token 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Total", color: "#14b8a6", values: [300, 340, 360, 390, 430, 460, 510, 550] },
+            { label: "Completion", color: "#2563eb", values: [170, 191, 202, 221, 242, 259, 286, 307] },
+            { label: "Prompt", color: "#f59e0b", values: [130, 149, 158, 169, 188, 201, 224, 243] }
+          ]},
+          { title: "Requests per Day", meta: "브리핑과 incident 요청 수", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Requests", color: "#38bdf8", values: [220, 250, 266, 284, 310, 326, 358, 392] }
+          ]},
+          { title: "Daily Expenditure (USD)", meta: "일별 비용 추이", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Spend", color: "#10b981", values: [24, 28, 29, 31, 36, 39, 44, 49] }
+          ]},
+          { title: "Success vs Failed Requests", meta: "성공/실패 요청 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Success", color: "#14b8a6", values: [219, 248, 263, 282, 307, 324, 355, 389] },
+            { label: "Failed", color: "#ef4444", values: [1, 2, 3, 2, 3, 2, 3, 3] }
+          ]}
+        ]
+      },
+      "partner-pricing-review-key": {
+        period: "2026.06.01 - 2026.06.16",
+        keyInfo: [
+          { label: "API 키", value: '<span class="mono">sk-pilot-pr••••</span>', meta: "pricing-advisor-bot 파일럿 검토에만 열려 있는 key입니다.", actionIcon: "content_copy" },
+          { label: "연결 런타임", value: "OpenAI Sandbox Runtime", meta: "응답 계약과 포맷 검토가 끝난 범위에서만 사용합니다.", actionIcon: "open_in_new" }
+        ],
+        models: ["gpt-4.1", "gpt-4o", "gpt-4o-mini"],
+        totals: [
+          { label: "총 요청 수", value: "1.3K", meta: "파일럿 검토 호출 기준" },
+          { label: "총 세션 수", value: "28", meta: "pilot 상담 세션 기준" },
+          { label: "총 토큰", value: "1.1M", meta: "파일럿 응답 token 합계" },
+          { label: "총 지출", value: "$112", meta: "파일럿 구간 사용 비용" }
+        ],
+        filters: ["all", "gpt-4.1", "gpt-4o"],
+        selectedFilter: "all",
+        charts: [
+          { title: "Token Consumption", meta: "pilot token 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Total", color: "#14b8a6", values: [22, 28, 30, 38, 43, 47, 51, 58] },
+            { label: "Completion", color: "#2563eb", values: [12, 15, 17, 22, 24, 26, 28, 32] },
+            { label: "Prompt", color: "#f59e0b", values: [10, 13, 13, 16, 19, 21, 23, 26] }
+          ]},
+          { title: "Requests per Day", meta: "pilot 요청 수", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Requests", color: "#38bdf8", values: [38, 42, 51, 56, 62, 64, 70, 74] }
+          ]},
+          { title: "Daily Expenditure (USD)", meta: "파일럿 비용 추이", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Spend", color: "#10b981", values: [4, 5, 5, 6, 7, 7, 8, 9] }
+          ]},
+          { title: "Success vs Failed Requests", meta: "성공/실패 요청 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Success", color: "#14b8a6", values: [36, 40, 48, 52, 57, 59, 63, 67] },
+            { label: "Failed", color: "#ef4444", values: [2, 2, 3, 4, 5, 5, 7, 7] }
+          ]}
+        ]
+      },
+      "internal-tool-runtime-key": {
+        period: "2026.06.01 - 2026.06.16",
+        keyInfo: [
+          { label: "API 키", value: '<span class="mono">ik-tool-ru••••</span>', meta: "workspace-knowledge와 billing-service가 공유하는 내부 runtime key입니다.", actionIcon: "content_copy" },
+          { label: "연결 런타임", value: "Internal Tool Runtime API", meta: "tool 호출, 함수 라우팅, 검색 실행에 사용합니다.", actionIcon: "open_in_new" }
+        ],
+        models: ["internal-rag-1", "function-router", "policy-check-lite", "rerank-lite"],
+        totals: [
+          { label: "총 요청 수", value: "284K", meta: "runtime과 tool execution 호출 합계" },
+          { label: "총 세션 수", value: "4.9K", meta: "tool consumer 세션 기준" },
+          { label: "총 토큰", value: "3.4M", meta: "tool response 및 요약 token 합계" },
+          { label: "총 지출", value: "$286", meta: "내부 정산 기준 비용" }
+        ],
+        filters: ["all", "internal-rag-1", "function-router", "rerank-lite"],
+        selectedFilter: "all",
+        charts: [
+          { title: "Token Consumption", meta: "runtime token 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Total", color: "#14b8a6", values: [86, 91, 94, 99, 105, 112, 118, 124] },
+            { label: "Completion", color: "#2563eb", values: [33, 36, 38, 40, 44, 47, 49, 52] },
+            { label: "Prompt", color: "#f59e0b", values: [53, 55, 56, 59, 61, 65, 69, 72] }
+          ]},
+          { title: "Requests per Day", meta: "tool runtime 요청 수", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Requests", color: "#38bdf8", values: [14800, 15600, 16300, 17100, 18000, 18900, 19700, 20500] }
+          ]},
+          { title: "Daily Expenditure (USD)", meta: "내부 비용 추이", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Spend", color: "#10b981", values: [11, 12, 13, 14, 15, 17, 18, 19] }
+          ]},
+          { title: "Success vs Failed Requests", meta: "성공/실패 요청 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
+            { label: "Success", color: "#14b8a6", values: [14722, 15526, 16230, 17019, 17904, 18808, 19619, 20401] },
+            { label: "Failed", color: "#ef4444", values: [78, 74, 70, 81, 96, 92, 81, 99] }
+          ]}
+        ]
+      }
+    };
+
+    const rawItems = [
+      {
+        key: "openai-support-prod-key",
+        title: "openai-support-prod-key",
+        description: "support-assistant-api와 campaign-orchestrator가 함께 사용하는 paid tier key입니다.",
+        heroIcon: "vpn_key",
+        typeLabel: "paid",
+        statusLabel: "Active",
+        statusTone: "healthy",
+        theme: { bg: "#fff4dd", brand: "#f59e0b", brandH: "#d97706", brandBg: "#ffe5a3", brandSoft: "rgba(245,158,11,.18)", accent: "#f97316" },
+        accessLink: { href: "workspace_keycenter_hub.html", label: "Keycenter Hub 보기" },
+        connectedLink: { href: "workspace_chatbot_hub.html", label: "연결 허브 보기" },
+        actions: [
+          { label: "Keycenter Hub", icon: "vpn_key", href: "workspace_keycenter_hub.html" },
+          { label: "Chatbot Hub", icon: "arrow_outward", variant: "primary", href: "workspace_chatbot_hub.html" }
+        ],
+        heroStats: [
+          { label: "Key Tier", value: "paid", meta: "운영용 유료 tier" },
+          { label: "Model Scope", value: "2", meta: "gpt-4.1 / gpt-4o" },
+          { label: "Rotation", value: "11d", meta: "2026.06.28 예정" },
+          { label: "Surface", value: "3", meta: "chatbot, agent, gateway" }
+        ],
+        accessInfo: [
+          { key: "Key Tier", value: "paid" },
+          { key: "Endpoint", value: '<span class="mono">https://api.openai.com/v1</span>' },
+          { key: "Auth Header", value: '<span class="mono">Authorization: Bearer &lt;key&gt;</span>' },
+          { key: "Key Prefix", value: '<span class="mono">sk-proj-su••••</span>' },
+          { key: "Allowed Models", value: "gpt-4.1, gpt-4o" }
+        ],
+        registration: [
+          { label: "Key ID", value: "kc-openai-prod-014", meta: "Keycenter 식별자" },
+          { label: "Secret Path", value: "vault://keycenter/openai/support-prod", meta: "저장 위치" },
+          { label: "발급일", value: "2026.05.29", meta: "최근 발급 기준" },
+          { label: "Rotation Cycle", value: "30d", meta: "정기 교체 주기" }
+        ],
+        connectionChecks: [
+          { title: "Secret Reference", meta: "vault reference가 정상 조회됩니다.", side: "Pass" },
+          { title: "Auth Test", meta: "최근 인증 호출에서 200 응답을 확인했습니다.", side: "Pass" },
+          { title: "Consumer Mapping", meta: "등록된 사용처 3개와 현재 바인딩 정보가 일치합니다.", side: "Match" }
+        ],
+        statusCards: [
+          { title: "발급 상태", meta: "현재 운영 key", value: "Active" },
+          { title: "최근 7일 사용량", meta: "input + output tokens", value: "18.2M" },
+          { title: "오류율", meta: "최근 24시간", value: "0.3%" }
+        ],
+        usageSummary: [
+          { label: "Status", value: "Active", meta: "운영 key로 정상 사용 중입니다." },
+          { label: "Quota", value: "74%", meta: "현재 할당량의 74%를 사용했습니다." },
+          { label: "Rotation", value: "11d", meta: "다음 교체 일정이 가까워지고 있습니다." },
+          { label: "Surface", value: "3", meta: "여러 운영 surface가 함께 사용합니다." }
+        ],
+        connectedItems: [
+          { title: "support-assistant-api", meta: "고객 문의 응답용 API bot이 기본 응답 생성에 이 key를 사용합니다.", badge: "Chatbot", tags: ["Primary", "Production"], sideLabel: "Binding", sideValue: "Direct", href: "workspace_chatbot_detail.html?item=support-assistant-api", linkLabel: "챗봇 보기" },
+          { title: "campaign-orchestrator", meta: "승인형 자동화 흐름의 요약 생성 단계가 이 key를 참조합니다.", badge: "Agent", tags: ["Workflow", "Approval"], sideLabel: "Binding", sideValue: "Shared", href: "workspace_agent_detail.html?item=campaign-orchestrator", linkLabel: "에이전트 보기" },
+          { title: "workspace response gateway", meta: "운영 공통 게이트웨이에서 이 key를 기본 runtime key로 사용합니다.", badge: "Gateway", tags: ["Runtime", "Shared"], sideLabel: "Binding", sideValue: "Primary", href: "workspace_keycenter_hub.html", linkLabel: "Keycenter 보기" }
+        ],
+        healthChecks: [
+          { title: "Rotation Window", meta: "11일 후 교체 예정이므로 연결 서비스와 교체 일정을 함께 확인합니다.", side: "Soon" },
+          { title: "Quota Guard", meta: "현재 74% 사용량으로 추가 바인딩 전 여유량 확인이 필요합니다.", side: "Watch" },
+          { title: "Model Allowlist", meta: "허용 모델 2종이 현재 consumer 요구와 일치합니다.", side: "Pass" }
+        ],
+        guideTips: [
+          { title: "사용량이 높은 key는 교체 일정을 먼저 확인합니다", meta: "운영 surface가 많은 key는 회전 직전 변경 범위를 미리 확인하는 편이 안전합니다.", side: "Rotate" },
+          { title: "허용 모델과 실제 연결 모델을 같이 봅니다", meta: "consumer가 기대하는 모델이 allowlist에 없으면 연결은 살아 있어도 원하는 응답을 못 받을 수 있습니다.", side: "Model" },
+          { title: "공유 key는 신규 사용처 추가 전에 quota를 확인합니다", meta: "같은 key를 여러 surface가 함께 쓰면 작은 증가도 전체 headroom에 영향을 줄 수 있습니다.", side: "Quota" }
+        ]
+      },
+      {
+        key: "anthropic-review-guard-key",
+        title: "anthropic-review-guard-key",
+        description: "repo-review-guard와 release-notes-pilot이 함께 쓰는 paid tier key입니다.",
+        heroIcon: "vpn_key",
+        typeLabel: "paid",
+        statusLabel: "Active",
+        statusTone: "healthy",
+        theme: { bg: "#fff4dd", brand: "#f59e0b", brandH: "#d97706", brandBg: "#ffe5a3", brandSoft: "rgba(245,158,11,.18)", accent: "#f97316" },
+        accessLink: { href: "workspace_keycenter_hub.html", label: "Keycenter Hub 보기" },
+        connectedLink: { href: "workspace_agent_hub.html", label: "연결 허브 보기" },
+        actions: [
+          { label: "Agent Hub", icon: "smart_toy", href: "workspace_agent_hub.html" },
+          { label: "Keycenter Hub", icon: "arrow_outward", variant: "primary", href: "workspace_keycenter_hub.html" }
+        ],
+        heroStats: [
+          { label: "Key Tier", value: "paid", meta: "리뷰용 유료 tier" },
+          { label: "Model Scope", value: "1", meta: "claude-3.7-sonnet" },
+          { label: "Rotation", value: "18d", meta: "2026.07.05 예정" },
+          { label: "Surface", value: "2", meta: "review agent 중심" }
+        ],
+        accessInfo: [
+          { key: "Key Tier", value: "paid" },
+          { key: "Endpoint", value: '<span class="mono">https://api.anthropic.com/v1/messages</span>' },
+          { key: "Auth Header", value: '<span class="mono">x-api-key: &lt;key&gt;</span>' },
+          { key: "Key Prefix", value: '<span class="mono">sk-ant-re••••</span>' },
+          { key: "Allowed Models", value: "claude-3.7-sonnet" }
+        ],
+        registration: [
+          { label: "Key ID", value: "kc-anthropic-shared-007", meta: "Keycenter 식별자" },
+          { label: "Secret Path", value: "vault://keycenter/anthropic/review-guard", meta: "저장 위치" },
+          { label: "발급일", value: "2026.06.04", meta: "현재 활성 버전" },
+          { label: "Rotation Cycle", value: "30d", meta: "정기 교체 주기" }
+        ],
+        connectionChecks: [
+          { title: "Secret Reference", meta: "vault path가 정상 조회됩니다.", side: "Pass" },
+          { title: "Auth Test", meta: "review runtime에서 인증 테스트를 통과했습니다.", side: "Pass" },
+          { title: "Consumer Mapping", meta: "repo-review-guard와 release-notes-pilot 연결이 최신 상태입니다.", side: "Match" }
+        ],
+        statusCards: [
+          { title: "발급 상태", meta: "공유 reasoning key", value: "Active" },
+          { title: "최근 7일 사용량", meta: "reasoning token 기준", value: "9.6M" },
+          { title: "오류율", meta: "최근 24시간", value: "0.1%" }
+        ],
+        usageSummary: [
+          { label: "Status", value: "Active", meta: "review 흐름에서 안정적으로 사용 중입니다." },
+          { label: "Quota", value: "62%", meta: "현재 reasoning 할당량의 62%를 사용했습니다." },
+          { label: "Rotation", value: "18d", meta: "이번 주기에는 여유가 있습니다." },
+          { label: "Surface", value: "2", meta: "agent 2개가 이 key를 공유합니다." }
+        ],
+        connectedItems: [
+          { title: "repo-review-guard", meta: "PR 위험도 요약과 리뷰 코멘트 생성을 이 key로 수행합니다.", badge: "Agent", tags: ["Review", "Reasoning"], sideLabel: "Binding", sideValue: "Primary", href: "workspace_agent_detail.html?item=repo-review-guard", linkLabel: "에이전트 보기" },
+          { title: "release-notes-pilot", meta: "릴리즈 문서 요약 단계에서 긴 문맥 reasoning에 사용합니다.", badge: "Agent", tags: ["Docs", "Summary"], sideLabel: "Binding", sideValue: "Shared", href: "workspace_agent_detail.html?item=release-notes-pilot", linkLabel: "에이전트 보기" }
+        ],
+        healthChecks: [
+          { title: "Quota Guard", meta: "현재 사용량은 안정적이지만 월말 문서 생성량 증가를 함께 봐야 합니다.", side: "Normal" },
+          { title: "Model Contract", meta: "connected agent 2개 모두 claude-3.7-sonnet 계약과 일치합니다.", side: "Pass" },
+          { title: "Rotation Ready", meta: "다음 교체 전 테스트 runtime이 준비되어 있습니다.", side: "Ready" }
+        ],
+        guideTips: [
+          { title: "reasoning key는 연결 agent의 문맥 길이와 함께 봅니다", meta: "같은 호출 수라도 문맥 길이에 따라 사용량 차이가 크게 날 수 있습니다.", side: "Context" },
+          { title: "공유 key는 신규 agent 연결 전에 소비 패턴을 비교합니다", meta: "문서 요약과 리뷰 요약은 피크 시간이 달라 함께 붙여도 괜찮은지 먼저 보는 것이 좋습니다.", side: "Pattern" },
+          { title: "교체 전에는 샘플 프롬프트로 응답 차이를 확인합니다", meta: "reasoning key는 정상 응답 여부보다 실제 품질 차이가 더 중요한 경우가 많습니다.", side: "Quality" }
+        ]
+      },
+      {
+        key: "internal-docs-rag-key",
+        title: "internal-docs-rag-key",
+        description: "docs-guide-widget와 workspace-knowledge가 함께 참조하는 asf tier key입니다.",
+        heroIcon: "vpn_key",
+        typeLabel: "asf",
+        statusLabel: "Active",
+        statusTone: "healthy",
+        theme: { bg: "#fff4dd", brand: "#f59e0b", brandH: "#d97706", brandBg: "#ffe5a3", brandSoft: "rgba(245,158,11,.18)", accent: "#f97316" },
+        accessLink: { href: "workspace_keycenter_hub.html", label: "Keycenter Hub 보기" },
+        connectedLink: { href: "workspace_tool_inventory_hub.html", label: "연결 허브 보기" },
+        actions: [
+          { label: "Tool Inventory", icon: "inventory_2", href: "workspace_tool_inventory_hub.html" },
+          { label: "Chatbot Hub", icon: "arrow_outward", variant: "primary", href: "workspace_chatbot_hub.html" }
+        ],
+        heroStats: [
+          { label: "Key Tier", value: "asf", meta: "사내 검색 공용 tier" },
+          { label: "Model Scope", value: "2", meta: "asf-rag-base / rerank-lite" },
+          { label: "Rotation", value: "24d", meta: "2026.07.11 예정" },
+          { label: "Surface", value: "3", meta: "chatbot, tool, agent" }
+        ],
+        accessInfo: [
+          { key: "Key Tier", value: "asf" },
+          { key: "Endpoint", value: '<span class="mono">https://rag-internal.dej.ai/query</span>' },
+          { key: "Auth Header", value: '<span class="mono">x-service-key: &lt;key&gt;</span>' },
+          { key: "Key Prefix", value: '<span class="mono">ik-doc-ra••••</span>' },
+          { key: "Allowed Models", value: "asf-rag-base, rerank-lite" }
+        ],
+        registration: [
+          { label: "Key ID", value: "kc-internal-rag-021", meta: "Keycenter 식별자" },
+          { label: "Secret Path", value: "vault://keycenter/internal/docs-rag", meta: "저장 위치" },
+          { label: "발급일", value: "2026.06.10", meta: "현재 활성 버전" },
+          { label: "Rotation Cycle", value: "45d", meta: "내부 서비스 주기" }
+        ],
+        connectionChecks: [
+          { title: "Secret Reference", meta: "internal service reference가 정상 조회됩니다.", side: "Pass" },
+          { title: "Auth Test", meta: "docs widget과 inventory runtime 모두 인증 테스트를 통과했습니다.", side: "Pass" },
+          { title: "Consumer Mapping", meta: "문서 검색 consumer 3개가 최신 상태로 연결되어 있습니다.", side: "Match" }
+        ],
+        statusCards: [
+          { title: "발급 상태", meta: "내부 retrieval key", value: "Active" },
+          { title: "최근 7일 사용량", meta: "query requests", value: "142K" },
+          { title: "오류율", meta: "최근 24시간", value: "0.6%" }
+        ],
+        usageSummary: [
+          { label: "Status", value: "Active", meta: "문서 검색 흐름에서 정상 사용 중입니다." },
+          { label: "Quota", value: "57%", meta: "현재 query budget의 57%를 사용했습니다." },
+          { label: "Rotation", value: "24d", meta: "당장 교체가 가까운 상태는 아닙니다." },
+          { label: "Surface", value: "3", meta: "retrieval consumer 3개가 연결되어 있습니다." }
+        ],
+        connectedItems: [
+          { title: "docs-guide-widget", meta: "문서 페이지 도움말 챗봇이 검색 결과 보강에 이 key를 사용합니다.", badge: "Chatbot", tags: ["Docs", "Search"], sideLabel: "Binding", sideValue: "Primary", href: "workspace_chatbot_detail.html?item=docs-guide-widget", linkLabel: "챗봇 보기" },
+          { title: "workspace-knowledge", meta: "문서 검색과 owner 탐색을 제공하는 tool inventory가 이 key를 참조합니다.", badge: "Tool", tags: ["Inventory", "Retrieval"], sideLabel: "Binding", sideValue: "Direct", href: "workspace_tool_inventory_detail.html?item=workspace-knowledge", linkLabel: "인벤토리 보기" },
+          { title: "release-notes-pilot", meta: "문서 초안 생성 전 관련 문서를 찾는 단계에서 이 key를 사용합니다.", badge: "Agent", tags: ["Docs", "Context"], sideLabel: "Binding", sideValue: "Shared", href: "workspace_agent_detail.html?item=release-notes-pilot", linkLabel: "에이전트 보기" }
+        ],
+        healthChecks: [
+          { title: "Latency Guard", meta: "p95 응답 시간은 현재 기준 내에 있습니다.", side: "Pass" },
+          { title: "Quota Guard", meta: "문서 배치 작업이 몰리는 날에는 query 사용량을 함께 보는 것이 좋습니다.", side: "Normal" },
+          { title: "Consumer Contract", meta: "retrieval response 포맷이 연결된 consumer와 일치합니다.", side: "Pass" }
+        ],
+        guideTips: [
+          { title: "retrieval key는 호출 수보다 검색 패턴을 함께 봅니다", meta: "문서 동기화 직후에는 같은 consumer라도 응답량이 크게 달라질 수 있습니다.", side: "Query" },
+          { title: "tool inventory와 chatbot 연결을 함께 확인합니다", meta: "같은 검색 key를 여러 surface가 공유하면 한쪽 변경이 다른 쪽 결과에도 영향을 줄 수 있습니다.", side: "Shared" },
+          { title: "응답 지연이 보이면 model보다 endpoint 상태를 먼저 확인합니다", meta: "retrieval key는 생성 모델보다 검색 서비스 상태가 체감 품질에 더 크게 작용할 수 있습니다.", side: "Latency" }
+        ]
+      },
+      {
+        key: "azure-ops-briefing-key",
+        title: "azure-ops-briefing-key",
+        description: "ops-briefing-bot과 incident-triage-bot이 공유하는 paid tier key입니다.",
+        heroIcon: "vpn_key",
+        typeLabel: "paid",
+        statusLabel: "Active",
+        statusTone: "healthy",
+        theme: { bg: "#fff4dd", brand: "#f59e0b", brandH: "#d97706", brandBg: "#ffe5a3", brandSoft: "rgba(245,158,11,.18)", accent: "#f97316" },
+        accessLink: { href: "workspace_keycenter_hub.html", label: "Keycenter Hub 보기" },
+        connectedLink: { href: "workspace_chatbot_hub.html", label: "연결 허브 보기" },
+        actions: [
+          { label: "Chatbot Hub", icon: "chat", href: "workspace_chatbot_hub.html" },
+          { label: "Agent Hub", icon: "arrow_outward", variant: "primary", href: "workspace_agent_hub.html" }
+        ],
+        heroStats: [
+          { label: "Key Tier", value: "paid", meta: "ops용 유료 tier" },
+          { label: "Model Scope", value: "2", meta: "azure-gpt-4.1 / 4o-mini" },
+          { label: "Rotation", value: "9d", meta: "2026.06.26 예정" },
+          { label: "Surface", value: "2", meta: "ops chatbot와 agent" }
+        ],
+        accessInfo: [
+          { key: "Key Tier", value: "paid" },
+          { key: "Endpoint", value: '<span class="mono">https://ops-eastus.openai.azure.com</span>' },
+          { key: "Auth Header", value: '<span class="mono">api-key: &lt;key&gt;</span>' },
+          { key: "Key Prefix", value: '<span class="mono">az-op-br••••</span>' },
+          { key: "Allowed Models", value: "azure-gpt-4.1, azure-gpt-4o-mini" }
+        ],
+        registration: [
+          { label: "Key ID", value: "kc-azure-ops-005", meta: "Keycenter 식별자" },
+          { label: "Secret Path", value: "vault://keycenter/azure/ops-briefing", meta: "저장 위치" },
+          { label: "발급일", value: "2026.05.27", meta: "현재 활성 버전" },
+          { label: "Rotation Cycle", value: "30d", meta: "정기 교체 주기" }
+        ],
+        connectionChecks: [
+          { title: "Secret Reference", meta: "Azure runtime에서 최신 secret을 정상 조회합니다.", side: "Pass" },
+          { title: "Auth Test", meta: "ops briefing runtime에서 인증 테스트를 통과했습니다.", side: "Pass" },
+          { title: "Consumer Mapping", meta: "운영 surface 2개가 같은 regional endpoint를 참조합니다.", side: "Match" }
+        ],
+        statusCards: [
+          { title: "발급 상태", meta: "regional ops key", value: "Active" },
+          { title: "최근 7일 사용량", meta: "ops requests", value: "6.4M" },
+          { title: "오류율", meta: "최근 24시간", value: "0.4%" }
+        ],
+        usageSummary: [
+          { label: "Status", value: "Active", meta: "운영 브리핑 흐름에서 정상 사용 중입니다." },
+          { label: "Quota", value: "69%", meta: "브리핑 시간대 피크가 반영된 수치입니다." },
+          { label: "Rotation", value: "9d", meta: "가까운 교체 일정을 함께 준비해야 합니다." },
+          { label: "Surface", value: "2", meta: "ops chatbot와 triage agent가 공유합니다." }
+        ],
+        connectedItems: [
+          { title: "ops-briefing-bot", meta: "운영 브리핑 응답과 요약 메시지를 생성하는 기본 chatbot입니다.", badge: "Chatbot", tags: ["Ops", "Briefing"], sideLabel: "Binding", sideValue: "Primary", href: "workspace_chatbot_detail.html?item=ops-briefing-bot", linkLabel: "챗봇 보기" },
+          { title: "incident-triage-bot", meta: "장애 요약과 분류 초안 생성을 이 key로 수행합니다.", badge: "Agent", tags: ["Incident", "Ops"], sideLabel: "Binding", sideValue: "Shared", href: "workspace_agent_hub.html", linkLabel: "에이전트 허브 보기" }
+        ],
+        healthChecks: [
+          { title: "Rotation Window", meta: "9일 후 교체 예정이므로 운영 채널과 교체 공지를 함께 준비합니다.", side: "Soon" },
+          { title: "Regional Endpoint", meta: "현재 East US endpoint가 정상 응답 중입니다.", side: "Pass" },
+          { title: "Peak Usage Guard", meta: "브리핑 시간대에 사용량이 몰리므로 피크 시간대 추이를 같이 봅니다.", side: "Watch" }
+        ],
+        guideTips: [
+          { title: "regional key는 endpoint와 지역 설정을 함께 봅니다", meta: "같은 모델이라도 지역 설정이 다르면 연결 상태와 지연이 달라질 수 있습니다.", side: "Region" },
+          { title: "ops key는 브리핑 시간대 사용량을 따로 확인합니다", meta: "평균 사용량보다 특정 시간대 피크가 더 중요한 경우가 많습니다.", side: "Peak" },
+          { title: "교체 전에는 shared runtime 두 곳을 모두 테스트합니다", meta: "chatbot와 agent가 같은 key를 쓰면 한쪽만 테스트해서는 실제 영향 범위를 다 보기 어렵습니다.", side: "Runtime" }
+        ]
+      },
+      {
+        key: "partner-pricing-review-key",
+        title: "partner-pricing-review-key",
+        description: "pricing-advisor-bot 파일럿 검토에 사용하는 free tier key입니다.",
+        heroIcon: "vpn_key",
+        typeLabel: "free",
+        statusLabel: "Review",
+        statusTone: "review",
+        theme: { bg: "#fff4dd", brand: "#f59e0b", brandH: "#d97706", brandBg: "#ffe5a3", brandSoft: "rgba(245,158,11,.18)", accent: "#f97316" },
+        accessLink: { href: "workspace_keycenter_hub.html", label: "Keycenter Hub 보기" },
+        connectedLink: { href: "workspace_chatbot_hub.html", label: "연결 허브 보기" },
+        actions: [
+          { label: "Chatbot Hub", icon: "chat", href: "workspace_chatbot_hub.html" },
+          { label: "Keycenter Hub", icon: "arrow_outward", variant: "primary", href: "workspace_keycenter_hub.html" }
+        ],
+        heroStats: [
+          { label: "Key Tier", value: "free", meta: "파일럿용 무료 tier" },
+          { label: "Model Scope", value: "2", meta: "gpt-4.1 / gpt-4o" },
+          { label: "Rotation", value: "Pending", meta: "정식 발급 전 검토 중" },
+          { label: "Surface", value: "1", meta: "pilot chatbot only" }
+        ],
+        accessInfo: [
+          { key: "Key Tier", value: "free" },
+          { key: "Endpoint", value: '<span class="mono">https://api.openai.com/v1</span>' },
+          { key: "Auth Header", value: '<span class="mono">Authorization: Bearer &lt;key&gt;</span>' },
+          { key: "Key Prefix", value: '<span class="mono">sk-pilot-pr••••</span>' },
+          { key: "Allowed Models", value: "gpt-4.1, gpt-4o" }
+        ],
+        registration: [
+          { label: "Key ID", value: "kc-openai-partner-003", meta: "Keycenter 식별자" },
+          { label: "Secret Path", value: "vault://keycenter/openai/partner-pricing", meta: "저장 위치" },
+          { label: "발급일", value: "2026.06.12", meta: "파일럿 검토 버전" },
+          { label: "Rotation Cycle", value: "Pending", meta: "정식 승인 후 확정" }
+        ],
+        connectionChecks: [
+          { title: "Secret Reference", meta: "파일럿 환경에서만 secret reference가 열려 있습니다.", side: "Limited" },
+          { title: "Auth Test", meta: "sandbox 인증 테스트는 통과했지만 정식 운영 검수는 남아 있습니다.", side: "Review" },
+          { title: "Consumer Mapping", meta: "현재 pricing-advisor-bot 한 곳만 연결되어 있습니다.", side: "Match" }
+        ],
+        statusCards: [
+          { title: "발급 상태", meta: "pilot review key", value: "Review" },
+          { title: "최근 7일 사용량", meta: "pilot requests", value: "1.1M" },
+          { title: "오류율", meta: "최근 24시간", value: "1.9%" }
+        ],
+        usageSummary: [
+          { label: "Status", value: "Review", meta: "정식 운영 전 검토 단계입니다." },
+          { label: "Quota", value: "28%", meta: "파일럿 구간만 제한적으로 사용 중입니다." },
+          { label: "Rotation", value: "Pending", meta: "정식 승인 후 교체 주기를 확정합니다." },
+          { label: "Surface", value: "1", meta: "pricing-advisor-bot만 연결되어 있습니다." }
+        ],
+        connectedItems: [
+          { title: "pricing-advisor-bot", meta: "파트너 상담 응답 검토를 진행하는 파일럿 chatbot입니다.", badge: "Chatbot", tags: ["Partner", "Pilot"], sideLabel: "Binding", sideValue: "Pilot", href: "workspace_chatbot_detail.html?item=pricing-advisor-bot", linkLabel: "챗봇 보기" },
+          { title: "partner pilot validation", meta: "정식 운영 전 응답 계약과 사용량을 함께 검토하는 검증 흐름입니다.", badge: "Validation", tags: ["Schema", "Review"], sideLabel: "Binding", sideValue: "Pending", href: "workspace_keycenter_hub.html", linkLabel: "Keycenter 보기" }
+        ],
+        healthChecks: [
+          { title: "Prod Approval", meta: "정식 운영 승인이 아직 완료되지 않았습니다.", side: "Pending" },
+          { title: "Schema Contract", meta: "응답 매핑 mismatch가 남아 있어 연결 확장이 보류 중입니다.", side: "Review" },
+          { title: "Quota Guard", meta: "사용량은 낮지만 검토 결과가 먼저 정리되어야 합니다.", side: "Normal" }
+        ],
+        guideTips: [
+          { title: "review 상태 key는 사용량보다 승인 상태를 먼저 봅니다", meta: "호출이 적어도 계약 검토가 끝나지 않으면 운영 확장은 어렵습니다.", side: "Review" },
+          { title: "pilot key는 연결 consumer를 최소 범위로 유지합니다", meta: "검토가 끝나기 전에는 여러 surface에 넓게 바인딩하지 않는 편이 안전합니다.", side: "Scope" },
+          { title: "응답 포맷 이슈는 auth 성공과 별개로 봅니다", meta: "인증이 정상이어도 response mapping이 맞지 않으면 실제 연결은 준비되지 않은 상태일 수 있습니다.", side: "Schema" }
+        ]
+      },
+      {
+        key: "internal-tool-runtime-key",
+        title: "internal-tool-runtime-key",
+        description: "workspace-knowledge와 billing-service가 공유하는 dej-base tier key입니다.",
+        heroIcon: "vpn_key",
+        typeLabel: "dej-base",
+        statusLabel: "Active",
+        statusTone: "healthy",
+        theme: { bg: "#fff4dd", brand: "#f59e0b", brandH: "#d97706", brandBg: "#ffe5a3", brandSoft: "rgba(245,158,11,.18)", accent: "#f97316" },
+        accessLink: { href: "workspace_keycenter_hub.html", label: "Keycenter Hub 보기" },
+        connectedLink: { href: "workspace_tool_inventory_hub.html", label: "연결 허브 보기" },
+        actions: [
+          { label: "Tool Inventory", icon: "inventory_2", href: "workspace_tool_inventory_hub.html" },
+          { label: "Keycenter Hub", icon: "arrow_outward", variant: "primary", href: "workspace_keycenter_hub.html" }
+        ],
+        heroStats: [
+          { label: "Key Tier", value: "dej-base", meta: "기본 내부 실행 tier" },
+          { label: "Model Scope", value: "2", meta: "internal-rag-1 / function-router" },
+          { label: "Rotation", value: "21d", meta: "2026.07.08 예정" },
+          { label: "Surface", value: "3", meta: "tool inventory 중심" }
+        ],
+        accessInfo: [
+          { key: "Key Tier", value: "dej-base" },
+          { key: "Endpoint", value: '<span class="mono">https://tools-internal.dej.ai/runtime</span>' },
+          { key: "Auth Header", value: '<span class="mono">x-runtime-key: &lt;key&gt;</span>' },
+          { key: "Key Prefix", value: '<span class="mono">ik-tool-ru••••</span>' },
+          { key: "Allowed Models", value: "internal-rag-1, function-router" }
+        ],
+        registration: [
+          { label: "Key ID", value: "kc-internal-tool-010", meta: "Keycenter 식별자" },
+          { label: "Secret Path", value: "vault://keycenter/internal/tool-runtime", meta: "저장 위치" },
+          { label: "발급일", value: "2026.06.02", meta: "현재 활성 버전" },
+          { label: "Rotation Cycle", value: "45d", meta: "내부 서비스 주기" }
+        ],
+        connectionChecks: [
+          { title: "Secret Reference", meta: "runtime secret reference가 정상 조회됩니다.", side: "Pass" },
+          { title: "Auth Test", meta: "tool inventory runtime에서 인증 테스트를 통과했습니다.", side: "Pass" },
+          { title: "Consumer Mapping", meta: "tool inventory와 연결된 consumer 3개가 최신 상태입니다.", side: "Match" }
+        ],
+        statusCards: [
+          { title: "발급 상태", meta: "tool runtime key", value: "Active" },
+          { title: "최근 7일 사용량", meta: "runtime calls", value: "284K" },
+          { title: "오류율", meta: "최근 24시간", value: "0.5%" }
+        ],
+        usageSummary: [
+          { label: "Status", value: "Active", meta: "tool runtime에서 정상 사용 중입니다." },
+          { label: "Quota", value: "48%", meta: "현재 runtime budget의 48%를 사용했습니다." },
+          { label: "Rotation", value: "21d", meta: "다음 교체까지는 여유가 있습니다." },
+          { label: "Surface", value: "3", meta: "tool inventory와 consumer가 함께 사용합니다." }
+        ],
+        connectedItems: [
+          { title: "workspace-knowledge", meta: "문서 검색과 owner 탐색을 제공하는 inventory가 이 key를 사용합니다.", badge: "Tool", tags: ["Knowledge", "Retrieval"], sideLabel: "Binding", sideValue: "Primary", href: "workspace_tool_inventory_detail.html?item=workspace-knowledge", linkLabel: "인벤토리 보기" },
+          { title: "billing-service", meta: "청구 조회와 정책 응답을 제공하는 inventory runtime이 이 key를 사용합니다.", badge: "Tool", tags: ["Billing", "Runtime"], sideLabel: "Binding", sideValue: "Shared", href: "workspace_tool_inventory_detail.html?item=billing-service", linkLabel: "인벤토리 보기" },
+          { title: "repo-review-guard", meta: "tool inventory를 통해 owner 탐색과 문서 조회를 수행합니다.", badge: "Agent", tags: ["Review", "Tool Call"], sideLabel: "Binding", sideValue: "Indirect", href: "workspace_agent_detail.html?item=repo-review-guard", linkLabel: "에이전트 보기" }
+        ],
+        healthChecks: [
+          { title: "Runtime Health", meta: "tool runtime endpoint가 현재 정상 응답 중입니다.", side: "Pass" },
+          { title: "Quota Guard", meta: "여유량이 충분해 추가 tool 연결 여지가 있습니다.", side: "Good" },
+          { title: "Policy Scope", meta: "현재 허용 모델 범위가 연결된 inventory 계약과 일치합니다.", side: "Pass" }
+        ],
+        guideTips: [
+          { title: "tool runtime key는 직접 연결과 간접 연결을 함께 봅니다", meta: "inventory 하나만 보여도 실제 consumer는 그 뒤에 더 많을 수 있습니다.", side: "Flow" },
+          { title: "inventory 확장 전에는 runtime 여유량을 먼저 확인합니다", meta: "tool 호출은 consumer 수가 늘수록 급격히 증가할 수 있어 사전 확인이 중요합니다.", side: "Quota" },
+          { title: "내부 runtime key는 endpoint 상태를 함께 확인합니다", meta: "모델 스펙보다 runtime endpoint 상태가 체감 안정성에 더 직접적인 경우가 많습니다.", side: "Runtime" }
+        ]
+      }
+    ];
+
+    window.DETAIL_PAGE_CONFIG = {
+      paramName: "item",
+      pageTitle: "Keycenter Detail",
+      hubLabel: "Keycenter",
+      hubHref: "workspace_keycenter_hub.html",
+      activeHubKey: "keycenter",
+      eyebrow: "AI · Issued LLM Keys",
+      searchPlaceholder: "key 이름, tier, model, connected surface를 검색하세요...",
+      items: Object.fromEntries(rawItems.map((item) => [item.key, buildItem(item)]))
+    };
+  </script>
+  <script src="workspace_detail_shared.js"></script>
+  <script src="ax_studio_topbar.js"></script>
+</body>
 </html>

@@ -1,4 +1,4 @@
-import type { LaunchpadAnnouncement } from '@/features/launchpad/types';
+import type { LaunchpadAnnouncement, LaunchpadHero } from '@/features/launchpad/types';
 import { workspaceTokens } from '@/styles/tokens';
 
 export type BannerVariant = 'dej' | 'event' | 'release' | 'security';
@@ -15,59 +15,63 @@ export type ReferenceBannerSlide = {
   variant: BannerVariant;
 };
 
-export function buildBannerSlides(announcements: LaunchpadAnnouncement[]): ReferenceBannerSlide[] {
-  const eventAnnouncement = announcements.find(isEventAnnouncement);
-  const securityAnnouncement = announcements.find(
-    (announcement) => announcement.type === 'security',
-  );
+export function buildBannerSlides(
+  announcements: LaunchpadAnnouncement[],
+  hero?: LaunchpadHero,
+): ReferenceBannerSlide[] {
+  const releaseAnnouncement =
+    announcements.find((announcement) => announcement.type !== 'security') ?? announcements[0];
+  const eventAnnouncement = announcements[1] ?? releaseAnnouncement;
+  const securityAnnouncement =
+    announcements.find((announcement) => announcement.type === 'security') ??
+    announcements[1] ??
+    announcements[0];
 
   return [
     {
       description:
-        'Development Experience Journey is a point of view for building a customer-centered development platform. AX Studio keeps the DEJ story concise while connecting execution paths to apps, AI, and project tools.',
-      eyebrow: 'About DEJ',
+        hero?.subtitle ??
+        'Workspace 전반의 운영 현황과 바로 이어지는 작업 흐름을 한 화면에서 확인합니다.',
+      eyebrow: 'Launchpad Overview API',
       id: 'about-dej',
-      primaryHref: '/docs/about-dej',
-      primaryLabel: 'View CEJ/DEJ pipeline',
-      secondaryHref: '/docs/about-dej#history',
-      secondaryLabel: 'View history',
-      title: 'DEJ redesigns the development experience within the customer journey.',
+      primaryHref: '/workspace/app-gallery',
+      primaryLabel: 'App Gallery',
+      secondaryHref: '/workspace/ai-gallery',
+      secondaryLabel: 'AI Gallery',
+      title: hero?.title ?? 'Welcome back',
       variant: 'dej',
     },
     {
-      description:
-        'AI automatically reviews merge request code. Connect it with GitLab MCP to improve code quality and reduce average review time by 72%.',
-      eyebrow: 'New Release · v2.4',
-      id: 'ai-code-review',
-      primaryHref: '/docs/articles/ai-code-review',
-      primaryLabel: 'Learn more',
-      secondaryHref: '/workspace/projects',
-      secondaryLabel: 'Later',
-      title: 'AI Code Review is now available',
+      description: releaseAnnouncement?.message ?? 'Launchpad API announcements are not available.',
+      eyebrow: 'Launchpad Release',
+      id: releaseAnnouncement?.id ?? 'launchpad-release',
+      primaryHref: releaseAnnouncement?.href ?? '/docs/api/v2/features/launchpad',
+      primaryLabel: '가이드 열기',
+      secondaryHref: '/workspace/app-gallery',
+      secondaryLabel: 'App Gallery 보기',
+      title: releaseAnnouncement?.title ?? 'Launchpad Release',
       variant: 'release',
     },
     {
-      description:
-        'Sessions connect App Gallery, AI Gallery, MCP, and the project hub into one journey. Review team examples and hands-on demos to see where AX Studio is heading next.',
+      description: eventAnnouncement?.message ?? 'Launchpad spotlight content is not available.',
       eyebrow: 'AX Studio Conference',
-      id: eventAnnouncement?.id ?? 'ax-studio-conference',
-      primaryHref: eventAnnouncement?.href ?? '/docs/events/ax-studio-conference',
-      primaryLabel: 'View schedule',
-      secondaryHref: `${eventAnnouncement?.href ?? '/docs/events/ax-studio-conference'}#sessions`,
-      secondaryLabel: 'View sessions',
-      title: 'Meet new development experience workflows at AX Studio Conference.',
+      id: eventAnnouncement?.id ? `${eventAnnouncement.id}-spotlight` : 'launchpad-spotlight',
+      primaryHref: eventAnnouncement?.href ?? '/docs/articles/token-hygiene',
+      primaryLabel: '관련 문서 보기',
+      secondaryHref: '/workspace/ai-gallery',
+      secondaryLabel: 'AI Gallery 보기',
+      title: eventAnnouncement?.title ?? 'Launchpad Spotlight',
       variant: 'event',
     },
     {
-      description:
-        'Review key rotation, access permissions, and external tool connection policies for safe AI usage. Project-level security checklists and operating guides are available together.',
+      description: securityAnnouncement?.message ?? 'Security notice content is not available.',
       eyebrow: 'Security Notice',
-      id: securityAnnouncement?.id ?? 'ax-studio-security',
+      id: securityAnnouncement?.id ? `${securityAnnouncement.id}-security` : 'ax-studio-security',
       primaryHref: securityAnnouncement?.href ?? '/docs/articles/token-hygiene',
-      primaryLabel: 'View notice',
-      secondaryHref: '/docs/articles/token-hygiene#checklist',
-      secondaryLabel: 'Checklist',
-      title: 'AX Studio security standards for MCP connections and API keys are getting stronger.',
+      primaryLabel: '보안 가이드',
+      secondaryHref: '/workspace/keycenter',
+      secondaryLabel: 'Keycenter 보기',
+      title: securityAnnouncement?.title ?? 'Security Notice',
       variant: 'security',
     },
   ];
@@ -147,8 +151,4 @@ export function getSlideVisual(variant: BannerVariant) {
     padding: '30px 32px 24px',
     shadow: 'none',
   };
-}
-
-function isEventAnnouncement(announcement: LaunchpadAnnouncement) {
-  return announcement.type === 'event' || announcement.type === 'conference';
 }

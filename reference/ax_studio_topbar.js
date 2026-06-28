@@ -3,10 +3,10 @@
 
   const serviceGroups = [
     {
-      title: "Store",
+      title: "Gallery",
       links: [
-        { key: "app-store", title: "App Gallery", desc: "실행형 개발 앱과 워크스페이스 도구를 발견하고 살펴보기", icon: "widgets", href: "dej_app_store.html" },
-        { key: "agent-store", title: "AI Gallery", desc: "챗봇과 tool 자산을 전시하고 재사용 흐름으로 연결", icon: "smart_toy", href: "dej_agent_store.html" }
+        { key: "app-gallery", title: "App Gallery", desc: "실행형 개발 앱과 워크스페이스 도구를 발견하고 살펴보기", icon: "widgets", href: "dej_app_gallery.html" },
+        { key: "ai-gallery", title: "AI Gallery", desc: "챗봇과 tool 자산을 전시하고 재사용 흐름으로 연결", icon: "smart_toy", href: "dej_ai_gallery.html" }
       ]
     },
     {
@@ -104,16 +104,17 @@
     const searchSource = host.dataset.searchSource || activeKey || "";
     const searchSourceLabel = host.dataset.searchSourceLabel || "";
     const searchDefaultType = host.dataset.searchDefaultType || "";
+    const launchpadHref = host.dataset.launchpadHref || "portal_launchpad.html";
 
     host.innerHTML = `
       <header class="topbar">
         <div class="topbar-inner">
-          <div class="topbar-brand" aria-label="AX Studio">
+          <a class="topbar-brand" href="${launchpadHref}" aria-label="AX Studio Launchpad">
             <span class="brand-mark" aria-hidden="true">
               <img src="${logoDataUrl}" alt="AX Studio" />
             </span>
             <span class="brand-name">AX Studio</span>
-          </div>
+          </a>
           <div class="logo-menu" id="serviceMenuWrap">
             <button class="menu-trigger" id="serviceMenuButton" type="button" aria-label="전체 메뉴 열기" aria-haspopup="true" aria-expanded="false" aria-controls="serviceMenuPopover">
               <span class="material-icons-round">apps</span>

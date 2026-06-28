@@ -2,7 +2,8 @@ import type { SectionStatusInfo } from '@/components/reference-status';
 
 export const appGallerySectionStatus = {
   categoryTabs: {
-    apis: [{ contract: 'fixture-backed', method: 'GET', path: '/api/v2/app-gallery/categories' }],
+    apis: [{ contract: 'accepted', method: 'GET', path: '/api/v2/app-gallery/categories' }],
+    evidence: 'User-provided sample payload accepted for category items and default category.',
     fieldsUsed: [
       'defaultCategory',
       'items[].id',
@@ -16,15 +17,17 @@ export const appGallerySectionStatus = {
     page: 'App Gallery',
     progress: 'implemented',
     readiness: 'Already implemented',
-    reference: 'dej_app_store.html',
+    reference: 'dej_app_gallery.html',
     section: 'Category tabs',
   },
   collections: {
     apis: [
-      { contract: 'fixture-backed', method: 'GET', path: '/api/v2/app-gallery/categories' },
-      { contract: 'fixture-backed', method: 'GET', path: '/api/v2/app-gallery/featured' },
-      { contract: 'fixture-backed', method: 'GET', path: '/api/v2/app-gallery/related-ai' },
+      { contract: 'accepted', method: 'GET', path: '/api/v2/app-gallery/categories' },
+      { contract: 'accepted', method: 'GET', path: '/api/v2/app-gallery/featured' },
+      { contract: 'accepted', method: 'GET', path: '/api/v2/app-gallery/related-ai' },
     ],
+    evidence:
+      'User-provided sample payloads accepted for categories, featured apps, and related AI items.',
     fieldsUsed: [
       'apps[].category',
       'apps[].categoryLabel',
@@ -39,18 +42,16 @@ export const appGallerySectionStatus = {
     page: 'App Gallery',
     progress: 'implemented',
     readiness: 'Already implemented',
-    reference: 'dej_app_store.html',
+    reference: 'dej_app_gallery.html',
     section: 'Collections',
   },
   highlights: {
     apis: [
-      { contract: 'fixture-backed', method: 'GET', path: '/api/v2/app-gallery/featured' },
-      { contract: 'missing', method: 'GET', path: '/api/v2/app-gallery/apps/:slug' },
+      { contract: 'accepted', method: 'GET', path: '/api/v2/app-gallery/featured' },
+      { contract: 'accepted', method: 'GET', path: '/api/v2/app-gallery/apps/:slug' },
     ],
-    blockers: [
-      'Missing accepted response contract for GET /api/v2/app-gallery/apps/:slug, so highlighted card detail behavior cannot be verified.',
-      'Highlighted card click/open behavior still needs reference verification after the app detail contract is available.',
-    ],
+    evidence:
+      'User-provided sample payloads accepted for featured app cards and app detail responses.',
     fieldsUsed: [
       'items[].title',
       'items[].subtitle',
@@ -60,18 +61,20 @@ export const appGallerySectionStatus = {
       'items[].capabilities.canPreview',
     ],
     id: 'app-gallery-highlights',
-    nextAction: 'Provide/approve app detail contract and verify highlighted card behavior.',
+    nextAction:
+      'Run focused Playwright reference verification for this section, then run the broader visual suite before marking Verified.',
     page: 'App Gallery',
-    progress: 'in-progress',
-    readiness: 'Blocked',
-    reference: 'dej_app_store.html',
+    progress: 'implemented',
+    readiness: 'Already implemented',
+    reference: 'dej_app_gallery.html',
     section: 'Curated highlights',
   },
   heroRail: {
     apis: [
-      { contract: 'fixture-backed', method: 'GET', path: '/api/v2/app-gallery/hero' },
-      { contract: 'fixture-backed', method: 'GET', path: '/api/v2/app-gallery/apps (paged)' },
+      { contract: 'accepted', method: 'GET', path: '/api/v2/app-gallery/hero' },
+      { contract: 'accepted', method: 'GET', path: '/api/v2/app-gallery/apps (paged)' },
     ],
+    evidence: 'User-provided sample payloads accepted for hero data and paged app list items.',
     fieldsUsed: [
       'apps[].title',
       'apps[].subtitle',
@@ -86,14 +89,15 @@ export const appGallerySectionStatus = {
     page: 'App Gallery',
     progress: 'implemented',
     readiness: 'Already implemented',
-    reference: 'dej_app_store.html',
+    reference: 'dej_app_gallery.html',
     section: 'Hero rail',
   },
   pageIntro: {
     apis: [
-      { contract: 'fixture-backed', method: 'GET', path: '/api/v2/app-gallery/hero' },
-      { contract: 'fixture-backed', method: 'GET', path: '/api/v2/app-gallery/categories' },
+      { contract: 'accepted', method: 'GET', path: '/api/v2/app-gallery/hero' },
+      { contract: 'accepted', method: 'GET', path: '/api/v2/app-gallery/categories' },
     ],
+    evidence: 'User-provided sample payloads accepted for hero stats and categories.',
     fieldsUsed: [
       'title',
       'subtitle',
@@ -110,19 +114,17 @@ export const appGallerySectionStatus = {
     page: 'App Gallery',
     progress: 'implemented',
     readiness: 'Already implemented',
-    reference: 'dej_app_store.html',
+    reference: 'dej_app_gallery.html',
     section: 'Page head / intro',
   },
   registeredApps: {
     apis: [
-      { contract: 'fixture-backed', method: 'GET', path: '/api/v2/app-gallery/apps (paged)' },
-      { contract: 'missing', method: 'GET', path: '/api/v2/app-gallery/apps/:slug' },
-      { contract: 'missing', method: 'POST', path: '/api/v2/app-gallery/apps/:slug/install' },
+      { contract: 'accepted', method: 'GET', path: '/api/v2/app-gallery/apps (paged)' },
+      { contract: 'accepted', method: 'GET', path: '/api/v2/app-gallery/apps/:slug' },
+      { contract: 'accepted', method: 'POST', path: '/api/v2/app-gallery/apps/:slug/install' },
     ],
-    blockers: [
-      'Missing accepted response contract for GET /api/v2/app-gallery/apps/:slug, so registered app card detail behavior cannot be verified.',
-      'Missing accepted response contract and mock route for POST /api/v2/app-gallery/apps/:slug/install, so the install action flow remains blocked.',
-    ],
+    evidence:
+      'User-provided sample payloads accepted for paged app list, app detail, install request body, and queued install response.',
     fieldsUsed: [
       'items[].title',
       'items[].subtitle',
@@ -133,19 +135,21 @@ export const appGallerySectionStatus = {
       'items[].capabilities.canPreview',
     ],
     id: 'app-gallery-registered-apps',
-    nextAction: 'Provide app detail/install contract and complete action flow.',
+    nextAction:
+      'Run focused Playwright reference verification for this section, then run the broader visual suite before marking Verified.',
     page: 'App Gallery',
-    progress: 'in-progress',
-    readiness: 'Blocked',
-    reference: 'dej_app_store.html',
+    progress: 'implemented',
+    readiness: 'Already implemented',
+    reference: 'dej_app_gallery.html',
     section: 'Registered app cards',
   },
   sideRail: {
     apis: [
-      { contract: 'fixture-backed', method: 'GET', path: '/api/v2/app-gallery/apps (paged)' },
-      { contract: 'fixture-backed', method: 'GET', path: '/api/v2/app-gallery/featured' },
-      { contract: 'fixture-backed', method: 'GET', path: '/api/v2/app-gallery/categories' },
+      { contract: 'accepted', method: 'GET', path: '/api/v2/app-gallery/apps (paged)' },
+      { contract: 'accepted', method: 'GET', path: '/api/v2/app-gallery/featured' },
+      { contract: 'accepted', method: 'GET', path: '/api/v2/app-gallery/categories' },
     ],
+    evidence: 'User-provided sample payloads accepted for app list, featured apps, and categories.',
     fieldsUsed: [
       'apps[].title',
       'apps[].subtitle',
@@ -159,7 +163,7 @@ export const appGallerySectionStatus = {
     page: 'App Gallery',
     progress: 'implemented',
     readiness: 'Already implemented',
-    reference: 'dej_app_store.html',
+    reference: 'dej_app_gallery.html',
     section: 'Side rail summaries',
   },
 } satisfies Record<string, SectionStatusInfo>;

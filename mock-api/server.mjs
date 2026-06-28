@@ -12,7 +12,7 @@ let isAuthenticated = process.env.MOCK_AUTHENTICATED !== 'false';
 const server = http.createServer((request, response) => {
   response.setHeader('Access-Control-Allow-Origin', request.headers.origin || 'http://localhost:3000');
   response.setHeader('Access-Control-Allow-Credentials', 'true');
-  response.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (request.method === 'OPTIONS') {
@@ -35,7 +35,7 @@ const server = http.createServer((request, response) => {
     return;
   }
 
-  if (request.method !== 'GET' || !request.url) {
+  if (!request.url) {
     sendJson(response, 405, { error: 'Method not allowed' });
     return;
   }
@@ -58,6 +58,11 @@ const server = http.createServer((request, response) => {
 
   if (resolved) {
     sendJson(response, resolved.status, resolved.payload);
+    return;
+  }
+
+  if (request.method !== 'GET') {
+    sendJson(response, 405, { error: 'Method not allowed' });
     return;
   }
 

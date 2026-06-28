@@ -10,15 +10,26 @@ import {
   SoftPanelCard,
 } from '@/features/app-gallery/components/AppGalleryPrimitives';
 import { appGallerySectionStatus } from '@/features/app-gallery/sectionStatus';
-import type { AppGalleryApp } from '@/features/app-gallery/types';
+import type { AppGalleryApp, AppGalleryCategory } from '@/features/app-gallery/types';
 
-export function SideRail({ apps }: { apps: AppGalleryApp[] }) {
+export function SideRail({
+  apps,
+  categories,
+}: {
+  apps: AppGalleryApp[];
+  categories: AppGalleryCategory[];
+}) {
+  const categoryTrends = categories
+    .filter((category) => category.id !== 'all')
+    .sort((left, right) => right.count - left.count)
+    .slice(0, 3);
+
   return (
     <Stack spacing={2.5}>
       <SoftPanelCard>
         <SectionLabel sx={{ mb: 1.75 }}>
           <ScheduleRoundedIcon sx={{ color: 'primary.main', fontSize: 15 }} />
-          Recently Added
+          추천 카탈로그
           <SectionStatusBadge status={appGallerySectionStatus.sideRail} />
         </SectionLabel>
         <Stack spacing={1.25}>
@@ -37,28 +48,19 @@ export function SideRail({ apps }: { apps: AppGalleryApp[] }) {
       <SoftPanelCard>
         <SectionLabel sx={{ mb: 1.75 }}>
           <TrendingUpRoundedIcon sx={{ color: 'primary.main', fontSize: 15 }} />
-          Notable Patterns
+          이번 페이지에서 눈에 띄는 흐름
           <SectionStatusBadge status={appGallerySectionStatus.sideRail} />
         </SectionLabel>
         <Stack spacing={1.25}>
-          <SideRow
-            meta="Apps like Code Studio stand out when the project starting path is clear."
-            rank={1}
-            title="Development Start"
-            value="Clear"
-          />
-          <SideRow
-            meta="Apps like Launch Monitor make operational readiness easy to check."
-            rank={2}
-            title="Operational Visibility"
-            value="Practical"
-          />
-          <SideRow
-            meta="Apps like Docs Portal organize documentation and guides into a portal flow."
-            rank={3}
-            title="Docs Portal"
-            value="Connected"
-          />
+          {categoryTrends.map((category, index) => (
+            <SideRow
+              key={category.id}
+              meta={category.description}
+              rank={index + 1}
+              title={category.label}
+              value={`${category.count} apps`}
+            />
+          ))}
         </Stack>
       </SoftPanelCard>
     </Stack>

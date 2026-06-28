@@ -984,7 +984,7 @@
           <a class="btn" href="workspace_chatbot_hub.html"
             ><span class="material-icons-round">hub</span>Chatbot</a
           >
-          <a class="btn" href="dej_agent_store.html"
+          <a class="btn" href="dej_ai_gallery.html"
             ><span class="material-icons-round">auto_awesome</span>Thư viện AI</a
           >
         </div>
@@ -1547,6 +1547,57 @@
         },
       };
 
+      const trialQuery = new URLSearchParams(window.location.search);
+
+      function slugifySessionKey(value) {
+        return String(value || "gallery")
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "") || "gallery";
+      }
+
+      function buildRequestedBotConfig() {
+        const botName = String(trialQuery.get("botName") || "").trim();
+        if (!botName) {
+          return null;
+        }
+
+        const sourceLabel = String(trialQuery.get("sourceLabel") || "AI Gallery").trim() || "AI Gallery";
+        const chatbotId = String(trialQuery.get("chatbotId") || "").trim();
+        const baseUrl = String(trialQuery.get("baseUrl") || "").trim();
+        const frontendUrl = String(trialQuery.get("frontendUrl") || "").trim();
+        const key = `gallery-${slugifySessionKey(chatbotId || botName)}`;
+
+        return {
+          key,
+          profile: {
+            shortName: sourceLabel.slice(0, 12) || "Gallery",
+            name: botName,
+            subtitle: `${sourceLabel}에서 연 AX Studio 체험 세션`,
+            greeting: `${botName} 모델을 AX Studio 챗봇으로 먼저 시험해 보세요. 실제 웹을 열기 전에 응답 흐름과 말투를 가볍게 확인할 수 있습니다.`,
+            badge: "Gallery",
+            badgeTone: "purple",
+            sources: []
+              .concat([{ icon: "auto_awesome", label: sourceLabel }])
+              .concat(baseUrl ? [{ icon: "api", label: "Model API" }] : [])
+              .concat(frontendUrl ? [{ icon: "public", label: "Integrated Web" }] : []),
+          },
+          session: {
+            id: `session-${key}`,
+            title: `${botName} 체험 세션`,
+            bot: key,
+            updated: "Vừa mở",
+            messages: [],
+          },
+        };
+      }
+
+      const requestedBotConfig = buildRequestedBotConfig();
+      if (requestedBotConfig) {
+        botProfiles[requestedBotConfig.key] = requestedBotConfig.profile;
+      }
+
       const storageKey = "chatbot-lab-vi-sessions";
       const activeKey = "chatbot-lab-vi-active-session";
       const chatInput = document.getElementById("chatInput");
@@ -1555,18 +1606,26 @@
       const sessionList = document.getElementById("sessionList");
 
       const defaultSession = () => ({
-        id: "session-ax-default",
-        title: "Cuộc trò chuyện thử nghiệm AX Studio",
-        bot: "ax",
-        updated: "Vừa xong",
+        id: requestedBotConfig ? requestedBotConfig.session.id : "session-ax-default",
+        title: requestedBotConfig ? requestedBotConfig.session.title : "Cuộc trò chuyện thử nghiệm AX Studio",
+        bot: requestedBotConfig ? requestedBotConfig.key : "ax",
+        updated: requestedBotConfig ? requestedBotConfig.session.updated : "Vừa xong",
         messages: [],
       });
 
       let sessions = loadSessions();
-      let activeSessionId = localStorage.getItem(activeKey) || sessions[0].id;
+      if (requestedBotConfig) {
+        sessions = [
+          requestedBotConfig.session,
+          ...sessions.filter((session) => session.id !== requestedBotConfig.session.id),
+        ];
+      }
+      let activeSessionId = requestedBotConfig
+        ? requestedBotConfig.session.id
+        : (localStorage.getItem(activeKey) || sessions[0].id);
       if (!sessions.some((session) => session.id === activeSessionId))
         activeSessionId = sessions[0].id;
-      let selectedBotKey = getActiveSession().bot;
+      let selectedBotKey = requestedBotConfig ? requestedBotConfig.key : getActiveSession().bot;
       let pendingBotKey = null;
 
       function loadSessions() {
@@ -1746,6 +1805,9 @@
         renderBotInfo(selectedBotKey);
         renderMessages(session, selectedBotKey);
         renderSummary(session);
+        if (requestedBotConfig && chatInput && !chatInput.value) {
+          chatInput.value = `이 모델은 어떤 업무에 잘 맞아?`;
+        }
       }
 
       function createSession(botKey = "ax") {

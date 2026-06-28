@@ -17,14 +17,14 @@ export function RecentRailCard({ apps, isLoading }: { apps: AppGalleryApp[]; isL
     <RailCard>
       <SectionLabel sx={{ color: 'secondary.main', mb: 1.25 }}>
         <BoltRoundedIcon sx={{ fontSize: 14 }} />
-        Live Data Highlights
+        실데이터 하이라이트
         <SectionStatusBadge status={appGallerySectionStatus.heroRail} />
       </SectionLabel>
       <Typography fontSize={18} fontWeight={800} letterSpacing="-0.03em" sx={{ mb: 0.75 }}>
-        Start with recently added apps
+        빠르게 둘러볼 앱
       </Typography>
       <Typography color="text.secondary" fontSize={12} lineHeight={1.6} sx={{ mb: 1.75 }}>
-        Quickly scan development, operations, docs, and analytics apps from the live API list.
+        실제 /api/v2/app-gallery/apps 응답에서 먼저 추천할 카탈로그를 보여줍니다.
       </Typography>
       {isLoading ? <CircularProgress size={22} /> : <MiniAppList apps={apps} />}
     </RailCard>
@@ -37,15 +37,14 @@ export function CriteriaRailCard({ relatedAi }: { relatedAi: AppGalleryRelatedAi
   return (
     <RailCard>
       <SectionLabel sx={{ color: 'secondary.main', mb: 1.25 }}>
-        <LinkRoundedIcon sx={{ fontSize: 14 }} /> What this screen prioritizes
+        <LinkRoundedIcon sx={{ fontSize: 14 }} /> 함께 보는 AI 큐레이션
         <SectionStatusBadge status={appGallerySectionStatus.heroRail} />
       </SectionLabel>
       <Typography fontSize={18} fontWeight={800} letterSpacing="-0.03em" sx={{ mb: 0.75 }}>
-        Information to check before choosing an app
+        AI Gallery와 함께 보기
       </Typography>
       <Typography color="text.secondary" fontSize={12} lineHeight={1.6} sx={{ mb: 1.75 }}>
-        See the app name, description, install target, and tags first. Continue into AI Gallery
-        agents or workflow packs when needed.
+        앱 상세와 연결되는 related AI 큐레이션도 같은 host의 v2 API에서 읽어옵니다.
       </Typography>
       {firstRelatedAi ? (
         <MiniRow
@@ -53,7 +52,7 @@ export function CriteriaRailCard({ relatedAi }: { relatedAi: AppGalleryRelatedAi
           icon="ai_gallery"
           iconColor="#7c5fcf"
           meta={firstRelatedAi.subtitle}
-          pill="Open"
+          pill={firstRelatedAi.category}
           title={firstRelatedAi.title}
         />
       ) : null}
@@ -69,7 +68,7 @@ function MiniAppList({ apps }: { apps: AppGalleryApp[] }) {
           icon={app.icon}
           iconColor={app.iconColor}
           key={app.slug}
-          meta={app.subtitle}
+          meta={app.summary}
           pill={app.categoryLabel}
           title={app.title}
         />

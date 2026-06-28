@@ -1,9 +1,8 @@
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
-import ScheduleRoundedIcon from '@mui/icons-material/ScheduleRounded';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
-import { Box, Chip, CircularProgress, Stack, Typography } from '@mui/material';
+import { Box, Button, Chip, CircularProgress, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import type { ReactNode } from 'react';
 
@@ -24,11 +23,14 @@ import type { AppGalleryFeaturedApp } from '@/features/app-gallery/types';
 export function CuratedHighlights({
   apps,
   isLoading,
+  onOpenAppDetail,
 }: {
   apps: AppGalleryFeaturedApp[];
   isLoading: boolean;
+  onOpenAppDetail: (slug: string) => void;
 }) {
-  const sideApps = apps.slice(0, 2);
+  const mainApp = apps.at(0);
+  const sideApps = apps.slice(1, 3);
 
   return (
     <PanelCard>
@@ -43,10 +45,15 @@ export function CuratedHighlights({
         </Stack>
       ) : (
         <FeaturedGrid>
-          <FeaturedPrimaryCard />
+          <FeaturedPrimaryCard app={mainApp} onOpenAppDetail={onOpenAppDetail} />
           <Stack spacing={1.5}>
             {sideApps.map((app, index) => (
-              <FeaturedSideCard app={app} index={index} key={app.slug} />
+              <FeaturedSideCard
+                app={app}
+                index={index}
+                key={app.slug}
+                onOpenAppDetail={onOpenAppDetail}
+              />
             ))}
           </Stack>
         </FeaturedGrid>
@@ -55,19 +62,35 @@ export function CuratedHighlights({
   );
 }
 
-function FeaturedPrimaryCard() {
+function FeaturedPrimaryCard({
+  app,
+  onOpenAppDetail,
+}: {
+  app?: AppGalleryFeaturedApp;
+  onOpenAppDetail: (slug: string) => void;
+}) {
+  if (!app) {
+    return (
+      <FeatureCard>
+        <Typography color="text.secondary" fontSize={13}>
+          Featured apps are not available.
+        </Typography>
+      </FeatureCard>
+    );
+  }
+
   return (
     <FeatureCard>
       <Stack alignItems="flex-start" direction="row" justifyContent="space-between" spacing={1.5}>
-        <IconTile tileBackground="linear-gradient(135deg, #4f8cff, #22d3ee)" tileSize={46}>
-          <WorkspaceIcon name="project" sx={{ fontSize: 23 }} />
+        <IconTile tileBackground={app.iconColor} tileSize={46}>
+          <WorkspaceIcon name={app.icon} sx={{ fontSize: 23 }} />
         </IconTile>
         <Chip
-          label="Usage Guide"
+          label={app.badge}
           size="small"
           sx={{
-            bgcolor: '#e0edff',
-            color: '#3157b7',
+            bgcolor: alpha(app.iconColor, 0.12),
+            color: app.iconColor,
             fontSize: 10,
             fontWeight: 800,
           }}
@@ -80,77 +103,85 @@ function FeaturedPrimaryCard() {
         letterSpacing="0.08em"
         sx={{ mt: 2.25, textTransform: 'uppercase' }}
       >
-        Start Here
+        {app.categoryLabel}
       </Typography>
       <Typography fontSize={24} fontWeight={800} letterSpacing="-0.04em" sx={{ mt: 1 }}>
-        The easiest way to explore App Gallery
+        {app.title}
       </Typography>
       <Typography color="text.secondary" fontSize={13} lineHeight={1.7} sx={{ mt: 1 }}>
-        Start with recently added apps and clear descriptions. Apps with obvious purpose are easier
-        to evaluate first.
+        {app.summary}
       </Typography>
       <Stack spacing={1.125} sx={{ my: 2 }}>
-        <Point icon={<ScheduleRoundedIcon />} text="Scan the newest apps first." />
-        <Point icon={<DescriptionRoundedIcon />} text="Open apps with clear descriptions first." />
-        <Point
-          icon={<OpenInNewRoundedIcon />}
-          text="If something fits, open it and continue exploring."
-        />
+        {app.tags.slice(0, 3).map((tag) => (
+          <Point icon={<CheckCircleRoundedIcon />} key={tag} text={tag} />
+        ))}
       </Stack>
       <TagRow>
         <TagChip
-          icon={<ScheduleRoundedIcon />}
-          label="Newest first"
-          size="small"
-          variant="outlined"
-        />
-        <TagChip
           icon={<DescriptionRoundedIcon />}
-          label="Read first"
+          label={app.categoryLabel}
           size="small"
           variant="outlined"
         />
         <TagChip
           icon={<OpenInNewRoundedIcon />}
-          label="Open and decide"
+          label={app.installTargetLabel}
           size="small"
           variant="outlined"
         />
       </TagRow>
+      <Button
+        onClick={() => onOpenAppDetail(app.slug)}
+        startIcon={<OpenInNewRoundedIcon />}
+        sx={{ mt: 2.25 }}
+        variant="contained"
+      >
+        상세 계약 보기
+      </Button>
     </FeatureCard>
   );
 }
 
-function FeaturedSideCard({ app, index }: { app: AppGalleryFeaturedApp; index: number }) {
-  const label = index === 0 ? 'Quick Pick' : 'Trending Now';
-  const icon = index === 0 ? 'thumb_up' : 'local_fire_department';
+function FeaturedSideCard({
+  app,
+  index,
+  onOpenAppDetail,
+}: {
+  app: AppGalleryFeaturedApp;
+  index: number;
+  onOpenAppDetail: (slug: string) => void;
+}) {
+  const label = index === 0 ? '운영 관점 추천' : '문서/협업 관점 추천';
+  const marker = index === 0 ? 'O' : 'W';
 
   return (
     <Box
+      component="button"
+      onClick={() => onOpenAppDetail(app.slug)}
       sx={(theme) => ({
         bgcolor: 'background.paper',
         border: `1px solid ${theme.workspace.colors.border}`,
         borderRadius: 2,
+        color: 'inherit',
+        cursor: 'pointer',
         p: 2,
+        textAlign: 'left',
       })}
+      type="button"
     >
       <Stack alignItems="flex-start" direction="row" justifyContent="space-between" spacing={1.5}>
         <Box minWidth={0}>
           <SectionLabel sx={{ color: app.iconColor, mb: 0.75 }}>
-            <WorkspaceIcon name={icon} sx={{ fontSize: 15 }} />
+            <WorkspaceIcon name={app.icon} sx={{ fontSize: 15 }} />
             {label}
           </SectionLabel>
           <Typography fontSize={16} fontWeight={800} lineHeight={1.35}>
             {app.title}
           </Typography>
         </Box>
-        <IconTile
-          tileBackground={alpha(app.iconColor, 0.12)}
-          tileColor={app.iconColor}
-          tileSize={44}
-        >
-          <WorkspaceIcon name={app.icon} sx={{ fontSize: 21 }} />
-        </IconTile>
+        <Typography color={app.iconColor} fontSize={22} fontWeight={900}>
+          {marker}
+        </Typography>
       </Stack>
       <Typography color="text.secondary" fontSize={12} lineHeight={1.6} sx={{ mt: 1.5 }}>
         {app.summary}
@@ -169,8 +200,8 @@ function FeaturedSideCard({ app, index }: { app: AppGalleryFeaturedApp; index: n
           p: 1.25,
         })}
       >
-        <CheckCircleRoundedIcon sx={{ color: app.iconColor, fontSize: 16 }} />
-        {app.subtitle}
+        <WorkspaceIcon name={app.icon} sx={{ color: app.iconColor, fontSize: 16 }} />
+        {app.badge || app.categoryLabel}
       </Box>
     </Box>
   );

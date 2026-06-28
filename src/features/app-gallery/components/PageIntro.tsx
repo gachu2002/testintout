@@ -1,9 +1,11 @@
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
+import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
+import FolderOpenRoundedIcon from '@mui/icons-material/FolderOpenRounded';
 import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded';
-import ScheduleRoundedIcon from '@mui/icons-material/ScheduleRounded';
+import RocketLaunchRoundedIcon from '@mui/icons-material/RocketLaunchRounded';
 import StorefrontRoundedIcon from '@mui/icons-material/StorefrontRounded';
-import ViewCarouselRoundedIcon from '@mui/icons-material/ViewCarouselRounded';
 import { Box, Typography } from '@mui/material';
+import type { ReactElement } from 'react';
 
 import { SectionStatusBadge } from '@/components/reference-status';
 import {
@@ -16,6 +18,15 @@ import { appGallerySectionStatus } from '@/features/app-gallery/sectionStatus';
 import type { AppGalleryHero } from '@/features/app-gallery/types';
 
 export function PageIntro({ hero, totalApps }: { hero?: AppGalleryHero; totalApps: number }) {
+  const stats = hero?.stats ?? [
+    {
+      id: 'catalog',
+      label: 'Registered Apps',
+      note: 'Current app catalog',
+      value: String(totalApps),
+    },
+  ];
+
   return (
     <PageHeader>
       <SectionLabel>
@@ -33,31 +44,32 @@ export function PageIntro({ hero, totalApps }: { hero?: AppGalleryHero; totalApp
         </Typography>
       </Box>
       <TagRow>
-        <TagChip
-          icon={<Inventory2RoundedIcon />}
-          label={`${totalApps} Registered Apps`}
-          size="small"
-          variant="outlined"
-        />
-        <TagChip
-          icon={<ViewCarouselRoundedIcon />}
-          label="6 per page"
-          size="small"
-          variant="outlined"
-        />
-        <TagChip
-          icon={<ScheduleRoundedIcon />}
-          label="Newest first"
-          size="small"
-          variant="outlined"
-        />
-        <TagChip
-          icon={<AutoAwesomeRoundedIcon />}
-          label="Install target included"
-          size="small"
-          variant="outlined"
-        />
+        {stats.map((stat) => (
+          <TagChip
+            icon={getStatIcon(stat.id)}
+            key={stat.id}
+            label={`${stat.label} ${stat.value}`}
+            size="small"
+            title={stat.note}
+            variant="outlined"
+          />
+        ))}
       </TagRow>
     </PageHeader>
   );
+}
+
+function getStatIcon(id: string): ReactElement {
+  switch (id) {
+    case 'categories':
+      return <CategoryRoundedIcon />;
+    case 'projects':
+      return <FolderOpenRoundedIcon />;
+    case 'published':
+      return <RocketLaunchRoundedIcon />;
+    case 'catalog':
+      return <Inventory2RoundedIcon />;
+    default:
+      return <AutoAwesomeRoundedIcon />;
+  }
 }

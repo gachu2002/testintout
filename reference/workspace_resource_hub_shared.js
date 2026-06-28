@@ -9,10 +9,10 @@
 
   const serviceGroups = [
     {
-      title: "Store",
+      title: "Gallery",
       links: [
-        { key: "app-store", title: "App Gallery", desc: "실행형 개발 앱과 워크스페이스 도구를 발견하고 살펴보기", icon: "widgets", href: "dej_app_store.html" },
-        { key: "agent-store", title: "AI Gallery", desc: "챗봇과 tool 자산을 전시하고 재사용 흐름으로 연결", icon: "smart_toy", href: "dej_agent_store.html" }
+        { key: "app-gallery", title: "App Gallery", desc: "실행형 개발 앱과 워크스페이스 도구를 발견하고 살펴보기", icon: "widgets", href: "dej_app_gallery.html" },
+        { key: "ai-gallery", title: "AI Gallery", desc: "챗봇과 tool 자산을 전시하고 재사용 흐름으로 연결", icon: "smart_toy", href: "dej_ai_gallery.html" }
       ]
     },
     {

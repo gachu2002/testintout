@@ -72,3 +72,20 @@ export type AppGalleryAppDetail = AppGalleryApp & {
   relatedAi: AppGalleryRelatedAi[];
   useCases: string[];
 };
+
+export type AppGalleryAppsParams = {
+  category?: string;
+  cursor?: string;
+  limit?: number;
+  q?: string;
+};
+
+export type AppGalleryInstallRequest = {
+  projectId: string;
+  slug: string;
+};
+
+export type AppGalleryInstallResult = {
+  jobId: string;
+  status: string;
+};

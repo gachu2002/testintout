@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tool Inventory Detail</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="workspace_detail_shared.css" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <style>
+    .metric-grid {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:12px;
+    }
+    .usage-card {
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:var(--surface-soft);
+      padding:20px;
+    }
+    .usage-head {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .usage-name {
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    .usage-meta {
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+      margin-top:4px;
+    }
+    .usage-value {
+      font-size:28px;
+      font-weight:800;
+      letter-spacing:-.04em;
+      text-align:right;
+    }
+    .usage-track {
+      height:14px;
+      border-radius:999px;
+      background:#e8edf5;
+      overflow:hidden;
+      margin-bottom:12px;
+    }
+    .usage-fill {
+      height:100%;
+      border-radius:inherit;
+      background:linear-gradient(90deg,var(--brand),var(--accent));
+    }
+    .usage-legend {
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+    }
+    .mini-stats {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:12px;
+      margin-top:16px;
+    }
+    .mini-stat {
+      padding:14px;
+      border-radius:16px;
+      background:#fff;
+      border:1px solid var(--border);
+    }
+    .mini-stat-label {
+      color:var(--subtle);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+    .mini-stat-value {
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      margin-bottom:4px;
+    }
+    .mini-stat-meta {
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .access-grid {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:18px;
+    }
+    .project-list {
+      display:grid;
+      gap:12px;
+    }
+    .project-card {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:12px;
+      align-items:center;
+      padding:16px 18px;
+      border:1px solid var(--border);
+      border-radius:18px;
+      background:var(--surface-soft);
+    }
+    .project-main {
+      min-width:0;
+      display:grid;
+      gap:7px;
+    }
+    .project-top {
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:10px;
+    }
+    .project-name {
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    .project-meta {
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .project-tags {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .project-side {
+      display:grid;
+      gap:8px;
+      justify-items:end;
+      text-align:right;
+    }
+    .tiny-label {
+      color:var(--subtle);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+    }
+    .tiny-value {
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    .project-link {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      color:var(--brand);
+      font-size:12px;
+      font-weight:800;
+    }
+    .section-card-spacer {
+      margin-top:18px;
+    }
+    .linked-row {
+      color:inherit;
+      text-decoration:none;
+      border-radius:14px;
+      padding:14px 16px;
+      margin:0 -4px;
+      border:1px solid transparent;
+      transition:border-color .15s ease, background .15s ease, transform .15s ease;
+    }
+    .linked-row:hover {
+      border-color:rgba(37,99,235,.14);
+      background:#f8fbff;
+      transform:translateY(-1px);
+    }
+    .linked-row .list-side {
+      color:var(--brand);
+      font-weight:700;
+    }
+    .section-stack {
+      margin-top:16px;
+    }
+    @media (max-width: 920px) {
+      .metric-grid,
+      .mini-stats,
+      .access-grid {
+        grid-template-columns:1fr;
+      }
+      .project-card {
+        grid-template-columns:1fr;
+      }
+      .project-side {
+        justify-items:start;
+        text-align:left;
+      }
+      .usage-head,
+      .usage-legend {
+        flex-direction:column;
+        align-items:flex-start;
+      }
+      .usage-value {
+        text-align:left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    function cards(rows) {
+      return rows.map((row) => `<article class="card"><div class="card-title">${row.title}</div><div class="card-desc">${row.desc}</div><div class="tag-row">${row.tags.map((tag) => `<span class="tag">${tag}</span>`).join("")}</div></article>`).join("");
+    }
+    function list(rows) {
+      return rows.map((row) => `<div class="list-row"><div class="list-main"><div class="list-title">${row.title}</div><div class="list-meta">${row.meta}</div></div>${row.side ? `<div class="list-side">${row.side}</div>` : ""}</div>`).join("");
+    }
+    function table(rows) {
+      return `<div class="table-wrap"><table><thead><tr><th>Function</th><th>Tool</th><th>Usage</th><th>Used By</th><th>Purpose</th></tr></thead><tbody>${rows.map((row) => `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td></tr>`).join("")}</tbody></table></div>`;
+    }
+    function progress(rows) {
+      return rows.map((row) => `<article class="progress-card"><div class="progress-top"><div class="progress-title">${row.title}</div><div class="progress-value">${row.value}</div></div><div class="progress-bar"><div class="progress-fill" style="width:${row.percent}%;"></div></div><div class="progress-meta">${row.meta}</div></article>`).join("");
+    }
+    function timeline(rows) {
+      return rows.map((row) => `<div class="timeline-row"><div class="timeline-rail"><span class="timeline-dot"></span></div><div class="timeline-card"><div class="timeline-title">${row.title}</div><div class="timeline-meta">${row.meta}</div></div></div>`).join("");
+    }
+    function kv(rows) {
+      return rows.map((row) => `<div class="kv-item"><div class="kv-key">${row.key}</div><div class="kv-value">${row.value}</div></div>`).join("");
+    }
+    function metrics(rows) {
+      return `<div class="metric-grid">${rows.map((row) => `<article class="metric-card"><div class="metric-label">${row.title}</div><div class="metric-value">${row.value}</div><div class="metric-meta">${row.meta}</div></article>`).join("")}</div>`;
+    }
+    function linkedList(rows) {
+      return rows.map((row) => `<a class="list-row linked-row" href="${row.href}"><div class="list-main"><div class="list-title">${row.title}</div><div class="list-meta">${row.meta}</div></div>${row.side ? `<div class="list-side">${row.side}</div>` : ""}</a>`).join("");
+    }
+    function toolUsageList(rows) {
+      return `<div class="info-list">${rows.map((row) => `<div class="list-row"><div class="list-main"><div class="list-title">${row[0]}</div><div class="list-meta">${row[1]} · ${row[4]}</div></div><div class="list-side">${row[2]}</div></div>`).join("")}</div>`;
+    }
+    function keyBindingCards(rows) {
+      return `<div class="project-list">${rows.map((row) => `
+        <article class="project-card">
+          <div class="project-main">
+            <div class="project-top">
+              <div class="project-name">${row.title}</div>
+              <span class="tag">Keycenter 발급</span>
+            </div>
+            <div class="project-meta">${row.meta}</div>
+            <div class="project-tags">
+              <span class="tag">현재 바인딩</span>
+              <span class="tag">${row.side || "Connected"}</span>
+            </div>
+          </div>
+          <div class="project-side">
+            <div class="tiny-label">Key Scope</div>
+            <div class="tiny-value">${row.side || "Connected"}</div>
+            <a class="project-link" href="workspace_keycenter_hub.html">Keycenter 보기<span class="material-icons-round">chevron_right</span></a>
+          </div>
+        </article>
+      `).join("")}</div>`;
+    }
+    function buildItem(item) {
+      const usageRow = item.progress[0];
+      const healthRow = item.progress[1];
+      const accessFacts = item.facts.filter((fact) => ["Type", "Format", "Endpoint", "대표 function tool"].includes(fact.key));
+      return {
+        ...item,
+        layoutMode: "full-width",
+        mainHtml: `
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">stacked_bar_chart</span>Usage Overview</div>
+                <h2 class="section-title">사용 현황</h2>
+                <p class="section-desc">현재 호출량과 자주 쓰는 function을 중심으로 볼 수 있습니다.</p>
+              </div>
+            </div>
+            <article class="usage-card">
+              <div class="usage-head">
+                <div>
+                  <div class="usage-name">${usageRow.title}</div>
+                  <div class="usage-meta">${usageRow.meta}</div>
+                </div>
+                <div class="usage-value">${usageRow.value}</div>
+              </div>
+              <div class="usage-track"><div class="usage-fill" style="width:${usageRow.percent}%;"></div></div>
+              <div class="usage-legend">
+                <span>최근 24시간 기준</span>
+                <span>${healthRow.value} health</span>
+              </div>
+              <div class="mini-stats">
+                <article class="mini-stat">
+                  <div class="mini-stat-label">Health</div>
+                  <div class="mini-stat-value">${healthRow.value}</div>
+                  <div class="mini-stat-meta">${healthRow.meta}</div>
+                </article>
+                <article class="mini-stat">
+                  <div class="mini-stat-label">Function Tool</div>
+                  <div class="mini-stat-value">${item.tools.length}</div>
+                  <div class="mini-stat-meta">현재 등록된 function, tool 수</div>
+                </article>
+                <article class="mini-stat">
+                  <div class="mini-stat-label">Key Bindings</div>
+                  <div class="mini-stat-value">${item.boundKeys.length}</div>
+                  <div class="mini-stat-meta">Keycenter에서 연결된 key 수</div>
+                </article>
+                <article class="mini-stat">
+                  <div class="mini-stat-label">Format</div>
+                  <div class="mini-stat-value">${item.facts.find((fact) => fact.key === "Format")?.value || "-"}</div>
+                  <div class="mini-stat-meta">현재 등록된 연결 포맷</div>
+                </article>
+              </div>
+            </article>
+            <article class="card section-card-spacer">
+              <div class="card-title">많이 쓰는 Function</div>
+              <div class="card-desc">사용량이 높은 function과 tool을 먼저 확인할 수 있습니다.</div>
+              <div class="section-stack">${toolUsageList(item.tools.slice(0, 3))}</div>
+            </article>
+          </section>
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">vpn_key</span>Access</div>
+                <h2 class="section-title">접근 정보</h2>
+                <p class="section-desc">엔드포인트와 바인딩된 key를 함께 확인할 수 있습니다.</p>
+              </div>
+              <a class="section-link" href="workspace_keycenter_hub.html">Keycenter 보기<span class="material-icons-round">chevron_right</span></a>
+            </div>
+            <article class="card">
+              <div class="card-title">접속 정보</div>
+              <div class="kv-list">${kv(accessFacts)}</div>
+            </article>
+          </section>
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">link</span>Connection Status</div>
+                <h2 class="section-title">연결 상태</h2>
+                <p class="section-desc">Keycenter에서 생성된 바인딩 key와 현재 연결 상태를 확인할 수 있습니다.</p>
+              </div>
+              <a class="section-link" href="workspace_keycenter_hub.html">Keycenter 보기<span class="material-icons-round">chevron_right</span></a>
+            </div>
+            ${keyBindingCards(item.boundKeys)}
+          </section>
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">functions</span>Function Catalog</div>
+                <h2 class="section-title">Function, Tool 목록</h2>
+                <p class="section-desc">실제로 등록된 function과 tool을 사용량과 함께 확인할 수 있습니다.</p>
+              </div>
+            </div>
+            ${table(item.tools)}
+          </section>
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">lightbulb</span>Usage Tips</div>
+                <h2 class="section-title">사용 팁</h2>
+                <p class="section-desc">자주 쓰는 흐름과 주의할 점을 빠르게 확인합니다.</p>
+              </div>
+            </div>
+            <div class="info-list">${list(item.tips)}</div>
+          </section>
+        `,
+        sidebarHtml: ""
+      };
+    }
+
+    const rawItems = [
+      {
+        key: "github-ops",
+        title: "developer-ops-bundle",
+        description: "PR 조회, 워크플로 확인, 승인된 변경 반영까지 개발 운영 작업에 쓰는 GitHub MCP 서비스 묶음입니다.",
+        heroIcon: "hub",
+        typeLabel: "MCP Service Bundle",
+        statusLabel: "Connected",
+        statusTone: "healthy",
+        heroBadges: ["External MCP 중심"],
+        theme: { bg: "#ebf1ff", brand: "#3b5ccc", brandH: "#314ca6", brandBg: "#d4deff", brandSoft: "rgba(59,92,204,.18)", accent: "#38bdf8" },
+        relatedHref: "workspace_agent_hub.html",
+        actions: [
+          { label: "Agent Hub", icon: "smart_toy", href: "workspace_agent_hub.html" },
+          { label: "등록 정보 보기", icon: "arrow_outward", variant: "primary", href: "workspace_tool_inventory_register.html?type=external" }
+        ],
+        heroStats: [
+          { label: "Type", value: "External", meta: "외부 제공 MCP" },
+          { label: "Format", value: "MCP", meta: "Streamable HTTP" },
+          { label: "Function Tool", value: "14", meta: "대표 조회/승인 기능" },
+          { label: "Health", value: "97%", meta: "최근 24시간 성공률" }
+        ],
+        bundleServices: [
+          { title: "github-core", desc: "repository 조회, PR 목록, commit/branch 탐색을 담당하는 기본 MCP service입니다.", tags: ["remote transport", "read heavy", "vendor hosted"] },
+          { title: "github-actions", desc: "workflow dispatch, artifact 확인, run 상태 조회처럼 CI/CD 흐름을 붙이는 보조 MCP service입니다.", tags: ["workflow", "ops", "token scoped"] },
+          { title: "github-governance", desc: "merge, reviewer assign, issue 생성처럼 승인 경계가 필요한 write 도구를 별도 service로 격리합니다.", tags: ["guarded write", "approval", "high impact"] }
+        ],
+        tools: [
+          ["list_pull_requests", "github-core", "6.8K / day", "repo-review-guard", "PR 목록 조회"],
+          ["list_workflow_runs", "github-actions", "3.1K / day", "release-notes-pilot", "릴리즈 워크플로 상태 확인"],
+          ["merge_pull_request", "github-governance", "420 / day", "release automation", "승인된 PR 머지"],
+          ["create_issue", "github-governance", "1.2K / day", "release-notes-pilot", "운영 이슈 생성"]
+        ],
+        tips: [
+          { title: "조회 function부터 먼저 확인합니다", meta: "write 성격의 function보다 list_pull_requests, list_workflow_runs 같은 조회 기능으로 현재 상태를 먼저 파악합니다.", side: "Start" },
+          { title: "승인 작업은 usage가 낮아도 중요합니다", meta: "merge_pull_request처럼 호출 수가 적어도 영향도가 큰 function은 항상 별도로 확인합니다.", side: "Guard" },
+          { title: "consumer별로 쓰임새를 나눠 봅니다", meta: "repo-review-guard와 release automation은 같은 inventory를 써도 목적이 다르므로 Used By를 함께 확인합니다.", side: "Flow" }
+        ],
+        boundKeys: [
+          { title: "github-ops-paid-tier", meta: "GitHub MCP 호출과 결과 요약에 사용하는 주 바인딩 key입니다.", side: "Primary" },
+          { title: "github-governance-approval-key", meta: "merge_pull_request 같은 승인 경계 function에만 쓰는 제한 key입니다.", side: "Scoped" }
+        ],
+        notes: [
+          { title: "vendor dependency가 크다", meta: "bundle health보다 GitHub vendor availability에 더 많이 영향받습니다.", side: "Vendor" },
+          { title: "write path를 별도 service로 분리", meta: "merge 같은 파괴적 도구는 조회용 MCP와 분리해 approval boundary를 선명하게 유지합니다.", side: "Guarded" },
+          { title: "자동화 경로에서 자주 사용", meta: "수동 실행보다 승인형 에이전트와 운영 자동화에서 더 자주 호출됩니다.", side: "Indirect" }
+        ],
+        relatedLinks: [
+          { title: "repo-review-guard", meta: "PR 위험도 계산과 리뷰 안내에 이 bundle을 사용합니다.", side: "Agent" },
+          { title: "release-notes-pilot", meta: "릴리즈 변경점 수집과 이슈 생성 계약을 공유합니다.", side: "Agent" }
+        ],
+        progress: [
+          { title: "Usage", value: "14.2K", percent: 78, meta: "최근 24시간 호출량" },
+          { title: "Health Check", value: "97%", percent: 97, meta: "/health + connection test" }
+        ],
+        timeline: [
+          { title: "오늘 09:05 · governance smoke test", meta: "merge guard와 issue 생성 테스트를 묶어서 검증" },
+          { title: "6월 13일 · token rotation", meta: "github-actions, github-governance token 갱신" },
+          { title: "6월 9일 · bundle metadata sync", meta: "service별 tool 메타와 approval note 업데이트" }
+        ],
+        facts: [
+          { key: "Type", value: "External MCP" },
+          { key: "Format", value: "MCP / Streamable HTTP" },
+          { key: "Endpoint", value: '<span class="mono">https://api.vendor.com/mcp</span>' },
+          { key: "대표 function tool", value: "list_pull_requests, list_workflow_runs, merge_pull_request" }
+        ]
+      },
+      {
+        key: "workspace-knowledge",
+        title: "knowledge-discovery-bundle",
+        description: "문서 검색, 런북 확인, 담당자 탐색에 필요한 내부 MCP 서비스를 모아 둔 지식 검색 번들입니다.",
+        heroIcon: "hub",
+        typeLabel: "MCP Service Bundle",
+        statusLabel: "Connected",
+        statusTone: "healthy",
+        heroBadges: ["Internal MCP 중심"],
+        theme: { bg: "#ebf1ff", brand: "#3b5ccc", brandH: "#314ca6", brandBg: "#d4deff", brandSoft: "rgba(59,92,204,.18)", accent: "#38bdf8" },
+        relatedHref: "workspace_chatbot_hub.html",
+        actions: [
+          { label: "Chatbot Hub", icon: "chat", href: "workspace_chatbot_hub.html" },
+          { label: "등록 정보 보기", icon: "arrow_outward", variant: "primary", href: "workspace_tool_inventory_register.html?type=internal" }
+        ],
+        heroStats: [
+          { label: "Type", value: "Internal", meta: "사내 운영 MCP" },
+          { label: "Format", value: "MCP", meta: "HTTPS / internal route" },
+          { label: "Function Tool", value: "11", meta: "검색/조회 중심" },
+          { label: "Health", value: "99%", meta: "최근 24시간 성공률" }
+        ],
+        bundleServices: [
+          { title: "docs-search", desc: "문서 색인 검색과 페이지 요약 반환을 담당하는 기본 knowledge MCP service입니다.", tags: ["internal transport", "search", "workspace hosted"] },
+          { title: "runbook-finder", desc: "incident runbook, owner guide, 운영 체크리스트 조회를 전담하는 service입니다.", tags: ["ops knowledge", "runbook", "service token"] },
+          { title: "owner-map", desc: "조직 정보와 repo ownership 매핑을 연결해 책임 팀과 담당자를 찾게 도와주는 service입니다.", tags: ["ownership", "directory", "shared contract"] }
+        ],
+        tools: [
+          ["search_docs", "docs-search", "11.4K / day", "docs-guide-widget", "문서 검색"],
+          ["find_runbook", "runbook-finder", "4.2K / day", "incident-triage-bot", "런북 탐색"],
+          ["read_page", "docs-search", "3.7K / day", "workspace-assistant-web", "문서 전문 읽기"],
+          ["find_owner", "owner-map", "2.5K / day", "repo-review-guard", "담당자 탐색"]
+        ],
+        tips: [
+          { title: "search_docs와 read_page를 같이 봅니다", meta: "검색량이 높아도 실제 읽기 사용량이 낮으면 검색 결과 품질이나 요약 흐름을 다시 볼 필요가 있습니다.", side: "Pair" },
+          { title: "freshness가 낮으면 runbook 확인을 우선합니다", meta: "health보다 index freshness가 낮을 때는 find_runbook 결과를 먼저 검토하는 편이 안전합니다.", side: "Fresh" },
+          { title: "owner 탐색은 후속 조치 연결에 유용합니다", meta: "장애나 문의 흐름에서는 find_owner 사용량이 높을수록 실제 대응 연결이 잘 이뤄지고 있는지 볼 수 있습니다.", side: "Owner" }
+        ],
+        boundKeys: [
+          { title: "knowledge-base-tier", meta: "문서 검색과 요약 응답에 공통으로 연결된 기본 key입니다.", side: "Primary" },
+          { title: "owner-map-service-token", meta: "담당자 탐색과 조직 정보 조회에만 쓰는 내부 service key입니다.", side: "Internal" }
+        ],
+        notes: [
+          { title: "지식 freshness가 핵심", meta: "가용성보다 문서 인덱스 최신성과 owner map 정확도가 더 중요합니다.", side: "Fresh" },
+          { title: "여러 consumer가 함께 쓴다", meta: "chatbot과 agent가 동시에 소비하므로 contract 안정성이 중요합니다.", side: "Shared" },
+          { title: "필요한 지식을 한 번에 찾는다", meta: "문서, 런북, 담당자 정보를 한 흐름으로 이어서 확인할 수 있습니다.", side: "Flow" }
+        ],
+        relatedLinks: [
+          { title: "docs-guide-widget", meta: "문서 검색을 직접 노출하는 대표 chatbot consumer입니다.", side: "Chatbot" },
+          { title: "incident-triage-bot", meta: "runbook과 owner map을 함께 참조하는 automation runtime입니다.", side: "Agent" }
+        ],
+        progress: [
+          { title: "Usage", value: "21.8K", percent: 85, meta: "최근 24시간 호출량" },
+          { title: "Health Check", value: "86%", percent: 86, meta: "service health + index freshness" }
+        ],
+        timeline: [
+          { title: "오늘 08:25 · doc index refresh", meta: "docs-search 색인 갱신" },
+          { title: "6월 12일 · owner map update", meta: "조직 변경 반영" },
+          { title: "6월 6일 · runbook sync cleanup", meta: "incident 태그 체계 정리" }
+        ],
+        facts: [
+          { key: "Type", value: "Internal MCP" },
+          { key: "Format", value: "MCP / Internal HTTPS" },
+          { key: "Endpoint", value: '<span class="mono">https://docs-search.workspace/mcp</span>' },
+          { key: "대표 function tool", value: "search_docs, read_page, find_runbook" }
+        ]
+      },
+      {
+        key: "billing-service",
+        title: "billing-operations-bundle",
+        description: "청구 조회와 환불 처리, 정책 확인에 필요한 billing MCP 서비스를 한곳에서 확인할 수 있습니다.",
+        heroIcon: "hub",
+        typeLabel: "MCP Service Bundle",
+        statusLabel: "Review",
+        statusTone: "review",
+        heroBadges: ["Generated + Internal 혼합"],
+        theme: { bg: "#ebf1ff", brand: "#3b5ccc", brandH: "#314ca6", brandBg: "#d4deff", brandSoft: "rgba(59,92,204,.18)", accent: "#38bdf8" },
+        relatedHref: "workspace_chatbot_hub.html",
+        actions: [
+          { label: "Chatbot Hub", icon: "chat", href: "workspace_chatbot_hub.html" },
+          { label: "등록 정보 보기", icon: "arrow_outward", variant: "primary", href: "workspace_tool_inventory_register.html?type=external" }
+        ],
+        heroStats: [
+          { label: "Type", value: "External", meta: "generated + internal 혼합" },
+          { label: "Format", value: "MCP", meta: "generated query surface" },
+          { label: "Function Tool", value: "12", meta: "query + guarded write" },
+          { label: "Health", value: "91%", meta: "pilot traffic 기준" }
+        ],
+        bundleServices: [
+          { title: "billing-query-generated", desc: "OpenAPI spec에서 생성된 invoice, balance, payment status 조회 계열 MCP service입니다.", tags: ["generated", "read heavy", "openapi"] },
+          { title: "billing-refund-guard", desc: "refund, cancel 같은 파괴적 동작을 approval workflow 뒤로 보내는 guarded service입니다.", tags: ["approval", "write path", "high impact"] },
+          { title: "billing-policy-context", desc: "환불 정책과 billing glossary를 같이 조회해 응답 품질을 보정하는 내부 보조 service입니다.", tags: ["policy", "context", "internal"] }
+        ],
+        tools: [
+          ["get_invoice", "billing-query-generated", "2.2K / day", "pricing-advisor-bot", "청구서 조회"],
+          ["check_balance", "billing-query-generated", "1.8K / day", "pricing-advisor-bot", "잔액 확인"],
+          ["refund_payment", "billing-refund-guard", "160 / day", "ops operator", "환불 처리"],
+          ["find_refund_policy", "billing-policy-context", "940 / day", "pricing-advisor-bot", "환불 정책 조회"]
+        ],
+        tips: [
+          { title: "refund_payment는 항상 분리해서 봅니다", meta: "호출 수보다 승인 흐름과 review 상태가 더 중요하므로 query function과 같은 선에서 해석하지 않는 편이 좋습니다.", side: "Risk" },
+          { title: "generated function은 freshness를 먼저 확인합니다", meta: "OpenAPI 기반 function은 schema sync가 늦으면 사용량이 있어도 실제 응답 형식이 흔들릴 수 있습니다.", side: "Sync" },
+          { title: "정책 조회와 청구 조회를 같이 확인합니다", meta: "find_refund_policy usage가 낮으면 정책 안내가 응답 흐름에 충분히 연결되지 않았을 수 있습니다.", side: "Policy" }
+        ],
+        boundKeys: [
+          { title: "billing-paid-tier", meta: "청구 조회와 정책 응답에 쓰는 기본 결제 domain key입니다.", side: "Primary" },
+          { title: "refund-approval-operator-key", meta: "refund_payment 승인 처리에만 연결된 제한 key입니다.", side: "Scoped" }
+        ],
+        notes: [
+          { title: "generated spec drift가 핵심 리스크", meta: "원본 API spec이 바뀌면 query surface가 바로 흔들릴 수 있습니다.", side: "Drift" },
+          { title: "write path는 bundle 안에서도 분리", meta: "refund는 query와 같은 service에 두지 않고 approval service로 격리합니다.", side: "Guarded" },
+          { title: "검토가 계속 진행 중", meta: "현재는 사용 범위를 넓히기보다 응답 형식과 승인 흐름을 먼저 안정화하고 있습니다.", side: "Pilot" }
+        ],
+        relatedLinks: [
+          { title: "pricing-advisor-bot", meta: "invoice 조회와 정책 응답을 함께 소비하는 대표 chatbot입니다.", side: "Chatbot" },
+          { title: "hermes-be project", meta: "원본 billing API와 spec sync의 source of truth입니다.", side: "Project" }
+        ],
+        progress: [
+          { title: "Usage", value: "5.1K", percent: 43, meta: "최근 24시간 호출량" },
+          { title: "Health Check", value: "64%", percent: 64, meta: "spec freshness + review 상태" }
+        ],
+        timeline: [
+          { title: "오늘 09:50 · schema mismatch review", meta: "refund 응답 타입 검토" },
+          { title: "6월 12일 · tool contract refresh", meta: "invoice 필드 동기화" },
+          { title: "6월 8일 · guarded flow added", meta: "refund write path 분리" }
+        ],
+        facts: [
+          { key: "Type", value: "External MCP" },
+          { key: "Format", value: "MCP / Generated" },
+          { key: "Endpoint", value: '<span class="mono">https://billing.workspace/mcp</span>' },
+          { key: "대표 function tool", value: "get_invoice, check_balance, refund_payment" }
+        ]
+      },
+      {
+        key: "incident-classifier-direct",
+        title: "incident-classifier-direct",
+        description: "직접 구현한 incident 분류 서버를 Tool Inventory에 등록해 장애 원인 후보 분류와 후속 조치 추천에 사용합니다.",
+        heroIcon: "terminal",
+        typeLabel: "Direct Implementation",
+        statusLabel: "Review",
+        statusTone: "review",
+        heroBadges: ["Direct Implementation"],
+        theme: { bg: "#ebf1ff", brand: "#3b5ccc", brandH: "#314ca6", brandBg: "#d4deff", brandSoft: "rgba(59,92,204,.18)", accent: "#38bdf8" },
+        relatedHref: "workspace_agent_hub.html",
+        actions: [
+          { label: "Agent Hub", icon: "smart_toy", href: "workspace_agent_hub.html" },
+          { label: "등록 정보 보기", icon: "arrow_outward", variant: "primary", href: "workspace_tool_inventory_register.html?type=direct" }
+        ],
+        heroStats: [
+          { label: "Type", value: "Direct", meta: "직접 구현 서버" },
+          { label: "Format", value: "REST API", meta: "MCP 외 포맷" },
+          { label: "Function Tool", value: "8", meta: "분류/요약/추천" },
+          { label: "Health", value: "95%", meta: "synthetic test 기준" }
+        ],
+        bundleServices: [
+          { title: "incident-api", desc: "incident 분류와 후속 조치 추천을 제공하는 직접 구현 REST API입니다.", tags: ["rest api", "workspace hosted", "agent only"] },
+          { title: "feature-store", desc: "분류에 필요한 incident feature와 룰 정보를 읽어 오는 내부 지원 서비스입니다.", tags: ["internal", "feature", "low latency"] },
+          { title: "runbook-linker", desc: "분류 결과에 맞는 runbook과 dashboard 링크를 이어 주는 보조 기능입니다.", tags: ["runbook", "link", "response"] }
+        ],
+        tools: [
+          ["classify_incident", "incident-api", "1.7K / day", "incident-triage-bot", "장애 유형 분류"],
+          ["summarize_root_cause", "incident-api", "1.1K / day", "incident-triage-bot", "원인 후보 요약"],
+          ["recommend_runbook", "runbook-linker", "920 / day", "incident-triage-bot", "대응 런북 추천"],
+          ["open_dashboard", "runbook-linker", "540 / day", "ops-briefing-bot", "대시보드 이동"]
+        ],
+        tips: [
+          { title: "classify_incident usage를 기준점으로 봅니다", meta: "분류 function 호출량이 크게 떨어지면 직접 구현 서버가 triage 첫 단계에서 빠졌는지 먼저 확인합니다.", side: "Baseline" },
+          { title: "recommend_runbook 연결 비율을 봅니다", meta: "분류 대비 추천 호출이 너무 낮으면 후속 조치 연결이 약한 상태일 수 있습니다.", side: "Follow-up" },
+          { title: "synthetic test 결과와 함께 해석합니다", meta: "직접 구현 서버는 사용량이 높아도 health check synthetic 시나리오가 깨지면 신뢰하기 어렵습니다.", side: "Health" }
+        ],
+        boundKeys: [
+          { title: "incident-ai-service-token", meta: "직접 구현 REST API 호출에 바인딩된 내부 service token입니다.", side: "Primary" },
+          { title: "ops-briefing-read-key", meta: "dashboard 링크와 요약 결과를 읽는 consumer 전용 key입니다.", side: "Consumer" }
+        ],
+        notes: [
+          { title: "MCP가 아닌 포맷도 inventory에 포함", meta: "직접 구현 서버도 동일한 기준으로 등록해 consumer가 혼동 없이 선택할 수 있습니다.", side: "Format" },
+          { title: "health는 synthetic test가 핵심", meta: "단순 프로세스 상태보다 실제 추천 기능이 동작하는지 확인하는 편이 중요합니다.", side: "Health" },
+          { title: "agent 전용으로 먼저 운영", meta: "직접 사용 UI보다 incident-triage-bot 같은 자동화 경로에서 먼저 사용합니다.", side: "Consumer" }
+        ],
+        relatedLinks: [
+          { title: "incident-triage-bot", meta: "직접 구현 서버를 사용하는 대표 automation runtime입니다.", side: "Agent" },
+          { title: "ops-briefing-bot", meta: "추천 결과와 dashboard 링크를 요약해서 전달합니다.", side: "Chatbot" }
+        ],
+        progress: [
+          { title: "Usage", value: "4.3K", percent: 61, meta: "최근 24시간 호출량" },
+          { title: "Health Check", value: "95%", percent: 95, meta: "/readyz + synthetic test" }
+        ],
+        timeline: [
+          { title: "오늘 09:20 · direct deploy", meta: "incident classifier 모델 업데이트" },
+          { title: "6월 14일 · health scenario refresh", meta: "synthetic incident 케이스 갱신" },
+          { title: "6월 10일 · runbook linker added", meta: "추천 결과에 대응 문서 연결" }
+        ],
+        facts: [
+          { key: "Type", value: "Direct Implementation" },
+          { key: "Format", value: "REST API" },
+          { key: "Endpoint", value: '<span class="mono">https://incident-ai.workspace/api/v1/tools</span>' },
+          { key: "대표 function tool", value: "classify_incident, summarize_root_cause, recommend_runbook" }
+        ]
+      },
+      {
+        key: "observability-stack",
+        title: "incident-response-bundle",
+        description: "메트릭, 로그, 트레이스, 대시보드 연결을 통해 장애 대응에 필요한 정보를 빠르게 찾을 수 있습니다.",
+        heroIcon: "hub",
+        typeLabel: "MCP Service Bundle",
+        statusLabel: "Connected",
+        statusTone: "healthy",
+        heroBadges: ["Internal MCP 중심"],
+        theme: { bg: "#ebf1ff", brand: "#3b5ccc", brandH: "#314ca6", brandBg: "#d4deff", brandSoft: "rgba(59,92,204,.18)", accent: "#38bdf8" },
+        relatedHref: "workspace_agent_hub.html",
+        actions: [
+          { label: "Agent Hub", icon: "smart_toy", href: "workspace_agent_hub.html" },
+          { label: "등록 정보 보기", icon: "arrow_outward", variant: "primary", href: "workspace_tool_inventory_register.html?type=internal" }
+        ],
+        heroStats: [
+          { label: "Type", value: "Internal", meta: "사내 운영 MCP" },
+          { label: "Format", value: "MCP", meta: "observability route" },
+          { label: "Function Tool", value: "16", meta: "ops oriented" },
+          { label: "Health", value: "98%", meta: "최근 24시간 성공률" }
+        ],
+        bundleServices: [
+          { title: "metrics-query", desc: "Prometheus 계열 메트릭 조회와 threshold 비교를 담당하는 service입니다.", tags: ["metrics", "internal route", "time series"] },
+          { title: "log-search", desc: "최근 로그 검색과 pod filter를 담당하는 service입니다. triage 흐름의 첫 진입점 역할을 합니다.", tags: ["logs", "fast lookup", "ops"] },
+          { title: "trace-linker", desc: "request trace와 span 관계를 조회해 원인 추적을 돕는 service입니다.", tags: ["trace", "causality", "debug"] },
+          { title: "dashboard-bridge", desc: "깊은 분석이 필요할 때 Grafana/Kibana deep link로 이어주는 bridge service입니다.", tags: ["bridge", "dashboard", "handoff"] }
+        ],
+        tools: [
+          ["query_metrics", "metrics-query", "7.6K / day", "incident-triage-bot", "메트릭 조회"],
+          ["search_logs", "log-search", "6.1K / day", "incident-triage-bot", "로그 검색"],
+          ["trace_request", "trace-linker", "2.8K / day", "incident-triage-bot", "트레이스 조회"],
+          ["open_dashboard", "dashboard-bridge", "1.5K / day", "ops-briefing-bot", "대시보드 deep link"]
+        ],
+        tips: [
+          { title: "메트릭과 로그 usage를 같이 봅니다", meta: "query_metrics와 search_logs 사용량 차이가 지나치게 크면 triage 흐름이 한쪽으로 치우친 상태일 수 있습니다.", side: "Balance" },
+          { title: "trace_request는 심화 조사 지표로 봅니다", meta: "트레이스 호출은 항상 적을 수 있지만 특정 장애군에서 갑자기 늘면 원인 추적 흐름이 실제로 쓰이고 있다는 의미입니다.", side: "Trace" },
+          { title: "open_dashboard는 handoff 품질 지표입니다", meta: "dashboard 이동 usage가 유지되면 inventory에서 콘솔로 이어지는 흐름이 자연스럽게 작동하고 있다는 뜻입니다.", side: "Handoff" }
+        ],
+        boundKeys: [
+          { title: "observability-core-token", meta: "metrics, logs, traces 조회에 공통으로 쓰는 기본 key입니다.", side: "Primary" },
+          { title: "dashboard-bridge-sso-key", meta: "Grafana/Kibana handoff에 연결된 읽기 전용 key입니다.", side: "Readonly" }
+        ],
+        notes: [
+          { title: "장애 분류에 바로 쓰인다", meta: "여러 운영 에이전트가 이 번들을 바탕으로 원인 후보를 빠르게 좁힙니다.", side: "Core" },
+          { title: "freshness가 정확도보다 먼저", meta: "오래된 데이터는 잘 정리돼 있어도 triage에 도움이 적습니다.", side: "Fresh" },
+          { title: "깊은 분석으로 이어진다", meta: "빠른 확인 뒤 더 자세한 조사가 필요하면 Kibana 같은 콘솔로 이동합니다.", side: "Bridge" }
+        ],
+        relatedLinks: [
+          { title: "incident-triage-bot", meta: "메트릭, 로그, 트레이스를 함께 읽는 대표 agent consumer입니다.", side: "Agent" },
+          { title: "ops-briefing-bot", meta: "브리핑에 dashboard link를 실어 보내는 chatbot consumer입니다.", side: "Chatbot" },
+          { title: "Kibana", meta: "bundle 결과 이후 깊은 분석으로 이어지는 console입니다.", side: "Console" }
+        ],
+        progress: [
+          { title: "Usage", value: "18.7K", percent: 74, meta: "최근 24시간 호출량" },
+          { title: "Health Check", value: "87%", percent: 87, meta: "metrics/log/trace freshness" }
+        ],
+        timeline: [
+          { title: "오늘 08:40 · dashboard link test", meta: "ops briefing deep link 검증" },
+          { title: "6월 13일 · token policy cleanup", meta: "service별 consumer scope 정리" },
+          { title: "6월 7일 · trace service added", meta: "trace-linker 편입으로 bundle 확장" }
+        ],
+        facts: [
+          { key: "Type", value: "Internal MCP" },
+          { key: "Format", value: "MCP / Internal Route" },
+          { key: "Endpoint", value: '<span class="mono">https://observability.workspace/mcp</span>' },
+          { key: "대표 function tool", value: "query_metrics, search_logs, trace_request" }
+        ]
+      }
+    ];
+
+    window.DETAIL_PAGE_CONFIG = {
+      paramName: "item",
+      pageTitle: "Tool Inventory Detail",
+      hubLabel: "Tool Inventory Hub",
+      hubHref: "workspace_tool_inventory_hub.html",
+      activeHubKey: "tool-inventory",
+      eyebrow: "AI · Connected Tool Assets",
+      searchPlaceholder: "inventory 이름, service, tool, consumer를 검색하세요...",
+      items: Object.fromEntries(rawItems.map((item) => [item.key, buildItem(item)]))
+    };
+  </script>
+  <script src="workspace_detail_shared.js"></script>
+  <script src="ax_studio_topbar.js"></script>
+</body>
+</html>

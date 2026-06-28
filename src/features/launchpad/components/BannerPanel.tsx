@@ -58,7 +58,7 @@ export function BannerPanel({
     );
   }
 
-  const slides = buildBannerSlides(announcements);
+  const slides = buildBannerSlides(announcements, hero);
   const safeIndex = activeIndex >= 0 && activeIndex < slides.length ? activeIndex : 0;
 
   if (slides.length === 0) return null;

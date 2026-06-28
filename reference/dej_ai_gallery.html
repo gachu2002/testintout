@@ -1,0 +1,2414 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DEJ AI Gallery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <style>
+    :root {
+      --bg:#f4f6f9;
+      --surface:#ffffff;
+      --border:#ebedf0;
+      --border-2:#d6d8db;
+      --t1:#2f3236;
+      --t2:#5f656d;
+      --t3:#9298a0;
+      --brand:#b40e4d;
+      --brand-h:#d5115b;
+      --brand-bg:#feeff5;
+      --blue:#0086cc;
+      --blue-bg:#e2f3ff;
+      --green:#0d9488;
+      --green-bg:#ecfdf5;
+      --purple:#7c5fcf;
+      --purple-bg:#f1e7ff;
+      --orange:#e07020;
+      --orange-bg:#fff1e7;
+      --indigo:#4f46e5;
+      --max:1280px;
+      --nav-max:1520px;
+      --r:14px;
+      --gap:20px;
+    }
+
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      font-family:'Inter', -apple-system, sans-serif;
+      background:var(--bg);
+      color:var(--t1);
+      min-height:100vh;
+      -webkit-font-smoothing:antialiased;
+    }
+    a { color:inherit; text-decoration:none; }
+    button { font:inherit; cursor:pointer; }
+
+    .topbar {
+      position:sticky;
+      top:0;
+      z-index:200;
+      height:56px;
+      background:var(--surface);
+      border-bottom:1px solid var(--border);
+    }
+    .topbar-inner {
+      max-width:var(--nav-max);
+      margin:0 auto;
+      height:100%;
+      padding:0 24px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      position:relative;
+    }
+    .topbar-brand {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-shrink:0;
+      padding-right:2px;
+    }
+    .brand-mark {
+      width:40px;
+      height:24px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+    .brand-mark img {
+      display:block;
+      width:35px;
+      height:20px;
+    }
+    .brand-name {
+      font-size:15px;
+      font-weight:800;
+      color:var(--t1);
+      letter-spacing:-.35px;
+      white-space:nowrap;
+    }
+    .logo-menu {
+      flex-shrink:0;
+      display:flex;
+      align-items:center;
+    }
+    .menu-trigger {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      height:40px;
+      padding:0 11px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#fbfcfe;
+      font-size:13px;
+      font-weight:700;
+      color:var(--t1);
+      letter-spacing:-.2px;
+      transition:background .15s, box-shadow .15s;
+    }
+    .menu-trigger:hover,
+    .logo-menu.is-open .menu-trigger {
+      background:var(--bg);
+      box-shadow:inset 0 0 0 1px var(--border);
+    }
+    .menu-trigger .material-icons-round:first-child {
+      font-size:18px;
+      color:var(--t2);
+    }
+    .menu-caret {
+      font-size:18px;
+      color:var(--t3);
+      transition:transform .18s ease, color .15s ease;
+    }
+    .logo-menu.is-open .menu-caret {
+      transform:rotate(180deg);
+      color:var(--brand);
+    }
+    .service-popover {
+      position:fixed;
+      left:0;
+      top:56px;
+      width:100vw;
+      background:
+        linear-gradient(180deg, rgba(247,248,251,.98) 0%, rgba(243,245,249,.98) 100%);
+      border-top:1px solid rgba(235,237,240,.9);
+      border-bottom:1px solid var(--border);
+      box-shadow:0 18px 36px rgba(15,23,42,.08);
+      padding:18px 0 20px;
+      z-index:240;
+    }
+    .service-popover[hidden] { display:none; }
+    .service-popover-inner {
+      max-width:var(--nav-max);
+      margin:0 auto;
+      padding:0 24px;
+    }
+    .service-groups {
+      display:grid;
+      grid-template-columns:repeat(6, minmax(0, 1fr));
+      gap:0;
+    }
+    .service-group {
+      min-width:0;
+      padding:0 30px;
+    }
+    .service-group + .service-group { border-left:1px solid var(--border); }
+    .service-group-head {
+      margin-bottom:18px;
+    }
+    .service-group-copy { min-width:0; }
+    .service-group-title-row { margin-bottom:0; }
+    .service-group-title {
+      font-size:15px;
+      font-weight:700;
+      color:var(--t1);
+    }
+    .service-group-icon,
+    .service-group-count,
+    .service-group-desc { display:none; }
+    .service-links { display:grid; gap:18px; margin-left:0; }
+    .service-link {
+      display:grid;
+      grid-template-columns:18px minmax(0, 1fr);
+      align-items:flex-start;
+      gap:10px;
+      padding:7px 10px;
+      margin:0 -10px;
+      border-radius:10px;
+      background:transparent;
+      border:none;
+      font-size:13px;
+      font-weight:600;
+      color:var(--t1);
+      transition:background .15s ease, color .15s ease;
+    }
+    .service-link:hover {
+      background:rgba(255,255,255,.84);
+      color:var(--brand);
+    }
+    .service-link.is-current {
+      background:rgba(255,255,255,.84);
+      color:var(--brand);
+      box-shadow:inset 0 0 0 1px rgba(180,14,77,.08);
+    }
+    .service-link-icon {
+      font-size:17px;
+      color:var(--t2);
+      margin-top:2px;
+      transition:color .15s ease;
+    }
+    .service-link:hover .service-link-icon,
+    .service-link.is-current .service-link-icon { color:var(--brand); }
+    .service-link-copy { display:grid; gap:4px; min-width:0; }
+    .service-link-title { line-height:1.3; }
+    .service-link-desc {
+      font-size:12px;
+      line-height:1.45;
+      color:var(--t2);
+      font-weight:400;
+    }
+    .service-link:hover .service-link-desc,
+    .service-link.is-current .service-link-desc { color:var(--t1); }
+    
+
+.service-outlinks {
+  position:relative;
+  left:50%;
+  width:100vw;
+  box-sizing:border-box;
+  margin:16px 0 -20px;
+  padding:9px max(24px, calc((100vw - var(--nav-max)) / 2 + 24px)) 10px;
+  transform:translateX(-50%);
+  border-top:1px solid rgba(15,23,42,.10);
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  flex-wrap:wrap;
+  gap:10px;
+  background:rgba(248,250,252,.72);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+}
+.service-outlinks-title {
+  color:var(--t3);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  opacity:.72;
+}
+.service-outlink-list {
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  flex-wrap:wrap;
+  gap:0;
+}
+.service-outlink {
+  min-width:0;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:3px 8px;
+  color:var(--t2);
+  text-decoration:none;
+  font-size:12px;
+  font-weight:600;
+  transition:color .15s ease;
+}
+.service-outlink + .service-outlink {
+  border-left:1px solid var(--border);
+}
+.service-outlink:hover {
+  color:var(--brand);
+}
+.service-outlink-icon,
+.service-outlink-arrow {
+  color:currentColor;
+  font-size:13px;
+  opacity:.48;
+  transition:opacity .15s ease;
+}
+.service-outlink:hover .service-outlink-icon,
+.service-outlink:hover .service-outlink-arrow {
+  opacity:.8;
+}
+.service-outlink-copy {
+  min-width:0;
+  display:inline-flex;
+  align-items:center;
+}
+.service-outlink-title {
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.service-outlink-desc {
+  display:none;
+}
+
+.search-wrap {
+      flex:1;
+      max-width:440px;
+      min-width:0;
+      position:relative;
+    }
+    .search-wrap .ico {
+      position:absolute;
+      left:13px;
+      top:50%;
+      transform:translateY(-50%);
+      font-size:17px;
+      color:var(--t3);
+      pointer-events:none;
+    }
+    .search-input {
+      width:100%;
+      height:36px;
+      border:1.5px solid var(--border);
+      border-radius:20px;
+      padding:0 72px 0 38px;
+      background:var(--bg);
+      outline:none;
+      font-size:13px;
+      font-family:inherit;
+      color:var(--t1);
+      transition:border .15s, box-shadow .15s;
+    }
+    .search-input:focus {
+      border-color:var(--brand);
+      background:var(--surface);
+      box-shadow:0 0 0 3px rgba(180,14,77,.08);
+    }
+    .search-input::placeholder { color:var(--t3); }
+    .search-ai {
+      position:absolute;
+      right:12px;
+      top:50%;
+      transform:translateY(-50%);
+      height:22px;
+      padding:0 7px;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      gap:3px;
+      background:linear-gradient(135deg, #f6f0ff 0%, #eef4ff 100%);
+      border:1px solid rgba(124,95,207,.18);
+      font-size:10px;
+      font-weight:700;
+      color:var(--purple);
+      letter-spacing:.02em;
+      pointer-events:none;
+    }
+    .search-ai .material-icons-round { font-size:12px; }
+    .tb-spacer { flex:1; }
+    .tb-btn {
+      display:flex;
+      align-items:center;
+      gap:5px;
+      height:32px;
+      padding:0 12px;
+      border:1px solid var(--border-2);
+      border-radius:6px;
+      background:transparent;
+      color:var(--t2);
+      font-size:12px;
+      font-weight:500;
+      transition:all .15s;
+      flex-shrink:0;
+    }
+    .tb-btn:hover {
+      background:var(--bg);
+      color:var(--t1);
+    }
+    .tb-btn-ai {
+      border-color:rgba(124,95,207,.18);
+      background:linear-gradient(135deg, #f6f0ff 0%, #eef4ff 100%);
+      color:var(--purple);
+      box-shadow:0 8px 18px rgba(124,95,207,.12);
+    }
+    .tb-btn-ai:hover {
+      background:linear-gradient(135deg, #efe4ff 0%, #e3efff 100%);
+      color:#5b45b0;
+      border-color:rgba(124,95,207,.28);
+    }
+    .tb-btn .material-icons-round { font-size:14px; }
+    .tb-icon {
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--t2);
+      position:relative;
+    }
+    .tb-icon:hover { background:var(--bg); }
+    .tb-icon .material-icons-round { font-size:20px; }
+    .tb-icon .dot {
+      position:absolute;
+      top:5px;
+      right:5px;
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:var(--brand);
+      border:2px solid var(--surface);
+    }
+    .avatar {
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      background:var(--brand);
+      color:#fff;
+      font-size:12px;
+      font-weight:600;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+
+    .page {
+      max-width:var(--max);
+      margin:0 auto;
+      padding:24px 24px 72px;
+    }
+    .panel {
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:var(--r);
+      padding:20px;
+    }
+    .page-head {
+      display:grid;
+      gap:14px;
+      margin-bottom:20px;
+    }
+    .page-title {
+      font-size:34px;
+      line-height:1.14;
+      letter-spacing:-.05em;
+      font-weight:800;
+    }
+    .page-desc {
+      max-width:860px;
+      font-size:14px;
+      line-height:1.75;
+      color:var(--t2);
+    }
+    .sec-label {
+      display:flex;
+      align-items:center;
+      gap:6px;
+      margin-bottom:14px;
+      font-size:11px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:var(--t3);
+    }
+    .sec-label .material-icons-round { font-size:14px; }
+    .sec-label-more {
+      margin-left:auto;
+      display:flex;
+      align-items:center;
+      gap:2px;
+      font-size:11px;
+      font-weight:600;
+      letter-spacing:0;
+      text-transform:none;
+      color:var(--t3);
+    }
+    .hero-rail {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:12px;
+      margin-bottom:20px;
+    }
+    .hero-rail-card {
+      padding:18px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+    }
+    .rail-kicker {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-bottom:10px;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:var(--brand);
+    }
+    .rail-title {
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      margin-bottom:6px;
+    }
+    .rail-desc {
+      font-size:12px;
+      line-height:1.6;
+      color:var(--t2);
+      margin-bottom:14px;
+    }
+    .mini-list { display:grid; gap:10px; }
+    .mini-row {
+      display:grid;
+      grid-template-columns:auto minmax(0, 1fr) auto;
+      gap:10px;
+      align-items:center;
+    }
+    .mini-icon {
+      width:34px;
+      height:34px;
+      border-radius:11px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      flex-shrink:0;
+    }
+    .mini-icon .material-icons-round { font-size:18px; }
+    .mini-copy { min-width:0; }
+    .mini-name {
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:2px;
+    }
+    .mini-meta {
+      font-size:11px;
+      color:var(--t3);
+      line-height:1.45;
+    }
+    .mini-pill {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:10px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .layout {
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) 320px;
+      gap:var(--gap);
+      align-items:start;
+    }
+    .main-col,
+    .side-col {
+      display:grid;
+      gap:var(--gap);
+    }
+
+    .feature-grid {
+      display:grid;
+      grid-template-columns:minmax(0, 1.08fr) minmax(0, .92fr);
+      gap:14px;
+    }
+    .section-head {
+      display:grid;
+      gap:8px;
+      margin-bottom:18px;
+    }
+    .section-kicker {
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--t3);
+    }
+    .section-kicker .material-icons-round {
+      font-size:14px;
+      color:var(--brand);
+    }
+    .section-title {
+      font-size:26px;
+      line-height:1.18;
+      letter-spacing:-.04em;
+      font-weight:800;
+      color:var(--t1);
+    }
+    .section-subtitle {
+      max-width:760px;
+      font-size:13px;
+      line-height:1.7;
+      color:var(--t2);
+    }
+    .spotlight-card {
+      padding:22px;
+      border-radius:18px;
+      border:1px solid rgba(180,14,77,.12);
+      background:
+        radial-gradient(circle at top right, rgba(124,95,207,.16), transparent 36%),
+        linear-gradient(145deg, #fff8fb 0%, #ffffff 68%);
+      box-shadow:0 12px 30px rgba(15,23,42,.06);
+    }
+    .spotlight-top {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .spotlight-icon {
+      width:46px;
+      height:46px;
+      border-radius:15px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      background:linear-gradient(135deg, var(--brand), var(--purple));
+      box-shadow:0 12px 28px rgba(180,14,77,.22);
+    }
+    .spotlight-icon .material-icons-round { font-size:23px; }
+    .spotlight-badge {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:var(--brand-bg);
+      color:var(--brand);
+      font-size:10px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .spotlight-badge::before {
+      content:"";
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:var(--brand);
+    }
+    .spotlight-eyebrow {
+      font-size:10px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--purple);
+      margin-bottom:8px;
+    }
+    .spotlight-title {
+      font-size:24px;
+      font-weight:800;
+      letter-spacing:-.04em;
+      margin-bottom:8px;
+    }
+    .spotlight-desc {
+      font-size:13px;
+      line-height:1.7;
+      color:var(--t2);
+      margin-bottom:16px;
+    }
+    .point-list {
+      display:grid;
+      gap:9px;
+      margin-bottom:16px;
+    }
+    .point-item {
+      display:flex;
+      align-items:flex-start;
+      gap:8px;
+      font-size:12px;
+      line-height:1.55;
+      color:var(--t1);
+    }
+    .point-item .material-icons-round {
+      font-size:15px;
+      color:var(--brand);
+      margin-top:1px;
+      flex-shrink:0;
+    }
+    .tag-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .tag {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(214,216,219,.9);
+      background:rgba(255,255,255,.88);
+      color:var(--t2);
+      font-size:10px;
+      font-weight:700;
+    }
+    .tag .material-icons-round {
+      font-size:13px;
+      color:var(--t3);
+    }
+    .stack-panel {
+      display:grid;
+      gap:12px;
+    }
+    .stack-card {
+      padding:16px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, #fbfbff 0%, #ffffff 100%);
+    }
+    .stack-title {
+      font-size:14px;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+    .stack-desc {
+      font-size:12px;
+      line-height:1.6;
+      color:var(--t2);
+      margin-bottom:12px;
+    }
+    .capsule-list { display:flex; flex-wrap:wrap; gap:8px; }
+    .capsule {
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:10px;
+      font-weight:800;
+    }
+
+    .agent-grid {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:14px;
+    }
+    .agent-card {
+      display:flex;
+      flex-direction:column;
+      min-height:248px;
+      padding:18px;
+      border-radius:18px;
+      border:1px solid rgba(214,216,219,.95);
+      background:
+        radial-gradient(circle at top right, rgba(255,255,255,.95), transparent 35%),
+        linear-gradient(180deg, #ffffff 0%, #fbfbfd 100%);
+      transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+    .agent-card:hover {
+      transform:translateY(-2px);
+      border-color:rgba(180,14,77,.16);
+      box-shadow:0 12px 28px rgba(15,23,42,.08);
+    }
+    .agent-card.chatbot-card {
+      background:
+        radial-gradient(circle at top right, rgba(79,140,255,.12), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+    }
+    .agent-card.mcp-card {
+      background:
+        radial-gradient(circle at top right, rgba(167,139,250,.12), transparent 34%),
+        linear-gradient(180deg, #ffffff 0%, #fcfbff 100%);
+    }
+    .card-top {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .card-icon {
+      width:42px;
+      height:42px;
+      border-radius:13px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      flex-shrink:0;
+    }
+    .card-icon .material-icons-round { font-size:21px; }
+    .card-badge {
+      padding:5px 9px;
+      border-radius:999px;
+      font-size:10px;
+      font-weight:800;
+      white-space:nowrap;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);
+    }
+    .card-name {
+      font-size:17px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      margin-bottom:4px;
+    }
+    .card-meta {
+      font-size:11px;
+      color:#6f7680;
+      margin-bottom:12px;
+      font-weight:700;
+    }
+    .card-desc {
+      font-size:12px;
+      line-height:1.65;
+      color:var(--t2);
+      margin-bottom:14px;
+    }
+    .card-stats {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:14px;
+    }
+    .card-stat {
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      padding:5px 8px;
+      border-radius:999px;
+      background:var(--bg);
+      color:var(--t2);
+      font-size:10px;
+      font-weight:700;
+    }
+    .card-stat .material-icons-round { font-size:13px; }
+    .card-foot {
+      margin-top:auto;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      min-width:0;
+    }
+    .card-actions {
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      gap:8px;
+      flex:0 0 auto;
+      align-self:flex-start;
+    }
+    .action-link {
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:var(--brand);
+      color:#fff;
+      font-size:12px;
+      font-weight:700;
+      box-shadow:0 10px 24px rgba(180,14,77,.16);
+    }
+    .action-link.secondary {
+      background:#fff;
+      color:var(--t2);
+      border:1px solid var(--border);
+      box-shadow:none;
+    }
+    .action-link.is-muted {
+      background:var(--bg);
+      color:var(--t3);
+      border:1px dashed var(--border-2);
+      box-shadow:none;
+      cursor:default;
+      pointer-events:none;
+    }
+    .action-link .material-icons-round {
+      font-size:15px;
+    }
+    .scope-note {
+      font-size:11px;
+      font-weight:700;
+      color:var(--green);
+      letter-spacing:-.01em;
+      flex:1 1 220px;
+      min-width:0;
+    }
+    .card-link {
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      color:var(--brand);
+      font-size:12px;
+      font-weight:700;
+    }
+    .card-link .material-icons-round { font-size:15px; }
+
+    .workflow-grid {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:14px;
+    }
+    .workflow-card {
+      padding:18px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:
+        radial-gradient(circle at top right, rgba(180,14,77,.08), transparent 36%),
+        linear-gradient(180deg, #ffffff 0%, #fcfbfd 100%);
+    }
+    .workflow-title {
+      font-size:18px;
+      font-weight:800;
+      margin-bottom:6px;
+      letter-spacing:-.03em;
+    }
+    .workflow-desc {
+      font-size:12px;
+      line-height:1.65;
+      color:var(--t2);
+      margin-bottom:14px;
+    }
+    .chain-list { display:grid; gap:10px; }
+    .chain-item {
+      display:grid;
+      grid-template-columns:auto minmax(0, 1fr) auto;
+      gap:10px;
+      align-items:center;
+      padding:11px 12px;
+      border-radius:12px;
+      background:rgba(244,246,249,.8);
+    }
+    .chain-icon {
+      width:30px;
+      height:30px;
+      border-radius:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+    }
+    .chain-icon .material-icons-round { font-size:16px; }
+    .chain-name {
+      font-size:12px;
+      font-weight:700;
+      margin-bottom:2px;
+    }
+    .chain-meta {
+      font-size:11px;
+      color:var(--t3);
+    }
+    .chain-tag {
+      font-size:10px;
+      font-weight:800;
+      color:var(--brand);
+    }
+
+    .filter-tag {
+      border:none;
+      cursor:pointer;
+      transition:transform .14s ease, box-shadow .14s ease, border-color .14s ease, color .14s ease;
+    }
+    .filter-tag.is-active {
+      border-color:rgba(180,14,77,.2);
+      color:var(--brand);
+      box-shadow:0 10px 24px rgba(180,14,77,.12);
+    }
+    .filter-tag:hover {
+      transform:translateY(-1px);
+      border-color:rgba(180,14,77,.18);
+    }
+
+    .side-card {
+      border-color:rgba(180,14,77,.16);
+      background:linear-gradient(180deg, #ffffff 0%, #fff9fb 100%);
+      box-shadow:0 16px 34px rgba(15,23,42,.06);
+    }
+    .approval-list,
+    .mcp-list,
+    .insight-list {
+      display:grid;
+      gap:10px;
+    }
+    .approval-item,
+    .mcp-item,
+    .insight-item {
+      display:grid;
+      grid-template-columns:auto minmax(0, 1fr) auto;
+      gap:10px;
+      align-items:center;
+    }
+    .mcp-icon,
+    .approval-icon {
+      width:30px;
+      height:30px;
+      border-radius:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+    }
+    .mcp-icon .material-icons-round,
+    .approval-icon .material-icons-round { font-size:16px; }
+    .side-name {
+      font-size:12px;
+      font-weight:700;
+      margin-bottom:3px;
+    }
+    .side-meta {
+      font-size:11px;
+      line-height:1.5;
+      color:var(--t3);
+    }
+    .side-value {
+      font-size:11px;
+      font-weight:700;
+      color:var(--t2);
+      white-space:nowrap;
+    }
+    .table-wrap {
+      border-radius:16px;
+      overflow:hidden;
+      border:1px solid var(--border);
+    }
+    table {
+      width:100%;
+      border-collapse:collapse;
+      background:#fff;
+    }
+    th, td {
+      padding:12px 14px;
+      text-align:left;
+      font-size:12px;
+      border-bottom:1px solid var(--border);
+    }
+    th {
+      background:#fafbfc;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      color:var(--t3);
+    }
+    tbody tr:last-child td { border-bottom:none; }
+    .state-pill {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      padding:5px 8px;
+      border-radius:999px;
+      font-size:10px;
+      font-weight:800;
+    }
+    .state-pill::before {
+      content:"";
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:currentColor;
+    }
+    .empty-state,
+    .section-status {
+      padding:18px;
+      border-radius:16px;
+      border:1px dashed var(--border-2);
+      background:#fafbfd;
+      color:var(--t2);
+      font-size:13px;
+      line-height:1.7;
+      text-align:center;
+    }
+    .section-status.is-error {
+      border-color:rgba(180,14,77,.24);
+      background:#fff6f9;
+      color:var(--brand);
+    }
+    .card-link {
+      border:none;
+      background:none;
+      padding:0;
+    }
+    .detail-dialog {
+      width:min(840px, calc(100vw - 32px));
+      max-height:min(86vh, 920px);
+      padding:0;
+      border:none;
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:0 28px 80px rgba(15,23,42,.24);
+      background:var(--surface);
+    }
+    .detail-dialog::backdrop {
+      background:rgba(15,23,42,.44);
+      backdrop-filter:blur(3px);
+    }
+    .detail-shell {
+      display:grid;
+      max-height:min(86vh, 920px);
+      grid-template-rows:auto minmax(0, 1fr);
+    }
+    .detail-head {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      padding:24px 24px 20px;
+      border-bottom:1px solid var(--border);
+      background:
+        radial-gradient(circle at top right, rgba(124,95,207,.14), transparent 30%),
+        linear-gradient(135deg, #f8fbff 0%, #fff8fb 100%);
+    }
+    .detail-head-copy {
+      display:grid;
+      gap:10px;
+      min-width:0;
+    }
+    .detail-kicker {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--brand);
+    }
+    .detail-kicker .material-icons-round { font-size:14px; }
+    .detail-title {
+      font-size:28px;
+      line-height:1.15;
+      letter-spacing:-.04em;
+      font-weight:800;
+    }
+    .detail-subtitle {
+      font-size:13px;
+      line-height:1.7;
+      color:var(--t2);
+    }
+    .detail-close {
+      width:40px;
+      height:40px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.88);
+      color:var(--t2);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+    .detail-close:hover {
+      color:var(--brand);
+      border-color:rgba(180,14,77,.18);
+      background:var(--brand-bg);
+    }
+    .detail-body {
+      overflow:auto;
+      padding:24px;
+      display:grid;
+      gap:18px;
+    }
+    .detail-grid {
+      display:grid;
+      grid-template-columns:1.08fr .92fr;
+      gap:18px;
+      align-items:start;
+    }
+    .detail-panel {
+      padding:18px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+    }
+    .detail-panel h3 {
+      margin-bottom:10px;
+      font-size:15px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    .detail-panel p,
+    .detail-panel li,
+    .detail-panel code {
+      font-size:12px;
+      line-height:1.7;
+      color:var(--t2);
+    }
+    .detail-list {
+      list-style:none;
+      display:grid;
+      gap:8px;
+      padding:0;
+      margin:0;
+    }
+    .detail-list li {
+      padding:10px 12px;
+      border-radius:12px;
+      background:#f7f9fc;
+      border:1px solid #edf0f4;
+    }
+    .detail-chips {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .detail-chip {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#f6f8fb;
+      border:1px solid #edf0f4;
+      font-size:11px;
+      font-weight:700;
+      color:var(--t2);
+    }
+    .detail-chip .material-icons-round { font-size:13px; }
+    .detail-contract {
+      display:grid;
+      gap:10px;
+    }
+    .detail-contract code {
+      display:block;
+      padding:11px 12px;
+      border-radius:12px;
+      background:#172033;
+      color:#f8fafc;
+      overflow:auto;
+      font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    @media (max-width:1120px) {
+      .service-groups { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+      .service-group:nth-child(odd) { border-right:1px solid var(--border); }
+      .service-group:nth-child(n + 3) {
+        border-top:1px solid var(--border);
+        padding-top:18px;
+      }
+      .service-group + .service-group { border-left:none; }
+      .hero-rail,
+      .layout,
+      .feature-grid { grid-template-columns:1fr; }
+    }
+    @media (max-width:800px) {
+      .service-groups { grid-template-columns:1fr; }
+      .service-group {
+        padding:16px 18px;
+        border-right:none;
+        border-top:1px solid var(--border);
+      }
+      .service-group:first-child { border-top:none; }
+      .topbar-inner { padding:0 16px; }
+      .tb-btn { display:none; }
+      .section-title { font-size:22px; }
+      .agent-grid,
+      .workflow-grid { grid-template-columns:1fr; }
+    }
+    @media (max-width:640px) {
+      .page { padding:18px 16px 64px; }
+      .search-ai { display:none; }
+      .service-popover { top:56px; padding:14px 0 16px; }
+      .service-popover-inner { padding:0 16px; }
+
+      .service-outlinks {
+        margin:14px 0 -16px;
+        padding:9px 16px;
+        justify-content:flex-start;
+        gap:8px;
+      }
+      .service-outlink-list {
+        justify-content:flex-start;
+      }
+      .service-outlink {
+        padding:3px 8px;
+      }
+      .detail-grid {
+        grid-template-columns:1fr;
+      }
+      .detail-head,
+      .detail-body {
+        padding:20px 18px;
+      }
+      .card-actions {
+        width:100%;
+        justify-content:flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div
+    data-ax-topbar
+    data-active-key="ai-gallery"
+    data-search-placeholder="챗봇, MCP, 활용 사례를 찾아보세요..."
+    data-search-source="ai-gallery"
+    data-search-source-label="AI Gallery"
+    data-search-default-type="assistant"
+  ></div>
+  <template data-legacy-topbar>
+    <div class="topbar-inner">
+      <a class="topbar-brand" href="portal_launchpad.html" aria-label="AX Studio">
+        <span class="brand-mark" aria-hidden="true">
+          <img src="data:image/svg+xml,%3csvg%20width='35'%20height='20'%20viewBox='0%200%2035%2020'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M16.7961%2010.1421L21.022%2014.368C23.4543%2016.8004%2027.398%2016.8004%2029.8303%2014.368C32.2627%2011.9356%2032.2627%207.99197%2029.8303%205.5596C27.398%203.12723%2023.4543%203.12723%2021.022%205.5596L20.723%205.85861L18.7019%203.83756L19.0009%203.53856C22.5495%20-0.0100035%2028.3028%20-0.0100042%2031.8514%203.53856C35.4%207.08712%2035.4%2012.8405%2031.8514%2016.389C28.3028%2019.9376%2022.5495%2019.9376%2019.0009%2016.389L12.5757%209.96379L14.5948%207.9447L16.7941%2010.144L16.7961%2010.1421ZM17.6605%208.92103L19.6782%206.90332L17.6572%204.88228L15.6395%206.89998L17.6605%208.92103Z'%20fill='%236D6E72'/%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M14.3637%205.63217L18.6416%209.91016L18.6428%209.90899L20.7901%2012.0562L22.8099%2010.0364L16.3847%203.61113C12.8361%200.0625671%207.08278%200.0625666%203.53422%203.61113C-0.0143374%207.15969%20-0.0143374%2012.913%203.53422%2016.4616C7.08278%2020.0102%2012.8361%2020.0102%2016.3847%2016.4616L16.6801%2016.1662L14.6591%2014.1452L14.3637%2014.4406C11.9313%2016.8729%207.98764%2016.8729%205.55527%2014.4406C3.1229%2012.0082%203.1229%208.06454%205.55527%205.63217C7.98764%203.1998%2011.9313%203.1998%2014.3637%205.63217ZM15.7038%2013.1004L17.7248%2015.1215L19.7453%2013.101L17.7243%2011.0799L15.7038%2013.1004Z'%20fill='%23A50034'/%3e%3crect%20x='15.376'%20y='12.7714'%20width='2.85369'%20height='5.21909'%20transform='rotate(-45%2015.376%2012.7714)'%20fill='%236D6E72'/%3e%3c/svg%3e" alt="AX Studio" />
+        </span>
+        <span class="brand-name">AX Studio</span>
+      </a>
+      <div class="logo-menu" id="serviceMenuWrap">
+        <button class="menu-trigger" id="serviceMenuButton" type="button" aria-label="전체 메뉴 열기" aria-haspopup="true" aria-expanded="false" aria-controls="serviceMenuPopover">
+          <span class="material-icons-round">apps</span>
+          <span class="material-icons-round menu-caret">expand_more</span>
+        </button>
+        <div class="service-popover" id="serviceMenuPopover" aria-labelledby="serviceMenuButton" hidden>
+          <div class="service-popover-inner">
+            <div class="service-groups">
+              <section class="service-group">
+                <div class="service-group-title">Gallery</div>
+                <div class="service-links">
+                  <a class="service-link" href="dej_app_gallery.html"><span class="material-icons-round service-link-icon">widgets</span><span class="service-link-copy"><span class="service-link-title">App Gallery</span><span class="service-link-desc">실행형 개발 앱과 워크스페이스 도구를 발견하고 살펴보기</span></span></a>
+                  <a class="service-link is-current" href="dej_ai_gallery.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">AI Gallery</span><span class="service-link-desc">챗봇과 tool 자산을 전시하고 재사용 흐름으로 연결</span></span></a>
+                </div>
+              </section>
+              <section class="service-group">
+                <div class="service-group-title">Accessibility</div>
+                <div class="service-links">
+                  <a class="service-link" href="workspace_domain_hub.html"><span class="material-icons-round service-link-icon">apartment</span><span class="service-link-copy"><span class="service-link-title">Domain</span><span class="service-link-desc">DNS 및 도메인 관리</span></span></a>
+                  <a class="service-link" href="workspace_permission_hub.html"><span class="material-icons-round service-link-icon">groups</span><span class="service-link-copy"><span class="service-link-title">Permission</span><span class="service-link-desc">IAM 및 권한 관리</span></span></a>
+                </div>
+              </section>
+              <section class="service-group">
+                <div class="service-group-title">Storage</div>
+                <div class="service-links">
+                  <a class="service-link" href="workspace_database_hub.html"><span class="material-icons-round service-link-icon">storage</span><span class="service-link-copy"><span class="service-link-title">Database</span><span class="service-link-desc">데이터베이스 관리(MongoDB, PostgreSQL, Redis 등)</span></span></a>
+                  <a class="service-link" href="workspace_s3_hub.html"><span class="material-icons-round service-link-icon">folder</span><span class="service-link-copy"><span class="service-link-title">Buckets</span><span class="service-link-desc">S3 스토리지 및 버킷 관리</span></span></a>
+                </div>
+              </section>
+              <section class="service-group">
+                <div class="service-group-title">Development</div>
+                <div class="service-links">
+                  <a class="service-link" href="workspace_tools_hub.html"><span class="material-icons-round service-link-icon">web</span><span class="service-link-copy"><span class="service-link-title">Consoles</span><span class="service-link-desc">데이터베이스 웹 콘솔 모음</span></span></a>
+                  <a class="service-link" href="workspace_projects_hub.html"><span class="material-icons-round service-link-icon">public</span><span class="service-link-copy"><span class="service-link-title">Project/Publish</span><span class="service-link-desc">개발 프로젝트 관리(IDE 작업 공간)</span></span></a>
+                  <a class="service-link" href="#"><span class="material-icons-round service-link-icon">science</span><span class="service-link-copy"><span class="service-link-title">Jupyter</span><span class="service-link-desc">노트북 실험 및 분석 환경</span></span></a>
+                </div>
+              </section>
+              <section class="service-group">
+                <div class="service-group-title">AI</div>
+                <div class="service-links">
+                  <a class="service-link" href="workspace_agent_hub.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">Workflow</span><span class="service-link-desc">Dify workflow와 승인형 자동화 런타임을 운영</span></span></a>
+                  <a class="service-link" href="workspace_chatbot_hub.html"><span class="material-icons-round service-link-icon">chat</span><span class="service-link-copy"><span class="service-link-title">Chatbot</span><span class="service-link-desc">API와 Frontend URL 기반 챗봇 엔드포인트를 관리</span></span></a>
+                  <a class="service-link" href="workspace_tool_inventory_hub.html"><span class="material-icons-round service-link-icon">inventory_2</span><span class="service-link-copy"><span class="service-link-title">Tool Inventory</span><span class="service-link-desc">에이전트가 사용하는 연결된 MCP 및 도구 자산을 관리</span></span></a>
+                  <a class="service-link" href="workspace_keycenter_hub.html"><span class="material-icons-round service-link-icon">vpn_key</span><span class="service-link-copy"><span class="service-link-title">Keycenter</span><span class="service-link-desc">발급된 LLM 키와 연결된 사용처를 관리</span></span></a>
+                </div>
+              </section>
+              <section class="service-group">
+                <div class="service-group-title">Support</div>
+                <div class="service-links">
+                  <a class="service-link" href="#"><span class="material-icons-round service-link-icon">description</span><span class="service-link-copy"><span class="service-link-title">다큐먼트</span><span class="service-link-desc">가이드와 운영 문서를 확인합니다</span></span></a>
+                  <a class="service-link" href="about_dej.html"><span class="material-icons-round service-link-icon">timeline</span><span class="service-link-copy"><span class="service-link-title">About DEJ</span><span class="service-link-desc">DEJ의 역사와 CEJ·DEJ 흐름을 확인합니다</span></span></a>
+                  <a class="service-link" href="dej_chatbot_trial.html"><span class="material-icons-round service-link-icon">chat_bubble_outline</span><span class="service-link-copy"><span class="service-link-title">챗봇</span><span class="service-link-desc">지원 챗봇으로 빠르게 문의합니다</span></span></a>
+                  <a class="service-link" href="#"><span class="material-icons-round service-link-icon">campaign</span><span class="service-link-copy"><span class="service-link-title">요청하기</span><span class="service-link-desc">기능 요청이나 지원 요청을 등록합니다</span></span></a>
+                </div>
+              </section>
+            </div>
+            <div class="service-outlinks" aria-label="외부 서비스 바로가기">
+              <div class="service-outlinks-title">DEJ 시스템</div>
+              <div class="service-outlink-list">
+                <a class="service-outlink" href="https://dej-chatbot.apps.hedej.lge.com" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">forum</span><span class="service-outlink-copy"><span class="service-outlink-title">DEJ 챗봇</span><span class="service-outlink-desc">Workspace 지원 챗봇</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
+                <a class="service-outlink" href="https://workspace.hedej.lge.com/heans" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">open_in_new</span><span class="service-outlink-copy"><span class="service-outlink-title">HEANS</span><span class="service-outlink-desc">HEANS 서비스 바로가기</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
+                <a class="service-outlink" href="https://workspace.hedej.lge.com/hevpds" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">open_in_new</span><span class="service-outlink-copy"><span class="service-outlink-title">HEVPDS</span><span class="service-outlink-desc">HEVPDS 서비스 바로가기</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="search-wrap">
+        <span class="material-icons-round ico">search</span>
+        <input class="search-input" data-ai-search placeholder="챗봇, MCP, 활용 사례를 찾아보세요..." />
+        <div class="search-ai"><span class="material-icons-round">auto_awesome</span>AI</div>
+      </div>
+      <div class="tb-spacer"></div>
+      <div class="tb-icon"><span class="material-icons-round">notifications_none</span><div class="dot"></div></div>
+      <div class="avatar">TN</div>
+    </div>
+  </template>
+
+  <main class="page">
+    <section class="page-head">
+      <div class="sec-label"><span class="material-icons-round">auto_awesome</span>DEJ AI Gallery</div>
+      <h1 class="page-title" data-page-title>AI Gallery</h1>
+      <p class="page-desc" data-page-desc>팀에서 만든 챗봇과 MCP를 한곳에서 만나볼 수 있는 공간입니다. 눈에 띄는 항목부터 가볍게 둘러보고, 마음에 드는 결과물은 바로 살펴보거나 다음 작업에 이어서 활용해 보세요.</p>
+      <div class="tag-row" data-page-tags></div>
+    </section>
+
+    <section class="hero-rail">
+      <div class="hero-rail-card">
+        <div class="rail-kicker"><span class="material-icons-round">play_circle</span>지금 바로써보기</div>
+        <div class="rail-title" data-hero-left-title>바로 대화를 시작할 수 있는 챗봇</div>
+        <div class="rail-desc" data-hero-left-desc>Bot API로 등록된 챗봇은 이곳에서 바로 열어보고, 나에게 맞는지 가볍게 확인할 수 있습니다. 마음에 들면 앱의 챗봇 화면으로 이어서 사용해 보세요.</div>
+        <div class="mini-list" data-hero-left-list></div>
+      </div>
+
+      <div class="hero-rail-card">
+        <div class="rail-kicker"><span class="material-icons-round">link</span>함께 보기</div>
+        <div class="rail-title" data-hero-right-title>챗봇 다음은 MCP</div>
+        <div class="rail-desc" data-hero-right-desc>챗봇이 어떤 정보를 읽고 어떤 일을 도와주는지 궁금하다면 MCP를 함께 살펴보세요. 챗봇과 연결 도구를 한 흐름으로 이해하기 좋습니다.</div>
+        <div class="mini-list" data-hero-right-list></div>
+      </div>
+    </section>
+
+    <div class="layout">
+      <div class="main-col">
+        <section class="panel">
+          <div class="sec-label"><span class="material-icons-round">tips_and_updates</span>Curated Highlights</div>
+          <div class="feature-grid">
+            <article class="spotlight-card" data-spotlight-main></article>
+            <div class="stack-panel" data-spotlight-side></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div class="section-kicker"><span class="material-icons-round">chat</span>Chatbots</div>
+            <h2 class="section-title">지금 바로 살펴보고 써볼 수 있는 챗봇 모음</h2>
+            <p class="section-subtitle">API 챗봇은 AX Studio 챗봇으로 모델을 바로 시험해 볼 수 있고, 웹페이지 챗봇은 실제 통합 화면을 곧바로 열 수 있습니다. 필요한 방식에 맞춰 가볍게 비교해 보세요.</p>
+          </div>
+          <div class="agent-grid" data-agent-grid></div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div class="section-kicker"><span class="material-icons-round">lan</span>MCP</div>
+            <h2 class="section-title">챗봇이 더 똑똑하게 일하도록 돕는 MCP 모음</h2>
+            <p class="section-subtitle">MCP라는 이름이 낯설더라도 어렵게 볼 필요는 없습니다. 챗봇이 필요한 정보를 가져오고 일을 돕게 만드는 도구라고 생각하고, 용도가 분명한 항목부터 가볍게 살펴보세요.</p>
+          </div>
+          <div class="agent-grid" data-mcp-grid></div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div class="section-kicker"><span class="material-icons-round">lightbulb</span>Tips</div>
+            <h2 class="section-title">처음 보는 사람도 어렵지 않게 고르는 방법</h2>
+            <p class="section-subtitle">무엇부터 볼지 고민된다면, 아래 순서대로 가볍게 시작해 보세요. 어렵게 공부하기보다 직접 보고 써보면서 익히는 데 도움이 되는 순서입니다.</p>
+          </div>
+          <div class="workflow-grid" data-tip-grid></div>
+        </section>
+      </div>
+
+      <aside class="side-col">
+        <section class="panel side-card">
+          <div class="sec-label"><span class="material-icons-round">explore</span>이 페이지에서 볼 것</div>
+          <div class="mcp-list" data-page-scope></div>
+        </section>
+
+        <section class="panel side-card">
+          <div class="sec-label"><span class="material-icons-round">help_outline</span>처음이라면</div>
+          <div class="approval-list" data-onboarding></div>
+        </section>
+
+        <section class="panel side-card">
+          <div class="sec-label"><span class="material-icons-round">link</span>관련 메뉴</div>
+          <div class="insight-list" data-related-hubs></div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <dialog class="detail-dialog" id="aiDetailDialog">
+    <div class="detail-shell">
+      <div class="detail-head">
+        <div class="detail-head-copy">
+          <div class="detail-kicker"><span class="material-icons-round">api</span>AI Gallery API</div>
+          <h2 class="detail-title" data-detail-title>API Contract</h2>
+          <p class="detail-subtitle" data-detail-subtitle>선택한 항목의 API 계약을 표시합니다.</p>
+          <div class="detail-chips" data-detail-chips></div>
+        </div>
+        <button class="detail-close" type="button" data-detail-close aria-label="상세 닫기">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="detail-body">
+        <div class="detail-grid">
+          <section class="detail-panel">
+            <h3>요약</h3>
+            <p data-detail-description></p>
+          </section>
+          <section class="detail-panel">
+            <h3>API 계약</h3>
+            <div class="detail-contract">
+              <code data-detail-contract></code>
+              <p data-detail-note></p>
+            </div>
+          </section>
+        </div>
+        <div class="detail-grid">
+          <section class="detail-panel">
+            <h3>핵심 포인트</h3>
+            <ul class="detail-list" data-detail-points></ul>
+          </section>
+          <section class="detail-panel">
+            <h3>추가 메타데이터</h3>
+            <ul class="detail-list" data-detail-meta></ul>
+          </section>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    (() => {
+      const menuWrap = document.getElementById("serviceMenuWrap");
+      const menuButton = document.getElementById("serviceMenuButton");
+      const menuPopover = document.getElementById("serviceMenuPopover");
+
+      if (!menuWrap || !menuButton || !menuPopover) return;
+
+      const setOpen = (open) => {
+        menuWrap.classList.toggle("is-open", open);
+        menuButton.setAttribute("aria-expanded", String(open));
+        menuPopover.hidden = !open;
+      };
+
+      setOpen(false);
+
+      menuButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        setOpen(!menuWrap.classList.contains("is-open"));
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!menuWrap.contains(event.target)) setOpen(false);
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          setOpen(false);
+          menuButton.focus();
+        }
+      });
+    })();
+
+    (() => {
+      const state = {
+        hero: null,
+        rail: [],
+        categories: [],
+        search: "",
+        spotlight: null,
+        agents: [],
+        workflowPacks: [],
+        trustMatrix: null,
+        linkedMcp: null,
+        approvals: null,
+        insights: null,
+      };
+
+      const hubLinks = [
+        {
+          title: "Chatbot Hub",
+          meta: "실제 chatbot 등록과 endpoint 연결 관리",
+          href: "workspace_chatbot_hub.html",
+          value: "Hub",
+          color: "#0369a1",
+        },
+        {
+          title: "Tool Inventory",
+          meta: "linked MCP와 consumer 연결 현황 관리",
+          href: "workspace_tool_inventory_hub.html",
+          value: "Hub",
+          color: "#0d9488",
+        },
+        {
+          title: "Keycenter",
+          meta: "agent와 tool이 쓰는 키 자산 관리",
+          href: "workspace_keycenter_hub.html",
+          value: "Hub",
+          color: "#7c5fcf",
+        },
+      ];
+
+      const elements = {
+        pageTitle: document.querySelector("[data-page-title]"),
+        pageDesc: document.querySelector("[data-page-desc]"),
+        pageTags: document.querySelector("[data-page-tags]"),
+        heroLeftTitle: document.querySelector("[data-hero-left-title]"),
+        heroLeftDesc: document.querySelector("[data-hero-left-desc]"),
+        heroLeftList: document.querySelector("[data-hero-left-list]"),
+        heroRightTitle: document.querySelector("[data-hero-right-title]"),
+        heroRightDesc: document.querySelector("[data-hero-right-desc]"),
+        heroRightList: document.querySelector("[data-hero-right-list]"),
+        spotlightMain: document.querySelector("[data-spotlight-main]"),
+        spotlightSide: document.querySelector("[data-spotlight-side]"),
+        agentGrid: document.querySelector("[data-agent-grid]"),
+        mcpGrid: document.querySelector("[data-mcp-grid]"),
+        tipGrid: document.querySelector("[data-tip-grid]"),
+        pageScope: document.querySelector("[data-page-scope]"),
+        onboarding: document.querySelector("[data-onboarding]"),
+        relatedHubs: document.querySelector("[data-related-hubs]"),
+        searchInput: document.querySelector("[data-ai-search]"),
+        detailDialog: document.getElementById("aiDetailDialog"),
+        detailTitle: document.querySelector("[data-detail-title]"),
+        detailSubtitle: document.querySelector("[data-detail-subtitle]"),
+        detailChips: document.querySelector("[data-detail-chips]"),
+        detailDescription: document.querySelector("[data-detail-description]"),
+        detailContract: document.querySelector("[data-detail-contract]"),
+        detailNote: document.querySelector("[data-detail-note]"),
+        detailPoints: document.querySelector("[data-detail-points]"),
+        detailMeta: document.querySelector("[data-detail-meta]"),
+        detailClose: document.querySelector("[data-detail-close]"),
+      };
+
+      const iconMap = {
+        all: "auto_awesome",
+        agent: "smart_toy",
+        "workflow-pack": "dashboard_customize",
+        mcp: "lan",
+        approval: "approval",
+        insights: "query_stats",
+        agents: "chat",
+        packs: "dashboard_customize",
+        approvals: "approval",
+      };
+
+      const toneMap = {
+        healthy: { background: "#ecfdf5", color: "#0d9488" },
+        review: { background: "#fff1e7", color: "#c2410c" },
+        connected: { background: "#e2f3ff", color: "#0369a1" },
+      };
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/\"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function safeData(payload) {
+        if (payload && typeof payload === "object" && "data" in payload) {
+          return payload.data;
+        }
+        return payload;
+      }
+
+      async function apiGet(path) {
+        const response = await fetch(path, {
+          credentials: "same-origin",
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(path + " -> " + response.status);
+        }
+
+        return safeData(await response.json());
+      }
+
+      function renderStatus(message, isError) {
+        const className = isError ? "section-status is-error" : "section-status";
+        return '<div class="' + className + '">' + escapeHtml(message) + "</div>";
+      }
+
+      function renderEmpty(message) {
+        return '<div class="empty-state">' + escapeHtml(message) + "</div>";
+      }
+
+      function formatDate(value) {
+        if (!value) {
+          return "updatedAt 없음";
+        }
+
+        const date = new Date(value);
+        if (Number.isNaN(date.valueOf())) {
+          return String(value);
+        }
+
+        return new Intl.DateTimeFormat("ko-KR", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        }).format(date);
+      }
+
+      function slugify(value) {
+        return String(value ?? "")
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "");
+      }
+
+      function getToneStyle(tone) {
+        const style = toneMap[tone] || toneMap.connected;
+        return "background:" + style.background + ";color:" + style.color;
+      }
+
+      function getCategoryIcon(category) {
+        return iconMap[category] || "auto_awesome";
+      }
+
+      function renderTag(icon, label) {
+        return '<span class="tag"><span class="material-icons-round">' + escapeHtml(icon) + "</span>" + escapeHtml(label) + "</span>";
+      }
+
+      function renderMiniRow(item, tone) {
+        const pillStyle = item.valueStyle || "background:#eef2ff;color:#4338ca";
+        const pillAttrs = item.href
+          ? ' class="mini-pill" href="' + escapeHtml(item.href) + '" target="_blank" rel="noopener noreferrer" style="' + pillStyle + '"'
+          : ' class="mini-pill" style="' + pillStyle + '"';
+        const pillTag = item.href ? "a" : "span";
+        return [
+          '<div class="mini-row">',
+          '<div class="mini-icon" style="background:linear-gradient(135deg,' + tone + ')"><span class="material-icons-round">',
+          escapeHtml(item.icon || "auto_awesome"),
+          "</span></div>",
+          '<div class="mini-copy"><div class="mini-name">',
+          escapeHtml(item.title),
+          '</div><div class="mini-meta">',
+          escapeHtml(item.description),
+          "</div></div>",
+          "<" + pillTag + pillAttrs + ">",
+          escapeHtml(item.value),
+          "</" + pillTag + ">",
+          "</div>",
+        ].join("");
+      }
+
+      function getSearchHaystack(values) {
+        return values
+          .flat()
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+      }
+
+      function getCategoryCount(categoryId) {
+        const item = state.categories.find((entry) => entry.id === categoryId);
+        return item ? item.count : 0;
+      }
+
+      function getPrimaryLinkedChatbot(item) {
+        if (!item || !Array.isArray(item.linkedChatbots) || !item.linkedChatbots.length) {
+          return null;
+        }
+        return item.linkedChatbots[0];
+      }
+
+      function getTrialUrl(item) {
+        if (!item) {
+          return "";
+        }
+
+        const linked = getPrimaryLinkedChatbot(item);
+        return String(
+          item.trialUrl
+          || (linked && linked.trialUrl)
+          || "",
+        ).trim();
+      }
+
+      function getWebUrl(item) {
+        if (!item) {
+          return "";
+        }
+
+        const linked = getPrimaryLinkedChatbot(item);
+        return String(
+          item.webUrl
+          || item.openUrl
+          || (linked && (linked.webUrl || linked.openUrl))
+          || "",
+        ).trim();
+      }
+
+      function canTryNow(item) {
+        const trialUrl = getTrialUrl(item);
+        const capability = item && item.capabilities ? item.capabilities.canTryNow : undefined;
+        return Boolean(trialUrl && capability !== false);
+      }
+
+      function canOpenWeb(item) {
+        const webUrl = getWebUrl(item);
+        const capabilities = item && item.capabilities ? item.capabilities : null;
+        return Boolean(webUrl && (!capabilities || capabilities.canOpenWeb !== false || capabilities.canOpen === true));
+      }
+
+      function getChatbotTypeLabel(item) {
+        if (item && item.chatbotTypeLabel) {
+          return item.chatbotTypeLabel;
+        }
+
+        return canTryNow(item) ? "API 챗봇" : "웹페이지 챗봇";
+      }
+
+      function getChatbotValueStyle(item) {
+        return canTryNow(item)
+          ? "background:#e0f2fe;color:#0369a1"
+          : "background:var(--green-bg);color:var(--green)";
+      }
+
+      function getChatbotDescription(item) {
+        if (canTryNow(item) && canOpenWeb(item)) {
+          return "AX Studio 챗봇으로 먼저 모델을 시험해 보고, 실제 웹 화면도 바로 열 수 있는 챗봇";
+        }
+
+        if (canTryNow(item)) {
+          return "AX Studio 챗봇으로 모델을 먼저 가볍게 시험해 볼 수 있는 챗봇";
+        }
+
+        if (canOpenWeb(item)) {
+          return "실제 통합 웹 화면을 바로 열어 흐름을 확인할 수 있는 챗봇";
+        }
+
+        return item.summary || item.subtitle || "연결 정보가 정리 중인 챗봇";
+      }
+
+      function renderChatbotActions(item, secondaryClass) {
+        const actions = [];
+        const trialUrl = getTrialUrl(item);
+        const webUrl = getWebUrl(item);
+
+        if (canTryNow(item) && trialUrl) {
+          actions.push(
+            '<a class="action-link' + (secondaryClass ? " " + secondaryClass : "") + '" href="' + escapeHtml(trialUrl) + '" target="_blank" rel="noopener noreferrer">바로써보기 <span class="material-icons-round">chat</span></a>',
+          );
+        }
+
+        if (canOpenWeb(item) && webUrl) {
+          actions.push(
+            '<a class="action-link' + (secondaryClass ? " " + secondaryClass : "") + '" href="' + escapeHtml(webUrl) + '" target="_blank" rel="noopener noreferrer">웹열기 <span class="material-icons-round">open_in_new</span></a>',
+          );
+        }
+
+        if (!actions.length) {
+          actions.push(
+            '<span class="action-link secondary is-muted">연결 정보 확인 중 <span class="material-icons-round">hourglass_top</span></span>',
+          );
+        }
+
+        return actions.join("");
+      }
+
+      function getFilteredAgents() {
+        return state.agents.filter((item) => {
+          const haystack = getSearchHaystack([
+            item.title,
+            item.subtitle,
+            item.summary,
+            item.provider,
+            item.statusLabel,
+            item.tags || [],
+          ]);
+          return !state.search || haystack.includes(state.search);
+        });
+      }
+
+      function getFilteredMcpRows() {
+        const rows = (state.linkedMcp && state.linkedMcp.rows) || [];
+        return rows.filter((row) => {
+          const haystack = getSearchHaystack([
+            row.title,
+            row.meta,
+            row.description,
+            row.pill && row.pill.label,
+          ]);
+          return !state.search || haystack.includes(state.search);
+        });
+      }
+
+      function getOnboardingCards() {
+        const spotlightAgent = state.spotlight || getFilteredAgents()[0] || null;
+        const fallbackAgentRows = getFilteredAgents().slice(0, 3);
+        const mcpRows = getFilteredMcpRows();
+        const workflowPack = state.workflowPacks[0] || null;
+        const trustRow = ((state.trustMatrix && state.trustMatrix.rows) || [])[0] || null;
+
+        return [
+          {
+            title: "어떤 챗봇을 먼저 보면 좋을까?",
+            description: "처음이라면 가장 익숙한 업무와 가까운 챗봇부터 살펴보세요. 릴리즈 공지, 문서 검색, FAQ처럼 바로 이해되는 주제가 시작하기 좋습니다.",
+            items: []
+              .concat(spotlightAgent ? [{
+                icon: "campaign",
+                title: "익숙한 업무부터",
+                meta: spotlightAgent.title + "처럼 내가 바로 이해할 수 있는 주제를 먼저 보기",
+                tag: "1",
+              }] : [])
+              .concat(fallbackAgentRows.slice(0, 1).map((item) => ({
+                icon: canTryNow(item) ? "chat" : "public",
+                title: "사용 방법이 쉬운 것부터",
+                meta: canTryNow(item) ? "AX Studio 챗봇에서 먼저 써볼 수 있는 " + item.title + "부터 보기" : "실제 웹 화면을 바로 열 수 있는 " + item.title + "부터 보기",
+                tag: "2",
+              })))
+              .concat(fallbackAgentRows.slice(1, 2).map((item) => ({
+                icon: "content_copy",
+                title: "마음에 들면 이어서 보기",
+                meta: item.title + "처럼 마음에 드는 항목은 모델 시험과 웹 화면을 이어서 보기",
+                tag: "3",
+              })))
+              .slice(0, 3),
+          },
+          {
+            title: "MCP는 연결 도구라고 이해하기",
+            description: "챗봇이 필요한 정보를 읽고 일을 돕도록 붙이는 연결 자산이라는 관점으로 보면 훨씬 이해하기 쉽습니다.",
+            items: []
+              .concat(mcpRows.slice(0, 1).map((item) => ({
+                icon: "search",
+                title: "정보를 가져오게 해 줌",
+                meta: item.title + "처럼 문서, 코드, 운영 정보를 읽어 올 수 있음",
+                tag: "A",
+              })))
+              .concat(workflowPack ? [{
+                icon: "extension",
+                title: "챗봇의 손발이 됨",
+                meta: workflowPack.title + "처럼 실제 운영 pack과 연결되며 일을 도와주는 기반",
+                tag: "B",
+              }] : [])
+              .concat(trustRow ? [{
+                icon: "visibility",
+                title: "용도부터 보기",
+                meta: trustRow.label + "처럼 기술 설명보다 무엇에 쓰는지 먼저 살펴보기",
+                tag: "C",
+              }] : [])
+              .slice(0, 3),
+          },
+        ];
+      }
+
+      function renderPageHead() {
+        elements.pageTitle.textContent = (state.hero && state.hero.title) || "AI Gallery";
+        elements.pageDesc.textContent = "팀에서 만든 챗봇과 MCP를 한곳에서 만나볼 수 있는 공간입니다. 눈에 띄는 항목부터 가볍게 둘러보고, 마음에 드는 결과물은 바로 살펴보거나 다음 작업에 이어서 활용해 보세요.";
+
+        const tags = []
+          .concat(((state.hero && state.hero.stats) || []).map((stat) => renderTag(getCategoryIcon(stat.id), stat.label + " " + stat.value)))
+          .concat(state.categories.filter((item) => item.id !== "all").slice(0, 4).map((item) => renderTag(getCategoryIcon(item.id), item.label + " " + item.count)));
+
+        elements.pageTags.innerHTML = tags.join("");
+      }
+
+      function renderHero() {
+        const chatbotItems = getFilteredAgents().slice(0, 2).map((item) => ({
+          icon: canTryNow(item) ? "chat" : "public",
+          title: item.title,
+          description: getChatbotDescription(item),
+          value: getChatbotTypeLabel(item),
+          valueStyle: getChatbotValueStyle(item),
+        }));
+        const mcpItems = getFilteredMcpRows().slice(0, 2).map((item, index) => ({
+          icon: "lan",
+          title: item.title,
+          description: item.description || item.meta || "연결된 consumer가 있는 도구입니다.",
+          value: item.pill && item.pill.label ? item.pill.label : "MCP",
+          href: index === 0 ? "workspace_tool_inventory_hub.html" : "",
+          valueStyle: index === 0 ? "background:var(--purple-bg);color:var(--purple)" : "background:var(--green-bg);color:var(--green)",
+        }));
+
+        elements.heroLeftTitle.textContent = "바로 시험하거나 웹으로 열 수 있는 챗봇";
+        elements.heroLeftDesc.textContent = "API 챗봇은 AX Studio 챗봇으로 모델을 먼저 시험해 볼 수 있고, 웹페이지 챗봇은 실제 통합 화면을 바로 열 수 있습니다.";
+        elements.heroLeftList.innerHTML = chatbotItems.length
+          ? chatbotItems.map((item, index) => renderMiniRow(item, index % 2 ? "#34d399,#0d9488" : "#4f8cff,#0086cc")).join("")
+          : renderEmpty("지금 바로 시험하거나 열어볼 수 있는 챗봇이 없습니다.");
+
+        elements.heroRightTitle.textContent = "챗봇 다음은 MCP";
+        elements.heroRightDesc.textContent = "챗봇이 어떤 정보를 읽고 어떤 일을 도와주는지 궁금하다면 MCP를 함께 살펴보세요. 챗봇과 연결 도구를 한 흐름으로 이해하기 좋습니다.";
+        elements.heroRightList.innerHTML = mcpItems.length
+          ? mcpItems.map((item, index) => renderMiniRow(item, index % 2 ? "#a855f7,#7c3aed" : "#0ea5e9,#2563eb")).join("")
+          : renderEmpty("함께 볼 MCP가 아직 없습니다.");
+      }
+
+      function renderSpotlight() {
+        const item = state.spotlight;
+        const firstMcp = ((state.linkedMcp && state.linkedMcp.rows) || [])[0];
+
+        if (!item) {
+          elements.spotlightMain.innerHTML = renderEmpty("spotlight 항목이 없습니다.");
+          elements.spotlightSide.innerHTML = "";
+          return;
+        }
+
+        elements.spotlightMain.innerHTML = [
+          '<div class="spotlight-top">',
+          '<div class="spotlight-icon" style="background:linear-gradient(135deg,',
+          escapeHtml(item.iconColor || "#2563eb"),
+          ', var(--purple))"><span class="material-icons-round">chat</span></div>',
+          '<div class="spotlight-badge">처음 보는 사람을 위한 추천</div>',
+          "</div>",
+          '<div class="spotlight-eyebrow">Start Here</div>',
+          '<h2 class="spotlight-title">가볍게 둘러보고, 하나 골라 바로 써보세요</h2>',
+          '<p class="spotlight-desc">',
+          escapeHtml(item.title + "부터 살펴보면 AI Gallery 흐름을 가장 부담 없이 이해할 수 있습니다. API 챗봇이라면 AX Studio 챗봇에서 먼저 모델을 시험해 보고, 웹페이지 챗봇이라면 실제 화면을 열어본 뒤 연결된 MCP까지 이어서 살펴보세요."),
+          "</p>",
+          '<div class="point-list">',
+          '<div class="point-item"><span class="material-icons-round">chat</span><span>먼저 챗봇을 보면서 어떤 일을 도와주는지 가볍게 확인해 보세요.</span></div>',
+          '<div class="point-item"><span class="material-icons-round">play_circle</span><span>API 챗봇은 AX Studio 챗봇에서 모델만 먼저 시험해 볼 수 있습니다.</span></div>',
+          '<div class="point-item"><span class="material-icons-round">build</span><span>그다음 MCP를 보면서 어떤 정보와 연결되는지 함께 살펴보세요.</span></div>',
+          '<div class="point-item"><span class="material-icons-round">open_in_new</span><span>마음에 들면 실제 통합 웹 화면을 열어 같은 흐름을 이어서 확인해 보세요.</span></div>',
+          "</div>",
+          '<div class="tag-row">',
+          renderTag("chat", "Chatbots " + getCategoryCount("agent")),
+          renderTag("lan", "MCP " + getCategoryCount("mcp")),
+          renderTag("lightbulb", "Tips " + getOnboardingCards().length),
+          renderTag("explore", "Easy Start"),
+          "</div>",
+          '<div class="card-foot" style="margin-top:18px"><span class="scope-note">',
+          escapeHtml(canTryNow(item) ? "모델을 먼저 시험해 보고 실제 웹까지 이어서 보기 좋은 시작점" : "실제 웹 화면을 열어 사용 흐름을 바로 이해하기 좋은 시작점"),
+          '</span><div class="card-actions">',
+          renderChatbotActions(item),
+          "</div></div>",
+        ].join("");
+
+        elements.spotlightSide.innerHTML = [
+          '<div class="stack-card"><div class="sec-label"><span class="material-icons-round">chat</span>추천 챗봇</div><div class="stack-title">',
+          escapeHtml(item.title),
+          '</div><div class="stack-desc">',
+          escapeHtml(item.summary || item.subtitle || "AX Studio 챗봇에서 가볍게 시험해 보거나, 실제 통합 웹 화면으로 바로 넘어가 보세요."),
+          '</div><div class="capsule-list">',
+          '<span class="capsule" style="background:var(--brand-bg);color:var(--brand)">' + escapeHtml(getChatbotTypeLabel(item)) + "</span>",
+          '<span class="capsule" style="background:var(--purple-bg);color:var(--purple)">' + escapeHtml(canTryNow(item) ? "바로써보기 가능" : "웹열기 가능") + "</span>",
+          '<span class="capsule" style="background:var(--green-bg);color:var(--green)">' + escapeHtml(item.statusLabel || "인기 항목") + "</span>",
+          "</div></div>",
+          '<div class="stack-card"><div class="sec-label"><span class="material-icons-round">lan</span>추천 MCP</div><div class="stack-title">',
+          escapeHtml(firstMcp ? firstMcp.title : "연결된 MCP"),
+          '</div><div class="stack-desc">',
+          escapeHtml(firstMcp ? firstMcp.description : "챗봇이 어떤 정보를 읽는지 함께 보면 전체 흐름을 이해하기 좋습니다."),
+          '</div><div class="capsule-list">',
+          firstMcp
+            ? '<span class="capsule" style="background:#ecfdf5;color:#0d9488">' + escapeHtml(firstMcp.pill && firstMcp.pill.label ? firstMcp.pill.label : "Connected") + '</span><span class="capsule" style="background:#f1e7ff;color:#7c5fcf">' + escapeHtml(firstMcp.meta || "MCP") + "</span>"
+            : '<span class="capsule" style="background:#e2f3ff;color:#0369a1">MCP</span>',
+          '</div><a class="card-link" href="workspace_tool_inventory_hub.html">Tool Inventory 보기 <span class="material-icons-round">arrow_forward</span></a></div>',
+        ].join("");
+      }
+
+      function buildAgentCard(item) {
+        const stats = [];
+        if (canTryNow(item)) {
+          stats.push({ icon: "play_circle", label: "바로써보기" });
+        } else if (canOpenWeb(item)) {
+          stats.push({ icon: "public", label: "웹열기" });
+        } else {
+          stats.push({ icon: "hourglass_top", label: "연결 준비 중" });
+        }
+        stats.push({ icon: "smart_toy", label: getChatbotTypeLabel(item) });
+        if (typeof item.toolCount === "number") {
+          stats.push({ icon: "construction", label: "tools " + item.toolCount });
+        }
+        if (item.tags && item.tags.length) {
+          stats.push({ icon: "sell", label: item.tags[0] });
+        } else if (item.updatedAt) {
+          stats.push({ icon: "schedule", label: formatDate(item.updatedAt) });
+        }
+
+        return [
+          '<article class="agent-card chatbot-card">',
+          '<div class="card-top"><div class="card-icon" style="background:linear-gradient(135deg,',
+          escapeHtml(item.iconColor || "#2563eb"),
+          ', #111827)"><span class="material-icons-round">chat</span></div><span class="card-badge" style="',
+          getToneStyle(item.status === "running" ? "healthy" : "review"),
+          '">',
+          escapeHtml(item.statusLabel || "Chatbot"),
+          "</span></div>",
+          '<div class="card-name">',
+          escapeHtml(item.title),
+          '</div><div class="card-meta">',
+          escapeHtml(item.subtitle || getChatbotTypeLabel(item)),
+          '</div><div class="card-desc">',
+          escapeHtml(item.summary || getChatbotDescription(item)),
+          '</div><div class="card-stats">',
+          stats.map((stat) => '<span class="card-stat"><span class="material-icons-round">' + escapeHtml(stat.icon) + "</span>" + escapeHtml(stat.label) + "</span>").join(""),
+          '</div><div class="card-foot"><span class="scope-note">',
+          escapeHtml(canTryNow(item) ? "AX Studio 챗봇에서 먼저 시험해 보고 실제 웹까지 이어서 보기 좋은 챗봇" : "실제 통합 웹 화면을 바로 열어보기 좋은 챗봇"),
+          '</span><div class="card-actions">',
+          renderChatbotActions(item, "secondary"),
+          "</div></div></article>",
+        ].join("");
+      }
+
+      function buildMcpCard(row) {
+        const slug = slugify(row.title);
+
+        return [
+          '<article class="agent-card mcp-card">',
+          '<div class="card-top"><div class="card-icon" style="background:linear-gradient(135deg,#7c5fcf,#4f46e5)"><span class="material-icons-round">lan</span></div><span class="card-badge" style="',
+          getToneStyle(row.pill && row.pill.tone),
+          '">',
+          escapeHtml(row.pill && row.pill.label ? row.pill.label : "MCP"),
+          "</span></div>",
+          '<div class="card-name">',
+          escapeHtml(row.title),
+          '</div><div class="card-meta">',
+          escapeHtml(row.meta || "Linked MCP"),
+          '</div><div class="card-desc">',
+          escapeHtml(row.description || "연결된 consumer가 있는 도구 자산입니다."),
+          '</div><div class="card-stats">',
+          '<span class="card-stat"><span class="material-icons-round">hub</span>Linked MCP</span>',
+          row.meta ? '<span class="card-stat"><span class="material-icons-round">group_work</span>' + escapeHtml(row.meta) + "</span>" : "",
+          '<span class="card-stat"><span class="material-icons-round">insights</span>챗봇과 함께 이해</span>',
+          '</div><div class="card-foot"><span class="scope-note">챗봇이 어떤 정보를 읽는지 함께 이해하기 좋은 연결 도구</span><div class="card-actions">',
+          '<a class="action-link" href="workspace_tool_inventory_hub.html">살펴보기 <span class="material-icons-round">chevron_right</span></a>',
+          '<button class="action-link secondary" type="button" data-open-contract data-item-slug="' + escapeHtml(slug) + '" data-item-kind="mcp">API 계약 <span class="material-icons-round">receipt_long</span></button>',
+          "</div></div></article>",
+        ].join("");
+      }
+
+      function renderAgents() {
+        const items = getFilteredAgents();
+        elements.agentGrid.innerHTML = items.length
+          ? items.map((item) => buildAgentCard(item)).join("")
+          : renderEmpty("현재 검색 조건에 맞는 챗봇이 없습니다.");
+      }
+
+      function renderMcp() {
+        const rows = getFilteredMcpRows();
+        elements.mcpGrid.innerHTML = rows.length
+          ? rows.map((row) => buildMcpCard(row)).join("")
+          : renderEmpty("현재 검색 조건에 맞는 MCP가 없습니다.");
+      }
+
+      function renderTips() {
+        const cards = getOnboardingCards();
+        elements.tipGrid.innerHTML = cards.length
+          ? cards.map((card, index) => [
+            '<article class="workflow-card"><div class="workflow-title">',
+            escapeHtml(card.title),
+            '</div><div class="workflow-desc">',
+            escapeHtml(card.description),
+            '</div><div class="chain-list">',
+            (card.items || []).map((item) => [
+              '<div class="chain-item"><div class="chain-icon" style="background:linear-gradient(135deg,',
+              index % 2 ? "#7c5fcf,#4f46e5" : "#b40e4d,#d5115b",
+              ')"><span class="material-icons-round">',
+              escapeHtml(item.icon || "lightbulb"),
+              '</span></div><div><div class="chain-name">',
+              escapeHtml(item.title),
+              '</div><div class="chain-meta">',
+              escapeHtml(item.meta),
+              '</div></div><span class="chain-tag">',
+              escapeHtml(item.tag || "Guide"),
+              "</span></div>",
+            ].join("")).join(""),
+            "</div></article>",
+          ].join("")).join("")
+          : renderEmpty("입문 가이드를 구성할 데이터가 없습니다.");
+      }
+
+      function renderPageScope() {
+        const rows = [
+          {
+            icon: "chat",
+            title: "Chatbots",
+            meta: "바로써보기 또는 웹열기로 비교해 볼 수 있는 챗봇 " + getCategoryCount("agent") + "개",
+            value: String(getCategoryCount("agent")),
+          },
+          {
+            icon: "lan",
+            title: "MCP",
+            meta: "챗봇이 정보를 가져오고 일을 돕게 만드는 연결 도구 " + getCategoryCount("mcp") + "개",
+            value: String(getCategoryCount("mcp")),
+          },
+          {
+            icon: "lightbulb",
+            title: "Tips",
+            meta: "처음 둘러볼 때 도움이 되는 짧은 안내와 추천 흐름",
+            value: "Guide",
+          },
+        ];
+
+        elements.pageScope.innerHTML = rows.map((row, index) => [
+          '<div class="mcp-item"><div class="mcp-icon" style="background:linear-gradient(135deg,',
+          index === 1 ? "#7c5fcf,#4f46e5" : index === 2 ? "#f59e0b,#ea580c" : "#4f8cff,#0086cc",
+          ')"><span class="material-icons-round">',
+          escapeHtml(row.icon),
+          '</span></div><div><div class="side-name">',
+          escapeHtml(row.title),
+          '</div><div class="side-meta">',
+          escapeHtml(row.meta),
+          '</div></div><div class="side-value">',
+          escapeHtml(row.value),
+          "</div></div>",
+        ].join("")).join("");
+      }
+
+      function renderOnboarding() {
+        const approvals = (state.approvals && state.approvals.rows) || [];
+        const rows = [
+          {
+            icon: "play_circle",
+            title: "먼저 하나 열어보기",
+            meta: state.spotlight
+              ? state.spotlight.title + " 같은 챗봇부터 가볍게 둘러보세요."
+              : "열기 가능한 챗봇부터 시작해 보세요.",
+            value: "Step 1",
+          },
+          {
+            icon: "lan",
+            title: "그다음 MCP 보기",
+            meta: "챗봇 뒤에 붙는 연결 도구를 함께 보면 전체 흐름이 훨씬 쉽게 보입니다.",
+            value: "Step 2",
+          },
+          {
+            icon: "approval",
+            title: "실제 화면까지 확인",
+            meta: approvals[0]
+              ? approvals[0].title + " 같은 운영 맥락도 함께 보면 실제 사용 흐름까지 이어서 이해할 수 있습니다."
+              : "마지막으로 실제 웹 화면과 연결 도구를 함께 보면 사용 맥락이 더 선명해집니다.",
+            value: "Step 3",
+          },
+        ];
+
+        elements.onboarding.innerHTML = rows.map((row, index) => [
+          '<div class="approval-item"><div class="approval-icon" style="background:linear-gradient(135deg,',
+          index === 1 ? "#7c5fcf,#4f46e5" : "#f472b6,#b40e4d",
+          ')"><span class="material-icons-round">',
+          escapeHtml(row.icon),
+          '</span></div><div><div class="side-name">',
+          escapeHtml(row.title),
+          '</div><div class="side-meta">',
+          escapeHtml(row.meta),
+          '</div></div><div class="side-value">',
+          escapeHtml(row.value),
+          "</div></div>",
+        ].join("")).join("");
+      }
+
+      function renderRelatedHubs() {
+        elements.relatedHubs.innerHTML = hubLinks.map((link) => [
+          '<a class="insight-item" href="',
+          escapeHtml(link.href),
+          '"><span class="side-value" style="color:',
+          escapeHtml(link.color),
+          '">',
+          escapeHtml(link.value),
+          '</span><div><div class="side-name">',
+          escapeHtml(link.title),
+          '</div><div class="side-meta">',
+          escapeHtml(link.meta),
+          '</div></div><span class="material-icons-round">chevron_right</span></a>',
+        ].join("")).join("");
+      }
+
+      function findAgentBySlug(slug) {
+        return state.agents.find((item) => item.slug === slug)
+          || (state.spotlight && state.spotlight.slug === slug ? state.spotlight : null);
+      }
+
+      function findWorkflowPackBySlug(slug) {
+        return state.workflowPacks.find((item) => item.slug === slug);
+      }
+
+      function findMcpBySlug(slug) {
+        const rows = (state.linkedMcp && state.linkedMcp.rows) || [];
+        return rows.find((item) => slugify(item.title) === slug);
+      }
+
+      function openDetail(slug, kind) {
+        let item = null;
+        let category = kind || "agent";
+
+        if (kind === "mcp") {
+          item = findMcpBySlug(slug);
+          category = "mcp";
+        } else if (kind === "workflow-pack") {
+          item = findWorkflowPackBySlug(slug);
+          category = "workflow-pack";
+        } else {
+          item = findAgentBySlug(slug);
+          category = item && item.category ? item.category : "agent";
+        }
+
+        if (!item || !elements.detailDialog) {
+          return;
+        }
+
+        const description = item.summary || item.description || item.subtitle || "설명 정보가 없습니다.";
+        const points = []
+          .concat([description])
+          .concat(item.subtitle ? [item.subtitle] : [])
+          .concat(item.highlights || [])
+          .concat(item.meta ? [item.meta] : [])
+          .concat((item.tags || []).slice(0, 4).map((tag) => "tag: " + tag))
+          .slice(0, 6);
+        const metaItems = [
+          "slug: " + slug,
+          "category: " + category,
+          item.provider ? "provider: " + item.provider : null,
+          typeof item.toolCount === "number" ? "toolCount: " + item.toolCount : null,
+          item.meta ? "meta: " + item.meta : null,
+          item.statusLabel ? "status: " + item.statusLabel : null,
+          item.updatedAt ? "updatedAt: " + item.updatedAt : null,
+        ].filter(Boolean);
+
+        elements.detailTitle.textContent = item.title;
+        elements.detailSubtitle.textContent = "POST /api/v2/ai-gallery/items/" + slug + "/install API 계약과 현재 카드 메타데이터를 함께 표시합니다.";
+        elements.detailDescription.textContent = description;
+        elements.detailChips.innerHTML = []
+          .concat(['<span class="detail-chip"><span class="material-icons-round">' + escapeHtml(getCategoryIcon(category)) + "</span>" + escapeHtml(category) + "</span>"])
+          .concat((item.tags || []).slice(0, 5).map((tag) => '<span class="detail-chip"><span class="material-icons-round">sell</span>' + escapeHtml(tag) + "</span>"))
+          .concat(item.pill && item.pill.label ? ['<span class="detail-chip"><span class="material-icons-round">verified</span>' + escapeHtml(item.pill.label) + "</span>"] : [])
+          .join("");
+        elements.detailContract.textContent = JSON.stringify({
+          method: "POST",
+          endpoint: "/api/v2/ai-gallery/items/" + slug + "/install",
+          bodyExample: {
+            projectId: "<target-project-id>",
+          },
+        }, null, 2);
+        elements.detailNote.textContent = "이 페이지에서는 부작용이 생기는 실제 POST 호출은 하지 않고, 현재 v2 install API 계약만 노출합니다.";
+        elements.detailPoints.innerHTML = points.length
+          ? points.map((point) => "<li>" + escapeHtml(point) + "</li>").join("")
+          : "<li>추가 포인트가 없습니다.</li>";
+        elements.detailMeta.innerHTML = metaItems.map((itemText) => "<li>" + escapeHtml(itemText) + "</li>").join("");
+        elements.detailDialog.showModal();
+      }
+
+      function renderAll() {
+        renderPageHead();
+        renderHero();
+        renderSpotlight();
+        renderAgents();
+        renderMcp();
+        renderTips();
+        renderPageScope();
+        renderOnboarding();
+        renderRelatedHubs();
+      }
+
+      async function load() {
+        try {
+          const [
+            hero,
+            rail,
+            categories,
+            spotlight,
+            connectableAgents,
+            workflowPacks,
+            trustMatrix,
+            linkedMcp,
+            approvals,
+            insights,
+          ] = await Promise.all([
+            apiGet("/api/v2/ai-gallery/hero"),
+            apiGet("/api/v2/ai-gallery/rail"),
+            apiGet("/api/v2/ai-gallery/categories"),
+            apiGet("/api/v2/ai-gallery/spotlight"),
+            apiGet("/api/v2/ai-gallery/connectable-agents?limit=12"),
+            apiGet("/api/v2/ai-gallery/workflow-packs?limit=12"),
+            apiGet("/api/v2/ai-gallery/trust-matrix"),
+            apiGet("/api/v2/ai-gallery/linked-mcp"),
+            apiGet("/api/v2/ai-gallery/approvals"),
+            apiGet("/api/v2/ai-gallery/insights"),
+          ]);
+
+          state.hero = hero;
+          state.rail = rail.items || [];
+          state.categories = categories.items || [];
+          state.spotlight = spotlight;
+          state.agents = connectableAgents.items || [];
+          state.workflowPacks = workflowPacks.items || [];
+          state.trustMatrix = trustMatrix;
+          state.linkedMcp = linkedMcp;
+          state.approvals = approvals;
+          state.insights = insights;
+
+          renderAll();
+        } catch (error) {
+          const message = "AI Gallery API를 불러오지 못했습니다. " + (error && error.message ? error.message : error);
+          [
+            elements.pageTags,
+            elements.heroLeftList,
+            elements.heroRightList,
+            elements.spotlightMain,
+            elements.spotlightSide,
+            elements.agentGrid,
+            elements.mcpGrid,
+            elements.tipGrid,
+            elements.pageScope,
+            elements.onboarding,
+            elements.relatedHubs,
+          ].forEach((element) => {
+            if (element) {
+              element.innerHTML = renderStatus(message, true);
+            }
+          });
+        }
+      }
+
+      document.addEventListener("click", (event) => {
+        const contractButton = event.target.closest("[data-open-contract]");
+        if (contractButton) {
+          openDetail(
+            contractButton.getAttribute("data-item-slug"),
+            contractButton.getAttribute("data-item-kind"),
+          );
+        }
+      });
+
+      if (elements.searchInput) {
+        elements.searchInput.addEventListener("input", (event) => {
+          state.search = String(event.target.value || "").trim().toLowerCase();
+          renderHero();
+          renderAgents();
+          renderMcp();
+          renderTips();
+        });
+      }
+
+      if (elements.detailClose && elements.detailDialog) {
+        elements.detailClose.addEventListener("click", () => elements.detailDialog.close());
+        elements.detailDialog.addEventListener("click", (event) => {
+          const rect = elements.detailDialog.getBoundingClientRect();
+          const inside = event.clientX >= rect.left
+            && event.clientX <= rect.right
+            && event.clientY >= rect.top
+            && event.clientY <= rect.bottom;
+          if (!inside) {
+            elements.detailDialog.close();
+          }
+        });
+      }
+
+      load();
+    })();
+
+  </script>
+  <script src="ax_studio_topbar.js"></script>
+  <script src="concept_endpoint_overlay.js"></script>
+</body>
+</html>

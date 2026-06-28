@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { QueryErrorAlerts } from '@/components/workspace/QueryErrorAlerts';
+import { AppDetailDialog } from '@/features/app-gallery/components/AppDetailDialog';
 import { HeroRail, MainLayout } from '@/features/app-gallery/components/AppGalleryPrimitives';
 import { CategoryTabs } from '@/features/app-gallery/components/CategoryTabs';
 import { CollectionsPanel } from '@/features/app-gallery/components/CollectionsPanel';
@@ -12,6 +13,7 @@ import { PageIntro } from '@/features/app-gallery/components/PageIntro';
 import { RegisteredAppsPanel } from '@/features/app-gallery/components/RegisteredAppsPanel';
 import { SideRail } from '@/features/app-gallery/components/SideRail';
 import {
+  useAppGalleryAppDetailQuery,
   useAppGalleryAppsQuery,
   useAppGalleryCategoriesQuery,
   useAppGalleryFeaturedQuery,
@@ -23,36 +25,33 @@ import { useAppStore } from '@/stores/appStore';
 export function AppGalleryPageContent() {
   const { pathname } = useLocation();
   const [activeCategoryOverride, setActiveCategoryOverride] = useState<string | null>(null);
+  const [selectedAppSlug, setSelectedAppSlug] = useState<string | null>(null);
   const searchQuery = useAppStore((state) =>
     (state.searchQueriesByPath[pathname] ?? '').trim().toLowerCase(),
   );
 
   const heroQuery = useAppGalleryHeroQuery();
   const categoriesQuery = useAppGalleryCategoriesQuery();
-  const featuredQuery = useAppGalleryFeaturedQuery();
-  const appsQuery = useAppGalleryAppsQuery(6, '');
-  const relatedAiQuery = useAppGalleryRelatedAiQuery();
-
   const categories = categoriesQuery.data?.items ?? [];
   const activeCategory = activeCategoryOverride ?? categoriesQuery.data?.defaultCategory ?? 'all';
+  const featuredQuery = useAppGalleryFeaturedQuery();
+  const catalogAppsQuery = useAppGalleryAppsQuery({ limit: 6 });
+  const appsQuery = useAppGalleryAppsQuery({
+    category: activeCategory === 'all' ? '' : activeCategory,
+    limit: 6,
+    q: searchQuery,
+  });
+  const relatedAiQuery = useAppGalleryRelatedAiQuery();
+  const selectedAppQuery = useAppGalleryAppDetailQuery(selectedAppSlug);
+  const catalogApps = catalogAppsQuery.data?.items ?? [];
   const apps = appsQuery.data?.items ?? [];
   const featuredApps = featuredQuery.data ?? [];
   const relatedAi = relatedAiQuery.data ?? [];
-  const visibleApps = apps.filter((app) => {
-    const matchesCategory = activeCategory === 'all' || app.category === activeCategory;
-    const matchesSearch =
-      searchQuery.length === 0 ||
-      app.title.toLowerCase().includes(searchQuery) ||
-      app.subtitle.toLowerCase().includes(searchQuery) ||
-      app.summary.toLowerCase().includes(searchQuery) ||
-      app.tags.some((tag) => tag.toLowerCase().includes(searchQuery));
-
-    return matchesCategory && matchesSearch;
-  });
   const hasPageError =
     heroQuery.isError ||
     categoriesQuery.isError ||
     featuredQuery.isError ||
+    catalogAppsQuery.isError ||
     appsQuery.isError ||
     relatedAiQuery.isError;
 
@@ -61,13 +60,17 @@ export function AppGalleryPageContent() {
       <PageIntro hero={heroQuery.data} totalApps={appsQuery.data?.page.total ?? apps.length} />
 
       <HeroRail>
-        <RecentRailCard apps={apps.slice(0, 3)} isLoading={appsQuery.isLoading} />
+        <RecentRailCard apps={catalogApps.slice(0, 3)} isLoading={catalogAppsQuery.isLoading} />
         <CriteriaRailCard relatedAi={relatedAi.slice(0, 1)} />
       </HeroRail>
 
       <MainLayout>
         <Stack spacing={2.5}>
-          <CuratedHighlights apps={featuredApps} isLoading={featuredQuery.isLoading} />
+          <CuratedHighlights
+            apps={featuredApps}
+            isLoading={featuredQuery.isLoading}
+            onOpenAppDetail={setSelectedAppSlug}
+          />
 
           <CategoryTabs
             activeCategory={activeCategory}
@@ -76,13 +79,31 @@ export function AppGalleryPageContent() {
             onCategoryChange={setActiveCategoryOverride}
           />
 
-          <RegisteredAppsPanel apps={visibleApps} isLoading={appsQuery.isLoading} />
+          <RegisteredAppsPanel
+            apps={apps}
+            isLoading={appsQuery.isLoading}
+            onOpenAppDetail={setSelectedAppSlug}
+          />
 
-          <CollectionsPanel apps={apps} />
+          <CollectionsPanel
+            apps={catalogApps}
+            categories={categories}
+            featuredApps={featuredApps}
+            onOpenAppDetail={setSelectedAppSlug}
+          />
         </Stack>
 
-        <SideRail apps={apps.slice(0, 3)} />
+        <SideRail apps={catalogApps.slice(0, 3)} categories={categories} />
       </MainLayout>
+
+      <AppDetailDialog
+        key={selectedAppSlug ?? 'closed'}
+        detail={selectedAppQuery.data}
+        error={selectedAppQuery.error}
+        isLoading={selectedAppQuery.isLoading}
+        onClose={() => setSelectedAppSlug(null)}
+        open={Boolean(selectedAppSlug)}
+      />
 
       <QueryErrorAlerts
         alerts={[

@@ -214,7 +214,7 @@
     }
     .service-link:hover .service-link-desc,
     .service-link.is-current .service-link-desc { color:var(--t1); }
-
+    
 
 .service-outlinks {
   position:relative;
@@ -1222,6 +1222,204 @@
     .policy-icon .material-icons-round { font-size:16px; }
 
     [data-filter-group] [data-filter-item][hidden] { display:none; }
+    .empty-state,
+    .section-status {
+      padding:18px;
+      border-radius:16px;
+      border:1px dashed var(--border-2);
+      background:#fafbfd;
+      color:var(--t2);
+      font-size:13px;
+      line-height:1.7;
+      text-align:center;
+    }
+    .section-status.is-error {
+      border-color:rgba(180,14,77,.24);
+      background:#fff6f9;
+      color:var(--brand);
+    }
+    .card-link {
+      border:none;
+      background:none;
+      padding:0;
+    }
+    .detail-dialog {
+      width:min(880px, calc(100vw - 32px));
+      max-height:min(86vh, 960px);
+      padding:0;
+      border:none;
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:0 28px 80px rgba(15,23,42,.24);
+      background:var(--surface);
+    }
+    .detail-dialog::backdrop {
+      background:rgba(15,23,42,.44);
+      backdrop-filter:blur(3px);
+    }
+    .detail-shell {
+      display:grid;
+      max-height:min(86vh, 960px);
+      grid-template-rows:auto minmax(0, 1fr);
+    }
+    .detail-head {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      padding:24px 24px 20px;
+      border-bottom:1px solid var(--border);
+      background:
+        radial-gradient(circle at top right, rgba(34,211,238,.14), transparent 30%),
+        linear-gradient(135deg, #f8fbff 0%, #fff8fb 100%);
+    }
+    .detail-head-copy {
+      display:grid;
+      gap:10px;
+      min-width:0;
+    }
+    .detail-kicker {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--brand);
+    }
+    .detail-kicker .material-icons-round { font-size:14px; }
+    .detail-title {
+      font-size:28px;
+      line-height:1.15;
+      letter-spacing:-.04em;
+      font-weight:800;
+    }
+    .detail-subtitle {
+      font-size:13px;
+      line-height:1.7;
+      color:var(--t2);
+    }
+    .detail-close {
+      width:40px;
+      height:40px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.88);
+      color:var(--t2);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+    .detail-close:hover {
+      color:var(--brand);
+      border-color:rgba(180,14,77,.18);
+      background:var(--brand-bg);
+    }
+    .detail-body {
+      overflow:auto;
+      padding:24px;
+      display:grid;
+      gap:18px;
+    }
+    .detail-grid {
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:18px;
+      align-items:start;
+    }
+    .detail-panel {
+      padding:18px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+    }
+    .detail-panel h3 {
+      margin-bottom:10px;
+      font-size:15px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    .detail-panel p,
+    .detail-panel li,
+    .detail-panel code {
+      font-size:12px;
+      line-height:1.7;
+      color:var(--t2);
+    }
+    .detail-list {
+      list-style:none;
+      display:grid;
+      gap:8px;
+      padding:0;
+      margin:0;
+    }
+    .detail-list li {
+      padding:10px 12px;
+      border-radius:12px;
+      background:#f7f9fc;
+      border:1px solid #edf0f4;
+    }
+    .detail-chips {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .detail-chip {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#f6f8fb;
+      border:1px solid #edf0f4;
+      font-size:11px;
+      font-weight:700;
+      color:var(--t2);
+    }
+    .detail-chip .material-icons-round { font-size:13px; }
+    .detail-contract {
+      display:grid;
+      gap:10px;
+    }
+    .detail-contract code {
+      display:block;
+      padding:11px 12px;
+      border-radius:12px;
+      background:#172033;
+      color:#f8fafc;
+      overflow:auto;
+      font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    .detail-related {
+      display:grid;
+      gap:10px;
+    }
+    .detail-related a {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:11px 12px;
+      border-radius:12px;
+      background:#f7f9fc;
+      border:1px solid #edf0f4;
+      font-size:12px;
+      font-weight:700;
+      color:var(--t1);
+    }
+    .detail-related a:hover {
+      border-color:rgba(180,14,77,.18);
+      color:var(--brand);
+    }
+    .detail-related small {
+      display:block;
+      margin-top:2px;
+      font-size:11px;
+      font-weight:500;
+      color:var(--t3);
+    }
 
     @media (max-width:1120px) {
       .service-groups { grid-template-columns:repeat(2, minmax(0, 1fr)); }
@@ -1273,13 +1471,20 @@
       .service-outlink {
         padding:3px 8px;
       }
+      .detail-grid {
+        grid-template-columns:1fr;
+      }
+      .detail-head,
+      .detail-body {
+        padding:20px 18px;
+      }
     }
   </style>
 </head>
 <body>
   <div
     data-ax-topbar
-    data-active-key="app-store"
+    data-active-key="app-gallery"
     data-search-placeholder="앱, 작업 도구, 추천 모음을 찾아보세요..."
     data-search-source="app-gallery"
     data-search-source-label="App Gallery"
@@ -1302,10 +1507,10 @@
           <div class="service-popover-inner">
             <div class="service-groups">
               <section class="service-group">
-                <div class="service-group-title">Store</div>
+                <div class="service-group-title">Gallery</div>
                 <div class="service-links">
-                  <a class="service-link is-current" href="dej_app_store.html"><span class="material-icons-round service-link-icon">widgets</span><span class="service-link-copy"><span class="service-link-title">App Gallery</span><span class="service-link-desc">실행형 개발 앱과 워크스페이스 도구를 발견하고 살펴보기</span></span></a>
-                  <a class="service-link" href="dej_agent_store.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">AI Gallery</span><span class="service-link-desc">챗봇과 MCP를 둘러보고 바로 활용 흐름으로 이어가기</span></span></a>
+                  <a class="service-link is-current" href="dej_app_gallery.html"><span class="material-icons-round service-link-icon">widgets</span><span class="service-link-copy"><span class="service-link-title">App Gallery</span><span class="service-link-desc">실행형 개발 앱과 워크스페이스 도구를 발견하고 살펴보기</span></span></a>
+                  <a class="service-link" href="dej_ai_gallery.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">AI Gallery</span><span class="service-link-desc">챗봇과 MCP를 둘러보고 바로 활용 흐름으로 이어가기</span></span></a>
                 </div>
               </section>
               <section class="service-group">
@@ -1362,7 +1567,7 @@
       </div>
       <div class="search-wrap">
         <span class="material-icons-round ico">search</span>
-        <input class="search-input" placeholder="앱, 작업 도구, 추천 모음을 찾아보세요..." />
+        <input class="search-input" data-app-search placeholder="앱, 작업 도구, 추천 모음을 찾아보세요..." />
         <div class="search-ai"><span class="material-icons-round">auto_awesome</span>AI</div>
       </div>
       <div class="tb-spacer"></div>
@@ -1374,52 +1579,25 @@
   <main class="page">
     <section class="page-head">
       <div class="sec-label"><span class="material-icons-round">storefront</span>DEJ App Gallery</div>
-      <h1 class="page-title">App Gallery</h1>
-      <p class="page-desc">커뮤니티에 등록된 앱을 실제 목록 기준으로 둘러보는 화면입니다. 앱 이름, 소개, 소유자, 등록일을 먼저 보여주고 어떤 작업에 쓰일지 빠르게 감을 잡을 수 있게 구성했습니다.</p>
-      <div class="tag-row">
-        <span class="tag"><span class="material-icons-round">apps</span>등록 앱 117</span>
-        <span class="tag"><span class="material-icons-round">view_list</span>1페이지 12개</span>
-        <span class="tag"><span class="material-icons-round">update</span>최근 등록 순 정렬</span>
-        <span class="tag"><span class="material-icons-round">person</span>소유자 정보 포함</span>
-      </div>
+      <h1 class="page-title" data-page-title>App Gallery</h1>
+      <p class="page-desc" data-page-desc>프로젝트 시작, 운영 포털, 분석 대시보드까지 바로 이어지는 앱 템플릿을 큐레이션합니다.</p>
+      <div class="tag-row" data-page-tags></div>
     </section>
 
     <section class="hero">
       <div class="hero-rail">
-        <div class="hero-rail-card">
+        <div class="hero-rail-card" data-hero-recent>
           <div class="rail-kicker"><span class="material-icons-round">bolt</span>실데이터 하이라이트</div>
-          <div class="rail-title">최근 등록 앱 먼저 보기</div>
-          <div class="rail-desc">가장 최근에 등록된 앱부터 살펴보며 지금 어떤 시도가 올라오고 있는지 빠르게 훑어볼 수 있습니다. 설명이 있는 앱은 바로 목적을 이해하기 쉽고, 설명이 없는 앱은 이름과 소유자를 중심으로 탐색할 수 있습니다.</div>
-          <div class="mini-list">
-            <div class="mini-row">
-              <div class="mini-icon" style="background:linear-gradient(135deg,#4f8cff,#22d3ee)"><span class="material-icons-round">code</span></div>
-              <div class="mini-copy"><div class="mini-name">parse-everything</div><div class="mini-meta">다국어 문서 전처리</div></div>
-              <span class="mini-pill" style="background:#e0edff;color:#3157b7">최신</span>
-            </div>
-            <div class="mini-row">
-              <div class="mini-icon" style="background:linear-gradient(135deg,#34d399,#0d9488)"><span class="material-icons-round">monitoring</span></div>
-              <div class="mini-copy"><div class="mini-name">orchestrated-agent-sample</div><div class="mini-meta">워크플로 기반 샘플 앱</div></div>
-              <span class="mini-pill" style="background:var(--green-bg);color:var(--green)">설명 있음</span>
-            </div>
-            <div class="mini-row">
-              <div class="mini-icon" style="background:linear-gradient(135deg,#f472b6,#b40e4d)"><span class="material-icons-round">merge_type</span></div>
-              <div class="mini-copy"><div class="mini-name">axmanager-procurement</div><div class="mini-meta">구매 관련 관리 앱</div></div>
-              <span class="mini-pill" style="background:var(--brand-bg);color:var(--brand)">업무형</span>
-            </div>
-          </div>
+          <div class="rail-title" data-hero-recent-title>빠르게 시작하는 앱</div>
+          <div class="rail-desc" data-hero-recent-desc>실제 카탈로그에서 바로 확인할 수 있는 앱을 기준으로 하이라이트를 보여줍니다.</div>
+          <div class="mini-list" data-hero-recent-list></div>
         </div>
 
-        <div class="hero-rail-card">
-          <div class="rail-kicker"><span class="material-icons-round">link</span>이 화면에서 보는 기준</div>
-          <div class="rail-title">앱 고를 때 먼저 보는 정보</div>
-          <div class="rail-desc">구현 방식보다 앱의 이름, 소개, 누가 만들었는지, 언제 올라왔는지를 먼저 보여주는 흐름입니다. 실행 URL이 연결되면 여기서 바로 열기로 이어지고, 관련 챗봇은 AI Gallery와도 자연스럽게 연결할 수 있습니다.</div>
-          <div class="mini-list">
-            <div class="mini-row">
-              <div class="mini-icon" style="background:linear-gradient(135deg,#a78bfa,#7c5fcf)"><span class="material-icons-round">smart_toy</span></div>
-              <div class="mini-copy"><div class="mini-name">AI Gallery 이어보기</div><div class="mini-meta">앱을 본 뒤 챗봇이나 MCP도 함께 탐색</div></div>
-              <a class="mini-pill" href="dej_agent_store.html" style="background:var(--purple-bg);color:var(--purple)">이동</a>
-            </div>
-          </div>
+        <div class="hero-rail-card" data-hero-related>
+          <div class="rail-kicker"><span class="material-icons-round">link</span>함께 보는 AI 큐레이션</div>
+          <div class="rail-title" data-hero-related-title>AI Gallery 연결</div>
+          <div class="rail-desc" data-hero-related-desc>앱과 함께 보면 좋은 agent와 workflow pack을 실데이터로 바로 이어줍니다.</div>
+          <div class="mini-list" data-hero-related-list></div>
         </div>
       </div>
     </section>
@@ -1429,245 +1607,96 @@
         <section class="panel">
           <div class="sec-label"><span class="material-icons-round">star</span>Curated Highlights</div>
           <div class="featured-grid">
-            <article class="feature-card">
-              <div class="feature-top">
-                <div class="feature-icon"><span class="material-icons-round">explore</span></div>
-                <div class="feature-badge">활용 가이드</div>
-              </div>
-              <div class="feature-eyebrow">Start Here</div>
-              <h2 class="feature-title">App Gallery를 가장 쉽게 보는 방법</h2>
-              <p class="feature-desc">최근 등록 앱과 설명이 분명한 앱부터 가볍게 훑어보세요. 목적이 바로 이해되는 앱을 먼저 열어보면 훨씬 쉽게 고를 수 있습니다.</p>
-              <div class="point-list">
-                <div class="point-item"><span class="material-icons-round">schedule</span><span>최근 등록 앱부터 흐름을 훑어보세요.</span></div>
-                <div class="point-item"><span class="material-icons-round">description</span><span>설명이 분명한 앱을 먼저 열어보세요.</span></div>
-                <div class="point-item"><span class="material-icons-round">open_in_new</span><span>마음에 들면 바로 열어보고 이어서 탐색해 보세요.</span></div>
-              </div>
-              <div class="tag-row">
-                <span class="tag"><span class="material-icons-round">schedule</span>최근 등록부터</span>
-                <span class="tag"><span class="material-icons-round">description</span>설명 먼저 읽기</span>
-                <span class="tag"><span class="material-icons-round">open_in_new</span>열어보고 판단</span>
-              </div>
-            </article>
-
-            <div class="feature-side">
-              <div class="bundle-card metric-card">
-                <div class="metric-head">
-                  <div class="metric-copy">
-                    <div class="metric-label"><span class="material-icons-round">thumb_up</span>가볍게 추천</div>
-                    <div class="metric-title">parse-everything</div>
-                  </div>
-                  <div class="guide-step-num">P</div>
-                </div>
-                <div class="metric-note">문서 목적이 분명해서 처음 둘러볼 때 가장 부담이 적은 앱입니다. 이름과 소개만 읽어도 어떤 작업인지 바로 이해하기 쉽습니다.</div>
-                <div class="metric-foot"><span class="material-icons-round">description</span><span>문서 전처리 흐름을 가볍게 살펴보기 좋습니다.</span></div>
-              </div>
-              <div class="bundle-card metric-card">
-                <div class="metric-head">
-                  <div class="metric-copy">
-                    <div class="metric-label"><span class="material-icons-round">local_fire_department</span>지금 인기</div>
-                    <div class="metric-title">orchestrated-agent-sample</div>
-                  </div>
-                  <div class="guide-step-num">H</div>
-                </div>
-                <div class="metric-note">여러 모듈을 하나의 흐름으로 묶어 보여줘서 자동화 구조를 보고 싶은 사용자에게 가장 먼저 눈에 들어오는 앱입니다.</div>
-                <div class="metric-foot"><span class="material-icons-round">account_tree</span><span>워크플로 성격의 결과물을 찾을 때 먼저 보기 좋습니다.</span></div>
-              </div>
-            </div>
+            <article class="feature-card" data-featured-main></article>
+            <div class="feature-side" data-featured-side></div>
           </div>
         </section>
 
-        <div class="tabbar" role="tablist" aria-label="앱 카테고리">
-          <button class="tab-btn is-active" type="button" data-filter-tab="all" aria-selected="true">전체</button>
-          <button class="tab-btn" type="button" data-filter-tab="docs" aria-selected="false">문서</button>
-          <button class="tab-btn" type="button" data-filter-tab="workflow" aria-selected="false">워크플로</button>
-          <button class="tab-btn" type="button" data-filter-tab="business" aria-selected="false">업무</button>
-          <button class="tab-btn" type="button" data-filter-tab="tools" aria-selected="false">툴</button>
-        </div>
+        <div class="tabbar" role="tablist" aria-label="앱 카테고리" data-category-tabs></div>
 
         <section class="panel">
           <div class="section-head">
             <div class="section-kicker"><span class="material-icons-round">inventory_2</span>Registered Apps</div>
-            <h2 class="section-title">최근 등록된 앱을 한눈에 살펴보세요</h2>
-            <p class="section-subtitle">최근 목록 기준으로 정리된 앱을 보며 어떤 결과물이 올라오고 있는지 빠르게 훑어볼 수 있습니다. 앱 이름과 소개, 소유자, 등록일을 먼저 보고 가볍게 열어볼 대상을 고르기 좋습니다.</p>
+            <h2 class="section-title" data-grid-title>실제 App Gallery 카탈로그를 확인해 보세요</h2>
+            <p class="section-subtitle" data-grid-subtitle>카테고리와 검색 조건에 맞는 앱을 실시간으로 조회합니다. 카드에서 상세를 열면 실제 `/api/v2/app-gallery/apps/:slug` 계약까지 이어집니다.</p>
           </div>
-          <div class="card-grid" data-filter-group>
-            <article class="store-card" data-filter-item data-category="docs">
-              <div class="card-top">
-                <div class="card-icon" style="background:linear-gradient(135deg,#4f8cff,#3b6fcf)"><span class="material-icons-round">description</span></div>
-                <span class="card-badge" style="background:#e0e7ff;color:#4f46e5">문서</span>
-              </div>
-              <div class="card-name">parse-everything</div>
-              <div class="card-meta">원석 양 · 2026.04.27 등록</div>
-              <div class="card-desc">다국어 문서를 번역이나 요약 전에 읽기 좋은 형태로 정리해 주는 전처리 앱입니다. 문서 구조를 먼저 맞추고 다음 작업으로 넘기기 좋습니다.</div>
-              <div class="card-stats">
-                <span class="card-stat"><span class="material-icons-round">schedule</span>최근 등록</span>
-                <span class="card-stat"><span class="material-icons-round">translate</span>문서 전처리</span>
-              </div>
-              <div class="card-foot"><span class="install-state">실행 URL 연결 전</span><a class="card-link" href="#">열어보기 <span class="material-icons-round">chevron_right</span></a></div>
-            </article>
-
-            <article class="store-card" data-filter-item data-category="workflow">
-              <div class="card-top">
-                <div class="card-icon" style="background:linear-gradient(135deg,#fb923c,#e07020)"><span class="material-icons-round">account_tree</span></div>
-                <span class="card-badge" style="background:#ffedd5;color:#c2410c">워크플로</span>
-              </div>
-              <div class="card-name">orchestrated-agent-sample</div>
-              <div class="card-meta">현동 양 · 2026.04.25 등록</div>
-              <div class="card-desc">여러 표준 모듈을 순서대로 엮어 하나의 작업 흐름으로 실행하는 오케스트레이션 앱입니다. 자동화 흐름을 설계할 때 참고하기 좋습니다.</div>
-              <div class="card-stats">
-                <span class="card-stat"><span class="material-icons-round">science</span>샘플 성격</span>
-                <span class="card-stat"><span class="material-icons-round">hub</span>통합 운영 흐름</span>
-              </div>
-              <div class="card-foot"><span class="install-state">실행 URL 연결 전</span><a class="card-link" href="#">열어보기 <span class="material-icons-round">chevron_right</span></a></div>
-            </article>
-
-            <article class="store-card" data-filter-item data-category="business">
-              <div class="card-top">
-                <div class="card-icon" style="background:linear-gradient(135deg,#34d399,#0d9488)"><span class="material-icons-round">sell</span></div>
-                <span class="card-badge" style="background:var(--green-bg);color:var(--green)">업무</span>
-              </div>
-              <div class="card-name">av-label-generator</div>
-              <div class="card-meta">경원 장 · 2026.04.24 등록</div>
-              <div class="card-desc">필요한 항목만 입력하면 AV Label 초안을 빠르게 만들어 주는 생산성 앱입니다. 반복 입력이 많은 업무를 줄이는 데 잘 맞습니다.</div>
-              <div class="card-stats">
-                <span class="card-stat"><span class="material-icons-round">bolt</span>입력 중심</span>
-                <span class="card-stat"><span class="material-icons-round">language</span>영문 설명</span>
-              </div>
-              <div class="card-foot"><span class="install-state">실행 URL 연결 전</span><a class="card-link" href="#">열어보기 <span class="material-icons-round">chevron_right</span></a></div>
-            </article>
-
-            <article class="store-card" data-filter-item data-category="tools">
-              <div class="card-top">
-                <div class="card-icon" style="background:linear-gradient(135deg,#f472b6,#b40e4d)"><span class="material-icons-round">hub</span></div>
-                <span class="card-badge" style="background:var(--brand-bg);color:var(--brand)">툴</span>
-              </div>
-              <div class="card-name">zabbix-mcp-server</div>
-              <div class="card-meta">용재 김 · 2026.04.24 등록</div>
-              <div class="card-desc">Zabbix와 연결되는 MCP 서버 정보를 정리하고 바로 참조할 수 있게 만든 연결형 앱입니다. 모니터링 데이터를 도구 흐름에 붙일 때 출발점으로 보기 좋습니다.</div>
-              <div class="card-stats">
-                <span class="card-stat"><span class="material-icons-round">link</span>MCP 연결 안내</span>
-                <span class="card-stat"><span class="material-icons-round">terminal</span>서버형 자산</span>
-              </div>
-              <div class="card-foot"><span class="install-state">실행 URL 연결 전</span><a class="card-link" href="#">열어보기 <span class="material-icons-round">chevron_right</span></a></div>
-            </article>
-
-            <article class="store-card" data-filter-item data-category="business">
-              <div class="card-top">
-                <div class="card-icon" style="background:linear-gradient(135deg,#22d3ee,#0086cc)"><span class="material-icons-round">inventory</span></div>
-                <span class="card-badge" style="background:var(--blue-bg);color:var(--blue)">업무</span>
-              </div>
-              <div class="card-name">axmanager-procurement</div>
-              <div class="card-meta">성훈 김 · 2026.04.22 등록</div>
-              <div class="card-desc">AX 레벨과 과제 금액을 함께 관리하면서 진행 상태를 한눈에 파악할 수 있게 만든 업무 관리 앱입니다. 실무 운영 관점의 구조가 잘 드러납니다.</div>
-              <div class="card-stats">
-                <span class="card-stat"><span class="material-icons-round">payments</span>관리형 업무</span>
-                <span class="card-stat"><span class="material-icons-round">person</span>서비스 오너 표시</span>
-              </div>
-              <div class="card-foot"><span class="install-state">실행 URL 연결 전</span><a class="card-link" href="#">열어보기 <span class="material-icons-round">chevron_right</span></a></div>
-            </article>
-
-            <article class="store-card" data-filter-item data-category="workflow">
-              <div class="card-top">
-                <div class="card-icon" style="background:linear-gradient(135deg,#a78bfa,#7c5fcf)"><span class="material-icons-round">school</span></div>
-                <span class="card-badge" style="background:var(--purple-bg);color:var(--purple)">학습</span>
-              </div>
-              <div class="card-name">edu-seohoo-0422</div>
-              <div class="card-meta">서후 송 · 2026.04.22 등록</div>
-              <div class="card-desc">교육이나 실습 맥락에서 가볍게 열어보고 흐름을 익히기 좋은 학습용 앱입니다. 복잡한 설정보다 빠른 체험에 초점을 둔 구성입니다.</div>
-              <div class="card-stats">
-                <span class="card-stat"><span class="material-icons-round">edit_note</span>간단 소개</span>
-                <span class="card-stat"><span class="material-icons-round">school</span>교육용 흐름</span>
-              </div>
-              <div class="card-foot"><span class="install-state">실행 URL 연결 전</span><a class="card-link" href="#">열어보기 <span class="material-icons-round">chevron_right</span></a></div>
-            </article>
-          </div>
+          <div class="card-grid" data-filter-group data-app-grid></div>
         </section>
 
         <section class="panel">
           <div class="section-head">
             <div class="section-kicker"><span class="material-icons-round">view_carousel</span>Collections</div>
             <h2 class="section-title">목적에 따라 가볍게 모아본 앱 묶음</h2>
-            <p class="section-subtitle">무엇부터 볼지 고민될 때는 비슷한 성격의 앱을 묶어서 보는 편이 쉽습니다. 최근 등록 흐름과 설명이 분명한 앱 묶음을 중심으로 빠르게 비교해 보세요.</p>
+            <p class="section-subtitle">Featured, 카테고리, 관련 AI 큐레이션을 바탕으로 실제 카탈로그를 다시 묶어 보여줍니다.</p>
           </div>
-          <div class="collection-grid">
-            <article class="collection-card">
-              <div class="collection-head">
-                <div>
-                  <div class="collection-title">최근 등록 앱 묶음</div>
-                  <div class="collection-desc">문서 처리, 워크플로 자동화, 업무 관리처럼 결이 다른 앱을 한 번에 비교해 보며 갤러리의 폭을 가볍게 훑어보기 좋은 모음입니다.</div>
-                </div>
-                <span class="card-badge" style="background:#e0e7ff;color:#4f46e5">3 Apps</span>
-              </div>
-              <div class="collection-stack">
-                <div class="stack-item">
-                  <div class="stack-badge" style="background:linear-gradient(135deg,#4f8cff,#22d3ee)"><span class="material-icons-round">description</span></div>
-                  <div><div class="stack-name">parse-everything</div><div class="stack-meta">문서 전처리</div></div>
-                  <div class="stack-tag">Docs</div>
-                </div>
-                <div class="stack-item">
-                  <div class="stack-badge" style="background:linear-gradient(135deg,#22d3ee,#0086cc)"><span class="material-icons-round">account_tree</span></div>
-                  <div><div class="stack-name">orchestrated-agent-sample</div><div class="stack-meta">워크플로 예제</div></div>
-                  <div class="stack-tag">Flow</div>
-                </div>
-                <div class="stack-item">
-                  <div class="stack-badge" style="background:linear-gradient(135deg,#34d399,#0d9488)"><span class="material-icons-round">payments</span></div>
-                  <div><div class="stack-name">axmanager-procurement</div><div class="stack-meta">업무 관리</div></div>
-                  <div class="stack-tag">Biz</div>
-                </div>
-              </div>
-            </article>
-
-            <article class="collection-card">
-              <div class="collection-head">
-                <div>
-                  <div class="collection-title">설명이 눈에 띄는 앱</div>
-                  <div class="collection-desc">소개 문장만 읽어도 어디에 쓰는 앱인지 바로 떠오르는 결과물들을 모았습니다. 처음 들어온 사용자도 부담 없이 살펴보기 좋습니다.</div>
-                </div>
-                <span class="card-badge" style="background:#ffedd5;color:#c2410c">3 Apps</span>
-              </div>
-              <div class="collection-stack">
-                <div class="stack-item">
-                  <div class="stack-badge" style="background:linear-gradient(135deg,#fb923c,#e07020)"><span class="material-icons-round">sell</span></div>
-                  <div><div class="stack-name">av-label-generator</div><div class="stack-meta">라벨 생성</div></div>
-                  <div class="stack-tag">Input</div>
-                </div>
-                <div class="stack-item">
-                  <div class="stack-badge" style="background:linear-gradient(135deg,#34d399,#0d9488)"><span class="material-icons-round">hub</span></div>
-                  <div><div class="stack-name">zabbix-mcp-server</div><div class="stack-meta">MCP 연결 안내</div></div>
-                  <div class="stack-tag">Tool</div>
-                </div>
-                <div class="stack-item">
-                  <div class="stack-badge" style="background:linear-gradient(135deg,#a78bfa,#7c5fcf)"><span class="material-icons-round">inventory</span></div>
-                  <div><div class="stack-name">axmanager-procurement</div><div class="stack-meta">업무 설명 명확</div></div>
-                  <div class="stack-tag">Biz</div>
-                </div>
-              </div>
-            </article>
-          </div>
+          <div class="collection-grid" data-collections></div>
         </section>
       </div>
 
       <aside class="side-col">
         <section class="panel side-card">
-          <div class="sec-label"><span class="material-icons-round">schedule</span>최근 등록 순</div>
-          <div class="queue-list">
-            <div class="queue-item"><span class="queue-rank">1</span><div><div class="side-name">parse-everything</div><div class="side-meta">원석 양</div></div><div class="side-value">04.27</div></div>
-            <div class="queue-item"><span class="queue-rank">2</span><div><div class="side-name">collab1-other</div><div class="side-meta">재호 남</div></div><div class="side-value">04.25</div></div>
-            <div class="queue-item"><span class="queue-rank">3</span><div><div class="side-name">orchestrated-agent-sample</div><div class="side-meta">현동 양</div></div><div class="side-value">04.25</div></div>
-          </div>
+          <div class="sec-label"><span class="material-icons-round">schedule</span>추천 카탈로그</div>
+          <div class="queue-list" data-recent-queue></div>
         </section>
 
         <section class="panel side-card">
           <div class="sec-label"><span class="material-icons-round">trending_up</span>이번 페이지에서 눈에 띄는 흐름</div>
-          <div class="trend-list">
-            <div class="trend-item"><span class="trend-rank">1</span><div><div class="side-name">문서 처리</div><div class="side-meta">parse-everything처럼 설명이 분명한 앱이 눈에 잘 들어옵니다.</div></div><div class="side-value" style="color:var(--green)">명확</div></div>
-            <div class="trend-item"><span class="trend-rank">2</span><div><div class="side-name">업무형 결과물</div><div class="side-meta">axmanager-procurement처럼 실제 현업 용도가 보이는 앱이 포함되어 있습니다.</div></div><div class="side-value" style="color:var(--green)">실무</div></div>
-            <div class="trend-item"><span class="trend-rank">3</span><div><div class="side-name">툴 연결형 자산</div><div class="side-meta">zabbix-mcp-server처럼 MCP 연결 정보를 담은 앱도 함께 보입니다.</div></div><div class="side-value" style="color:var(--orange)">연결형</div></div>
-          </div>
+          <div class="trend-list" data-category-trends></div>
         </section>
       </aside>
     </div>
   </main>
+
+  <dialog class="detail-dialog" id="appDetailDialog">
+    <div class="detail-shell">
+      <div class="detail-head">
+        <div class="detail-head-copy">
+          <div class="detail-kicker"><span class="material-icons-round">api</span>App Detail Contract</div>
+          <h2 class="detail-title" data-detail-title>App Detail</h2>
+          <p class="detail-subtitle" data-detail-subtitle>실제 `/api/v2/app-gallery/apps/:slug` 응답을 여기에 렌더링합니다.</p>
+          <div class="detail-chips" data-detail-chips></div>
+        </div>
+        <button class="detail-close" type="button" data-detail-close aria-label="상세 닫기">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="detail-body">
+        <div class="detail-grid">
+          <section class="detail-panel">
+            <h3>설명</h3>
+            <p data-detail-description></p>
+          </section>
+          <section class="detail-panel">
+            <h3>설치 계약</h3>
+            <div class="detail-contract">
+              <code data-detail-install></code>
+              <p data-detail-install-note></p>
+            </div>
+          </section>
+        </div>
+        <div class="detail-grid">
+          <section class="detail-panel">
+            <h3>핵심 포인트</h3>
+            <ul class="detail-list" data-detail-highlights></ul>
+          </section>
+          <section class="detail-panel">
+            <h3>활용 케이스</h3>
+            <ul class="detail-list" data-detail-usecases></ul>
+          </section>
+        </div>
+        <div class="detail-grid">
+          <section class="detail-panel">
+            <h3>사전 조건</h3>
+            <ul class="detail-list" data-detail-prerequisites></ul>
+          </section>
+          <section class="detail-panel">
+            <h3>관련 AI 큐레이션</h3>
+            <div class="detail-related" data-detail-related></div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </dialog>
 
   <script>
     (() => {
@@ -1703,29 +1732,537 @@
     })();
 
     (() => {
-      const tabs = Array.from(document.querySelectorAll("[data-filter-tab]"));
-      const items = Array.from(document.querySelectorAll("[data-filter-item]"));
-
-      if (!tabs.length || !items.length) return;
-
-      const setCategory = (category) => {
-        tabs.forEach((tab) => {
-          const active = tab.dataset.filterTab === category;
-          tab.classList.toggle("is-active", active);
-          tab.setAttribute("aria-selected", String(active));
-        });
-
-        items.forEach((item) => {
-          const visible = category === "all" || item.dataset.category === category;
-          item.hidden = !visible;
-        });
+      const state = {
+        hero: null,
+        categories: [],
+        catalogApps: [],
+        apps: [],
+        featured: [],
+        relatedAi: [],
+        page: null,
+        currentCategory: "all",
+        search: "",
+        detailCache: new Map(),
+        requestSeq: 0,
       };
 
-      tabs.forEach((tab) => {
-        tab.addEventListener("click", () => setCategory(tab.dataset.filterTab || "all"));
+      const categoryPalette = {
+        all: { background: "#eef2ff", color: "#4338ca" },
+        development: { background: "#dbeafe", color: "#1d4ed8" },
+        workspace: { background: "#ecfdf5", color: "#0f766e" },
+        operations: { background: "#fff1e7", color: "#c2410c" },
+        analytics: { background: "#f1e7ff", color: "#7c3aed" },
+        agent: { background: "#f1e7ff", color: "#7c3aed" },
+        "workflow-pack": { background: "#e2f3ff", color: "#0086cc" },
+      };
+
+      const elements = {
+        pageTitle: document.querySelector("[data-page-title]"),
+        pageDesc: document.querySelector("[data-page-desc]"),
+        pageTags: document.querySelector("[data-page-tags]"),
+        searchInput: document.querySelector("[data-app-search]"),
+        heroRecentTitle: document.querySelector("[data-hero-recent-title]"),
+        heroRecentDesc: document.querySelector("[data-hero-recent-desc]"),
+        heroRecentList: document.querySelector("[data-hero-recent-list]"),
+        heroRelatedTitle: document.querySelector("[data-hero-related-title]"),
+        heroRelatedDesc: document.querySelector("[data-hero-related-desc]"),
+        heroRelatedList: document.querySelector("[data-hero-related-list]"),
+        featuredMain: document.querySelector("[data-featured-main]"),
+        featuredSide: document.querySelector("[data-featured-side]"),
+        categoryTabs: document.querySelector("[data-category-tabs]"),
+        gridTitle: document.querySelector("[data-grid-title]"),
+        gridSubtitle: document.querySelector("[data-grid-subtitle]"),
+        appGrid: document.querySelector("[data-app-grid]"),
+        collections: document.querySelector("[data-collections]"),
+        recentQueue: document.querySelector("[data-recent-queue]"),
+        categoryTrends: document.querySelector("[data-category-trends]"),
+        detailDialog: document.getElementById("appDetailDialog"),
+        detailTitle: document.querySelector("[data-detail-title]"),
+        detailSubtitle: document.querySelector("[data-detail-subtitle]"),
+        detailChips: document.querySelector("[data-detail-chips]"),
+        detailDescription: document.querySelector("[data-detail-description]"),
+        detailInstall: document.querySelector("[data-detail-install]"),
+        detailInstallNote: document.querySelector("[data-detail-install-note]"),
+        detailHighlights: document.querySelector("[data-detail-highlights]"),
+        detailUsecases: document.querySelector("[data-detail-usecases]"),
+        detailPrerequisites: document.querySelector("[data-detail-prerequisites]"),
+        detailRelated: document.querySelector("[data-detail-related]"),
+        detailClose: document.querySelector("[data-detail-close]"),
+      };
+
+      if (!elements.appGrid) return;
+
+      const escapeHtml = (value) => String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+
+      const getPalette = (key) => categoryPalette[key] || { background: "#f3f4f6", color: "#374151" };
+
+      const renderStatus = (message, { error = false } = {}) =>
+        `<div class="section-status${error ? " is-error" : ""}">${escapeHtml(message)}</div>`;
+
+      const renderEmpty = (message) =>
+        `<div class="empty-state">${escapeHtml(message)}</div>`;
+
+      const apiGet = async (path) => {
+        const response = await fetch(path, {
+          credentials: "same-origin",
+          headers: { Accept: "application/json" },
+        });
+
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload?.error?.message || `Request failed: ${response.status}`);
+        }
+
+        return payload?.data ?? payload;
+      };
+
+      const statIconMap = {
+        catalog: "apps",
+        published: "rocket_launch",
+        projects: "folder_open",
+        categories: "category",
+      };
+
+      const categoryIconMap = {
+        development: "terminal",
+        workspace: "dashboard_customize",
+        operations: "rocket_launch",
+        analytics: "query_stats",
+      };
+
+      const renderTag = (icon, text) =>
+        `<span class="tag"><span class="material-icons-round">${escapeHtml(icon)}</span>${escapeHtml(text)}</span>`;
+
+      const renderMiniRow = (item, pill, href = null) => {
+        const action = href
+          ? `<a class="mini-pill" href="${escapeHtml(href)}" style="background:${escapeHtml(pill.background)};color:${escapeHtml(pill.color)}">${escapeHtml(pill.label)}</a>`
+          : `<span class="mini-pill" style="background:${escapeHtml(pill.background)};color:${escapeHtml(pill.color)}">${escapeHtml(pill.label)}</span>`;
+
+        return `
+          <div class="mini-row">
+            <div class="mini-icon" style="background:${escapeHtml(item.iconBackground)}"><span class="material-icons-round">${escapeHtml(item.icon)}</span></div>
+            <div class="mini-copy">
+              <div class="mini-name">${escapeHtml(item.name)}</div>
+              <div class="mini-meta">${escapeHtml(item.meta)}</div>
+            </div>
+            ${action}
+          </div>
+        `;
+      };
+
+      const renderAppCard = (item) => {
+        const palette = getPalette(item.category);
+        const stats = [
+          item.categoryLabel,
+          ...(item.tags || []).slice(0, 2),
+        ];
+
+        return `
+          <article class="store-card" data-filter-item data-category="${escapeHtml(item.category)}">
+            <div class="card-top">
+              <div class="card-icon" style="background:${escapeHtml(item.iconColor)}"><span class="material-icons-round">${escapeHtml(item.icon)}</span></div>
+              <span class="card-badge" style="background:${escapeHtml(palette.background)};color:${escapeHtml(palette.color)}">${escapeHtml(item.categoryLabel)}</span>
+            </div>
+            <div class="card-name">${escapeHtml(item.title)}</div>
+            <div class="card-meta">${escapeHtml(item.subtitle)}</div>
+            <div class="card-desc">${escapeHtml(item.summary)}</div>
+            <div class="card-stats">
+              ${stats.map((stat) => `<span class="card-stat"><span class="material-icons-round">sell</span>${escapeHtml(stat)}</span>`).join("")}
+            </div>
+            <div class="card-foot">
+              <span class="install-state">${item.capabilities?.canInstall ? "설치 API 연결 가능" : "조회 전용"}</span>
+              <button class="card-link" type="button" data-app-detail="${escapeHtml(item.slug)}">상세 보기 <span class="material-icons-round">chevron_right</span></button>
+            </div>
+          </article>
+        `;
+      };
+
+      const renderFeaturedMain = (item) => {
+        if (!item) {
+          return renderEmpty("featured 앱이 아직 없습니다.");
+        }
+
+        return `
+          <div class="feature-top">
+            <div class="feature-icon" style="background:${escapeHtml(item.iconColor)}"><span class="material-icons-round">${escapeHtml(item.icon)}</span></div>
+            <div class="feature-badge">${escapeHtml(item.badge || "Featured")}</div>
+          </div>
+          <div class="feature-eyebrow">${escapeHtml(item.categoryLabel)}</div>
+          <h2 class="feature-title">${escapeHtml(item.title)}</h2>
+          <p class="feature-desc">${escapeHtml(item.summary)}</p>
+          <div class="point-list">
+            ${(item.tags || []).slice(0, 3).map((tag) => `
+              <div class="point-item"><span class="material-icons-round">check_circle</span><span>${escapeHtml(tag)}</span></div>
+            `).join("")}
+          </div>
+          <div class="tag-row">
+            ${renderTag("category", item.categoryLabel)}
+            ${renderTag("folder_open", item.installTargetLabel || "프로젝트")}
+            ${renderTag("api", "GET /apps/:slug")}
+          </div>
+          <div class="hero-actions">
+            <button class="hero-btn primary" type="button" data-app-detail="${escapeHtml(item.slug)}"><span class="material-icons-round">visibility</span>상세 계약 보기</button>
+          </div>
+        `;
+      };
+
+      const renderFeaturedSideItem = (item, label, marker) => {
+        if (!item) {
+          return "";
+        }
+
+        return `
+          <div class="bundle-card metric-card">
+            <div class="metric-head">
+              <div class="metric-copy">
+                <div class="metric-label"><span class="material-icons-round">bolt</span>${escapeHtml(label)}</div>
+                <div class="metric-title">${escapeHtml(item.title)}</div>
+              </div>
+              <div class="guide-step-num">${escapeHtml(marker)}</div>
+            </div>
+            <div class="metric-note">${escapeHtml(item.summary)}</div>
+            <div class="metric-foot"><span class="material-icons-round">${escapeHtml(item.icon)}</span><span>${escapeHtml(item.badge || item.categoryLabel)}</span></div>
+          </div>
+        `;
+      };
+
+      const renderCollectionCard = (title, description, items, badgeLabel) => `
+        <article class="collection-card">
+          <div class="collection-head">
+            <div>
+              <div class="collection-title">${escapeHtml(title)}</div>
+              <div class="collection-desc">${escapeHtml(description)}</div>
+            </div>
+            <span class="card-badge" style="background:#eef2ff;color:#4338ca">${escapeHtml(badgeLabel)}</span>
+          </div>
+          <div class="collection-stack">
+            ${items.map((item) => `
+              <button class="stack-item" type="button" data-app-detail="${escapeHtml(item.slug)}" style="border:none;text-align:left;cursor:pointer;">
+                <div class="stack-badge" style="background:${escapeHtml(item.iconColor)}"><span class="material-icons-round">${escapeHtml(item.icon)}</span></div>
+                <div><div class="stack-name">${escapeHtml(item.title)}</div><div class="stack-meta">${escapeHtml(item.summary)}</div></div>
+                <div class="stack-tag">${escapeHtml(item.categoryLabel)}</div>
+              </button>
+            `).join("")}
+          </div>
+        </article>
+      `;
+
+      const renderPageTags = () => {
+        if (!state.hero) return;
+
+        const dynamicTags = [];
+        if (state.page?.total !== undefined) {
+          dynamicTags.push(renderTag("view_list", `조회 결과 ${state.page.total}`));
+        }
+        if (state.currentCategory && state.currentCategory !== "all") {
+          const selected = state.categories.find((item) => item.id === state.currentCategory);
+          dynamicTags.push(renderTag(categoryIconMap[state.currentCategory] || "category", selected?.label || state.currentCategory));
+        }
+        if (state.search) {
+          dynamicTags.push(renderTag("search", state.search));
+        }
+
+        elements.pageTags.innerHTML = [
+          ...state.hero.stats.map((stat) => renderTag(statIconMap[stat.id] || "data_usage", `${stat.label} ${stat.value}`)),
+          ...dynamicTags,
+        ].join("");
+      };
+
+      const renderHero = () => {
+        if (!state.hero) return;
+
+        elements.pageTitle.textContent = state.hero.title;
+        elements.pageDesc.textContent = state.hero.subtitle;
+        renderPageTags();
+
+        const recentItems = state.catalogApps.slice(0, 3).map((item, index) => ({
+          icon: item.icon,
+          iconBackground: item.iconColor,
+          name: item.title,
+          meta: item.summary,
+          pill: index === 0
+            ? { label: "추천 시작", background: "#e0edff", color: "#3157b7" }
+            : { label: item.categoryLabel, background: getPalette(item.category).background, color: getPalette(item.category).color },
+        }));
+
+        elements.heroRecentTitle.textContent = "빠르게 둘러볼 앱";
+        elements.heroRecentDesc.textContent = "실제 `/api/v2/app-gallery/apps` 응답에서 먼저 추천할 카탈로그를 보여줍니다.";
+        elements.heroRecentList.innerHTML = recentItems.length
+          ? recentItems.map((item) => renderMiniRow(item, item.pill)).join("")
+          : renderEmpty("표시할 앱이 없습니다.");
+
+        elements.heroRelatedTitle.textContent = "AI Gallery와 함께 보기";
+        elements.heroRelatedDesc.textContent = "앱 상세와 연결되는 related AI 큐레이션도 같은 host의 v2 API에서 읽어옵니다.";
+        elements.heroRelatedList.innerHTML = state.relatedAi.length
+          ? state.relatedAi.slice(0, 3).map((item) => renderMiniRow({
+            icon: "smart_toy",
+            iconBackground: "linear-gradient(135deg,#a78bfa,#7c5fcf)",
+            name: item.title,
+            meta: item.subtitle,
+          }, {
+            label: item.category,
+            background: getPalette(item.category).background,
+            color: getPalette(item.category).color,
+          }, item.href)).join("")
+          : renderEmpty("관련 AI 큐레이션이 없습니다.");
+      };
+
+      const renderFeatured = () => {
+        elements.featuredMain.innerHTML = renderFeaturedMain(state.featured[0]);
+        elements.featuredSide.innerHTML = [
+          renderFeaturedSideItem(state.featured[1], "운영 관점 추천", "O"),
+          renderFeaturedSideItem(state.featured[2], "문서/협업 관점 추천", "W"),
+        ].join("") || renderEmpty("featured 앱이 없습니다.");
+      };
+
+      const renderTabs = () => {
+        elements.categoryTabs.innerHTML = state.categories.map((category) => {
+          const active = state.currentCategory === category.id;
+          return `
+            <button
+              class="tab-btn${active ? " is-active" : ""}"
+              type="button"
+              data-category-tab="${escapeHtml(category.id)}"
+              aria-selected="${String(active)}"
+              title="${escapeHtml(category.description || "")}"
+            >
+              ${escapeHtml(category.label)} (${escapeHtml(category.count)})
+            </button>
+          `;
+        }).join("");
+      };
+
+      const renderGridMeta = () => {
+        const selected = state.categories.find((item) => item.id === state.currentCategory);
+        const titleBase = selected?.id === "all"
+          ? "실제 App Gallery 카탈로그"
+          : `${selected?.label || "선택 카테고리"} 앱`;
+        const searchSuffix = state.search ? ` · 검색어 "${state.search}"` : "";
+        elements.gridTitle.textContent = `${titleBase}${searchSuffix}`;
+        elements.gridSubtitle.textContent = state.page?.total
+          ? `${state.page.total}개 결과를 /api/v2/app-gallery/apps 에서 직접 조회해 렌더링합니다. 카드의 상세 보기에서는 /api/v2/app-gallery/apps/:slug 계약을 확인할 수 있습니다.`
+          : "조건에 맞는 앱을 /api/v2/app-gallery/apps 에서 직접 조회합니다.";
+        renderPageTags();
+      };
+
+      const renderAppGrid = () => {
+        if (!state.apps.length) {
+          elements.appGrid.innerHTML = renderEmpty("조건에 맞는 앱이 없습니다.");
+          renderGridMeta();
+          return;
+        }
+
+        elements.appGrid.innerHTML = state.apps.map(renderAppCard).join("");
+        renderGridMeta();
+      };
+
+      const renderCollections = () => {
+        const featuredItems = state.featured.slice(0, 3);
+        const categoryPicks = state.categories
+          .filter((category) => category.id !== "all")
+          .slice(0, 3)
+          .map((category) => state.catalogApps.find((item) => item.category === category.id))
+          .filter(Boolean);
+
+        elements.collections.innerHTML = [
+          renderCollectionCard(
+            "Featured App 묶음",
+            "백엔드의 `/api/v2/app-gallery/featured` 결과를 기준으로 지금 바로 살펴볼 앱을 모았습니다.",
+            featuredItems,
+            `${featuredItems.length} Apps`
+          ),
+          renderCollectionCard(
+            "카테고리별 첫 진입점",
+            "각 카테고리에서 가장 먼저 볼 만한 앱을 골라 비교할 수 있게 묶었습니다.",
+            categoryPicks,
+            `${categoryPicks.length} Picks`
+          ),
+        ].join("");
+      };
+
+      const renderSidebar = () => {
+        elements.recentQueue.innerHTML = state.catalogApps.slice(0, 3).map((item, index) => `
+          <div class="queue-item">
+            <span class="queue-rank">${index + 1}</span>
+            <div>
+              <div class="side-name">${escapeHtml(item.title)}</div>
+              <div class="side-meta">${escapeHtml(item.subtitle)}</div>
+            </div>
+            <div class="side-value">${escapeHtml(item.categoryLabel)}</div>
+          </div>
+        `).join("") || renderEmpty("최근 항목이 없습니다.");
+
+        const trends = state.categories
+          .filter((item) => item.id !== "all")
+          .sort((left, right) => right.count - left.count)
+          .slice(0, 3);
+
+        elements.categoryTrends.innerHTML = trends.map((item, index) => {
+          const palette = getPalette(item.id);
+          return `
+            <div class="trend-item">
+              <span class="trend-rank">${index + 1}</span>
+              <div>
+                <div class="side-name">${escapeHtml(item.label)}</div>
+                <div class="side-meta">${escapeHtml(item.description)}</div>
+              </div>
+              <div class="side-value" style="color:${escapeHtml(palette.color)}">${escapeHtml(String(item.count))} apps</div>
+            </div>
+          `;
+        }).join("") || renderEmpty("카테고리 정보가 없습니다.");
+      };
+
+      const renderDetailList = (container, items, fallback) => {
+        container.innerHTML = Array.isArray(items) && items.length
+          ? items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")
+          : `<li>${escapeHtml(fallback)}</li>`;
+      };
+
+      const openDetail = async (slug) => {
+        try {
+          let detail = state.detailCache.get(slug);
+          if (!detail) {
+            detail = await apiGet(`/api/v2/app-gallery/apps/${encodeURIComponent(slug)}`);
+            state.detailCache.set(slug, detail);
+          }
+
+          elements.detailTitle.textContent = detail.title;
+          elements.detailSubtitle.textContent = detail.subtitle;
+          elements.detailChips.innerHTML = [
+            renderTag("category", detail.categoryLabel),
+            renderTag("rocket_launch", detail.installTargetLabel),
+            renderTag("api", "GET /apps/:slug"),
+          ].join("");
+          elements.detailDescription.textContent = detail.description || detail.summary || "설명이 없습니다.";
+          elements.detailInstall.textContent = `${detail.install?.method || "POST"} ${detail.install?.path || "-"}`;
+          elements.detailInstallNote.textContent = detail.install?.requiredFields?.length
+            ? `필수 필드: ${detail.install.requiredFields.join(", ")} · target: ${detail.install.targetType || "-"}`
+            : "설치 계약 정보가 없습니다.";
+          renderDetailList(elements.detailHighlights, detail.highlights, "정의된 highlight가 없습니다.");
+          renderDetailList(elements.detailUsecases, detail.useCases, "정의된 use case가 없습니다.");
+          renderDetailList(elements.detailPrerequisites, detail.prerequisites, "별도 prerequisite가 없습니다.");
+          elements.detailRelated.innerHTML = Array.isArray(detail.relatedAi) && detail.relatedAi.length
+            ? detail.relatedAi.map((item) => `
+              <a href="${escapeHtml(item.href)}">
+                <span>
+                  ${escapeHtml(item.title)}
+                  <small>${escapeHtml(item.subtitle)}</small>
+                </span>
+                <span class="material-icons-round">open_in_new</span>
+              </a>
+            `).join("")
+            : renderEmpty("연결된 AI 큐레이션이 없습니다.");
+
+          if (elements.detailDialog.open) {
+            return;
+          }
+
+          if (typeof elements.detailDialog.showModal === "function") {
+            elements.detailDialog.showModal();
+          }
+        } catch (error) {
+          alert(error.message || "상세 정보를 불러오지 못했습니다.");
+        }
+      };
+
+      const loadApps = async () => {
+        const seq = ++state.requestSeq;
+        const params = new URLSearchParams({ limit: "24" });
+        if (state.currentCategory !== "all") {
+          params.set("filter[category]", state.currentCategory);
+        }
+        if (state.search) {
+          params.set("q", state.search);
+        }
+
+        elements.appGrid.innerHTML = renderStatus("앱 목록을 불러오는 중입니다...");
+
+        try {
+          const result = await apiGet(`/api/v2/app-gallery/apps?${params.toString()}`);
+          if (seq !== state.requestSeq) return;
+          state.apps = Array.isArray(result.items) ? result.items : [];
+          state.page = result.page || null;
+          renderTabs();
+          renderAppGrid();
+        } catch (error) {
+          if (seq !== state.requestSeq) return;
+          elements.appGrid.innerHTML = renderStatus(error.message || "앱 목록을 불러오지 못했습니다.", { error: true });
+        }
+      };
+
+      const loadInitial = async () => {
+        elements.appGrid.innerHTML = renderStatus("App Gallery 데이터를 연결하는 중입니다...");
+
+        try {
+          const [hero, categories, featured, relatedAi, catalogResult] = await Promise.all([
+            apiGet("/api/v2/app-gallery/hero"),
+            apiGet("/api/v2/app-gallery/categories"),
+            apiGet("/api/v2/app-gallery/featured"),
+            apiGet("/api/v2/app-gallery/related-ai"),
+            apiGet("/api/v2/app-gallery/apps?limit=100"),
+          ]);
+
+          state.hero = hero;
+          state.categories = Array.isArray(categories.items) ? categories.items : [];
+          state.currentCategory = categories.defaultCategory || "all";
+          state.featured = Array.isArray(featured.items) ? featured.items : [];
+          state.relatedAi = Array.isArray(relatedAi.items) ? relatedAi.items : [];
+          state.catalogApps = Array.isArray(catalogResult.items) ? catalogResult.items : [];
+
+          renderHero();
+          renderFeatured();
+          renderTabs();
+          renderCollections();
+          renderSidebar();
+          await loadApps();
+        } catch (error) {
+          const message = error.message || "App Gallery API를 연결하지 못했습니다.";
+          elements.appGrid.innerHTML = renderStatus(message, { error: true });
+          elements.featuredMain.innerHTML = renderStatus(message, { error: true });
+          elements.featuredSide.innerHTML = "";
+        }
+      };
+
+      let searchTimer = null;
+
+      elements.categoryTabs.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-category-tab]");
+        if (!button) return;
+
+        state.currentCategory = button.dataset.categoryTab || "all";
+        loadApps();
       });
 
-      setCategory("all");
+      elements.searchInput?.addEventListener("input", (event) => {
+        window.clearTimeout(searchTimer);
+        searchTimer = window.setTimeout(() => {
+          state.search = String(event.target.value || "").trim();
+          loadApps();
+        }, 220);
+      });
+
+      document.addEventListener("click", (event) => {
+        const trigger = event.target.closest("[data-app-detail]");
+        if (!trigger) return;
+        openDetail(trigger.getAttribute("data-app-detail"));
+      });
+
+      elements.detailClose?.addEventListener("click", () => {
+        elements.detailDialog.close();
+      });
+
+      elements.detailDialog?.addEventListener("click", (event) => {
+        if (event.target === elements.detailDialog) {
+          elements.detailDialog.close();
+        }
+      });
+
+      loadInitial();
     })();
   </script>
   <script src="ax_studio_topbar.js"></script>

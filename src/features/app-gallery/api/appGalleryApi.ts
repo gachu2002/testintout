@@ -1,18 +1,16 @@
 import type {
   AppGalleryApp,
   AppGalleryAppDetail,
+  AppGalleryAppsParams,
   AppGalleryCategories,
   AppGalleryFeaturedApp,
   AppGalleryHero,
+  AppGalleryInstallRequest,
+  AppGalleryInstallResult,
   AppGalleryRelatedAi,
 } from '@/features/app-gallery/types';
 import { apiClient } from '@/lib/api/axios';
 import type { ApiDataResponse, PaginatedResponse } from '@/lib/api/types';
-
-type AppGalleryCursorParams = {
-  cursor: string;
-  limit: number;
-};
 
 export async function getAppGalleryHero(): Promise<AppGalleryHero> {
   const response = await apiClient.get<ApiDataResponse<AppGalleryHero>>('/v2/app-gallery/hero');
@@ -33,11 +31,19 @@ export async function getAppGalleryFeatured(): Promise<AppGalleryFeaturedApp[]> 
   return response.data.data.items;
 }
 
-export async function getAppGalleryApps(
-  { cursor, limit }: AppGalleryCursorParams = { cursor: '', limit: 6 },
-): Promise<PaginatedResponse<AppGalleryApp>> {
+export async function getAppGalleryApps({
+  category,
+  cursor = '',
+  limit = 6,
+  q = '',
+}: AppGalleryAppsParams = {}): Promise<PaginatedResponse<AppGalleryApp>> {
   const response = await apiClient.get<PaginatedResponse<AppGalleryApp>>('/v2/app-gallery/apps', {
-    params: { cursor, limit },
+    params: {
+      cursor,
+      ...(category ? { 'filter[category]': category } : {}),
+      limit,
+      q,
+    },
   });
   return response.data;
 }
@@ -54,4 +60,16 @@ export async function getAppGalleryRelatedAi(): Promise<AppGalleryRelatedAi[]> {
     '/v2/app-gallery/related-ai',
   );
   return response.data.data.items;
+}
+
+export async function installAppGalleryApp({
+  projectId,
+  slug,
+}: AppGalleryInstallRequest): Promise<AppGalleryInstallResult> {
+  const response = await apiClient.post<ApiDataResponse<AppGalleryInstallResult>>(
+    `/v2/app-gallery/apps/${encodeURIComponent(slug)}/install`,
+    { projectId },
+  );
+
+  return response.data.data;
 }

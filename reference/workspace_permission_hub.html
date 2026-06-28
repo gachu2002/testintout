@@ -1,446 +1,264 @@
 <!doctype html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Permission Hub</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
-    <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
-  </head>
-  <body>
-    <div id="app"></div>
-    <script>
-      window.HUB_CONFIG = {
-        documentTitle: 'Permission Hub',
-        activeKey: 'permission',
-        theme: {
-          brand: '#be185d',
-          brandH: '#9d174d',
-          brandBg: '#fce7f3',
-          brandSoft: 'rgba(190,24,93,.14)',
-          accent2: '#fb7185',
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Permission Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    window.HUB_CONFIG = {
+      documentTitle: "Permission Hub",
+      activeKey: "permission",
+      theme: {
+        bg: "#fff5fa",
+        brand: "#be185d",
+        brandH: "#9d174d",
+        brandBg: "#fce7f3",
+        brandSoft: "rgba(190,24,93,.14)",
+        accent2: "#fb7185"
+      },
+      searchPlaceholder: "Realm, Role, 요청 상태를 검색하세요...",
+      eyebrow: "Accessibility · IAM & Approvals",
+      title: "Permission Hub",
+      description: "워크스페이스 Permission Realm 모음입니다. 각 카드에서 Realm 안에 포함된 Role과 현재 배정된 인원 수를 함께 보고, 요청 목록은 우측 패널에서 바로 확인합니다.",
+      primaryAction: { href: "workspace_project_detail.html?project=coverity-ai", icon: "person_add", label: "새 권한 요청" },
+      secondaryAction: { href: "workspace_projects_hub.html", icon: "inventory_2", label: "프로젝트 허브 보기" },
+      utilityAction: null,
+      createAction: null,
+      heroStats: [
+        { icon: "admin_panel_settings", value: "5", label: "등록 Realm", note: "platform 1 · project 2 · resource 2", color: "linear-gradient(135deg,#be185d,#ec4899)" },
+        { icon: "badge", value: "17", label: "포함 Role", note: "realm 내부 role 기준", color: "linear-gradient(135deg,#db2777,#f472b6)" },
+        { icon: "groups", value: "124", label: "배정 인원", note: "중복 포함", color: "linear-gradient(135deg,#9d174d,#fb7185)" },
+        { icon: "approval", value: "7", label: "요청 대기", note: "permission realm inbox", color: "linear-gradient(135deg,#e11d48,#fb7185)" }
+      ],
+      filters: [
+        { id: "all", icon: "apps", label: "전체" },
+        { id: "platform", icon: "admin_panel_settings", label: "플랫폼" },
+        { id: "project", icon: "inventory_2", label: "프로젝트" },
+        { id: "resource", icon: "storage", label: "리소스" },
+        { id: "scoped", icon: "vpn_key", label: "Scoped" }
+      ],
+      resourceSectionIcon: "admin_panel_settings",
+      resourceSectionLabel: "Permission Realms",
+      resourceTitle: "Realms",
+      resourceDescription: "워크스페이스에서 사용하는 Permission Realm을 한곳에 모았습니다. 카드에서는 연결된 프로젝트와 Realm 안에 포함된 Role을 함께 보고, 자세한 요청 흐름은 우측 목록에서 확인합니다.",
+      resourceHeaderLink: { href: "workspace_projects_hub.html", label: "프로젝트 연결 보기" },
+      resources: [
+        {
+          categories: ["all", "platform"],
+          status: { label: "Active", tone: "healthy" },
+          engine: "Platform Realm",
+          icon: "badge",
+          name: "Workspace Realm",
+          meta: "워크스페이스 전역 운영과 설정을 다루는 Realm",
+          color: "linear-gradient(135deg,#be185d,#fb7185)",
+          tagsLabel: "Roles",
+          connectionsLabel: "Connected Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [
+            { abbr: "HB", name: "hermes-be", meta: "platform ops", color: "linear-gradient(135deg,#be185d,#fb7185)" },
+            { abbr: "WW", name: "workspace-web", meta: "workspace admin", color: "linear-gradient(135deg,#ec4899,#fb7185)" }
+          ],
+          tags: [
+            { icon: "badge", text: "admin(5)" },
+            { icon: "badge", text: "operator(7)" },
+            { icon: "badge", text: "viewer(6)" }
+          ],
+          actions: [
+            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_permission_detail.html?realm=workspace-realm" }
+          ]
         },
-        searchPlaceholder: 'Realm, Role, 요청 상태를 검색하세요...',
-        eyebrow: 'Accessibility · IAM & Approvals',
-        title: 'Permission Hub',
-        description:
-          '워크스페이스 Permission Realm 모음입니다. 각 카드에서 Realm 안에 포함된 Role과 현재 배정된 인원 수를 함께 보고, 요청 목록은 우측 패널에서 바로 확인합니다.',
-        primaryAction: {
-          href: 'workspace_project_detail.html?project=coverity-ai',
-          icon: 'person_add',
-          label: '새 권한 요청',
+        {
+          categories: ["all", "project"],
+          status: { label: "Active", tone: "healthy" },
+          engine: "Project Realm",
+          icon: "task_alt",
+          name: "Project Realm",
+          meta: "프로젝트 설정과 배포를 다루는 기본 Realm",
+          color: "linear-gradient(135deg,#2563eb,#60a5fa)",
+          tagsLabel: "Roles",
+          connectionsLabel: "Connected Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [
+            { abbr: "HB", name: "hermes-be", meta: "backend service", color: "linear-gradient(135deg,#2563eb,#60a5fa)" },
+            { abbr: "RS", name: "restaurant", meta: "product app", color: "linear-gradient(135deg,#1d4ed8,#38bdf8)" },
+            { abbr: "CW", name: "coverity-ai", meta: "ai workspace", color: "linear-gradient(135deg,#0ea5e9,#67e8f9)" }
+          ],
+          tags: [
+            { icon: "badge", text: "admin(4)" },
+            { icon: "badge", text: "maintainer(8)" },
+            { icon: "badge", text: "developer(14)" },
+            { icon: "badge", text: "viewer(8)" }
+          ],
+          actions: [
+            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_permission_detail.html?realm=project-realm" }
+          ]
         },
-        secondaryAction: {
-          href: 'workspace_projects_hub.html',
-          icon: 'inventory_2',
-          label: '프로젝트 허브 보기',
+        {
+          categories: ["all", "project"],
+          status: { label: "Active", tone: "healthy" },
+          engine: "Project Realm",
+          icon: "visibility",
+          name: "Publish Realm",
+          meta: "배포 승인과 퍼블리시 제어를 다루는 Realm",
+          color: "linear-gradient(135deg,#7c3aed,#c084fc)",
+          tagsLabel: "Roles",
+          connectionsLabel: "Connected Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [
+            { abbr: "WF", name: "workspace-fe", meta: "release publish", color: "linear-gradient(135deg,#7c3aed,#c084fc)" },
+            { abbr: "RS", name: "restaurant", meta: "campaign publish", color: "linear-gradient(135deg,#8b5cf6,#c4b5fd)" }
+          ],
+          tags: [
+            { icon: "badge", text: "admin(3)" },
+            { icon: "badge", text: "approver(9)" },
+            { icon: "badge", text: "publisher(6)" },
+            { icon: "badge", text: "viewer(9)" }
+          ],
+          actions: [
+            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_permission_detail.html?realm=publish-realm" }
+          ]
         },
-        utilityAction: null,
-        createAction: null,
-        heroStats: [
-          {
-            icon: 'admin_panel_settings',
-            value: '5',
-            label: '등록 Realm',
-            note: 'platform 1 · project 2 · resource 2',
-            color: 'linear-gradient(135deg,#be185d,#fb7185)',
-          },
-          {
-            icon: 'badge',
-            value: '17',
-            label: '포함 Role',
-            note: 'realm 내부 role 기준',
-            color: 'linear-gradient(135deg,#2563eb,#60a5fa)',
-          },
-          {
-            icon: 'groups',
-            value: '124',
-            label: '배정 인원',
-            note: '중복 포함',
-            color: 'linear-gradient(135deg,#0f766e,#14b8a6)',
-          },
-          {
-            icon: 'approval',
-            value: '7',
-            label: '요청 대기',
-            note: 'permission realm inbox',
-            color: 'linear-gradient(135deg,#f59e0b,#fbbf24)',
-          },
-        ],
-        filters: [
-          { id: 'all', icon: 'apps', label: '전체' },
-          { id: 'platform', icon: 'admin_panel_settings', label: '플랫폼' },
-          { id: 'project', icon: 'inventory_2', label: '프로젝트' },
-          { id: 'resource', icon: 'storage', label: '리소스' },
-          { id: 'scoped', icon: 'vpn_key', label: 'Scoped' },
-        ],
-        resourceSectionIcon: 'admin_panel_settings',
-        resourceSectionLabel: 'Permission Realms',
-        resourceTitle: 'Realms',
-        resourceDescription:
-          '워크스페이스에서 사용하는 Permission Realm을 한곳에 모았습니다. 카드에서는 연결된 프로젝트와 Realm 안에 포함된 Role을 함께 보고, 자세한 요청 흐름은 우측 목록에서 확인합니다.',
-        resourceHeaderLink: { href: 'workspace_projects_hub.html', label: '프로젝트 연결 보기' },
-        resources: [
-          {
-            categories: ['all', 'platform'],
-            status: { label: 'Active', tone: 'healthy' },
-            engine: 'Platform Realm',
-            icon: 'badge',
-            name: 'Workspace Realm',
-            meta: '워크스페이스 전역 운영과 설정을 다루는 Realm',
-            color: 'linear-gradient(135deg,#be185d,#fb7185)',
-            tagsLabel: 'Roles',
-            connectionsLabel: 'Connected Projects',
-            connectionsEqualWidth: true,
-            connectionsMaxItems: 4,
-            connectionsLayoutClass: 'is-fixed-projects',
-            connections: [
-              {
-                abbr: 'HB',
-                name: 'hermes-be',
-                meta: 'platform ops',
-                color: 'linear-gradient(135deg,#be185d,#fb7185)',
-              },
-              {
-                abbr: 'WW',
-                name: 'workspace-web',
-                meta: 'workspace admin',
-                color: 'linear-gradient(135deg,#ec4899,#fb7185)',
-              },
-            ],
-            tags: [
-              { icon: 'badge', text: 'admin(5)' },
-              { icon: 'badge', text: 'operator(7)' },
-              { icon: 'badge', text: 'viewer(6)' },
-            ],
-            actions: [
-              {
-                label: 'Detail',
-                icon: 'open_in_new',
-                kind: 'open',
-                href: 'workspace_permission_detail.html?realm=workspace-realm',
-              },
-            ],
-          },
-          {
-            categories: ['all', 'project'],
-            status: { label: 'Active', tone: 'healthy' },
-            engine: 'Project Realm',
-            icon: 'task_alt',
-            name: 'Project Realm',
-            meta: '프로젝트 설정과 배포를 다루는 기본 Realm',
-            color: 'linear-gradient(135deg,#2563eb,#60a5fa)',
-            tagsLabel: 'Roles',
-            connectionsLabel: 'Connected Projects',
-            connectionsEqualWidth: true,
-            connectionsMaxItems: 4,
-            connectionsLayoutClass: 'is-fixed-projects',
-            connections: [
-              {
-                abbr: 'HB',
-                name: 'hermes-be',
-                meta: 'backend service',
-                color: 'linear-gradient(135deg,#2563eb,#60a5fa)',
-              },
-              {
-                abbr: 'RS',
-                name: 'restaurant',
-                meta: 'product app',
-                color: 'linear-gradient(135deg,#1d4ed8,#38bdf8)',
-              },
-              {
-                abbr: 'CW',
-                name: 'coverity-ai',
-                meta: 'ai workspace',
-                color: 'linear-gradient(135deg,#0ea5e9,#67e8f9)',
-              },
-            ],
-            tags: [
-              { icon: 'badge', text: 'admin(4)' },
-              { icon: 'badge', text: 'maintainer(8)' },
-              { icon: 'badge', text: 'developer(14)' },
-              { icon: 'badge', text: 'viewer(8)' },
-            ],
-            actions: [
-              {
-                label: 'Detail',
-                icon: 'open_in_new',
-                kind: 'open',
-                href: 'workspace_permission_detail.html?realm=project-realm',
-              },
-            ],
-          },
-          {
-            categories: ['all', 'project'],
-            status: { label: 'Active', tone: 'healthy' },
-            engine: 'Project Realm',
-            icon: 'visibility',
-            name: 'Publish Realm',
-            meta: '배포 승인과 퍼블리시 제어를 다루는 Realm',
-            color: 'linear-gradient(135deg,#7c3aed,#c084fc)',
-            tagsLabel: 'Roles',
-            connectionsLabel: 'Connected Projects',
-            connectionsEqualWidth: true,
-            connectionsMaxItems: 4,
-            connectionsLayoutClass: 'is-fixed-projects',
-            connections: [
-              {
-                abbr: 'WF',
-                name: 'workspace-fe',
-                meta: 'release publish',
-                color: 'linear-gradient(135deg,#7c3aed,#c084fc)',
-              },
-              {
-                abbr: 'RS',
-                name: 'restaurant',
-                meta: 'campaign publish',
-                color: 'linear-gradient(135deg,#8b5cf6,#c4b5fd)',
-              },
-            ],
-            tags: [
-              { icon: 'badge', text: 'admin(3)' },
-              { icon: 'badge', text: 'approver(9)' },
-              { icon: 'badge', text: 'publisher(6)' },
-              { icon: 'badge', text: 'viewer(9)' },
-            ],
-            actions: [
-              {
-                label: 'Detail',
-                icon: 'open_in_new',
-                kind: 'open',
-                href: 'workspace_permission_detail.html?realm=publish-realm',
-              },
-            ],
-          },
-          {
-            categories: ['all', 'resource'],
-            status: { label: 'Active', tone: 'healthy' },
-            engine: 'Resource Realm',
-            icon: 'vpn_key',
-            name: 'Database Realm',
-            meta: 'DB 리소스 접근과 운영 제어를 다루는 Realm',
-            color: 'linear-gradient(135deg,#0f766e,#14b8a6)',
-            tagsLabel: 'Roles',
-            connectionsLabel: 'Connected Projects',
-            connectionsEqualWidth: true,
-            connectionsMaxItems: 4,
-            connectionsLayoutClass: 'is-fixed-projects',
-            connections: [
-              {
-                abbr: 'HB',
-                name: 'hermes-be',
-                meta: 'primary db',
-                color: 'linear-gradient(135deg,#0f766e,#14b8a6)',
-              },
-              {
-                abbr: 'PA',
-                name: 'payment-api',
-                meta: 'mysql access',
-                color: 'linear-gradient(135deg,#0d9488,#5eead4)',
-              },
-              {
-                abbr: 'CP',
-                name: 'profile-api',
-                meta: 'mongo access',
-                color: 'linear-gradient(135deg,#14b8a6,#99f6e4)',
-              },
-            ],
-            tags: [
-              { icon: 'badge', text: 'admin(2)' },
-              { icon: 'badge', text: 'operator(6)' },
-              { icon: 'badge', text: 'readonly(8)' },
-            ],
-            actions: [
-              {
-                label: 'Detail',
-                icon: 'open_in_new',
-                kind: 'open',
-                href: 'workspace_permission_detail.html?realm=database-realm',
-              },
-            ],
-          },
-          {
-            categories: ['all', 'resource'],
-            status: { label: 'Active', tone: 'healthy' },
-            engine: 'Resource Realm',
-            icon: 'folder',
-            name: 'Bucket Realm',
-            meta: '버킷 업로드와 퍼블릭 에셋 반영을 다루는 Realm',
-            color: 'linear-gradient(135deg,#0f766e,#5eead4)',
-            tagsLabel: 'Roles',
-            connectionsLabel: 'Connected Projects',
-            connectionsEqualWidth: true,
-            connectionsMaxItems: 4,
-            connectionsLayoutClass: 'is-fixed-projects',
-            connections: [
-              {
-                abbr: 'RS',
-                name: 'restaurant',
-                meta: 'asset upload',
-                color: 'linear-gradient(135deg,#0f766e,#5eead4)',
-              },
-              {
-                abbr: 'CS',
-                name: 'creator-studio',
-                meta: 'media ingest',
-                color: 'linear-gradient(135deg,#14b8a6,#99f6e4)',
-              },
-              {
-                abbr: 'OD',
-                name: 'ops-dashboard',
-                meta: 'report export',
-                color: 'linear-gradient(135deg,#0d9488,#67e8f9)',
-              },
-            ],
-            tags: [
-              { icon: 'badge', text: 'admin(2)' },
-              { icon: 'badge', text: 'uploader(11)' },
-              { icon: 'badge', text: 'viewer(8)' },
-            ],
-            actions: [
-              {
-                label: 'Detail',
-                icon: 'open_in_new',
-                kind: 'open',
-                href: 'workspace_permission_detail.html?realm=bucket-realm',
-              },
-            ],
-          },
-          {
-            categories: ['all', 'scoped'],
-            status: { label: 'Review', tone: 'review' },
-            engine: 'Scoped Realm',
-            icon: 'smart_toy',
-            name: 'AI Tool Realm',
-            meta: '에이전트와 MCP 연동용 최소 권한 Realm',
-            color: 'linear-gradient(135deg,#ec4899,#fb7185)',
-            tagsLabel: 'Roles',
-            connectionsLabel: 'Connected Projects',
-            connectionsEqualWidth: true,
-            connectionsMaxItems: 4,
-            connectionsLayoutClass: 'is-fixed-projects',
-            connections: [
-              {
-                abbr: 'CW',
-                name: 'coverity-ai',
-                meta: 'agent access',
-                color: 'linear-gradient(135deg,#ec4899,#fb7185)',
-              },
-              {
-                abbr: 'CA',
-                name: 'catalog-ai',
-                meta: 'mcp workflow',
-                color: 'linear-gradient(135deg,#db2777,#f472b6)',
-              },
-            ],
-            tags: [
-              { icon: 'badge', text: 'admin(1)' },
-              { icon: 'badge', text: 'user(3)' },
-              { icon: 'badge', text: 'reviewer(2)' },
-              { icon: 'badge', text: 'viewer(2)' },
-            ],
-            actions: [
-              {
-                label: 'Detail',
-                icon: 'open_in_new',
-                kind: 'open',
-                href: 'workspace_permission_detail.html?realm=ai-tool-realm',
-              },
-            ],
-          },
-        ],
-        mainPanels: [
-          {
-            icon: 'tips_and_updates',
-            label: 'Tips',
-            title: '권한 운영 팁',
-            description:
-              'Realm 카드는 포함된 Role과 인원 수만 남기고, 승인 흐름은 우측 패널에서 보는 단순 구조로 맞췄습니다.',
-            rows: [
-              {
-                title: '카드는 Realm 기준으로 봅니다',
-                meta: '상세 scope나 예외 조건은 카드 안에 넣지 않고, Realm 안에 포함된 Role과 현재 인원 수만 읽히게 유지합니다.',
-              },
-              {
-                title: '요청 목록은 permission realm inbox 기준입니다',
-                meta: '새 권한 요청과 승인 대기는 우측 요청 목록에서 바로 확인하는 흐름을 전제로 둡니다.',
-              },
-              {
-                title: '리소스 연결은 Open 이후에 확인합니다',
-                meta: 'DB, Bucket, Domain 같은 리소스 연관성은 각 허브나 상세 화면에서 이어서 보는 구조입니다.',
-              },
-            ],
-            footerLink: { href: 'workspace_projects_hub.html', label: '프로젝트 허브 보기' },
-          },
-          {
-            icon: 'menu_book',
-            label: 'Guide Links',
-            title: '가이드 링크',
-            description:
-              '운영 문서와 관련 허브 진입점은 카드 안에 넣지 않고, 링크 패널에서 분리해 여는 방식으로 정리했습니다.',
-            rows: [
-              {
-                title: '프로젝트 허브',
-                meta: 'Role이 실제로 어느 프로젝트 운영과 연결되는지 확인합니다.',
-                href: 'workspace_projects_hub.html',
-              },
-              {
-                title: 'Database Hub',
-                meta: 'DB 운영 Role이 연결되는 데이터 리소스를 확인합니다.',
-                href: 'workspace_database_hub.html',
-              },
-              {
-                title: 'Bucket Hub',
-                meta: '업로드/퍼블릭 에셋 Role이 연결되는 버킷을 확인합니다.',
-                href: 'workspace_s3_hub.html',
-              },
-            ],
-            footerLink: { href: 'portal_launchpad.html', label: '런치패드로 돌아가기' },
-          },
-        ],
-        summary: null,
-        sidebarPanels: [
-          {
-            icon: 'pending_actions',
-            label: 'Request List',
-            title: '현재 요청 목록',
-            description: 'permission realm에서 들어온 요청 목록을 우측 레일에서 바로 확인합니다.',
-            rows: [
-              {
-                title: 'coverity-ai external reviewer',
-                meta: 'Scoped access · 72h 요청',
-                pill: { label: 'Pending', tone: 'pending' },
-              },
-              {
-                title: 'restaurant bucket uploader add',
-                meta: 'Bucket Uploader · 멤버 2명 추가',
-                pill: { label: 'Review', tone: 'review' },
-              },
-              {
-                title: 'workspace admin member remove',
-                meta: 'Workspace Admin · 멤버 1명 회수',
-                pill: { label: 'Pending', tone: 'pending' },
-              },
-              {
-                title: 'publish approver rotation',
-                meta: 'Project Maintainer · approver 교체',
-                pill: { label: 'Draft', tone: 'draft' },
-              },
-              {
-                title: 'ai tool scoped access request',
-                meta: 'AI Tool Scoped Access · 새 멤버 요청',
-                pill: { label: 'Review', tone: 'review' },
-              },
-            ],
-          },
-        ],
-      };
-    </script>
-    <script src="workspace_resource_hub_shared.js"></script>
-    <script src="concept_endpoint_overlay.js"></script>
-  </body>
+        {
+          categories: ["all", "resource"],
+          status: { label: "Active", tone: "healthy" },
+          engine: "Resource Realm",
+          icon: "vpn_key",
+          name: "Database Realm",
+          meta: "DB 리소스 접근과 운영 제어를 다루는 Realm",
+          color: "linear-gradient(135deg,#0f766e,#14b8a6)",
+          tagsLabel: "Roles",
+          connectionsLabel: "Connected Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [
+            { abbr: "HB", name: "hermes-be", meta: "primary db", color: "linear-gradient(135deg,#0f766e,#14b8a6)" },
+            { abbr: "PA", name: "payment-api", meta: "mysql access", color: "linear-gradient(135deg,#0d9488,#5eead4)" },
+            { abbr: "CP", name: "profile-api", meta: "mongo access", color: "linear-gradient(135deg,#14b8a6,#99f6e4)" }
+          ],
+          tags: [
+            { icon: "badge", text: "admin(2)" },
+            { icon: "badge", text: "operator(6)" },
+            { icon: "badge", text: "readonly(8)" }
+          ],
+          actions: [
+            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_permission_detail.html?realm=database-realm" }
+          ]
+        },
+        {
+          categories: ["all", "resource"],
+          status: { label: "Active", tone: "healthy" },
+          engine: "Resource Realm",
+          icon: "folder",
+          name: "Bucket Realm",
+          meta: "버킷 업로드와 퍼블릭 에셋 반영을 다루는 Realm",
+          color: "linear-gradient(135deg,#0f766e,#5eead4)",
+          tagsLabel: "Roles",
+          connectionsLabel: "Connected Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [
+            { abbr: "RS", name: "restaurant", meta: "asset upload", color: "linear-gradient(135deg,#0f766e,#5eead4)" },
+            { abbr: "CS", name: "creator-studio", meta: "media ingest", color: "linear-gradient(135deg,#14b8a6,#99f6e4)" },
+            { abbr: "OD", name: "ops-dashboard", meta: "report export", color: "linear-gradient(135deg,#0d9488,#67e8f9)" }
+          ],
+          tags: [
+            { icon: "badge", text: "admin(2)" },
+            { icon: "badge", text: "uploader(11)" },
+            { icon: "badge", text: "viewer(8)" }
+          ],
+          actions: [
+            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_permission_detail.html?realm=bucket-realm" }
+          ]
+        },
+        {
+          categories: ["all", "scoped"],
+          status: { label: "Review", tone: "review" },
+          engine: "Scoped Realm",
+          icon: "smart_toy",
+          name: "AI Tool Realm",
+          meta: "에이전트와 MCP 연동용 최소 권한 Realm",
+          color: "linear-gradient(135deg,#ec4899,#fb7185)",
+          tagsLabel: "Roles",
+          connectionsLabel: "Connected Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [
+            { abbr: "CW", name: "coverity-ai", meta: "agent access", color: "linear-gradient(135deg,#ec4899,#fb7185)" },
+            { abbr: "CA", name: "catalog-ai", meta: "mcp workflow", color: "linear-gradient(135deg,#db2777,#f472b6)" }
+          ],
+          tags: [
+            { icon: "badge", text: "admin(1)" },
+            { icon: "badge", text: "user(3)" },
+            { icon: "badge", text: "reviewer(2)" },
+            { icon: "badge", text: "viewer(2)" }
+          ],
+          actions: [
+            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_permission_detail.html?realm=ai-tool-realm" }
+          ]
+        }
+      ],
+      mainPanels: [
+        {
+          icon: "tips_and_updates",
+          label: "Tips",
+          title: "권한 운영 팁",
+          description: "Realm 카드는 포함된 Role과 인원 수만 남기고, 승인 흐름은 우측 패널에서 보는 단순 구조로 맞췄습니다.",
+          rows: [
+            { title: "카드는 Realm 기준으로 봅니다", meta: "상세 scope나 예외 조건은 카드 안에 넣지 않고, Realm 안에 포함된 Role과 현재 인원 수만 읽히게 유지합니다." },
+            { title: "요청 목록은 permission realm inbox 기준입니다", meta: "새 권한 요청과 승인 대기는 우측 요청 목록에서 바로 확인하는 흐름을 전제로 둡니다." },
+            { title: "리소스 연결은 Open 이후에 확인합니다", meta: "DB, Bucket, Domain 같은 리소스 연관성은 각 허브나 상세 화면에서 이어서 보는 구조입니다." }
+          ],
+          footerLink: { href: "workspace_projects_hub.html", label: "프로젝트 허브 보기" }
+        },
+        {
+          icon: "menu_book",
+          label: "Guide Links",
+          title: "가이드 링크",
+          description: "운영 문서와 관련 허브 진입점은 카드 안에 넣지 않고, 링크 패널에서 분리해 여는 방식으로 정리했습니다.",
+          rows: [
+            { title: "프로젝트 허브", meta: "Role이 실제로 어느 프로젝트 운영과 연결되는지 확인합니다.", href: "workspace_projects_hub.html" },
+            { title: "Database Hub", meta: "DB 운영 Role이 연결되는 데이터 리소스를 확인합니다.", href: "workspace_database_hub.html" },
+            { title: "Bucket Hub", meta: "업로드/퍼블릭 에셋 Role이 연결되는 버킷을 확인합니다.", href: "workspace_s3_hub.html" }
+          ],
+          footerLink: { href: "portal_launchpad.html", label: "런치패드로 돌아가기" }
+        }
+      ],
+      summary: null,
+      sidebarPanels: [
+        {
+          icon: "pending_actions",
+          label: "Request List",
+          title: "현재 요청 목록",
+          description: "permission realm에서 들어온 요청 목록을 우측 레일에서 바로 확인합니다.",
+          rows: [
+            { title: "coverity-ai external reviewer", meta: "Scoped access · 72h 요청", pill: { label: "Pending", tone: "pending" } },
+            { title: "restaurant bucket uploader add", meta: "Bucket Uploader · 멤버 2명 추가", pill: { label: "Review", tone: "review" } },
+            { title: "workspace admin member remove", meta: "Workspace Admin · 멤버 1명 회수", pill: { label: "Pending", tone: "pending" } },
+            { title: "publish approver rotation", meta: "Project Maintainer · approver 교체", pill: { label: "Draft", tone: "draft" } },
+            { title: "ai tool scoped access request", meta: "AI Tool Scoped Access · 새 멤버 요청", pill: { label: "Review", tone: "review" } }
+          ]
+        }
+      ]
+    };
+  </script>
+  <script src="workspace_resource_hub_shared.js"></script>
+  <script src="ax_studio_topbar.js"></script>
+  <script src="concept_endpoint_overlay.js"></script>
+</body>
 </html>

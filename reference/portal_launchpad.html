@@ -212,7 +212,7 @@
     .service-link:hover .service-link-desc {
       color:var(--t1);
     }
-
+    
 
 .service-outlinks {
   position:relative;
@@ -900,7 +900,7 @@
       align-items:start;
       overflow:visible;
     }
-    .cz-store    { grid-column:1 / 4; grid-row:2; }
+    .cz-gallery    { grid-column:1 / 4; grid-row:2; }
     .cz-articles {
       grid-column:1 / 3; grid-row:1; align-self:stretch;
       display:flex; flex-direction:column;
@@ -1108,30 +1108,30 @@
       white-space:nowrap;
     }
 
-    .store-sections {
+    .gallery-sections {
       display:grid;
       gap:18px;
     }
-    .store-section {
+    .gallery-section {
       display:grid;
       gap:14px;
     }
-    .store-section + .store-section {
+    .gallery-section + .gallery-section {
       padding-top:18px;
       border-top:1px solid var(--border);
     }
-    .store-section-head {
+    .gallery-section-head {
       display:flex;
       align-items:flex-start;
       justify-content:space-between;
       gap:12px;
       flex-wrap:wrap;
     }
-    .store-section-copy {
+    .gallery-section-copy {
       display:grid;
       gap:4px;
     }
-    .store-section-kicker {
+    .gallery-section-kicker {
       display:inline-flex;
       align-items:center;
       gap:6px;
@@ -1141,32 +1141,32 @@
       text-transform:uppercase;
       color:var(--t3);
     }
-    .store-section-kicker .material-icons-round { font-size:14px; }
-    .store-section-title {
+    .gallery-section-kicker .material-icons-round { font-size:14px; }
+    .gallery-section-title {
       font-size:20px;
       font-weight:800;
       letter-spacing:-.4px;
       color:var(--t1);
     }
-    .store-section-desc {
+    .gallery-section-desc {
       font-size:12px;
       color:var(--t2);
       line-height:1.6;
       max-width:720px;
     }
-    .store-divider {
+    .gallery-divider {
       display:flex;
       align-items:center;
       margin:4px 0;
     }
-    .store-divider::before,
-    .store-divider::after {
+    .gallery-divider::before,
+    .gallery-divider::after {
       content:'';
       flex:1;
       height:1px;
       background:linear-gradient(90deg, rgba(214,216,219,0) 0%, rgba(214,216,219,.95) 18%, rgba(180,14,77,.22) 100%);
     }
-    .store-divider::after {
+    .gallery-divider::after {
       background:linear-gradient(90deg, rgba(180,14,77,.22) 0%, rgba(214,216,219,.95) 82%, rgba(214,216,219,0) 100%);
     }
     .app-tile {
@@ -1422,6 +1422,12 @@
     }
     .article-item:last-child { border-bottom:none; }
     .article-item:hover { background:var(--bg); }
+    a.article-item,
+    a.guide-item,
+    a.resource-rail-item {
+      color:inherit;
+      text-decoration:none;
+    }
     .article-thumb {
       width:58px; height:42px; border-radius:7px; flex-shrink:0;
       display:flex; align-items:center; justify-content:center;
@@ -1485,6 +1491,75 @@
     .pill-build { background:var(--blue-bg);  color:var(--blue); }
     .pill-err   { background:#fee2e2;          color:var(--red); }
     .pill-stop  { background:var(--bg);        color:var(--t3); }
+    .deploy-summary {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .deploy-summary-card {
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:var(--bg);
+      padding:12px 14px;
+    }
+    .deploy-summary-label {
+      font-size:11px;
+      font-weight:700;
+      color:var(--t3);
+      letter-spacing:.02em;
+    }
+    .deploy-summary-value {
+      margin-top:4px;
+      font-size:18px;
+      font-weight:800;
+      color:var(--t1);
+    }
+    .resource-summary {
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:8px;
+      margin-bottom:12px;
+    }
+    .resource-summary-chip {
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:var(--bg);
+      padding:10px 12px;
+    }
+    .resource-summary-chip strong {
+      display:block;
+      font-size:16px;
+      line-height:1.2;
+      color:var(--t1);
+    }
+    .resource-summary-chip span {
+      display:block;
+      margin-top:4px;
+      font-size:11px;
+      color:var(--t3);
+    }
+    .empty-state,
+    .section-status {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:88px;
+      border:1px dashed rgba(148, 163, 184, 0.5);
+      border-radius:16px;
+      background:rgba(248, 250, 252, 0.8);
+      color:var(--t2);
+      font-size:13px;
+      line-height:1.6;
+      text-align:center;
+      padding:16px 18px;
+      box-sizing:border-box;
+    }
+    .section-status.is-error {
+      border-color:rgba(180, 14, 77, 0.22);
+      background:rgba(255, 244, 248, 0.92);
+      color:var(--brand);
+    }
 
     /* ─────────────────────────────────────────────────────
        RESPONSIVE
@@ -1505,7 +1580,7 @@
         border-top:1px solid var(--border);
       }
       .content-zone { grid-template-columns:1fr 1fr 320px; }
-      .cz-store    { grid-column:1 / 3; grid-row:2; }
+      .cz-gallery    { grid-column:1 / 3; grid-row:2; }
       .cz-articles { grid-column:1 / 2; grid-row:1; align-self:stretch; }
       .cz-guides   { grid-column:2 / 3; grid-row:1; align-self:stretch; }
       .cz-sidebar  {
@@ -1530,10 +1605,10 @@
         border-top:none;
       }
       .content-zone { grid-template-columns:1fr; }
-      .cz-store, .cz-articles, .cz-guides { grid-column:auto; }
+      .cz-gallery, .cz-articles, .cz-guides { grid-column:auto; }
       .cz-articles { grid-row:1; }
       .cz-guides { grid-row:2; }
-      .cz-store { grid-row:3; }
+      .cz-gallery { grid-row:3; }
       .cz-sidebar {
         grid-column:auto; grid-row:4;
         transform:none;
@@ -1605,12 +1680,12 @@
 
 <header class="topbar">
   <div class="topbar-inner">
-    <div class="topbar-brand" aria-label="AX Studio">
+    <a class="topbar-brand" href="index.html" aria-label="AX Studio">
       <span class="brand-mark" aria-hidden="true">
         <img src="data:image/svg+xml,%3csvg%20width='35'%20height='20'%20viewBox='0%200%2035%2020'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M16.7961%2010.1421L21.022%2014.368C23.4543%2016.8004%2027.398%2016.8004%2029.8303%2014.368C32.2627%2011.9356%2032.2627%207.99197%2029.8303%205.5596C27.398%203.12723%2023.4543%203.12723%2021.022%205.5596L20.723%205.85861L18.7019%203.83756L19.0009%203.53856C22.5495%20-0.0100035%2028.3028%20-0.0100042%2031.8514%203.53856C35.4%207.08712%2035.4%2012.8405%2031.8514%2016.389C28.3028%2019.9376%2022.5495%2019.9376%2019.0009%2016.389L12.5757%209.96379L14.5948%207.9447L16.7941%2010.144L16.7961%2010.1421ZM17.6605%208.92103L19.6782%206.90332L17.6572%204.88228L15.6395%206.89998L17.6605%208.92103Z'%20fill='%236D6E72'/%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M14.3637%205.63217L18.6416%209.91016L18.6428%209.90899L20.7901%2012.0562L22.8099%2010.0364L16.3847%203.61113C12.8361%200.0625671%207.08278%200.0625666%203.53422%203.61113C-0.0143374%207.15969%20-0.0143374%2012.913%203.53422%2016.4616C7.08278%2020.0102%2012.8361%2020.0102%2016.3847%2016.4616L16.6801%2016.1662L14.6591%2014.1452L14.3637%2014.4406C11.9313%2016.8729%207.98764%2016.8729%205.55527%2014.4406C3.1229%2012.0082%203.1229%208.06454%205.55527%205.63217C7.98764%203.1998%2011.9313%203.1998%2014.3637%205.63217ZM15.7038%2013.1004L17.7248%2015.1215L19.7453%2013.101L17.7243%2011.0799L15.7038%2013.1004Z'%20fill='%23A50034'/%3e%3crect%20x='15.376'%20y='12.7714'%20width='2.85369'%20height='5.21909'%20transform='rotate(-45%2015.376%2012.7714)'%20fill='%236D6E72'/%3e%3c/svg%3e" alt="AX Studio" />
       </span>
       <span class="brand-name">AX Studio</span>
-    </div>
+    </a>
     <div class="logo-menu" id="serviceMenuWrap">
       <button class="menu-trigger" id="serviceMenuButton" type="button" aria-label="전체 메뉴 열기" aria-haspopup="true" aria-expanded="false" aria-controls="serviceMenuPopover">
         <span class="material-icons-round">apps</span>
@@ -1618,24 +1693,24 @@
       </button>
       <div class="service-popover" id="serviceMenuPopover" aria-labelledby="serviceMenuButton" hidden>
         <div class="service-popover-inner">
-        <div class="service-groups">
+        <div class="service-groups" data-launchpad-service-groups>
           <section class="service-group">
             <div class="service-group-head">
               <div class="service-group-copy">
                 <div class="service-group-title-row">
-                  <div class="service-group-title">Store</div>
+                  <div class="service-group-title">Gallery</div>
                 </div>
               </div>
             </div>
             <div class="service-links">
-              <a class="service-link" href="dej_app_store.html">
+              <a class="service-link" href="dej_app_gallery.html">
                 <span class="material-icons-round service-link-icon">widgets</span>
                 <span class="service-link-copy">
                   <span class="service-link-title">App Gallery</span>
                   <span class="service-link-desc">실행형 개발 앱과 워크스페이스 도구를 발견하고 살펴보기</span>
                 </span>
               </a>
-              <a class="service-link" href="dej_agent_store.html">
+              <a class="service-link" href="dej_ai_gallery.html">
                 <span class="material-icons-round service-link-icon">smart_toy</span>
                 <span class="service-link-copy">
                   <span class="service-link-title">AI Gallery</span>
@@ -1841,11 +1916,11 @@
 
 <div class="page">
   <div class="hero">
-    <div class="hero-greet">
+    <div class="hero-greet" data-launchpad-hero-greet>
       <h1>안녕하세요, Taehun 👋</h1>
       <p>오늘도 좋은 개발 되세요. 현재 3개의 알림이 있습니다.</p>
     </div>
-    <div class="hero-stats">
+    <div class="hero-stats" data-launchpad-hero-stats>
       <a class="stat-chip stat-chip-link" href="workspace_projects_hub.html">
         <div class="stat-chip-icon" style="background:var(--blue)"><span class="material-icons-round">cloud</span></div>
         <div><div class="stat-chip-val" style="color:var(--blue)">47 <small style="font-size:11px;font-weight:400;color:var(--t3)">/ 60</small></div><div class="stat-chip-label">전체 Workspace</div></div>
@@ -1867,7 +1942,7 @@
 
     <div class="banner-carousel" data-banner-carousel>
     <div class="banner-track">
-      <section class="banner banner-slide dej-banner is-active" data-banner-slide aria-label="About DEJ 소개" aria-hidden="false">
+      <section class="banner banner-slide dej-banner is-active" data-banner-slide data-launchpad-banner="dej" aria-label="About DEJ 소개" aria-hidden="false">
         <div class="dej-pipeline-bg" aria-hidden="true">
           <div class="pipeline-orbit">
             <span class="pipeline-loop left"></span>
@@ -1917,7 +1992,7 @@
         </div>
       </section>
 
-      <section class="banner banner-slide" data-banner-slide aria-label="AI Code Review 출시 안내" aria-hidden="true">
+      <section class="banner banner-slide" data-banner-slide data-launchpad-banner="release" aria-label="AI Code Review 출시 안내" aria-hidden="true">
         <div class="banner-body">
           <div class="banner-eye"><span class="material-icons-round">rocket_launch</span>New Release · v2.4</div>
           <div class="banner-title">AI Code Review가 출시되었습니다</div>
@@ -1937,7 +2012,7 @@
         </div>
       </section>
 
-      <section class="banner banner-slide event-banner" data-banner-slide aria-label="AX Studio 컨퍼런스 안내" aria-hidden="true">
+      <section class="banner banner-slide event-banner" data-banner-slide data-launchpad-banner="event" aria-label="AX Studio 컨퍼런스 안내" aria-hidden="true">
         <div class="banner-body">
           <div class="banner-eye"><span class="material-icons-round">event</span>AX Studio Conference</div>
           <div class="banner-title">AX Studio Conference에서 새로운 개발 경험 워크플로우를 만나보세요.</div>
@@ -1963,7 +2038,7 @@
         </div>
       </section>
 
-      <section class="banner banner-slide security-banner" data-banner-slide aria-label="AX Studio 보안 공지" aria-hidden="true">
+      <section class="banner banner-slide security-banner" data-banner-slide data-launchpad-banner="security" aria-label="AX Studio 보안 공지" aria-hidden="true">
         <div class="banner-body">
           <div class="banner-eye"><span class="material-icons-round">security</span>Security Notice</div>
           <div class="banner-title">AX Studio 보안 공지: MCP 연결과 API Key 관리 기준이 강화됩니다.</div>
@@ -1993,19 +2068,19 @@
 
     <div class="content-zone">
 
-        <div class="panel cz-store">
-      <div class="sec-label"><span class="material-icons-round">storefront</span>Store</div>
-      <div class="store-sections">
-        <section class="store-section">
-          <div class="store-section-head">
-            <div class="store-section-copy">
-              <div class="store-section-title">DEJ App Gallery</div>
-              <div class="store-section-desc">개발과 운영에 필요한 실행형 앱을 발견하고 바로 살펴볼 수 있는 공간입니다. 앱은 이후 AI Gallery의 챗봇·Tools 흐름과 자연스럽게 연결됩니다.</div>
+        <div class="panel cz-gallery">
+      <div class="sec-label"><span class="material-icons-round">storefront</span>Gallery</div>
+      <div class="gallery-sections">
+        <section class="gallery-section" data-launchpad-gallery-section="app">
+          <div class="gallery-section-head">
+            <div class="gallery-section-copy">
+              <div class="gallery-section-title">DEJ App Gallery</div>
+              <div class="gallery-section-desc">개발과 운영에 필요한 실행형 앱을 발견하고 바로 살펴볼 수 있는 공간입니다. 앱은 이후 AI Gallery의 챗봇·Tools 흐름과 자연스럽게 연결됩니다.</div>
             </div>
-            <a class="sec-label-more" href="dej_app_store.html">갤러리 열기 <span class="material-icons-round">chevron_right</span></a>
+            <a class="sec-label-more" href="dej_app_gallery.html">갤러리 열기 <span class="material-icons-round">chevron_right</span></a>
           </div>
         <div class="agent-strip">
-          <div class="agent-spotlight app-spotlight">
+          <div class="agent-spotlight app-spotlight" data-launchpad-app-spotlight>
             <div class="agent-spotlight-top">
               <div class="agent-spotlight-icon"><span class="material-icons-round">code</span></div>
               <div class="agent-spotlight-state">앱 갤러리 추천</div>
@@ -2025,7 +2100,7 @@
               <span class="agent-spotlight-tag"><span class="material-icons-round">trending_up</span>주간 인기</span>
             </div>
           </div>
-          <div class="agent-app-strip">
+          <div class="agent-app-strip" data-launchpad-app-strip>
             <div class="app-tile"><div class="app-tile-icon" style="background:linear-gradient(135deg,#4f8cff,#3b6fcf)"><span class="material-icons-round">code</span></div><div class="app-tile-name">Code Server</div><div class="app-tile-type">브라우저 기반 IDE. 저장소 편집, 디버깅, 터미널 작업을 한 번에 수행</div><div class="app-tile-tag" style="background:#e0e7ff;color:#4f46e5">인기</div></div>
             <div class="app-tile"><div class="app-tile-icon" style="background:linear-gradient(135deg,#fb923c,#e07020)"><span class="material-icons-round">hub</span></div><div class="app-tile-name">Jupyter Lab</div><div class="app-tile-type">데이터 탐색과 모델 실험에 적합한 노트북 환경. GPU 워크로드와 연결 가능</div><div class="app-tile-tag" style="background:#dcfce7;color:#16a34a">New</div></div>
             <div class="app-tile"><div class="app-tile-icon" style="background:linear-gradient(135deg,#a78bfa,#7c5fcf)"><span class="material-icons-round">smart_toy</span></div><div class="app-tile-name">AI Assistant</div><div class="app-tile-type">문서 요약, 코드 설명, 초안 작성까지 도와주는 업무형 AI 도우미</div><div class="app-tile-tag" style="background:var(--brand-bg);color:var(--brand)">Beta</div></div>
@@ -2033,17 +2108,17 @@
           </div>
         </div>
         </section>
-        <div class="store-divider" aria-hidden="true"></div>
-        <section class="store-section">
-          <div class="store-section-head">
-            <div class="store-section-copy">
-              <div class="store-section-title">DEJ AI Gallery</div>
-              <div class="store-section-desc">앱 위에서 재사용할 수 있는 챗봇과 tool 자산을 전시하는 공간입니다. MCP, 키, 권한 정책은 배경 메타로 두고 무엇을 바로 가져다 쓸 수 있는지가 먼저 읽히도록 구성합니다.</div>
+        <div class="gallery-divider" aria-hidden="true"></div>
+        <section class="gallery-section" data-launchpad-gallery-section="ai">
+          <div class="gallery-section-head">
+            <div class="gallery-section-copy">
+              <div class="gallery-section-title">DEJ AI Gallery</div>
+              <div class="gallery-section-desc">앱 위에서 재사용할 수 있는 챗봇과 tool 자산을 전시하는 공간입니다. MCP, 키, 권한 정책은 배경 메타로 두고 무엇을 바로 가져다 쓸 수 있는지가 먼저 읽히도록 구성합니다.</div>
             </div>
-            <a class="sec-label-more" href="dej_agent_store.html">갤러리 열기 <span class="material-icons-round">chevron_right</span></a>
+            <a class="sec-label-more" href="dej_ai_gallery.html">갤러리 열기 <span class="material-icons-round">chevron_right</span></a>
           </div>
         <div class="agent-strip">
-          <div class="agent-spotlight">
+          <div class="agent-spotlight" data-launchpad-ai-spotlight>
             <div class="agent-spotlight-top">
               <div class="agent-spotlight-icon"><span class="material-icons-round">hub</span></div>
               <div class="agent-spotlight-state">AI Gallery Preview</div>
@@ -2064,7 +2139,7 @@
               <span class="agent-spotlight-tag"><span class="material-icons-round">toggle_on</span>접근 허가 제어</span>
             </div>
           </div>
-          <div class="agent-app-strip">
+          <div class="agent-app-strip" data-launchpad-ai-strip>
             <div class="app-tile"><div class="app-tile-icon" style="background:linear-gradient(135deg,#b40e4d,#7c5fcf)"><span class="material-icons-round">hub</span></div><div class="app-tile-name">MCP 허브</div><div class="app-tile-type">MCP 연결, 키 매핑, 접근 허가를 관리하는 DEJ Agent 허브</div><div class="app-tile-tag" style="background:var(--brand-bg);color:var(--brand)">Preview</div></div>
             <div class="app-tile"><div class="app-tile-icon" style="background:linear-gradient(135deg,#4f8cff,#0086cc)"><span class="material-icons-round">rate_review</span></div><div class="app-tile-name">MR Review Agent</div><div class="app-tile-type">GitLab MCP와 연결해 코드 리뷰와 변경 영향 분석을 자동화</div><div class="app-tile-tag" style="background:#e0f2fe;color:#0369a1">Agent</div></div>
             <div class="app-tile"><div class="app-tile-icon" style="background:linear-gradient(135deg,#34d399,#0d9488)"><span class="material-icons-round">terminal</span></div><div class="app-tile-name">Ops Agent</div><div class="app-tile-type">Kubernetes, Monitoring MCP를 사용해 장애 확인과 조치 가이드를 지원</div><div class="app-tile-tag" style="background:#dcfce7;color:#15803d">Agent</div></div>
@@ -2081,13 +2156,14 @@
           <span class="material-icons-round">article</span>아티클
           <span class="sec-label-more">더보기 <span class="material-icons-round">chevron_right</span></span>
         </div>
-        <div class="article-tabs" role="tablist" aria-label="아티클 카테고리">
+        <div class="article-tabs" role="tablist" aria-label="아티클 카테고리" data-launchpad-article-tabs>
           <button class="article-tab is-active" type="button" role="tab" aria-selected="true" data-article-tab="all">전체</button>
           <button class="article-tab" type="button" role="tab" aria-selected="false" data-article-tab="ai">AI</button>
           <button class="article-tab" type="button" role="tab" aria-selected="false" data-article-tab="security">보안</button>
           <button class="article-tab" type="button" role="tab" aria-selected="false" data-article-tab="dev">개발</button>
         </div>
       </div>
+      <div data-launchpad-article-list>
       <div class="article-item" data-article-category="ai">
         <div class="article-thumb" style="background:linear-gradient(135deg,#a78bfa,#7c5fcf)"><span class="material-icons-round">smart_toy</span></div>
         <div><div class="article-title">MCP를 활용한 개발 워크플로우 자동화</div><div class="article-meta"><span class="article-tag" style="background:var(--purple-bg);color:var(--purple)">MCP</span>2026.04.05</div></div>
@@ -2108,10 +2184,12 @@
         <div class="article-thumb" style="background:linear-gradient(135deg,#4f8cff,#3b6fcf)"><span class="material-icons-round">rocket_launch</span></div>
         <div><div class="article-title">CI/CD 파이프라인 최적화 팁</div><div class="article-meta"><span class="article-tag" style="background:var(--blue-bg);color:var(--blue)">DevOps</span>2026.03.25</div></div>
       </div>
+      </div>
     </div>
 
         <div class="panel cz-guides">
       <div class="sec-label"><span class="material-icons-round">menu_book</span>가이드<span class="sec-label-more">더보기 <span class="material-icons-round">chevron_right</span></span></div>
+      <div data-launchpad-guide-list>
       <div class="guide-item">
         <div class="guide-ico" style="background:var(--blue-bg)"><span class="material-icons-round" style="color:var(--blue)">play_circle</span></div>
         <div class="guide-name">처음 시작하기</div><div class="guide-meta">10분</div><div class="guide-arr"><span class="material-icons-round">chevron_right</span></div>
@@ -2136,21 +2214,26 @@
         <div class="guide-ico" style="background:var(--blue-bg)"><span class="material-icons-round" style="color:var(--blue)">grid_view</span></div>
         <div class="guide-name">Jupyter 노트북 배포</div><div class="guide-meta">7분</div><div class="guide-arr"><span class="material-icons-round">chevron_right</span></div>
       </div>
+      </div>
     </div>
 
         <div class="cz-sidebar">
 
             <div class="panel personal-rail-card">
         <div class="sec-label"><span class="material-icons-round">notifications_none</span>내 알림<span class="sec-label-more">모두 읽음</span></div>
+        <div data-launchpad-notifications-list>
         <div class="notif-item"><div class="notif-dot u"></div><div><div class="notif-text"><b>my-project</b> 빌드가 완료되었습니다.</div><div class="notif-time">5분 전</div></div></div>
         <div class="notif-item"><div class="notif-dot u"></div><div><div class="notif-text"><b>hedej-api</b> GPU 리소스 할당이 승인되었습니다.</div><div class="notif-time">32분 전</div></div></div>
         <div class="notif-item"><div class="notif-dot u"></div><div><div class="notif-text"><b>시스템</b> Kubernetes 클러스터 노드 추가 완료</div><div class="notif-time">1시간 전</div></div></div>
         <div class="notif-item"><div class="notif-dot r"></div><div><div class="notif-text"><b>workspace-v2.4</b> 배포가 완료되었습니다.</div><div class="notif-time">어제</div></div></div>
         <div class="notif-item"><div class="notif-dot r"></div><div><div class="notif-text"><b>AI Code Review</b> 기능이 업데이트 되었습니다.</div><div class="notif-time">2일 전</div></div></div>
+        </div>
       </div>
 
             <div class="panel personal-rail-card">
         <div class="sec-label"><span class="material-icons-round">rocket_launch</span>내 배포 앱<span class="sec-label-more">전체보기 <span class="material-icons-round">chevron_right</span></span></div>
+        <div data-launchpad-deploy-summary></div>
+        <div data-launchpad-deploy-list>
         <div class="deploy-item">
           <div class="deploy-ico" style="background:linear-gradient(135deg,#34d399,#0d9488)"><span class="material-icons-round">language</span></div>
           <div><div class="deploy-name">hedej-api</div><div class="deploy-ver">v2.4.1 · 3시간 전</div></div>
@@ -2176,11 +2259,13 @@
           <div><div class="deploy-name">legacy-service</div><div class="deploy-ver">v1.2.0 · 2주 전</div></div>
           <span class="pill pill-stop">Stopped</span>
         </div>
+        </div>
       </div>
 
       <div class="panel personal-rail-card usage-rail-card">
         <div class="sec-label"><span class="material-icons-round">deployed_code</span>내 리소스</div>
-        <div class="resource-rail-list">
+        <div data-launchpad-resource-summary></div>
+        <div class="resource-rail-list" data-launchpad-resource-list>
           <a class="resource-rail-item" href="workspace_database_hub.html">
             <span class="resource-rail-icon" style="background:linear-gradient(135deg,#2563eb,#06b6d4)"><span class="material-icons-round">storage</span></span>
             <span class="resource-rail-copy-item">
@@ -2279,64 +2364,705 @@
   })();
 
   (() => {
-    const tabs = Array.from(document.querySelectorAll('[data-article-tab]'));
-    const items = Array.from(document.querySelectorAll('[data-article-category]'));
-
-    if (!tabs.length || !items.length) return;
-
-    const setCategory = (category) => {
-      tabs.forEach((tab) => {
-        const active = tab.dataset.articleTab === category;
-        tab.classList.toggle('is-active', active);
-        tab.setAttribute('aria-selected', String(active));
-      });
-
-      items.forEach((item) => {
-        const visible = category === 'all' || item.dataset.articleCategory === category;
-        item.hidden = !visible;
-      });
+    const elements = {
+      serviceGroups: document.querySelector('[data-launchpad-service-groups]'),
+      heroGreet: document.querySelector('[data-launchpad-hero-greet]'),
+      heroStats: document.querySelector('[data-launchpad-hero-stats]'),
+      banners: {
+        dej: document.querySelector('[data-launchpad-banner="dej"]'),
+        release: document.querySelector('[data-launchpad-banner="release"]'),
+        event: document.querySelector('[data-launchpad-banner="event"]'),
+        security: document.querySelector('[data-launchpad-banner="security"]'),
+      },
+      appSpotlight: document.querySelector('[data-launchpad-app-spotlight]'),
+      appStrip: document.querySelector('[data-launchpad-app-strip]'),
+      aiSpotlight: document.querySelector('[data-launchpad-ai-spotlight]'),
+      aiStrip: document.querySelector('[data-launchpad-ai-strip]'),
+      articleTabs: document.querySelector('[data-launchpad-article-tabs]'),
+      articleList: document.querySelector('[data-launchpad-article-list]'),
+      guideList: document.querySelector('[data-launchpad-guide-list]'),
+      notificationsList: document.querySelector('[data-launchpad-notifications-list]'),
+      deploySummary: document.querySelector('[data-launchpad-deploy-summary]'),
+      deployList: document.querySelector('[data-launchpad-deploy-list]'),
+      resourceSummary: document.querySelector('[data-launchpad-resource-summary]'),
+      resourceList: document.querySelector('[data-launchpad-resource-list]'),
     };
 
-    tabs.forEach((tab) => {
-      tab.addEventListener('click', () => {
-        setCategory(tab.dataset.articleTab || 'all');
-      });
-    });
-
-    setCategory('all');
-  })();
-
-  (() => {
-    const carousel = document.querySelector('[data-banner-carousel]');
-    if (!carousel) return;
-
-    const slides = Array.from(carousel.querySelectorAll('[data-banner-slide]'));
-    const dots = Array.from(carousel.querySelectorAll('[data-banner-dot]'));
-    if (slides.length < 2 || !dots.length) return;
-
-    let activeIndex = 0;
-
-    const setSlide = (nextIndex) => {
-      activeIndex = (nextIndex + slides.length) % slides.length;
-      slides.forEach((slide, index) => {
-        const active = index === activeIndex;
-        slide.classList.toggle('is-active', active);
-        slide.setAttribute('aria-hidden', String(!active));
-      });
-      dots.forEach((dot) => {
-        const active = Number(dot.dataset.bannerDot) === activeIndex;
-        dot.classList.toggle('on', active);
-        dot.setAttribute('aria-current', String(active));
-      });
+    const state = {
+      currentArticleTab: 'all',
+      articles: [],
+      articleTabs: [],
     };
 
-    dots.forEach((dot) => {
-      dot.addEventListener('click', () => {
+    const sampleHrefMap = {
+      '/workspace/app-gallery': 'dej_app_gallery.html',
+      '/workspace/ai-gallery': 'dej_ai_gallery.html',
+      '/workspace/domains': 'workspace_domain_hub.html',
+      '/workspace/permissions': 'workspace_permission_hub.html',
+      '/workspace/databases': 'workspace_database_hub.html',
+      '/workspace/buckets': 'workspace_s3_hub.html',
+      '/workspace/consoles': 'workspace_tools_hub.html',
+      '/workspace/projects': 'workspace_projects_hub.html',
+      '/workspace/jupyter': 'workspace_projects_hub.html',
+      '/workspace/agents': 'workspace_agent_hub.html',
+      '/workspace/chatbots': 'workspace_chatbot_hub.html',
+      '/workspace/tool-inventory': 'workspace_tool_inventory_hub.html',
+      '/workspace/keycenter': 'workspace_keycenter_hub.html',
+      '/docs/about-dej': 'about_dej.html',
+      '/support/chatbot': 'dej_chatbot_trial.html',
+    };
+
+    const iconMap = {
+      app_gallery: 'widgets',
+      ai_gallery: 'smart_toy',
+      domain: 'apartment',
+      group: 'groups',
+      database: 'storage',
+      bucket: 'folder',
+      console: 'web',
+      project: 'public',
+      science: 'science',
+      workflow: 'smart_toy',
+      chat: 'chat',
+      inventory: 'inventory_2',
+      keycenter: 'vpn_key',
+      description: 'description',
+      timeline: 'timeline',
+      chat_bubble: 'chat_bubble_outline',
+      campaign: 'campaign',
+    };
+
+    const typePalette = {
+      release: { icon: 'rocket_launch', badgeBg: '#e0edff', badgeColor: '#3157b7' },
+      security: { icon: 'security', badgeBg: '#fee2e2', badgeColor: '#b91c1c' },
+      info: { icon: 'campaign', badgeBg: '#f3e8ff', badgeColor: '#7c3aed' },
+      default: { icon: 'notifications', badgeBg: '#f3f4f6', badgeColor: '#475569' },
+    };
+
+    const categoryPalette = {
+      development: { icon: 'terminal', badgeBg: '#e0edff', badgeColor: '#3157b7' },
+      workspace: { icon: 'dashboard_customize', badgeBg: '#dcfce7', badgeColor: '#15803d' },
+      operations: { icon: 'rocket_launch', badgeBg: '#ffedd5', badgeColor: '#c2410c' },
+      analytics: { icon: 'query_stats', badgeBg: '#f3e8ff', badgeColor: '#7c3aed' },
+      agent: { icon: 'smart_toy', badgeBg: 'var(--brand-bg)', badgeColor: 'var(--brand)' },
+      default: { icon: 'widgets', badgeBg: '#f3f4f6', badgeColor: '#475569' },
+    };
+
+    function resolvePreviewHref(href, fallback = '#') {
+      if (!href) return fallback;
+      return sampleHrefMap[href] || href;
+    }
+
+    function getCategoryPalette(category) {
+      return categoryPalette[category] || categoryPalette.default;
+    }
+
+    function getTypePalette(type) {
+      return typePalette[type] || typePalette.default;
+    }
+
+    async function apiGet(path) {
+      const response = await fetch(path, {
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json' },
+      });
+
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(payload?.error?.message || `Request failed: ${response.status}`);
+      }
+
+      return payload?.data ?? payload;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function renderStatus(message, { error = false } = {}) {
+      return `<div class="section-status${error ? ' is-error' : ''}">${escapeHtml(message)}</div>`;
+    }
+
+    function renderEmpty(message) {
+      return `<div class="empty-state">${escapeHtml(message)}</div>`;
+    }
+
+    function formatDate(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.valueOf())) return '-';
+      return new Intl.DateTimeFormat('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }).format(date).replace(/\.\s?/g, '.').replace(/\.$/, '');
+    }
+
+    function formatRelativeTime(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.valueOf())) return '-';
+
+      const diffMinutes = Math.round((date.getTime() - Date.now()) / 60000);
+      const rtf = new Intl.RelativeTimeFormat('ko', { numeric: 'auto' });
+      if (Math.abs(diffMinutes) < 60) return rtf.format(diffMinutes, 'minute');
+      const diffHours = Math.round(diffMinutes / 60);
+      if (Math.abs(diffHours) < 24) return rtf.format(diffHours, 'hour');
+      return rtf.format(Math.round(diffHours / 24), 'day');
+    }
+
+    function renderBannerDots() {
+      return `
+        <div class="banner-dots" aria-label="배너 선택">
+          <button class="banner-dot" type="button" data-banner-dot="0" aria-label="런치패드 메인 배너 보기"></button>
+          <button class="banner-dot" type="button" data-banner-dot="1" aria-label="릴리즈 배너 보기"></button>
+          <button class="banner-dot" type="button" data-banner-dot="2" aria-label="스포트라이트 배너 보기"></button>
+          <button class="banner-dot" type="button" data-banner-dot="3" aria-label="보안 배너 보기"></button>
+        </div>
+      `;
+    }
+
+    function renderServiceMenu(groups) {
+      if (!elements.serviceGroups) return;
+      if (!Array.isArray(groups) || !groups.length) {
+        elements.serviceGroups.innerHTML = renderEmpty('서비스 메뉴를 불러오지 못했습니다.');
+        return;
+      }
+
+      elements.serviceGroups.innerHTML = groups.map((group) => `
+        <section class="service-group">
+          <div class="service-group-head">
+            <div class="service-group-copy">
+              <div class="service-group-title-row">
+                <div class="service-group-title">${escapeHtml(group.title)}</div>
+              </div>
+            </div>
+          </div>
+          <div class="service-links">
+            ${(group.links || []).map((link) => `
+              <a class="service-link" href="${escapeHtml(resolvePreviewHref(link.href, '#'))}">
+                <span class="material-icons-round service-link-icon">${escapeHtml(iconMap[link.icon] || link.icon || 'widgets')}</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">${escapeHtml(link.label)}</span>
+                  <span class="service-link-desc">${escapeHtml(link.description || '')}</span>
+                </span>
+              </a>
+            `).join('')}
+          </div>
+        </section>
+      `).join('');
+    }
+
+    function renderHero(hero, summary) {
+      if (!hero || !elements.heroGreet || !elements.heroStats) return;
+
+      const subtitle = summary
+        ? `읽지 않은 알림 ${summary.unreadNotificationCount || 0}건, 진행 중 job ${summary.recentJobStatus?.running || 0}건을 한 번에 확인할 수 있습니다.`
+        : (hero.subtitle || '');
+
+      elements.heroGreet.innerHTML = `
+        <h1>${escapeHtml(hero.title || `Welcome back, ${hero.userName || 'Workspace User'}`)}</h1>
+        <p>${escapeHtml(subtitle)}</p>
+      `;
+
+      elements.heroStats.innerHTML = (hero.heroStats || []).map((stat) => {
+        const href = stat.key === 'workspace' ? 'workspace_projects_hub.html' : null;
+        const tag = href ? 'a' : 'div';
+        const cls = href ? 'stat-chip stat-chip-link' : 'stat-chip';
+        return `
+          <${tag} class="${cls}"${href ? ` href="${escapeHtml(href)}"` : ''}>
+            <div class="stat-chip-icon" style="background:${escapeHtml(stat.color || 'var(--blue)')}"><span class="material-icons-round">${escapeHtml(stat.icon || 'data_usage')}</span></div>
+            <div>
+              <div class="stat-chip-val">${escapeHtml(stat.value || '-')}</div>
+              <div class="stat-chip-label">${escapeHtml(stat.label || '-')}</div>
+            </div>
+          </${tag}>
+        `;
+      }).join('') || renderEmpty('Hero 지표가 없습니다.');
+    }
+
+    function renderDejBanner(hero, serviceMenu) {
+      const section = elements.banners.dej;
+      if (!section || !hero) return;
+
+      const quickLinks = (serviceMenu?.items || [])
+        .flatMap((group) => group.links || [])
+        .filter((link) => ['/workspace/app-gallery', '/workspace/ai-gallery', '/docs/about-dej'].includes(link.href))
+        .slice(0, 2);
+
+      section.querySelector('.banner-body').innerHTML = `
+        <div class="banner-eye"><span class="material-icons-round">timeline</span>Launchpad Overview API</div>
+        <div class="banner-title">${escapeHtml(hero.title || 'Welcome back')}</div>
+        <div class="banner-desc">${escapeHtml(hero.subtitle || 'Workspace overview를 한 번의 집계 응답으로 가져옵니다.')}</div>
+        <div class="banner-actions" style="margin-top:14px">
+          ${(quickLinks.length ? quickLinks : [
+            { label: 'App Gallery', href: 'dej_app_gallery.html', icon: 'widgets' },
+            { label: 'AI Gallery', href: 'dej_ai_gallery.html', icon: 'smart_toy' },
+          ]).map((link, index) => `
+            <a class="${index === 0 ? 'banner-cta' : 'banner-ghost'}" href="${escapeHtml(resolvePreviewHref(link.href, 'index.html'))}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px">
+              <span class="material-icons-round" style="font-size:17px">${escapeHtml(iconMap[link.icon] || link.icon || 'open_in_new')}</span>${escapeHtml(link.label)}
+            </a>
+          `).join('')}
+        </div>
+      `;
+
+      section.querySelector('.banner-side').innerHTML = `
+        <div class="dej-snapshot">
+          <div class="dej-snapshot-title">${escapeHtml(hero.workspaceName || 'DEJ Workspace')}</div>
+          ${(hero.heroStats || []).slice(0, 3).map((stat) => `
+            <div class="dej-snapshot-item">
+              <div class="dej-snapshot-icon"><span class="material-icons-round">${escapeHtml(stat.icon || 'data_usage')}</span></div>
+              <div>
+                <div class="dej-snapshot-name">${escapeHtml(stat.label || '-')}</div>
+                <div class="dej-snapshot-desc">${escapeHtml(stat.value || '-')} · ${escapeHtml(stat.note || 'overview')}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        ${renderBannerDots()}
+      `;
+    }
+
+    function renderAnnouncementBanner(key, item, options = {}) {
+      const section = elements.banners[key];
+      if (!section) return;
+
+      const palette = getTypePalette(item?.type || options.type || 'default');
+      const primaryHref = resolvePreviewHref(item?.href || options.primaryHref || '#', '#');
+      const secondaryHref = resolvePreviewHref(options.secondaryHref || primaryHref, primaryHref);
+
+      section.querySelector('.banner-body').innerHTML = `
+        <div class="banner-eye"><span class="material-icons-round">${escapeHtml(palette.icon)}</span>${escapeHtml(options.eyebrow || item?.title || 'Announcement')}</div>
+        <div class="banner-title">${escapeHtml(item?.title || options.fallbackTitle || '안내 배너')}</div>
+        <div class="banner-desc">${escapeHtml(item?.message || options.fallbackMessage || '안내 메시지가 없습니다.')}</div>
+        <div class="banner-actions" style="margin-top:14px">
+          <a class="banner-cta" href="${escapeHtml(primaryHref)}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px"><span class="material-icons-round" style="font-size:17px">${escapeHtml(palette.icon)}</span>${escapeHtml(options.primaryLabel || '자세히 보기')}</a>
+          <a class="banner-ghost" href="${escapeHtml(secondaryHref)}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px"><span class="material-icons-round" style="font-size:17px">open_in_new</span>${escapeHtml(options.secondaryLabel || '관련 화면 열기')}</a>
+        </div>
+      `;
+
+      section.querySelector('.banner-side').innerHTML = `
+        <div class="banner-visual-card">
+          <div class="visual-card-top"><div class="visual-card-icon"><span class="material-icons-round">${escapeHtml(palette.icon)}</span></div>${escapeHtml((item?.type || options.type || 'announcement').toUpperCase())}</div>
+          <div class="visual-card-title">${escapeHtml(item?.title || options.fallbackTitle || 'Announcement')}</div>
+          <div class="visual-card-meta">${escapeHtml(item?.publishedAt ? `${formatDate(item.publishedAt)} 기준` : 'recent update')}</div>
+          <div class="visual-chip-row">
+            <span class="visual-chip">${escapeHtml(item?.type || options.type || 'notice')}</span>
+            <span class="visual-chip">${escapeHtml(item?.publishedAt ? formatRelativeTime(item.publishedAt) : 'recent')}</span>
+            <span class="visual-chip">/api/v2/launchpad/announcements</span>
+          </div>
+        </div>
+        ${renderBannerDots()}
+      `;
+    }
+
+    function renderAppPreview(items) {
+      if (!elements.appSpotlight || !elements.appStrip) return;
+      const spotlight = Array.isArray(items) ? items[0] : null;
+
+      if (!spotlight) {
+        elements.appSpotlight.innerHTML = renderEmpty('App Gallery preview 데이터가 없습니다.');
+        elements.appStrip.innerHTML = '';
+        return;
+      }
+
+      const palette = getCategoryPalette(spotlight.category);
+      const points = [
+        spotlight.installTargetLabel ? `${spotlight.installTargetLabel} 단위로 바로 연결` : null,
+        spotlight.capabilities?.canInstall ? '설치 API 연결 가능' : '조회 중심 프리뷰',
+        ...(spotlight.tags || []).slice(0, 2),
+      ].filter(Boolean);
+
+      elements.appSpotlight.innerHTML = `
+        <div class="agent-spotlight-top">
+          <div class="agent-spotlight-icon" style="background:${escapeHtml(spotlight.iconColor || '#2563eb')}"><span class="material-icons-round">${escapeHtml(spotlight.icon || palette.icon)}</span></div>
+          <div class="agent-spotlight-state">${escapeHtml(spotlight.badge || '앱 갤러리 추천')}</div>
+        </div>
+        <div class="agent-spotlight-eyebrow">DEJ App Gallery</div>
+        <div class="agent-spotlight-title">${escapeHtml(spotlight.title)}</div>
+        <div class="agent-spotlight-desc">${escapeHtml(spotlight.summary || spotlight.subtitle || '')}</div>
+        <div class="agent-spotlight-points">
+          ${points.map((point) => `<div class="agent-spotlight-point"><span class="material-icons-round">${escapeHtml(palette.icon)}</span><span>${escapeHtml(point)}</span></div>`).join('')}
+        </div>
+        <div class="agent-spotlight-tags">
+          ${(spotlight.tags || []).slice(0, 4).map((tag) => `<span class="agent-spotlight-tag"><span class="material-icons-round">sell</span>${escapeHtml(tag)}</span>`).join('')}
+        </div>
+      `;
+
+      elements.appStrip.innerHTML = items.slice(0, 4).map((item) => {
+        const itemPalette = getCategoryPalette(item.category);
+        return `
+          <a class="app-tile" href="dej_app_gallery.html">
+            <div class="app-tile-icon" style="background:${escapeHtml(item.iconColor || '#2563eb')}"><span class="material-icons-round">${escapeHtml(item.icon || itemPalette.icon)}</span></div>
+            <div class="app-tile-name">${escapeHtml(item.title)}</div>
+            <div class="app-tile-type">${escapeHtml(item.summary || item.subtitle || '')}</div>
+            <div class="app-tile-tag" style="background:${escapeHtml(itemPalette.badgeBg)};color:${escapeHtml(itemPalette.badgeColor)}">${escapeHtml(item.badge || item.categoryLabel || 'App')}</div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function renderAiPreview(spotlight) {
+      if (!elements.aiSpotlight || !elements.aiStrip) return;
+
+      if (!spotlight) {
+        elements.aiSpotlight.innerHTML = renderEmpty('AI Gallery preview 데이터가 없습니다.');
+        elements.aiStrip.innerHTML = '';
+        return;
+      }
+
+      const points = [
+        spotlight.chatbotTypeLabel ? `${spotlight.chatbotTypeLabel} 연결` : null,
+        typeof spotlight.linkedChatbotCount === 'number' ? `연결된 챗봇 ${spotlight.linkedChatbotCount}개` : null,
+        spotlight.capabilities?.canTryNow ? '바로 써보기 가능' : null,
+        spotlight.capabilities?.canOpenWeb ? '웹 열기 가능' : null,
+      ].filter(Boolean);
+
+      elements.aiSpotlight.innerHTML = `
+        <div class="agent-spotlight-top">
+          <div class="agent-spotlight-icon" style="background:${escapeHtml(spotlight.iconColor || '#b40e4d')}"><span class="material-icons-round">smart_toy</span></div>
+          <div class="agent-spotlight-state">AI Gallery Preview</div>
+        </div>
+        <div class="agent-spotlight-eyebrow">DEJ AI Gallery</div>
+        <div class="agent-spotlight-title">${escapeHtml(spotlight.title)}</div>
+        <div class="agent-spotlight-desc">${escapeHtml(spotlight.summary || spotlight.subtitle || '')}</div>
+        <div class="agent-spotlight-points">
+          ${points.map((point) => `<div class="agent-spotlight-point"><span class="material-icons-round">link</span><span>${escapeHtml(point)}</span></div>`).join('')}
+        </div>
+        <div class="agent-spotlight-tags">
+          ${(spotlight.tags || []).slice(0, 4).map((tag) => `<span class="agent-spotlight-tag"><span class="material-icons-round">sell</span>${escapeHtml(tag)}</span>`).join('')}
+        </div>
+      `;
+
+      const chatbotCards = Array.isArray(spotlight.linkedChatbots) && spotlight.linkedChatbots.length
+        ? spotlight.linkedChatbots.slice(0, 4).map((item) => ({
+            name: item.name,
+            summary: item.typeLabel || item.type || 'Connected chatbot',
+            badge: item.hasApi ? 'API 챗봇' : '웹페이지 챗봇',
+            href: item.trialUrl || item.webUrl || 'dej_ai_gallery.html',
+          }))
+        : (spotlight.tags || []).slice(0, 4).map((tag) => ({
+            name: tag,
+            summary: spotlight.chatbotTypeLabel || 'Connected chatbot',
+            badge: spotlight.statusLabel || 'Preview',
+            href: spotlight.trialUrl || spotlight.webUrl || 'dej_ai_gallery.html',
+          }));
+
+      elements.aiStrip.innerHTML = chatbotCards.map((item, index) => `
+        <a class="app-tile" href="${escapeHtml(resolvePreviewHref(item.href, 'dej_ai_gallery.html'))}">
+          <div class="app-tile-icon" style="background:${index % 2 === 0 ? 'linear-gradient(135deg,#b40e4d,#7c5fcf)' : 'linear-gradient(135deg,#4f8cff,#0086cc)'}"><span class="material-icons-round">${index % 2 === 0 ? 'hub' : 'chat'}</span></div>
+          <div class="app-tile-name">${escapeHtml(item.name)}</div>
+          <div class="app-tile-type">${escapeHtml(item.summary)}</div>
+          <div class="app-tile-tag" style="background:var(--brand-bg);color:var(--brand)">${escapeHtml(item.badge)}</div>
+        </a>
+      `).join('');
+    }
+
+    function renderArticles() {
+      if (!elements.articleTabs || !elements.articleList) return;
+
+      elements.articleTabs.innerHTML = (state.articleTabs || []).map((tab) => {
+        const active = tab.id === state.currentArticleTab;
+        return `<button class="article-tab${active ? ' is-active' : ''}" type="button" role="tab" aria-selected="${String(active)}" data-article-tab="${escapeHtml(tab.id)}">${escapeHtml(tab.label)}</button>`;
+      }).join('');
+
+      const visibleItems = state.currentArticleTab === 'all'
+        ? state.articles
+        : state.articles.filter((item) => item.category === state.currentArticleTab);
+
+      if (!visibleItems.length) {
+        elements.articleList.innerHTML = renderEmpty('선택한 카테고리의 아티클이 없습니다.');
+        return;
+      }
+
+      elements.articleList.innerHTML = visibleItems.map((item) => {
+        const palette = getCategoryPalette(item.category);
+        return `
+          <a class="article-item" href="${escapeHtml(resolvePreviewHref(item.href, '#'))}" data-article-category="${escapeHtml(item.category || 'all')}">
+            <div class="article-thumb" style="background:linear-gradient(135deg,${escapeHtml(palette.badgeColor)},#111827)"><span class="material-icons-round">article</span></div>
+            <div>
+              <div class="article-title">${escapeHtml(item.title)}</div>
+              <div class="article-meta"><span class="article-tag" style="background:${escapeHtml(palette.badgeBg)};color:${escapeHtml(palette.badgeColor)}">${escapeHtml(item.categoryLabel || item.category || 'Article')}</span>${escapeHtml(formatDate(item.publishedAt))}</div>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function renderGuides(rows) {
+      if (!elements.guideList) return;
+      if (!Array.isArray(rows) || !rows.length) {
+        elements.guideList.innerHTML = renderEmpty('가이드 링크가 없습니다.');
+        return;
+      }
+
+      const palettes = [
+        { bg: 'var(--blue-bg)', color: 'var(--blue)', icon: 'play_circle' },
+        { bg: 'var(--brand-bg)', color: 'var(--brand)', icon: 'security' },
+        { bg: 'var(--green-bg)', color: 'var(--green)', icon: 'memory' },
+        { bg: 'var(--purple-bg)', color: 'var(--purple)', icon: 'extension' },
+        { bg: '#fef9c3', color: '#ca8a04', icon: 'build' },
+      ];
+
+      elements.guideList.innerHTML = rows.map((row, index) => {
+        const palette = palettes[index % palettes.length];
+        return `
+          <a class="guide-item" href="${escapeHtml(resolvePreviewHref(row.href, '#'))}">
+            <div class="guide-ico" style="background:${palette.bg}"><span class="material-icons-round" style="color:${palette.color}">${palette.icon}</span></div>
+            <div class="guide-name">${escapeHtml(row.title || 'Guide')}</div>
+            <div class="guide-meta">${escapeHtml(row.meta || '바로가기')}</div>
+            <div class="guide-arr"><span class="material-icons-round">chevron_right</span></div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function renderNotifications(notifications) {
+      if (!elements.notificationsList) return;
+      const items = Array.isArray(notifications?.items) ? notifications.items : [];
+      if (!items.length) {
+        elements.notificationsList.innerHTML = renderEmpty('표시할 알림이 없습니다.');
+        return;
+      }
+
+      elements.notificationsList.innerHTML = items.map((item) => `
+        <div class="notif-item">
+          <div class="notif-dot ${item.isUnread ? 'u' : 'r'}"></div>
+          <div>
+            <div class="notif-text"><b>${escapeHtml(item.title || '알림')}</b> ${escapeHtml(item.message || '')}</div>
+            <div class="notif-time">${escapeHtml(formatRelativeTime(item.createdAt))}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function getProjectPill(project, jobs) {
+      const match = (jobs || []).find((job) => String(job.id || '').includes(project.id || ''));
+      if (match?.status === 'running') return { label: 'Running', className: 'pill pill-run' };
+      if (match?.status === 'queued') return { label: 'Queued', className: 'pill pill-build' };
+      if (match?.status === 'failed') return { label: 'Error', className: 'pill pill-err' };
+      return { label: 'Ready', className: 'pill pill-stop' };
+    }
+
+    function renderDeployments(myWork) {
+      if (!elements.deploySummary || !elements.deployList) return;
+
+      const summary = myWork?.summary || {};
+      const projects = Array.isArray(myWork?.projects?.items) ? myWork.projects.items : [];
+      const ides = Array.isArray(myWork?.ides?.items) ? myWork.ides.items : [];
+      const jobs = Array.isArray(myWork?.jobs?.items) ? myWork.jobs.items : [];
+
+      elements.deploySummary.innerHTML = `
+        <div class="deploy-summary">
+          <div class="deploy-summary-card">
+            <div class="deploy-summary-label">내 프로젝트</div>
+            <div class="deploy-summary-value">${escapeHtml(summary.projectCount ?? projects.length ?? 0)}</div>
+          </div>
+          <div class="deploy-summary-card">
+            <div class="deploy-summary-label">활성 IDE / Job</div>
+            <div class="deploy-summary-value">${escapeHtml(`${summary.ideCount ?? ides.length ?? 0} / ${summary.jobCount ?? jobs.length ?? 0}`)}</div>
+          </div>
+        </div>
+      `;
+
+      if (!projects.length) {
+        elements.deployList.innerHTML = renderEmpty('표시할 프로젝트가 없습니다.');
+        return;
+      }
+
+      const palettes = [
+        'linear-gradient(135deg,#34d399,#0d9488)',
+        'linear-gradient(135deg,#4f8cff,#3b6fcf)',
+        'linear-gradient(135deg,#22d3ee,#0086cc)',
+        'linear-gradient(135deg,#a78bfa,#7c5fcf)',
+        'linear-gradient(135deg,#d6d8db,#9298a0)',
+      ];
+
+      elements.deployList.innerHTML = projects.slice(0, 5).map((project, index) => {
+        const ide = ides.find((item) => item.projectId === project.id);
+        const pill = getProjectPill(project, jobs);
+        return `
+          <div class="deploy-item">
+            <div class="deploy-ico" style="background:${palettes[index % palettes.length]}"><span class="material-icons-round">${ide ? 'terminal' : 'rocket_launch'}</span></div>
+            <div>
+              <div class="deploy-name">${escapeHtml(project.name || project.id || 'project')}</div>
+              <div class="deploy-ver">${escapeHtml(project.ide || ide?.ide || project.projectType || 'workspace')} · ${escapeHtml(formatRelativeTime(project.updatedAt || ide?.lastTransitionAt || jobs[0]?.updatedAt))}</div>
+            </div>
+            <span class="${escapeHtml(pill.className)}">${escapeHtml(pill.label)}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderResources(resources) {
+      if (!elements.resourceSummary || !elements.resourceList) return;
+
+      const summary = resources?.summary || {};
+      elements.resourceSummary.innerHTML = `
+        <div class="resource-summary">
+          <div class="resource-summary-chip"><strong>${escapeHtml(summary.totalResources ?? 0)}</strong><span>전체 리소스</span></div>
+          <div class="resource-summary-chip"><strong>${escapeHtml(summary.attentionCount ?? 0)}</strong><span>점검 필요</span></div>
+          <div class="resource-summary-chip"><strong>${escapeHtml(summary.totalBindings ?? 0)}</strong><span>연결 수</span></div>
+        </div>
+      `;
+
+      const items = [
+        ...((resources?.databases?.items || []).map((item) => ({
+          type: 'database',
+          icon: 'storage',
+          href: 'workspace_database_hub.html',
+          title: item.name,
+          meta: `${item.engine || 'DB'} · ${item.status || '-'}`,
+        }))),
+        ...((resources?.buckets?.items || []).map((item) => ({
+          type: 'bucket',
+          icon: 'folder',
+          href: item.openUrl || item.browserUrl || 'workspace_s3_hub.html',
+          title: item.name,
+          meta: `${item.type || 'Bucket'} · ${item.status || '-'}`,
+        }))),
+        ...((resources?.domains?.items || []).map((item) => ({
+          type: 'domain',
+          icon: 'apartment',
+          href: 'workspace_domain_hub.html',
+          title: item.name,
+          meta: `${item.kind || 'Domain'} · ${item.status || '-'}`,
+        }))),
+        ...((resources?.consoles?.items || []).map((item) => ({
+          type: 'console',
+          icon: 'web',
+          href: item.openUrl || 'workspace_tools_hub.html',
+          title: item.name,
+          meta: `${item.typeLabel || item.type || 'Console'} · ${item.statusLabel || item.status || '-'}`,
+        }))),
+      ].slice(0, 7);
+
+      if (!items.length) {
+        elements.resourceList.innerHTML = renderEmpty('표시할 리소스가 없습니다.');
+        return;
+      }
+
+      elements.resourceList.innerHTML = items.map((item) => `
+        <a class="resource-rail-item" href="${escapeHtml(resolvePreviewHref(item.href, '#'))}">
+          <span class="resource-rail-icon" style="background:${item.type === 'database' ? 'linear-gradient(135deg,#2563eb,#06b6d4)' : item.type === 'bucket' ? 'linear-gradient(135deg,#0f766e,#2dd4bf)' : item.type === 'domain' ? 'linear-gradient(135deg,#4f46e5,#60a5fa)' : 'linear-gradient(135deg,#f97316,#fb923c)'}"><span class="material-icons-round">${escapeHtml(item.icon)}</span></span>
+          <span class="resource-rail-copy-item">
+            <span class="resource-rail-type">${escapeHtml(item.meta)}</span>
+            <span class="resource-rail-title-item">${escapeHtml(item.title)}</span>
+          </span>
+        </a>
+      `).join('');
+    }
+
+    function initBannerCarousel() {
+      const carousel = document.querySelector('[data-banner-carousel]');
+      if (!carousel) return;
+
+      const slides = Array.from(carousel.querySelectorAll('[data-banner-slide]'));
+      const dots = Array.from(carousel.querySelectorAll('[data-banner-dot]'));
+      if (slides.length < 2 || !dots.length) return;
+
+      const setSlide = (nextIndex) => {
+        const activeIndex = (Number(nextIndex) + slides.length) % slides.length;
+        slides.forEach((slide, index) => {
+          const active = index === activeIndex;
+          slide.classList.toggle('is-active', active);
+          slide.setAttribute('aria-hidden', String(!active));
+        });
+        dots.forEach((dot, index) => {
+          const active = index === activeIndex;
+          dot.classList.toggle('on', active);
+          dot.setAttribute('aria-current', String(active));
+        });
+      };
+
+      carousel.addEventListener('click', (event) => {
+        const dot = event.target.closest('[data-banner-dot]');
+        if (!dot) return;
         setSlide(Number(dot.dataset.bannerDot) || 0);
       });
+
+      setSlide(0);
+    }
+
+    elements.articleTabs?.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-article-tab]');
+      if (!button) return;
+      state.currentArticleTab = button.dataset.articleTab || 'all';
+      renderArticles();
     });
 
-    setSlide(activeIndex);
+    async function loadLaunchpad() {
+      const loadingMessage = 'Launchpad API를 연결하는 중입니다...';
+      if (elements.articleList) elements.articleList.innerHTML = renderStatus(loadingMessage);
+      if (elements.guideList) elements.guideList.innerHTML = renderStatus(loadingMessage);
+      if (elements.notificationsList) elements.notificationsList.innerHTML = renderStatus(loadingMessage);
+      if (elements.deployList) elements.deployList.innerHTML = renderStatus(loadingMessage);
+      if (elements.resourceList) elements.resourceList.innerHTML = renderStatus(loadingMessage);
+
+      try {
+        const [overview, myWork, resources] = await Promise.all([
+          apiGet('/api/v2/launchpad/overview'),
+          apiGet('/api/v2/launchpad/my-work'),
+          apiGet('/api/v2/launchpad/resources'),
+        ]);
+
+        renderServiceMenu(overview?.serviceMenu?.items || []);
+        renderHero(overview?.hero, myWork?.summary);
+        renderDejBanner(overview?.hero, overview?.serviceMenu);
+
+        const announcements = Array.isArray(overview?.announcements?.items) ? overview.announcements.items : [];
+        const releaseItem = announcements.find((item) => item.type !== 'security') || announcements[0];
+        const securityItem = announcements.find((item) => item.type === 'security') || announcements[1] || announcements[0];
+
+        renderAnnouncementBanner('release', releaseItem, {
+          eyebrow: 'Launchpad Release',
+          primaryLabel: '가이드 열기',
+          secondaryLabel: 'App Gallery 보기',
+          secondaryHref: 'dej_app_gallery.html',
+          type: 'release',
+        });
+        renderAnnouncementBanner('event', announcements[1] || releaseItem, {
+          eyebrow: 'Launchpad Spotlight',
+          primaryLabel: '관련 문서 보기',
+          secondaryLabel: 'AI Gallery 보기',
+          secondaryHref: 'dej_ai_gallery.html',
+          type: 'info',
+        });
+        renderAnnouncementBanner('security', securityItem, {
+          eyebrow: 'Security Notice',
+          primaryLabel: '보안 가이드',
+          secondaryLabel: 'Keycenter 보기',
+          secondaryHref: 'workspace_keycenter_hub.html',
+          type: 'security',
+        });
+
+        renderAppPreview(overview?.storeSpotlight?.featuredApps || []);
+        renderAiPreview(overview?.storeSpotlight?.aiSpotlight || null);
+
+        state.articles = Array.isArray(overview?.articles?.items) ? overview.articles.items : [];
+        state.articleTabs = Array.isArray(overview?.articles?.tabs) ? overview.articles.tabs : [];
+        state.currentArticleTab = state.articleTabs[0]?.id || 'all';
+        renderArticles();
+
+        renderGuides(overview?.guides?.rows || []);
+        renderNotifications(myWork?.notifications);
+        renderDeployments(myWork);
+        renderResources(resources);
+        initBannerCarousel();
+      } catch (error) {
+        const message = error.message || 'Launchpad API를 불러오지 못했습니다.';
+        if (elements.articleList) elements.articleList.innerHTML = renderStatus(message, { error: true });
+        if (elements.guideList) elements.guideList.innerHTML = renderStatus(message, { error: true });
+        if (elements.notificationsList) elements.notificationsList.innerHTML = renderStatus(message, { error: true });
+        if (elements.deployList) elements.deployList.innerHTML = renderStatus(message, { error: true });
+        if (elements.resourceList) elements.resourceList.innerHTML = renderStatus(message, { error: true });
+      }
+    }
+
+    loadLaunchpad();
   })();
 
 </script>

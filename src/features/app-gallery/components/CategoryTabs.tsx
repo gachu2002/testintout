@@ -35,7 +35,7 @@ export function CategoryTabs({
             onClick={() => onCategoryChange(category.id)}
             type="button"
           >
-            {category.label}
+            {category.label} ({category.count})
           </CategoryButton>
         );
       })}

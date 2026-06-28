@@ -72,11 +72,27 @@ export function resolveMockResponse(
   method: string | undefined,
   rawUrl: string | undefined,
 ): MockResolution | null {
-  if (method !== 'GET' || !rawUrl) {
+  if (!method || !rawUrl) {
     return null;
   }
 
   const requestUrl = new URL(rawUrl, 'http://localhost');
+
+  if (
+    method === 'POST' &&
+    /^\/api\/v2\/app-gallery\/apps\/([^/]+)\/install$/.test(requestUrl.pathname)
+  ) {
+    return {
+      payload: mockData.appGalleryInstallResponse ?? {
+        data: { jobId: '6a3a02a5dc684c9fde7e52e1', status: 'queued' },
+      },
+      status: 200,
+    };
+  }
+
+  if (method !== 'GET') {
+    return null;
+  }
 
   if (
     requestUrl.pathname === '/api/v2/panels/tips' &&
@@ -288,11 +304,15 @@ function applyPagination(payload: unknown, params: URLSearchParams) {
   const q = params.get('q')?.trim().toLowerCase() ?? '';
   const cursor = params.get('cursor') ?? '';
   const offset = parseCursor(cursor);
-  const filteredItems = q ? payload.items.filter((item) => matchesQuery(item, q)) : payload.items;
+  const category = params.get('filter[category]')?.trim() ?? '';
+  const categoryItems = category
+    ? payload.items.filter((item) => matchesCategory(item, category))
+    : payload.items;
+  const filteredItems = q ? categoryItems.filter((item) => matchesQuery(item, q)) : categoryItems;
   const limit = parseLimit(params.get('limit'), filteredItems.length);
-  const total = q ? filteredItems.length : getPayloadTotal(payload);
+  const total = q || category ? filteredItems.length : getPayloadTotal(payload);
 
-  if (offset === 0 && filteredItems.length <= limit && !q) {
+  if (offset === 0 && filteredItems.length <= limit && !q && !category) {
     return payload;
   }
 
@@ -307,7 +327,7 @@ function applyPagination(payload: unknown, params: URLSearchParams) {
       ...payload.page,
       cursor: cursor || null,
       hasNext,
-      nextCursor: hasNext ? formatCursor(nextOffset) : '',
+      nextCursor: hasNext ? formatCursor(nextOffset) : null,
       total,
     },
   };
@@ -357,9 +377,24 @@ function getPayloadTotal(payload: PaginatedPayload) {
 function matchesQuery(item: unknown, query: string) {
   if (typeof item !== 'object' || item === null) return false;
 
-  const { description, name } = item as { description?: unknown; name?: unknown };
+  const { description, name, subtitle, summary, tags, title } = item as {
+    description?: unknown;
+    name?: unknown;
+    subtitle?: unknown;
+    summary?: unknown;
+    tags?: unknown;
+    title?: unknown;
+  };
 
-  return [name, description]
+  return [name, description, subtitle, summary, title, ...(Array.isArray(tags) ? tags : [])]
     .filter((value): value is string => typeof value === 'string')
     .some((value) => value.toLowerCase().includes(query));
+}
+
+function matchesCategory(item: unknown, category: string) {
+  if (typeof item !== 'object' || item === null) return false;
+
+  const itemCategory = (item as { category?: unknown }).category;
+
+  return typeof itemCategory === 'string' && itemCategory === category;
 }

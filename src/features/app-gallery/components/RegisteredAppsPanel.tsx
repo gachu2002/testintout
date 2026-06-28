@@ -20,9 +20,11 @@ import { iconGradient } from '@/features/app-gallery/utils/visuals';
 export function RegisteredAppsPanel({
   apps,
   isLoading,
+  onOpenAppDetail,
 }: {
   apps: AppGalleryApp[];
   isLoading: boolean;
+  onOpenAppDetail: (slug: string) => void;
 }) {
   return (
     <PanelCard>
@@ -39,10 +41,11 @@ export function RegisteredAppsPanel({
           letterSpacing="-0.04em"
           lineHeight={1.18}
         >
-          Review recently added apps at a glance
+          실제 App Gallery 카탈로그를 확인해 보세요
         </Typography>
         <Typography color="text.secondary" fontSize={13} lineHeight={1.7} maxWidth={760}>
-          Compare names, descriptions, categories, and install targets before choosing what to open.
+          카테고리와 검색 조건에 맞는 앱을 실시간으로 조회합니다. 카드에서 상세를 열면 실제
+          /api/v2/app-gallery/apps/:slug 계약까지 이어집니다.
         </Typography>
       </Stack>
 
@@ -53,21 +56,27 @@ export function RegisteredAppsPanel({
       ) : (
         <CardGrid>
           {apps.map((app) => (
-            <AppCard app={app} key={app.slug} />
+            <AppCard app={app} key={app.slug} onOpenAppDetail={onOpenAppDetail} />
           ))}
         </CardGrid>
       )}
 
       {!isLoading && apps.length === 0 ? (
         <Typography color="text.secondary" sx={{ mt: 2 }} variant="body2">
-          No apps match the current search and category.
+          조건에 맞는 앱이 없습니다.
         </Typography>
       ) : null}
     </PanelCard>
   );
 }
 
-function AppCard({ app }: { app: AppGalleryApp }) {
+function AppCard({
+  app,
+  onOpenAppDetail,
+}: {
+  app: AppGalleryApp;
+  onOpenAppDetail: (slug: string) => void;
+}) {
   return (
     <StoreCard>
       <Stack
@@ -127,21 +136,27 @@ function AppCard({ app }: { app: AppGalleryApp }) {
           fontWeight={800}
           sx={(theme) => ({ color: theme.workspace.colors.green })}
         >
-          Launch URL pending
+          {app.capabilities.canInstall ? '설치 API 연결 가능' : '조회 전용'}
         </Typography>
         <Box
-          component="span"
+          component="button"
+          onClick={() => onOpenAppDetail(app.slug)}
           sx={{
             alignItems: 'center',
+            background: 'transparent',
+            border: 0,
             color: 'text.disabled',
+            cursor: 'pointer',
             display: 'inline-flex',
             fontSize: 12,
             fontWeight: 800,
             gap: 0.5,
+            p: 0,
             textDecoration: 'none',
           }}
+          type="button"
         >
-          Open
+          상세 보기
           <ChevronRightRoundedIcon sx={{ fontSize: 15 }} />
         </Box>
       </Stack>
