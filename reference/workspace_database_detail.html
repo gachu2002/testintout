@@ -493,7 +493,7 @@
     .action-btn:hover { transform:translateY(-1px); }
     .hero-stats {
       display:grid;
-      grid-template-columns:repeat(4, minmax(0,1fr));
+      grid-template-columns:repeat(auto-fit, minmax(180px,1fr));
       gap:14px;
     }
     .stat-card {
@@ -533,6 +533,41 @@
       gap:22px;
       align-items:start;
     }
+    .section-tabs {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:-2px;
+    }
+    .section-tab {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      height:40px;
+      padding:0 14px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.82);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+      transition:.16s ease;
+    }
+    .section-tab:hover {
+      border-color:var(--border-strong);
+      background:#fff;
+      color:var(--text);
+    }
+    .section-tab.is-active {
+      color:var(--brand);
+      border-color:rgba(37,99,235,.24);
+      background:var(--brand-bg);
+      box-shadow:inset 0 0 0 1px rgba(37,99,235,.08);
+    }
+    .section-tab .material-icons-round {
+      font-size:16px;
+    }
+    [data-detail-panel][hidden] { display:none; }
     .main-col,
     .side-col {
       display:grid;
@@ -825,9 +860,13 @@
       display:inline-flex;
       align-items:center;
       gap:5px;
+      padding:0;
+      border:none;
+      background:none;
       color:var(--brand);
       font-size:12px;
       font-weight:800;
+      cursor:pointer;
     }
     .console-binding-card {
       grid-template-columns:minmax(0,1fr) auto;
@@ -916,6 +955,17 @@
       font-size:11px;
       font-weight:800;
     }
+    .console-open-buttons {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+    }
+    .console-open-note {
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.55;
+    }
     .console-terminal {
       min-height:280px;
       padding:18px;
@@ -971,6 +1021,42 @@
       font-size:13px;
       line-height:1.6;
       word-break:break-word;
+    }
+    .kv-value.is-secret {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .secret-value {
+      min-width:0;
+      max-width:100%;
+    }
+    .secret-actions {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-shrink:0;
+    }
+    .icon-action-btn {
+      width:32px;
+      height:32px;
+      border:none;
+      border-radius:10px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:#eef4ff;
+      color:var(--brand);
+      transition:background .15s ease, transform .15s ease;
+    }
+    .icon-action-btn:hover {
+      background:#dbeafe;
+      transform:translateY(-1px);
+    }
+    .icon-action-btn.is-copied {
+      background:#dcfce7;
+      color:#15803d;
     }
     .mono {
       font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -1302,7 +1388,7 @@
 <body>
   <div id="app"></div>
   <script>
-    (() => {
+    (async () => {
       const logoDataUrl = "data:image/svg+xml,%3csvg%20width='35'%20height='20'%20viewBox='0%200%2035%2020'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M16.7961%2010.1421L21.022%2014.368C23.4543%2016.8004%2027.398%2016.8004%2029.8303%2014.368C32.2627%2011.9356%2032.2627%207.99197%2029.8303%205.5596C27.398%203.12723%2023.4543%203.12723%2021.022%205.5596L20.723%205.85861L18.7019%203.83756L19.0009%203.53856C22.5495%20-0.0100035%2028.3028%20-0.0100042%2031.8514%203.53856C35.4%207.08712%2035.4%2012.8405%2031.8514%2016.389C28.3028%2019.9376%2022.5495%2019.9376%2019.0009%2016.389L12.5757%209.96379L14.5948%207.9447L16.7941%2010.144L16.7961%2010.1421ZM17.6605%208.92103L19.6782%206.90332L17.6572%204.88228L15.6395%206.89998L17.6605%208.92103Z'%20fill='%236D6E72'/%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M14.3637%205.63217L18.6416%209.91016L18.6428%209.90899L20.7901%2012.0562L22.8099%2010.0364L16.3847%203.61113C12.8361%200.0625671%207.08278%200.0625666%203.53422%203.61113C-0.0143374%207.15969%20-0.0143374%2012.913%203.53422%2016.4616C7.08278%2020.0102%2012.8361%2020.0102%2016.3847%2016.4616L16.6801%2016.1662L14.6591%2014.1452L14.3637%2014.4406C11.9313%2016.8729%207.98764%2016.8729%205.55527%2014.4406C3.1229%2012.0082%203.1229%208.06454%205.55527%205.63217C7.98764%203.1998%2011.9313%203.1998%2014.3637%205.63217ZM15.7038%2013.1004L17.7248%2015.1215L19.7453%2013.101L17.7243%2011.0799L15.7038%2013.1004Z'%20fill='%23A50034'/%3e%3crect%20x='15.376'%20y='12.7714'%20width='2.85369'%20height='5.21909'%20transform='rotate(-45%2015.376%2012.7714)'%20fill='%236D6E72'/%3e%3c/svg%3e";
 
       const dbCatalog = {
@@ -2267,10 +2353,992 @@
         ];
       });
 
+      const API_BASE = "/api/v2";
+      const DEFAULT_STATIC_KEY = "hermes-main-postgres";
+      const DETAIL_THEME_BY_ENGINE = {
+        mysql: { bg: "#edf4ff", brand: "#2563eb", brandBg: "#cfe2ff", brandSoft: "rgba(37,99,235,.18)", accent: "#06b6d4", label: "MySQL" },
+        postgres: { bg: "#eef4ff", brand: "#1d4ed8", brandBg: "#dbeafe", brandSoft: "rgba(29,78,216,.16)", accent: "#38bdf8", label: "PostgreSQL" },
+        mongo: { bg: "#eefcf4", brand: "#15803d", brandBg: "#dcfce7", brandSoft: "rgba(21,128,61,.16)", accent: "#4ade80", label: "MongoDB" },
+        redis: { bg: "#fff6ed", brand: "#ea580c", brandBg: "#fed7aa", brandSoft: "rgba(234,88,12,.16)", accent: "#fb923c", label: "Redis" },
+        elastic: { bg: "#f6f3ff", brand: "#7c3aed", brandBg: "#ede9fe", brandSoft: "rgba(124,58,237,.16)", accent: "#a78bfa", label: "Elasticsearch" },
+        milvus: { bg: "#ecfeff", brand: "#0f766e", brandBg: "#ccfbf1", brandSoft: "rgba(15,118,110,.16)", accent: "#5eead4", label: "Milvus" }
+      };
+      const ENGINE_TEMPLATE_KEY = {
+        postgres: "hermes-main-postgres",
+        mysql: "payments-mysql",
+        mongo: "customer-profile-mongo",
+        redis: "workspace-session-redis",
+        elastic: "ops-search",
+        milvus: "search-embedding"
+      };
+
+      function buildQuery(params) {
+        const searchParams = new URLSearchParams();
+        Object.entries(params || {}).forEach(([key, value]) => {
+          if (value === undefined || value === null || value === "") {
+            return;
+          }
+          searchParams.set(key, String(value));
+        });
+        const query = searchParams.toString();
+        return query ? `?${query}` : "";
+      }
+
+      async function requestJson(path, options) {
+        const response = await fetch(`${API_BASE}${path}`, {
+          credentials: "same-origin",
+          headers: {
+            Accept: "application/json"
+          },
+          ...(options || {})
+        });
+
+        if (!response.ok) {
+          throw new Error(`${response.status} ${response.statusText}`);
+        }
+
+        return response.json();
+      }
+
+      async function fetchJson(path, params) {
+        return requestJson(`${path}${buildQuery(params)}`);
+      }
+
+      function extractData(payload, fallback) {
+        if (payload && typeof payload === "object" && "data" in payload) {
+          return payload.data;
+        }
+        return payload ?? fallback;
+      }
+
+      function extractItems(payload) {
+        const direct = payload && Array.isArray(payload.items) ? payload.items : null;
+        if (direct) {
+          return direct;
+        }
+        const nested = payload && payload.data && Array.isArray(payload.data.items) ? payload.data.items : null;
+        return nested || [];
+      }
+
+      function formatNumber(value) {
+        const amount = Number(value);
+        if (!Number.isFinite(amount)) {
+          return "-";
+        }
+        return new Intl.NumberFormat("ko-KR").format(amount);
+      }
+
+      function formatBytes(value) {
+        const amount = Number(value);
+        if (!Number.isFinite(amount) || amount <= 0) {
+          return "0B";
+        }
+
+        const units = ["B", "KB", "MB", "GB", "TB", "PB"];
+        let displayValue = amount;
+        let unitIndex = 0;
+
+        while (displayValue >= 1024 && unitIndex < units.length - 1) {
+          displayValue /= 1024;
+          unitIndex += 1;
+        }
+
+        const digits = displayValue >= 10 || unitIndex === 0 ? 0 : 1;
+        return `${displayValue.toFixed(digits)} ${units[unitIndex]}`;
+      }
+
+      function formatDateTime(value) {
+        if (!value) {
+          return "N/A";
+        }
+
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return "N/A";
+        }
+
+        return new Intl.DateTimeFormat("ko-KR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit"
+        }).format(date);
+      }
+
+      function formatRelativeTime(value) {
+        if (!value) {
+          return "최근";
+        }
+
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return "최근";
+        }
+
+        const diffMs = Date.now() - date.getTime();
+        const diffMinutes = Math.max(0, Math.floor(diffMs / 60000));
+
+        if (diffMinutes < 1) return "방금 전";
+        if (diffMinutes < 60) return `${diffMinutes}분 전`;
+
+        const diffHours = Math.floor(diffMinutes / 60);
+        if (diffHours < 24) return `${diffHours}시간 전`;
+
+        const diffDays = Math.floor(diffHours / 24);
+        return `${Math.max(diffDays, 1)}일 전`;
+      }
+
+      function normalizeText(value, fallback = "-") {
+        const normalized = String(value ?? "").trim();
+        return normalized || fallback;
+      }
+
+      function normalizeInlineText(value) {
+        return String(value ?? "").trim().replace(/\s+/g, " ");
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function maskSecret(value) {
+        const normalized = normalizeInlineText(value);
+        if (!normalized) {
+          return "N/A";
+        }
+
+        return "•".repeat(Math.max(8, Math.min(normalized.length, 16)));
+      }
+
+      function cloneTemplateForEngine(engine) {
+        const key = ENGINE_TEMPLATE_KEY[engine] || DEFAULT_STATIC_KEY;
+        return JSON.parse(JSON.stringify(dbCatalog[key]));
+      }
+
+      function formatCompactBytes(value) {
+        const amount = Number(value);
+        if (!Number.isFinite(amount) || amount <= 0) {
+          return { value: "0", suffix: "B" };
+        }
+
+        const units = ["B", "KB", "MB", "GB", "TB", "PB"];
+        let displayValue = amount;
+        let unitIndex = 0;
+
+        while (displayValue >= 1024 && unitIndex < units.length - 1) {
+          displayValue /= 1024;
+          unitIndex += 1;
+        }
+
+        const digits = displayValue >= 100 || unitIndex === 0 ? 0 : 1;
+        return {
+          value: displayValue.toFixed(digits),
+          suffix: units[unitIndex]
+        };
+      }
+
+      function formatQuotaMeta(usedBytes, quotaBytes) {
+        const quotaLabel = formatBytes(quotaBytes);
+        if (!quotaBytes || quotaBytes <= 0) {
+          return `${quotaLabel} quota`;
+        }
+
+        const percent = Math.max(0, Math.min(100, (Number(usedBytes || 0) / quotaBytes) * 100));
+        return `${quotaLabel} quota 중 ${percent.toFixed(1)}%`;
+      }
+
+      function formatQuotaMetaFromLabels(quotaLabel, usagePercent) {
+        const normalizedQuota = normalizeInlineText(quotaLabel);
+        if (!normalizedQuota) {
+          return "N/A quota";
+        }
+
+        if (!Number.isFinite(usagePercent)) {
+          return `${normalizedQuota} quota`;
+        }
+
+        return `${normalizedQuota} quota 중 ${usagePercent.toFixed(1)}%`;
+      }
+
+      function splitUsageLabel(label, fallbackBytes) {
+        const normalized = normalizeInlineText(label);
+        const match = normalized.match(/^([0-9]+(?:\.[0-9]+)?)\s*([A-Za-z]+)$/);
+        if (match) {
+          return {
+            value: match[1],
+            suffix: match[2]
+          };
+        }
+
+        return formatCompactBytes(fallbackBytes);
+      }
+
+      function updateHeroStat(stats, label, patch) {
+        const stat = (stats || []).find(item => item.label === label);
+        if (!stat) {
+          return;
+        }
+
+        Object.assign(stat, patch);
+      }
+
+      function updateKvItem(items, key, value) {
+        const found = (items || []).find(item => item.key === key);
+        if (found && value) {
+          found.value = value;
+        }
+      }
+
+      function upsertKvItem(items, key, value) {
+        const normalizedValue = normalizeInlineText(value);
+        if (!Array.isArray(items) || !normalizedValue) {
+          return;
+        }
+
+        const found = items.find(item => item.key === key);
+        if (found) {
+          found.value = normalizedValue;
+          return;
+        }
+
+        items.push({ key, value: normalizedValue });
+      }
+
+      function getEngineDescription(engine, databaseName) {
+        const title = normalizeText(databaseName, "이 데이터베이스");
+        switch (String(engine || "").toLowerCase()) {
+          case "postgres":
+            return `${title}는 주요 트랜잭션과 운영 백오피스가 함께 붙는 PostgreSQL 리소스입니다. 사용량과 연결 영향 범위를 먼저 확인하고, 접속은 운영 정책에 맞춰 read-only 또는 admin 경로로 나누어 접근합니다.`;
+          case "mysql":
+            return `${title}는 서비스 운영 데이터와 백오피스 처리 흐름이 함께 연결되는 MariaDB 리소스입니다. 배치 영향도와 연결 프로젝트를 먼저 보고, 쓰기 작업은 운영 시간대와 백업 정책을 함께 확인한 뒤 진행하는 것이 좋습니다.`;
+          case "mongo":
+            return `${title}는 문서형 서비스 데이터와 이벤트성 적재가 함께 모이는 MongoDB 리소스입니다. 컬렉션 증가량과 연결 애플리케이션 범위를 먼저 확인하고, 접속은 읽기 전용 여부를 구분해 접근하는 것이 안전합니다.`;
+          case "redis":
+            return `${title}는 캐시, 세션, pub/sub 트래픽을 처리하는 Redis 리소스입니다. 메모리 사용량과 연결 서비스 영향을 먼저 확인하고, 운영 작업 전에는 eviction과 replica 상태를 함께 보는 것이 좋습니다.`;
+          case "elastic":
+            return `${title}는 로그와 검색 인덱스를 적재하는 Elasticsearch 리소스입니다. 샤드 분산과 스토리지 증가 속도를 먼저 확인하고, 접근은 Kibana 사용과 서비스 계정을 구분해 운영하는 것이 일반적입니다.`;
+          case "milvus":
+            return `${title}는 임베딩 벡터와 유사도 검색을 처리하는 Milvus 리소스입니다. 컬렉션 증가량과 연결된 검색 서비스를 먼저 확인하고, 색인 작업이나 재시작은 검색 영향 범위를 보고 진행하는 것이 좋습니다.`;
+          default:
+            return `${title}의 현재 상태, 연결 리소스, 접근 정보를 실제 API 기준으로 확인할 수 있습니다.`;
+        }
+      }
+
+      function getUserDisplayName(user) {
+        return normalizeText(user?.displayName || user?.userId || user?.email?.split("@")[0] || user?.sub, "Unknown");
+      }
+
+      function getUserIdentity(user) {
+        const parts = [];
+        const email = normalizeInlineText(user?.email);
+        const accountId = normalizeInlineText(user?.userId || user?.sub);
+
+        if (email) parts.push(email);
+        if (accountId && accountId !== email) parts.push(`ID ${accountId}`);
+
+        return parts.join(" · ") || "계정 정보 없음";
+      }
+
+      function buildParticipantMembers(detail) {
+        const owner = detail?.owner || null;
+        const members = [];
+        const seen = new Set();
+
+        if (owner) {
+          const ownerKey = owner.sub || owner.email || owner.userId;
+          if (ownerKey) {
+            seen.add(ownerKey);
+          }
+
+          members.push({
+            name: getUserDisplayName(owner),
+            role: "Owner",
+            pill: { label: "Owner", tone: "healthy" },
+            meta: getUserIdentity(owner),
+            usage: `계정 ${normalizeText(owner?.userId || owner?.sub, "N/A")}`,
+            storage: `이메일 ${normalizeText(owner?.email, "N/A")}`
+          });
+        }
+
+        (Array.isArray(detail?.collaborators) ? detail.collaborators : []).forEach((member) => {
+          const memberKey = member?.sub || member?.email || member?.userId;
+          if (!memberKey || seen.has(memberKey)) {
+            return;
+          }
+
+          seen.add(memberKey);
+          members.push({
+            name: getUserDisplayName(member),
+            role: "Author",
+            pill: { label: "Author", tone: "healthy" },
+            meta: getUserIdentity(member),
+            usage: `계정 ${normalizeText(member?.userId || member?.sub, "N/A")}`,
+            storage: `이메일 ${normalizeText(member?.email, "N/A")}`
+          });
+        });
+
+        return members;
+      }
+
+      function buildParticipantMeta(members) {
+        const ownerCount = members.filter((item) => item.role === "Owner").length;
+        const authorCount = members.filter((item) => item.role === "Author").length;
+        const parts = [];
+
+        if (ownerCount) parts.push(`owner ${ownerCount}`);
+        if (authorCount) parts.push(`author ${authorCount}`);
+
+        return parts.length ? parts.join(" · ") : "담당 멤버 정보 없음";
+      }
+
+      function buildMemberMeta(members) {
+        const items = Array.isArray(members) ? members : [];
+        if (!items.length) {
+          return "single node";
+        }
+
+        const primaryCount = items.filter(item => /primary|master/i.test(String(item.role || item.pill?.label || ""))).length;
+        const replicaCount = items.filter(item => /replica|secondary/i.test(String(item.role || item.pill?.label || ""))).length;
+        const otherCount = Math.max(0, items.length - primaryCount - replicaCount);
+        const parts = [];
+
+        if (primaryCount) parts.push(`primary ${primaryCount}`);
+        if (replicaCount) parts.push(`replica ${replicaCount}`);
+        if (otherCount) parts.push(`others ${otherCount}`);
+
+        return parts.length ? parts.join(" · ") : `${items.length} nodes`;
+      }
+
+      function toTopology(detail) {
+        const topology = detail?.runtime?.topology || {};
+        const totalMembers = Number.isFinite(topology.totalMembers) ? topology.totalMembers : null;
+        const primaryMembers = Number.isFinite(topology.primaryMembers) ? topology.primaryMembers : null;
+        const replicaMembers = Number.isFinite(topology.replicaMembers) ? topology.replicaMembers : null;
+        const runningMembers = Number.isFinite(topology.runningMembers) ? topology.runningMembers : null;
+
+        return {
+          totalMembers,
+          primaryMembers,
+          replicaMembers,
+          runningMembers
+        };
+      }
+
+      function buildTopologyMeta(topology) {
+        const parts = [];
+
+        if (Number.isFinite(topology.primaryMembers) && topology.primaryMembers > 0) {
+          parts.push(`primary ${topology.primaryMembers}`);
+        }
+        if (Number.isFinite(topology.replicaMembers) && topology.replicaMembers > 0) {
+          parts.push(`replica ${topology.replicaMembers}`);
+        }
+        if (Number.isFinite(topology.runningMembers)) {
+          parts.push(`running ${topology.runningMembers}`);
+        }
+
+        return parts.length ? parts.join(" · ") : "single node";
+      }
+
+      function buildConnectedMeta(projectBindings, consoleBindings) {
+        const projectCount = projectBindings.length;
+        const consoleCount = consoleBindings.length;
+        const parts = [];
+
+        if (projectCount > 0) parts.push(`project ${projectCount}`);
+        if (consoleCount > 0) parts.push(`console ${consoleCount}`);
+
+        return parts.length ? parts.join(" · ") : "연결된 리소스 없음";
+      }
+
+      function buildBackupMeta(backupLabel) {
+        const normalizedBackup = String(backupLabel || "none").trim().toLowerCase();
+        if (!normalizedBackup || normalizedBackup === "none") {
+          return "자동 백업 정책이 설정되어 있지 않습니다.";
+        }
+
+        return `${normalizedBackup} 정책 기준으로 백업이 구성됩니다.`;
+      }
+
+      function pickLastAccessSource(projectBindings, consoleBindings) {
+        const firstProject = projectBindings[0]?.name;
+        const firstConsole = consoleBindings[0]?.name;
+
+        if (firstProject) {
+          return `${firstProject} · binding`;
+        }
+        if (firstConsole) {
+          return `${firstConsole} · console`;
+        }
+
+        return "최근 갱신 기준";
+      }
+
+      function toStatusTone(detail) {
+        const severity = String(detail?.health?.severity || "").toLowerCase();
+        const status = String(detail?.status || "").toLowerCase();
+
+        if (severity === "healthy" || status === "running") {
+          return "healthy";
+        }
+        if (severity === "unknown" || status === "unknown" || status === "stopped") {
+          return "warning";
+        }
+        return "danger";
+      }
+
+      function toStatusLabel(detail) {
+        const status = String(detail?.status || "").trim();
+        if (!status) {
+          return "Unknown";
+        }
+        return status.charAt(0).toUpperCase() + status.slice(1);
+      }
+
+      function toEngineMeta(engine) {
+        return DETAIL_THEME_BY_ENGINE[engine] || {
+          bg: "#edf4ff",
+          brand: "#2563eb",
+          brandBg: "#cfe2ff",
+          brandSoft: "rgba(37,99,235,.18)",
+          accent: "#06b6d4",
+          label: engine ? String(engine).toUpperCase() : "Database"
+        };
+      }
+
+      function buildTrendBars(usagePercent) {
+        const labels = ["Thu", "Fri", "Sat", "Sun", "Mon", "Tue", "Wed"];
+        const base = Number.isFinite(usagePercent) ? usagePercent : 24;
+
+        return labels.map((label, index) => ({
+          label,
+          value: Math.max(18, Math.min(96, Math.round(base * (0.72 + index * 0.05))))
+        }));
+      }
+
+      function buildBindingsForDetail(bindings) {
+        return (bindings || [])
+          .filter(item => item.targetType === "project")
+          .map(item => ({
+            name: item.targetName,
+            href: `workspace_project_detail.html?project=${encodeURIComponent(item.targetName)}`,
+            role: "Connected Project",
+            meta: item.description || "이 데이터베이스와 연결된 프로젝트입니다.",
+            tags: ["project binding", `id ${item.targetId}`],
+            traffic: "Bound",
+            deployment: "연결됨"
+          }));
+      }
+
+      function buildConsoleBindings(bindings) {
+        return (bindings || [])
+          .filter(item => item.targetType === "console")
+          .map(item => ({
+            id: item.targetId,
+            name: item.targetName,
+            meta: item.description || "이 데이터베이스와 연결된 콘솔입니다.",
+            typeLabel: "Console",
+            status: "unknown",
+            statusLabel: "Connected",
+            statusTone: "warning",
+            openUrl: null
+          }));
+      }
+
+      function toConsoleStatusTone(item) {
+        const severity = String(item?.health?.severity || "").toLowerCase();
+        const status = String(item?.status || "").toLowerCase();
+
+        if (severity === "healthy" || status === "running") {
+          return "healthy";
+        }
+        if (status === "starting" || status === "stopping" || severity === "warning" || status === "unknown") {
+          return "warning";
+        }
+        return "danger";
+      }
+
+      async function resolveConsoleDetails(bindings) {
+        const consoleBindings = (bindings || []).filter(item => item.targetType === "console" && item.targetId);
+        if (!consoleBindings.length) {
+          return [];
+        }
+
+        const results = await Promise.all(consoleBindings.map(async (item) => {
+          try {
+            const payload = await fetchJson(`/consoles/${encodeURIComponent(item.targetId)}`);
+            const detail = extractData(payload, null);
+
+            if (!detail) {
+              return {
+                id: item.targetId,
+                name: item.targetName,
+                meta: item.description || "이 데이터베이스와 연결된 콘솔입니다.",
+                typeLabel: "Console",
+                status: "unknown",
+                statusLabel: "Unknown",
+                openUrl: null,
+                health: { severity: "unknown" }
+              };
+            }
+
+            return {
+              id: detail.id || item.targetId,
+              name: detail.name || item.targetName,
+              meta: detail.summary || item.description || "이 데이터베이스와 연결된 콘솔입니다.",
+              typeLabel: detail.typeLabel || "Console",
+              status: detail.status || "unknown",
+              statusLabel: detail.statusLabel || "Unknown",
+              openUrl: detail.openUrl || null,
+              health: detail.health || null
+            };
+          } catch (error) {
+            return {
+              id: item.targetId,
+              name: item.targetName,
+              meta: item.description || "이 데이터베이스와 연결된 콘솔입니다.",
+              typeLabel: "Console",
+              status: "unknown",
+              statusLabel: "Unknown",
+              openUrl: null,
+              health: { severity: "unknown" }
+            };
+          }
+        }));
+
+        return results;
+      }
+
+      function buildSnapshots(backupLabel, updatedAt) {
+        const normalizedBackup = String(backupLabel || "none").toLowerCase();
+        const cycleLabel = normalizedBackup === "none"
+          ? "Manual"
+          : normalizedBackup.charAt(0).toUpperCase() + normalizedBackup.slice(1);
+        const updatedLabel = formatDateTime(updatedAt);
+        const hasPolicy = normalizedBackup !== "none";
+
+        return {
+          manual: {
+            name: "수동 스냅샷",
+            cycle: "Manual",
+            pill: { label: "Ready", tone: "healthy" },
+            meta: "샘플 화면에서 즉시 생성 요청 흐름을 확인할 수 있습니다.",
+            extraLeft: "보관 72시간",
+            extraRight: "최대 10개 로테이션"
+          },
+          summary: [
+            {
+              label: hasPolicy ? cycleLabel : "Policy",
+              value: hasPolicy ? cycleLabel : "Manual",
+              meta: hasPolicy ? `${cycleLabel} 정책 기준으로 백업이 구성됩니다.` : "자동 백업 정책이 설정되어 있지 않습니다."
+            },
+            {
+              label: "Latest Update",
+              value: updatedLabel,
+              meta: "최근 갱신 시각 기준"
+            },
+            {
+              label: "Retention",
+              value: hasPolicy ? "최대 10개" : "수동 관리",
+              meta: "샘플 상세 화면 기준 표시"
+            }
+          ],
+          recent: [
+            {
+              name: hasPolicy ? `${normalizedBackup}-latest` : "manual-latest",
+              cycle: hasPolicy ? cycleLabel : "Manual",
+              pill: { label: "Healthy", tone: "healthy" },
+              meta: `${updatedLabel} 기준 최신 상태`,
+              extraLeft: hasPolicy ? `${cycleLabel} backup policy` : "수동 생성 기반",
+              extraRight: "샘플 데이터"
+            }
+          ]
+        };
+      }
+
+      function buildUnavailableDetail(requestedDb) {
+        const base = cloneTemplateForEngine();
+        const targetName = normalizeText(requestedDb, "Database Detail");
+        const missingReason = requestedDb
+          ? "상세 API 응답을 불러오지 못했습니다."
+          : "Database Hub에서 항목을 선택하면 실제 상세 정보를 불러옵니다.";
+
+        base.statusTone = "warning";
+        base.statusLabel = "Unavailable";
+        base.engineLabel = "Database Detail";
+        base.title = targetName;
+        base.description = missingReason;
+        base.actions = [
+          { label: "Database Hub", icon: "arrow_back", href: "workspace_database_hub.html" }
+        ];
+        base.heroStats = [
+          { label: "Storage Used", value: "-", suffix: "", meta: missingReason },
+          { label: "Health", value: "Unknown", suffix: "", meta: missingReason },
+          { label: "최근 갱신", value: "-", suffix: "", meta: missingReason },
+          { label: "멤버 수", value: "-", suffix: "", meta: missingReason },
+          { label: "Connected", value: "-", suffix: "", meta: missingReason },
+          { label: "Backup Policy", value: "-", suffix: "", meta: missingReason }
+        ];
+        base.runtime.heroLastAccess = { value: "측정 미지원", meta: missingReason };
+        base.runtime.heroCluster = { value: "-", meta: missingReason };
+        base.runtime.overview = (base.runtime.overview || []).map((item) => ({
+          ...item,
+          value: item.key === "Namespace" ? "database" : "N/A"
+        }));
+        base.runtime.members = [];
+        base.summary.label = "Runtime Overview";
+        base.summary.kicker = "실제 DB 선택 필요";
+        base.summary.value = "-";
+        base.summary.unit = "";
+        base.summary.description = missingReason;
+        base.summary.blocks = [
+          { label: "Storage", value: "N/A", meta: "상세 API 응답 없음" },
+          { label: "Bindings", value: "N/A", meta: "상세 API 응답 없음" },
+          { label: "Snapshots", value: "N/A", meta: "상세 API 응답 없음" }
+        ];
+        base.usage.primary.percent = 0;
+        base.usage.primary.value = "N/A";
+        base.usage.primary.meta = missingReason;
+        base.usage.primary.legendLeft = "Used N/A";
+        base.usage.primary.legendRight = "Quota N/A";
+        base.usage.miniStats = [
+          { label: "Health", value: "Unknown", meta: missingReason },
+          { label: "Bindings", value: "-", meta: missingReason }
+        ];
+        base.usage.secondary.bars = [];
+        base.usage.secondary.summaryLeft = missingReason;
+        base.usage.secondary.summaryRight = "Database Hub에서 항목을 선택해 주세요.";
+        base.peakUsage = [
+          { label: "Storage Used", value: "N/A", meta: missingReason },
+          { label: "Storage Quota", value: "N/A", meta: missingReason },
+          { label: "Connected", value: "N/A", meta: missingReason }
+        ];
+        base.access.overview = (base.access.overview || []).map((item) => ({ ...item, value: "N/A" }));
+        base.access.credentials = (base.access.credentials || []).map((item) => ({ ...item, value: "N/A" }));
+        base.access.consoles = [];
+        base.bindings = [
+          {
+            name: "연결된 프로젝트 없음",
+            href: "workspace_projects_hub.html",
+            role: "No Binding",
+            meta: missingReason,
+            tags: ["binding unavailable"],
+            traffic: "-",
+            deployment: "-"
+          }
+        ];
+        base.ops.checkpoints = [
+          { title: "Runtime Health", pill: { label: "Unknown", tone: "warning" }, meta: missingReason },
+          { title: "Access Endpoint", pill: { label: "Pending", tone: "warning" }, meta: missingReason }
+        ];
+        base.ops.events = [
+          { icon: "info", title: "상세 API 대기", meta: missingReason, time: "pending" }
+        ];
+        base.snapshots = {
+          manual: {
+            name: "수동 스냅샷",
+            cycle: "Manual",
+            pill: { label: "Pending", tone: "warning" },
+            meta: missingReason,
+            extraLeft: "API 응답 없음",
+            extraRight: "확인 필요"
+          },
+          summary: [
+            { label: "Policy", value: "-", meta: missingReason },
+            { label: "Latest Update", value: "-", meta: missingReason }
+          ],
+          recent: []
+        };
+
+        return base;
+      }
+
+      function buildApiBackedDetail(detail) {
+        const base = cloneTemplateForEngine(detail?.engine);
+        const engineMeta = toEngineMeta(detail?.engine);
+        const statusTone = toStatusTone(detail);
+        const statusLabel = toStatusLabel(detail);
+        const usagePercent = Number.isFinite(detail?.usage?.usagePercent) ? detail.usage.usagePercent : 0;
+        const bindingItems = Array.isArray(detail?.bindings) ? detail.bindings : [];
+        const projectBindings = buildBindingsForDetail(bindingItems);
+        const consoleBindings = detail?.consoleDetails?.length
+          ? detail.consoleDetails.map((item) => ({
+              id: item.id,
+              name: item.name,
+              meta: item.meta,
+              typeLabel: item.typeLabel,
+              status: item.status,
+              statusLabel: item.statusLabel,
+              statusTone: toConsoleStatusTone(item),
+              openUrl: item.openUrl
+            }))
+          : buildConsoleBindings(bindingItems);
+        const endpointHost = normalizeText(detail?.endpoint?.host || detail?.account?.host, "N/A");
+        const endpointPort = normalizeText(detail?.endpoint?.port || detail?.account?.port, "N/A");
+        const quotaBytes = Number(detail?.usage?.quotaBytes || 0);
+        const usedBytes = Number(detail?.usage?.usedBytes || 0);
+        const usedLabel = normalizeInlineText(detail?.usage?.usedLabel || detail?.runtime?.usage) || formatBytes(usedBytes);
+        const quotaLabel = normalizeInlineText(detail?.usage?.quotaLabel || detail?.runtime?.storageSize) || formatBytes(quotaBytes);
+        const backupLabel = normalizeText(detail?.backup, "none");
+        const versionLabel = detail?.version ? ` ${detail.version}` : "";
+        const healthLabel = normalizeText(detail?.health?.label, "Healthy");
+        const updatedLabel = formatDateTime(detail?.updatedAt);
+        const createdLabel = formatDateTime(detail?.createdAt);
+        const username = normalizeText(detail?.account?.username, "N/A");
+        const passwordRaw = normalizeInlineText(detail?.account?.password);
+        const uri = normalizeText(detail?.account?.uri, "N/A");
+        const hostWithPort = endpointHost === "N/A" ? "N/A" : `${endpointHost}${endpointPort !== "N/A" ? `:${endpointPort}` : ""}`;
+        const compactUsage = splitUsageLabel(usedLabel, usedBytes);
+        const topology = toTopology(detail);
+        const participantMembers = buildParticipantMembers(detail);
+        const memberCount = participantMembers.length || (Number.isFinite(topology.totalMembers) && topology.totalMembers > 0 ? topology.totalMembers : 1);
+        const topologyMeta = buildTopologyMeta(topology);
+        const participantMeta = buildParticipantMeta(participantMembers);
+        const connectedMeta = buildConnectedMeta(projectBindings, consoleBindings);
+        const backupMeta = buildBackupMeta(backupLabel);
+        const connectedCount = bindingItems.length;
+        const activity = detail?.activity || null;
+        const snapshotItems = Array.isArray(detail?.snapshots?.items) ? detail.snapshots.items : [];
+        const totalQueries = Number.isFinite(activity?.totalQueries) ? formatNumber(activity.totalQueries) : "N/A";
+        const uptimeLabel = normalizeText(activity?.uptimeLabel, "측정 미지원");
+
+        base.theme = {
+          bg: engineMeta.bg,
+          brand: engineMeta.brand,
+          brandBg: engineMeta.brandBg,
+          brandSoft: engineMeta.brandSoft,
+          accent: engineMeta.accent
+        };
+        base.statusTone = statusTone;
+        base.statusLabel = statusLabel;
+        base.engineLabel = `${engineMeta.label}${versionLabel ? ` · v${detail.version}` : ""}`;
+        base.title = normalizeText(detail?.name, base.title);
+        base.description = getEngineDescription(detail?.engine, detail?.name);
+        base.actions = [
+          { label: "Database Hub", icon: "arrow_back", href: "workspace_database_hub.html" },
+          { label: consoleBindings[0]?.name ? `${consoleBindings[0].name} 열기` : "Consoles Hub", icon: "open_in_new", href: "workspace_tools_hub.html" }
+        ];
+        base.heroStats = [
+          {
+            label: "Storage Used",
+            value: compactUsage.value,
+            suffix: compactUsage.suffix,
+            meta: formatQuotaMetaFromLabels(quotaLabel, usagePercent)
+          },
+          {
+            label: "Health",
+            value: healthLabel,
+            suffix: "",
+            meta: normalizeText(detail?.health?.message, "최근 상태 점검 기준으로 이상 징후가 없습니다.")
+          },
+          {
+            label: "최근 갱신",
+            value: formatRelativeTime(detail?.updatedAt),
+            suffix: "",
+            meta: updatedLabel
+          },
+          {
+            label: "멤버 수",
+            value: String(memberCount),
+            suffix: "",
+            meta: participantMembers.length ? participantMeta : topologyMeta
+          },
+          {
+            label: "Connected",
+            value: formatNumber(connectedCount),
+            suffix: "",
+            meta: connectedMeta
+          },
+          {
+            label: "Backup Policy",
+            value: backupLabel,
+            suffix: "",
+            meta: backupMeta
+          }
+        ];
+
+        base.runtime.heroLastAccess = {
+          value: "측정 미지원",
+          meta: "실제 접속 이력은 현재 API에서 제공하지 않습니다."
+        };
+        base.runtime.heroCluster = {
+          value: String(memberCount),
+          meta: participantMembers.length ? participantMeta : topologyMeta
+        };
+        updateKvItem(base.runtime.overview, "Last Accessed", "측정 미지원");
+        updateKvItem(base.runtime.overview, "Access Path", connectedMeta);
+        updateKvItem(base.runtime.overview, "Runtime State", statusLabel);
+        updateKvItem(base.runtime.overview, "Created", createdLabel);
+        updateKvItem(base.runtime.overview, "Updated", updatedLabel);
+        updateKvItem(base.runtime.overview, "Namespace", normalizeText(detail?.namespace, base.runtime.overview.find(item => item.key === "Namespace")?.value || "database"));
+        updateKvItem(base.runtime.overview, "Cluster Mode", topologyMeta);
+        upsertKvItem(base.runtime.overview, "Owner", getUserDisplayName(detail?.owner));
+        upsertKvItem(base.runtime.overview, "Authors", participantMembers.filter((member) => member.role === "Author").map((member) => member.name).join(", ") || "없음");
+        base.runtime.members = participantMembers;
+
+        base.usage.primary.percent = usagePercent;
+        base.usage.primary.value = detail?.usage?.storageLabel || `${usedLabel} / ${quotaLabel}`;
+        base.usage.primary.meta = quotaBytes > 0 ? `Quota ${quotaLabel}` : normalizeText(detail?.usage?.storageLabel, base.usage.primary.meta);
+        base.usage.primary.legendLeft = `Used ${usedLabel}`;
+        base.usage.primary.legendRight = `Quota ${quotaLabel}`;
+        base.usage.miniStats = [
+          { label: "Health", value: healthLabel, meta: normalizeText(detail?.health?.message, "최근 상태 점검 기준") },
+          { label: "Activity", value: totalQueries, meta: Number.isFinite(activity?.totalQueries) ? "누적 쿼리/명령 수 기준" : "실제 활동 메트릭을 아직 제공하지 않습니다." }
+        ];
+        base.usage.secondary.bars = [];
+        base.usage.secondary.summaryLeft = `현재 사용률 ${usagePercent.toFixed(1)}%`;
+        base.usage.secondary.summaryRight = "사용량 이력 데이터는 아직 제공되지 않습니다.";
+        base.summary.label = "Runtime Overview";
+        base.summary.kicker = healthLabel === "Healthy" ? "실시간 API 기준 현재 상태" : "운영 점검이 필요한 상태";
+        base.summary.value = usagePercent.toFixed(1);
+        base.summary.unit = "% used";
+        base.summary.description = "스토리지 사용량, 바인딩, 스냅샷과 런타임 상태를 실제 detail API 기준으로 표시합니다.";
+        base.summary.blocks = [
+          { label: "Bindings", value: formatNumber(connectedCount), meta: connectedMeta },
+          { label: "Uptime", value: uptimeLabel, meta: Number.isFinite(activity?.uptimeSeconds) ? "실제 런타임 uptime 기준" : "실제 uptime 메트릭 미지원" },
+          { label: "Snapshots", value: formatNumber(snapshotItems.length), meta: snapshotItems.length ? "현재 조회 가능한 스냅샷 수" : "등록된 스냅샷 없음" }
+        ];
+
+        base.peakUsage = [
+          { label: "Storage Used", value: usedLabel, meta: "현재 사용량" },
+          { label: "Storage Quota", value: quotaLabel, meta: "할당량 기준" },
+          { label: "Uptime", value: uptimeLabel, meta: Number.isFinite(activity?.uptimeSeconds) ? "실제 런타임 uptime 기준" : "실제 uptime 메트릭 미지원" }
+        ];
+
+        updateKvItem(base.access.overview, "Primary Host", endpointHost);
+        updateKvItem(base.access.overview, "Cluster Host", endpointHost);
+        updateKvItem(base.access.overview, "Read-only Host", endpointHost);
+        updateKvItem(base.access.overview, "Read Host", endpointHost);
+        updateKvItem(base.access.overview, "Replica Host", endpointHost);
+        updateKvItem(base.access.overview, "Kibana URL", endpointHost);
+        updateKvItem(base.access.overview, "Port", endpointPort === "N/A" ? endpointPort : `${endpointPort}`);
+        updateKvItem(base.access.overview, "Database", normalizeText(detail?.name, base.title));
+        updateKvItem(base.access.overview, "Namespace", normalizeText(detail?.namespace, "database"));
+        updateKvItem(base.access.overview, "Secret Ref", uri !== "N/A" ? uri : base.access.overview.find(item => item.key === "Secret Ref")?.value);
+
+        updateKvItem(base.access.credentials, "Writer User", username);
+        updateKvItem(base.access.credentials, "Reader User", username);
+        updateKvItem(base.access.credentials, "Ops User", username);
+        updateKvItem(base.access.credentials, "App User", username);
+        updateKvItem(base.access.credentials, "URI", uri);
+        updateKvItem(base.access.credentials, "CLI Example", uri !== "N/A" ? uri : hostWithPort);
+        updateKvItem(base.access.credentials, "Curl Example", uri !== "N/A" ? uri : hostWithPort);
+        updateKvItem(base.access.credentials, "SDK Example", uri !== "N/A" ? uri : hostWithPort);
+        const passwordItem = (base.access.credentials || []).find((item) => item.key === "Password");
+        if (passwordItem) {
+          passwordItem.value = passwordRaw ? maskSecret(passwordRaw) : "N/A";
+          passwordItem.rawValue = passwordRaw;
+          passwordItem.isSecret = Boolean(passwordRaw);
+        }
+
+        base.access.consoles = consoleBindings.length ? consoleBindings : base.access.consoles;
+        base.bindings = projectBindings.length ? projectBindings : [
+          {
+            name: "연결된 프로젝트 없음",
+            href: "workspace_projects_hub.html",
+            role: "No Binding",
+            meta: "현재 이 데이터베이스와 연결된 프로젝트가 없습니다.",
+            tags: ["project binding 없음"],
+            traffic: "-",
+            deployment: "-"
+          }
+        ];
+        base.ops.checkpoints[0] = {
+          title: "Runtime Health",
+          pill: { label: healthLabel, tone: statusTone },
+          meta: normalizeText(detail?.health?.message, "최근 상태 점검 기준으로 이상 징후가 없습니다.")
+        };
+        base.ops.checkpoints[1] = {
+          title: "Access Endpoint",
+          pill: { label: endpointHost === "N/A" ? "Watch" : "Ready", tone: endpointHost === "N/A" ? "warning" : "healthy" },
+          meta: `Host ${hostWithPort}`
+        };
+        base.ops.events[0] = {
+          icon: "update",
+          title: "리소스 갱신 시각",
+          meta: `최근 갱신: ${updatedLabel}`,
+          time: "latest"
+        };
+        base.ops.events[1] = {
+          icon: "analytics",
+          title: "Runtime Activity",
+          meta: Number.isFinite(activity?.totalQueries) ? `누적 activity ${totalQueries}` : "활동 메트릭 없음",
+          time: uptimeLabel
+        };
+        base.snapshots = {
+          manual: {
+            name: "수동 스냅샷",
+            cycle: "Manual",
+            pill: { label: "Ready", tone: "healthy" },
+            meta: "스냅샷 생성/복구는 운영 API 연동 이후 실제 실행 결과로 대체됩니다.",
+            extraLeft: "수동 생성",
+            extraRight: snapshotItems.length ? `${snapshotItems.length}개 조회됨` : "등록된 스냅샷 없음"
+          },
+          summary: [
+            {
+              label: "Policy",
+              value: backupLabel,
+              meta: backupMeta
+            },
+            {
+              label: "Latest Update",
+              value: updatedLabel,
+              meta: "최근 갱신 시각 기준"
+            }
+          ],
+          recent: snapshotItems.slice(0, 5).map((item) => ({
+            name: item.name,
+            cycle: "Snapshot",
+            pill: { label: item.ready ? "Ready" : "Pending", tone: item.ready ? "healthy" : "warning" },
+            meta: item.createdAt ? `${formatDateTime(item.createdAt)} 생성` : "생성 시각 정보 없음",
+            extraLeft: item.restoreSize ? `restore size ${item.restoreSize}` : "restore size 정보 없음",
+            extraRight: item.boundVolumeSnapshotContentName || "volume content 정보 없음"
+          }))
+        };
+
+        return base;
+      }
+
+      async function resolveApiDatabaseDetail(requestedDb) {
+        if (!requestedDb) {
+          return null;
+        }
+
+        const normalizedRequest = String(requestedDb).trim().toLowerCase();
+        if (!normalizedRequest) {
+          return null;
+        }
+
+        try {
+          const listPayload = await fetchJson("/databases", { q: requestedDb, limit: 100 });
+          const items = extractItems(listPayload);
+          const matched = items.find(item => String(item?.name || "").trim().toLowerCase() === normalizedRequest)
+            || items.find(item => String(item?.id || "").trim() === requestedDb);
+
+          if (matched?.id) {
+            const detailPayload = await fetchJson(`/databases/${encodeURIComponent(matched.id)}`);
+            return extractData(detailPayload, null);
+          }
+
+          const detailPayload = await fetchJson(`/databases/${encodeURIComponent(requestedDb)}`);
+          return extractData(detailPayload, null);
+        } catch (error) {
+          console.error("[database_detail] failed to fetch database detail", error);
+          return null;
+        }
+      }
+
       const params = new URLSearchParams(window.location.search);
       const requestedDb = params.get("db");
-      const selectedKey = Object.prototype.hasOwnProperty.call(dbCatalog, requestedDb) ? requestedDb : "hermes-main-postgres";
-      const db = dbCatalog[selectedKey];
+      const apiDetail = await resolveApiDatabaseDetail(requestedDb);
+      const consoleDetails = apiDetail ? await resolveConsoleDetails(apiDetail.bindings) : [];
+      const db = apiDetail ? buildApiBackedDetail({ ...apiDetail, consoleDetails }) : buildUnavailableDetail(requestedDb);
 
       const root = document.documentElement.style;
       root.setProperty("--bg", db.theme.bg || "#edf4ff");
@@ -2324,12 +3392,36 @@
       `).join("");
 
       const renderKvList = (items) => items.map((item) => {
-        const value = item.value.includes("://") || item.value.includes(" ") || item.value.length > 28
-          ? item.value
-          : `<span class="mono">${item.value}</span>`;
+        const rawValue = normalizeText(item?.value, "N/A");
+        const escapedKey = escapeHtml(item?.key || "");
+
+        if (item?.isSecret && item?.rawValue) {
+          const maskedValue = maskSecret(item.rawValue);
+          return `
+            <div class="kv-item" data-secret-row="true">
+              <div class="kv-key">${escapedKey}</div>
+              <div class="kv-value is-secret">
+                <span class="mono secret-value masked" data-secret-value="true" data-secret-visible-state="false" data-secret-hidden="${escapeHtml(maskedValue)}" data-secret-visible="${escapeHtml(item.rawValue)}">${escapeHtml(maskedValue)}</span>
+                <span class="secret-actions">
+                  <button class="icon-action-btn" type="button" data-secret-toggle="true" aria-label="패스워드 보기">
+                    <span class="material-icons-round">visibility</span>
+                  </button>
+                  <button class="icon-action-btn" type="button" data-secret-copy="true" aria-label="패스워드 복사">
+                    <span class="material-icons-round">content_copy</span>
+                  </button>
+                </span>
+              </div>
+            </div>
+          `;
+        }
+
+        const escapedValue = escapeHtml(rawValue);
+        const value = rawValue.includes("://") || rawValue.includes(" ") || rawValue.length > 28
+          ? escapedValue
+          : `<span class="mono">${escapedValue}</span>`;
         return `
           <div class="kv-item">
-            <div class="kv-key">${item.key}</div>
+            <div class="kv-key">${escapedKey}</div>
             <div class="kv-value">${value}</div>
           </div>
         `;
@@ -2366,177 +3458,100 @@
         return found ? found.value : "-";
       };
 
-      const getCredentialValue = (candidates) => {
-        const found = db.access.credentials.find((item) => candidates.includes(item.key));
-        return found ? itemOrValue(found.value) : "-";
-      };
+      const renderConsoleWorkbench = () => {
+        const connectedConsoles = Array.isArray(db.access.consoles) ? db.access.consoles : [];
+        const primaryConsole = connectedConsoles.find((item) => item.status === "running") || connectedConsoles[0] || null;
 
-      const itemOrValue = (value) => value.replace(/••••[^ ]*/g, "******");
-
-      const buildConsolePreset = () => {
-        const host = getAccessValue(["Primary Host", "Cluster Host", "Read-only Host", "Read Host", "Kibana URL"]);
-        const dbName = getAccessValue(["Database", "Mode", "Index Prefix", "Namespace"]);
-        const namespace = db.runtime.overview.find((item) => item.key === "Namespace")?.value || "default";
-        const opsUser = db.access.credentials.find((item) => /Ops User|Reader User|App User/i.test(item.key))?.value || "ops_user";
-
-        if (db.engineLabel.includes("PostgreSQL")) {
-          return {
-            bash: [
-              "$ kubectl exec -it hermes-main-postgres-0 -n postgres -- bash",
-              "postgres@hermes-main-postgres-0:/var/lib/postgresql/data$ export PAGER=cat",
-              `postgres@hermes-main-postgres-0:/var/lib/postgresql/data$ psql -h ${host} -U ${opsUser} ${dbName}`
-            ].join("\n"),
-            dbcli: [
-              `psql "${host} ${dbName}"`,
-              `host=${host}`,
-              `dbname=${dbName}`,
-              `user=${opsUser}`,
-              "sslmode=verify-full",
-              "",
-              `${dbName}=> select now();`
-            ].join("\n")
-          };
+        if (!primaryConsole) {
+          return `
+            <article class="console-launch-card">
+              <div class="console-launch-top">
+                <div>
+                  <div class="console-launch-title">연결된 콘솔 없음</div>
+                  <div class="console-launch-meta">아직 이 데이터베이스에 연결된 콘솔이 없습니다. Consoles Hub에서 콘솔을 생성하거나 바인딩해 주세요.</div>
+                </div>
+              </div>
+              <div class="console-open-buttons">
+                <a class="inline-btn" href="workspace_tools_hub.html" style="height:36px; padding:0 14px; font-size:12px;">
+                  <span class="material-icons-round">web</span>
+                  Consoles Hub 보기
+                </a>
+              </div>
+            </article>
+          `;
         }
 
-        if (db.engineLabel.includes("MySQL")) {
-          return {
-            bash: [
-              "$ kubectl exec -it payments-mysql-0 -n mysql -- bash",
-              "mysql@payments-mysql-0:/var/lib/mysql$ export MYSQL_HISTFILE=/tmp/.mysql_history",
-              `mysql@payments-mysql-0:/var/lib/mysql$ mysql -h ${host} -u ${opsUser} ${dbName}`
-            ].join("\n"),
-            dbcli: [
-              `mysql --host=${host} --user=${opsUser} ${dbName}`,
-              "",
-              "mysql> show databases;",
-              "mysql> select now();"
-            ].join("\n")
-          };
-        }
+        const statusToneClass = pillToneMap[primaryConsole.statusTone] || "status-warning";
+        const statusIcon = statusToneClass === "status-healthy"
+          ? "check_circle"
+          : statusToneClass === "status-warning"
+            ? "schedule"
+            : "error";
 
-        if (db.engineLabel.includes("MongoDB")) {
-          return {
-            bash: [
-              `$ kubectl exec -it customer-profile-mongo-0 -n ${namespace} -- bash`,
-              `mongodb@customer-profile-mongo-0:/data/db$ mongosh "${host}/${dbName}"`,
-              ""
-            ].join("\n"),
-            dbcli: [
-              `mongosh "mongodb://${opsUser}@${host}/${dbName}"`,
-              "",
-              "> db.runCommand({ ping: 1 })",
-              "> show collections"
-            ].join("\n")
-          };
-        }
-
-        if (db.engineLabel.includes("Redis")) {
-          return {
-            bash: [
-              `$ kubectl exec -it rfr-workspace-session-redis-0 -n ${namespace} -- bash`,
-              `redis@rfr-workspace-session-redis-0:/data$ redis-cli -h ${host}`,
-              ""
-            ].join("\n"),
-            dbcli: [
-              `redis-cli -h ${host}`,
-              "",
-              "127.0.0.1:6379> ping",
-              "PONG"
-            ].join("\n")
-          };
-        }
-
-        if (db.engineLabel.includes("Elasticsearch")) {
-          return {
-            bash: [
-              `$ kubectl exec -it ops-search-data-0 -n ${namespace} -- bash`,
-              "elastic@ops-search-data-0:/usr/share/elasticsearch$ export ES_PATH_CONF=/usr/share/elasticsearch/config",
-              `elastic@ops-search-data-0:/usr/share/elasticsearch$ curl -u ${opsUser}:****** https://${host}:9200/_cluster/health`
-            ].join("\n"),
-            dbcli: [
-              `curl -u ${opsUser}:****** https://${host}:9200/_cat/indices?v`,
-              "",
-              "{",
-              '  "status": "green"',
-              "}"
-            ].join("\n")
-          };
-        }
-
-        return {
-          bash: [
-            `$ kubectl exec -it ${db.title}-0 -n ${namespace} -- bash`,
-            `$ export DB_TARGET=${host}`,
-            `$ ./connect.sh`
-          ].join("\n"),
-          dbcli: [
-            `endpoint: ${host}`,
-            `target: ${dbName}`,
-            `user: ${opsUser}`,
-            "",
-            "> status"
-          ].join("\n")
-        };
-      };
-
-      const consolePreset = buildConsolePreset();
-
-      const renderConsoleWorkbench = () => `
-        <article class="console-launch-card">
-          <div class="console-launch-top">
-            <div>
-              <div class="console-launch-title">웹 콘솔</div>
-              <div class="console-launch-meta">브라우저에서 Bash 또는 DB CLI 연결 방식을 고른 뒤 바로 세션을 열 수 있습니다.</div>
+        return `
+          <article class="console-launch-card">
+            <div class="console-launch-top">
+              <div>
+                <div class="console-launch-title">${primaryConsole.name}</div>
+                <div class="console-launch-meta">${primaryConsole.meta || "이 데이터베이스와 연결된 콘솔입니다."}</div>
+              </div>
             </div>
-          </div>
-          <div class="console-launch-actions">
-            <div class="console-mode-group" id="consoleModeGroup">
-              <button class="console-mode-btn" type="button" data-console-mode="bash">
-                <span class="material-icons-round">terminal</span>
-                Bash
+            <div class="console-launch-actions">
+              <div class="console-mode-group">
+                <span class="console-mode-btn active">
+                  <span class="material-icons-round">web</span>
+                  ${primaryConsole.typeLabel || "Console"}
+                </span>
+                <span class="console-mode-btn">
+                  <span class="material-icons-round">link</span>
+                  Connected
+                </span>
+              </div>
+              <div class="console-launch-status" data-console-open-status="${primaryConsole.id || ""}">
+                <span class="material-icons-round">${statusIcon}</span>
+                ${primaryConsole.statusLabel || "Unknown"}
+              </div>
+            </div>
+            <div class="console-open-note">열기 버튼은 연결된 콘솔의 open API를 호출한 뒤 새 탭으로 이동합니다.</div>
+            <div class="console-open-buttons">
+              <button class="inline-btn" type="button" data-open-console-id="${primaryConsole.id || ""}" style="height:36px; padding:0 14px; font-size:12px;" ${primaryConsole.id ? "" : "disabled"}>
+                <span class="material-icons-round">open_in_new</span>
+                콘솔 열기
               </button>
-              <button class="console-mode-btn active" type="button" data-console-mode="dbcli">
-                <span class="material-icons-round">database</span>
-                DB CLI
-              </button>
+              <a class="inline-btn secondary" href="workspace_tools_hub.html" style="height:36px; padding:0 14px; font-size:12px;">
+                <span class="material-icons-round">dashboard_customize</span>
+                Consoles Hub
+              </a>
             </div>
-            <button class="inline-btn" id="connectConsoleButton" type="button" style="height:32px; padding:0 12px; font-size:11px;">
-              <span class="material-icons-round">play_arrow</span>
-              연결
-            </button>
-            <div class="console-launch-status" id="consoleConnectStatus">
-              <span class="material-icons-round">cable</span>
-              연결 대기
-            </div>
-          </div>
-          <pre class="console-terminal" id="consoleTerminal">DB CLI 선택됨
-
-${consolePreset.dbcli}</pre>
-        </article>
-      `;
+          </article>
+        `;
+      };
 
       const renderConsoleBindings = () => {
         const accessUser = db.access.credentials.find((item) => /Ops User|Reader User|App User/i.test(item.key))?.value || "ops account";
 
-        return db.access.consoles.slice(0, 2).map((item, index) => `
+        return db.access.consoles.slice(0, 4).map((item, index) => `
           <article class="project-card console-binding-card">
             <div class="project-main">
               <div class="project-top">
                 <div class="project-name">${item.name}</div>
-                <span class="pill engine">${index === 0 ? "기본 콘솔" : "연결 콘솔"}</span>
+                <span class="pill engine">${item.typeLabel || (index === 0 ? "기본 콘솔" : "연결 콘솔")}</span>
+                <span class="pill ${pillToneMap[item.statusTone] || "status-warning"}">${item.statusLabel || "Connected"}</span>
               </div>
               <div class="project-meta">${item.meta}</div>
               <div class="project-tags">
                 <span class="tag">접근 계정 ${accessUser}</span>
-                <span class="tag">콘솔 허브</span>
+                <span class="tag">${item.openUrl ? "open url 연결됨" : "open url 없음"}</span>
               </div>
             </div>
             <div class="console-binding-side">
               <div>
                 <div class="tiny-label">Binding</div>
-                <div class="console-binding-status">연결됨</div>
+                <div class="console-binding-status">${item.statusLabel || "연결됨"}</div>
               </div>
-              <a class="project-link" href="workspace_tools_hub.html">콘솔 보기<span class="material-icons-round">chevron_right</span></a>
+              <button class="project-link" type="button" data-open-console-id="${item.id || ""}" ${item.id ? "" : "disabled"}>
+                콘솔 열기<span class="material-icons-round">chevron_right</span>
+              </button>
             </div>
           </article>
         `).join("");
@@ -2563,7 +3578,26 @@ ${consolePreset.dbcli}</pre>
         </article>
       `).join("");
 
-      const renderClusterMembers = () => db.runtime.members.slice(0, 2).map((item) => `
+      const renderClusterMembers = () => {
+        const members = Array.isArray(db.runtime.members) ? db.runtime.members.slice(0, 4) : [];
+        if (!members.length) {
+          const latestUpdateValue = db.heroStats.find((item) => item.label === "최근 갱신")?.meta || "최근 갱신 정보 없음";
+          return `
+            <article class="member-row">
+              <div class="member-top">
+                <div class="member-title">담당 멤버 정보 없음</div>
+                <span class="pill status-warning">Pending</span>
+              </div>
+              <div class="member-meta">현재 API에서는 owner/author 정보를 확인하지 못했습니다.</div>
+              <div class="member-extra">
+                <span>${db.runtime.heroCluster.meta}</span>
+                <span>업데이트 ${latestUpdateValue}</span>
+              </div>
+            </article>
+          `;
+        }
+
+        return members.map((item) => `
         <article class="member-row">
           <div class="member-top">
             <div class="member-title">${item.name}</div>
@@ -2576,6 +3610,7 @@ ${consolePreset.dbcli}</pre>
           </div>
         </article>
       `).join("");
+      };
 
       const renderSnapshotPolicies = () => db.snapshots.summary.map((item) => `
         <article class="peak-card">
@@ -2585,7 +3620,27 @@ ${consolePreset.dbcli}</pre>
         </article>
       `).join("");
 
-      const renderSnapshots = () => db.snapshots.recent.slice(0, 5).map((item) => `
+      const renderSnapshots = () => {
+        const items = Array.isArray(db.snapshots.recent) ? db.snapshots.recent.slice(0, 5) : [];
+        if (!items.length) {
+          return `
+            <article class="snapshot-row">
+              <div class="snapshot-top">
+                <div class="snapshot-title">스냅샷 이력 없음</div>
+                <div class="snapshot-top-right">
+                  <span class="pill engine">Pending</span>
+                </div>
+              </div>
+              <div class="snapshot-meta">현재 detail API에서는 실제 스냅샷 목록을 제공하지 않습니다.</div>
+              <div class="snapshot-extra">
+                <span>${buildBackupMeta(db.heroStats.find((item) => item.label === "Backup Policy")?.value || "none")}</span>
+                <span>최근 갱신 기준</span>
+              </div>
+            </article>
+          `;
+        }
+
+        return items.map((item) => `
         <article class="snapshot-row">
           <div class="snapshot-top">
             <div class="snapshot-title">${item.name}</div>
@@ -2601,6 +3656,7 @@ ${consolePreset.dbcli}</pre>
           </div>
         </article>
       `).join("");
+      };
 
       document.getElementById("app").innerHTML = `
         <div
@@ -2728,9 +3784,18 @@ ${consolePreset.dbcli}</pre>
             <div class="hero-stats">${renderHeroStats()}</div>
           </section>
 
+          <section class="section-tabs" aria-label="Database detail sections">
+            <button class="section-tab is-active" type="button" data-detail-tab="overview"><span class="material-icons-round">stacked_bar_chart</span>Overview</button>
+            <button class="section-tab" type="button" data-detail-tab="status"><span class="material-icons-round">monitor_heart</span>Status</button>
+            <button class="section-tab" type="button" data-detail-tab="snapshots"><span class="material-icons-round">restore_page</span>Snapshots</button>
+            <button class="section-tab" type="button" data-detail-tab="access"><span class="material-icons-round">vpn_key</span>Access</button>
+            <button class="section-tab" type="button" data-detail-tab="projects"><span class="material-icons-round">link</span>Connected</button>
+            <button class="section-tab" type="button" data-detail-tab="consoles"><span class="material-icons-round">web</span>Consoles</button>
+          </section>
+
           <div class="layout">
             <div class="main-col">
-              <section class="panel section">
+              <section class="panel section" data-detail-panel="overview">
                 <div class="section-head">
                   <div>
                     <div class="section-kicker"><span class="material-icons-round">stacked_bar_chart</span>Usage Overview</div>
@@ -2760,7 +3825,7 @@ ${consolePreset.dbcli}</pre>
                 </article>
               </section>
 
-              <section class="panel section">
+              <section class="panel section" data-detail-panel="status" hidden>
                 <div class="section-head">
                   <div>
                     <div class="section-kicker"><span class="material-icons-round">monitor_heart</span>Status</div>
@@ -2781,7 +3846,7 @@ ${consolePreset.dbcli}</pre>
                 </div>
               </section>
 
-              <section class="panel section">
+              <section class="panel section" data-detail-panel="snapshots" hidden>
                 <div class="section-head">
                   <div>
                     <div class="section-kicker"><span class="material-icons-round">restore_page</span>Snapshots</div>
@@ -2822,7 +3887,7 @@ ${consolePreset.dbcli}</pre>
                 </article>
               </section>
 
-              <section class="panel section">
+              <section class="panel section" data-detail-panel="access" hidden>
                 <div class="section-head">
                   <div>
                     <div class="section-kicker"><span class="material-icons-round">vpn_key</span>Access</div>
@@ -2843,19 +3908,19 @@ ${consolePreset.dbcli}</pre>
                 </div>
               </section>
 
-              <section class="panel section">
+              <section class="panel section" data-detail-panel="projects" hidden>
                 <div class="section-head">
                   <div>
-                    <div class="section-kicker"><span class="material-icons-round">link</span>Connected Projects</div>
-                    <h2 class="section-title">연결된 프로젝트</h2>
-                    <p class="section-desc">연결된 프로젝트와 역할을 볼 수 있습니다.</p>
+                    <div class="section-kicker"><span class="material-icons-round">link</span>Connected</div>
+                    <h2 class="section-title">연결된 리소스</h2>
+                    <p class="section-desc">현재 데이터베이스에 연결된 프로젝트를 볼 수 있습니다.</p>
                   </div>
                   <a class="section-link" href="workspace_projects_hub.html">프로젝트 허브 보기<span class="material-icons-round">chevron_right</span></a>
                 </div>
                 <div class="project-list">${renderBindings()}</div>
               </section>
 
-              <section class="panel section">
+              <section class="panel section" data-detail-panel="consoles" hidden>
                 <div class="section-head">
                   <div>
                     <div class="section-kicker"><span class="material-icons-round">terminal</span>Connected Consoles</div>
@@ -2904,11 +3969,35 @@ ${consolePreset.dbcli}</pre>
       const snapshotListEl = document.getElementById("snapshotList");
       const manualSnapshotButton = document.getElementById("manualSnapshotButton");
       const snapshotRotationCountEl = document.getElementById("snapshotRotationCount");
-      const consoleModeButtons = Array.from(document.querySelectorAll("[data-console-mode]"));
-      const consoleTerminalEl = document.getElementById("consoleTerminal");
-      const consoleConnectButton = document.getElementById("connectConsoleButton");
-      const consoleConnectStatusEl = document.getElementById("consoleConnectStatus");
-      let selectedConsoleMode = "dbcli";
+      const detailTabButtons = Array.from(document.querySelectorAll("[data-detail-tab]"));
+      const detailPanels = Array.from(document.querySelectorAll("[data-detail-panel]"));
+      const consoleOpenButtons = Array.from(document.querySelectorAll("[data-open-console-id]"));
+      const secretToggleButtons = Array.from(document.querySelectorAll("[data-secret-toggle]"));
+      const secretCopyButtons = Array.from(document.querySelectorAll("[data-secret-copy]"));
+
+      const setActiveDetailPanel = (panelName) => {
+        const nextPanel = panelName || "overview";
+
+        detailTabButtons.forEach((button) => {
+          const isActive = button.dataset.detailTab === nextPanel;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-pressed", String(isActive));
+        });
+
+        detailPanels.forEach((panel) => {
+          panel.hidden = panel.dataset.detailPanel !== nextPanel;
+        });
+      };
+
+      if (detailTabButtons.length && detailPanels.length) {
+        detailTabButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            setActiveDetailPanel(button.dataset.detailTab);
+          });
+        });
+
+        setActiveDetailPanel("overview");
+      }
 
       if (snapshotListEl && manualSnapshotButton) {
         manualSnapshotButton.addEventListener("click", () => {
@@ -2937,32 +4026,116 @@ ${consolePreset.dbcli}</pre>
         });
       }
 
-      const renderConsoleTerminal = (mode, connected) => {
-        const title = mode === "bash" ? "Bash 선택됨" : "DB CLI 선택됨";
-        const body = mode === "bash" ? consolePreset.bash : consolePreset.dbcli;
-        const suffix = connected ? "\n\nsession status: connected" : "";
-        return `${title}\n\n${body}${suffix}`;
+      const copyText = async (text) => {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+          return;
+        }
+
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "true");
+        textarea.style.position = "absolute";
+        textarea.style.left = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
       };
 
-      if (consoleModeButtons.length && consoleTerminalEl) {
-        consoleModeButtons.forEach((button) => {
+      if (secretToggleButtons.length) {
+        secretToggleButtons.forEach((button) => {
           button.addEventListener("click", () => {
-            selectedConsoleMode = button.dataset.consoleMode || "dbcli";
-            consoleModeButtons.forEach((item) => item.classList.toggle("active", item === button));
-            consoleTerminalEl.textContent = renderConsoleTerminal(selectedConsoleMode, false);
-            if (consoleConnectStatusEl) {
-              consoleConnectStatusEl.innerHTML = '<span class="material-icons-round">cable</span>연결 대기';
+            const row = button.closest("[data-secret-row]");
+            const valueNode = row?.querySelector("[data-secret-value]");
+            if (!valueNode) {
+              return;
+            }
+
+            const nextVisible = valueNode.dataset.secretVisibleState !== "true";
+            valueNode.dataset.secretVisibleState = String(nextVisible);
+            valueNode.textContent = nextVisible ? valueNode.dataset.secretVisible || "" : valueNode.dataset.secretHidden || "";
+            valueNode.classList.toggle("masked", !nextVisible);
+            button.setAttribute("aria-label", nextVisible ? "패스워드 숨기기" : "패스워드 보기");
+            const icon = button.querySelector(".material-icons-round");
+            if (icon) {
+              icon.textContent = nextVisible ? "visibility_off" : "visibility";
             }
           });
         });
       }
 
-      if (consoleConnectButton && consoleTerminalEl) {
-        consoleConnectButton.addEventListener("click", () => {
-          consoleTerminalEl.textContent = renderConsoleTerminal(selectedConsoleMode, true);
-          if (consoleConnectStatusEl) {
-            consoleConnectStatusEl.innerHTML = `<span class="material-icons-round">check_circle</span>${selectedConsoleMode === "bash" ? "Bash 연결됨" : "DB CLI 연결됨"}`;
-          }
+      if (secretCopyButtons.length) {
+        secretCopyButtons.forEach((button) => {
+          button.addEventListener("click", async () => {
+            const row = button.closest("[data-secret-row]");
+            const valueNode = row?.querySelector("[data-secret-value]");
+            const rawSecret = valueNode?.dataset.secretVisible || "";
+            if (!rawSecret) {
+              return;
+            }
+
+            try {
+              await copyText(rawSecret);
+              button.classList.add("is-copied");
+              const icon = button.querySelector(".material-icons-round");
+              if (icon) {
+                icon.textContent = "check";
+              }
+
+              window.setTimeout(() => {
+                button.classList.remove("is-copied");
+                const resetIcon = button.querySelector(".material-icons-round");
+                if (resetIcon) {
+                  resetIcon.textContent = "content_copy";
+                }
+              }, 1200);
+            } catch (error) {
+              console.error("[database_detail] failed to copy password", error);
+            }
+          });
+        });
+      }
+
+      const setConsoleOpenStatus = (consoleId, icon, text) => {
+        document.querySelectorAll(`[data-console-open-status="${consoleId}"]`).forEach((node) => {
+          node.innerHTML = `<span class="material-icons-round">${icon}</span>${text}`;
+        });
+      };
+
+      if (consoleOpenButtons.length) {
+        consoleOpenButtons.forEach((button) => {
+          button.addEventListener("click", async () => {
+            const consoleId = button.dataset.openConsoleId;
+            if (!consoleId) {
+              return;
+            }
+
+            const originalHtml = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<span class="material-icons-round">progress_activity</span>열기 중';
+            setConsoleOpenStatus(consoleId, "progress_activity", "Opening");
+
+            try {
+              const payload = await requestJson(`/consoles/${encodeURIComponent(consoleId)}/open`, {
+                method: "POST"
+              });
+              const result = extractData(payload, payload);
+              const targetUrl = result?.url;
+
+              if (!targetUrl) {
+                throw new Error("Console open URL is missing");
+              }
+
+              window.open(targetUrl, "_blank", "noopener");
+              setConsoleOpenStatus(consoleId, "check_circle", "Opened");
+            } catch (error) {
+              setConsoleOpenStatus(consoleId, "error", "Open failed");
+            } finally {
+              button.disabled = false;
+              button.innerHTML = originalHtml;
+            }
+          });
         });
       }
     })();

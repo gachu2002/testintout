@@ -15,6 +15,9 @@
     window.HUB_CONFIG = {
       documentTitle: "Tool Inventories",
       activeKey: "tool-inventory",
+      panelVariant: "briefing",
+      connectionsType: "tool",
+      secondaryConnectionsType: "agent",
       breadcrumbs: [
         { label: "Launchpad", href: "portal_launchpad.html" },
         { label: "Tool Inventory Hub" }
@@ -27,27 +30,29 @@
         brandSoft: "rgba(59,92,204,.14)",
         accent2: "#38bdf8"
       },
-      searchPlaceholder: "inventory 이름, endpoint, function tool, consumer를 검색하세요...",
+      searchPlaceholder: "inventory 이름, endpoint, function tool, skill, consumer를 검색하세요...",
       eyebrow: "AI · Connected Tool Assets",
       title: "Tool Inventory Hub",
-      description: "에이전트와 챗봇이 사용하는 Tool Inventory를 한곳에서 확인합니다. 각 항목에서 타입, 포맷, 엔드포인트, 대표 function tool, 사용량, health 상태를 바로 보고 상세 화면으로 이동할 수 있습니다.",
+      description: "에이전트와 챗봇, 그리고 내 AI Assistant에 붙는 Skill 자산까지 Tool Inventory를 한곳에서 확인합니다. 각 항목에서 타입, 포맷, 엔드포인트 또는 바인딩 정보, 대표 function tool 또는 skill 구성, 사용량을 바로 보고 상세 화면으로 이동할 수 있습니다.",
       primaryAction: { href: "workspace_tool_inventory_register.html", icon: "add_circle", label: "새 Inventory 등록" },
       heroStats: [
-        { icon: "inventory_2", value: "12", label: "등록 Inventory", note: "Connected 9 · Review 3", color: "linear-gradient(135deg,#3b5ccc,#5b7cff)" },
-        { icon: "hub", value: "9", label: "External MCP", note: "외부 제공 서버", color: "linear-gradient(135deg,#3154c8,#7aa2ff)" },
-        { icon: "apartment", value: "7", label: "Internal MCP", note: "사내 운영 서버", color: "linear-gradient(135deg,#4f6fd8,#93c5fd)" },
-        { icon: "terminal", value: "4", label: "Direct", note: "직접 구현 서버", color: "linear-gradient(135deg,#5b7cff,#38bdf8)" }
+        { icon: "inventory_2", value: "15", label: "등록 Inventory", note: "Connected 11 · Review 4", color: "linear-gradient(135deg,#3b5ccc,#5b7cff)" },
+        { icon: "hub", value: "5", label: "External MCP", note: "외부 제공 서버", color: "linear-gradient(135deg,#3154c8,#7aa2ff)" },
+        { icon: "apartment", value: "4", label: "Internal MCP", note: "사내 운영 서버", color: "linear-gradient(135deg,#4f6fd8,#93c5fd)" },
+        { icon: "terminal", value: "3", label: "Direct", note: "직접 구현 서버", color: "linear-gradient(135deg,#5b7cff,#38bdf8)" },
+        { icon: "extension", value: "3", label: "Skill", note: "Assistant 연결 자산", color: "linear-gradient(135deg,#4f6fd8,#f59e0b)" }
       ],
       filters: [
         { id: "all", icon: "apps", label: "전체" },
         { id: "external-mcp", icon: "public", label: "External MCP" },
         { id: "internal-mcp", icon: "apartment", label: "Internal MCP" },
-        { id: "direct-tool", icon: "terminal", label: "Direct" }
+        { id: "direct-tool", icon: "terminal", label: "Direct" },
+        { id: "skill", icon: "extension", label: "Skill" }
       ],
       resourceSectionIcon: "inventory_2",
       resourceSectionLabel: "Tool Inventory Fleet",
       resourceTitle: "Tool Inventories",
-      resourceDescription: "각 카드에서 등록에 꼭 필요한 핵심 정보만 먼저 보고 필요한 상세 화면으로 이동할 수 있습니다.",
+      resourceDescription: "각 카드에서 등록에 꼭 필요한 핵심 정보만 먼저 보고 필요한 상세 화면으로 이동할 수 있습니다. MCP, 직접 구현 자산, Skill을 같은 문법으로 비교해 볼 수 있습니다.",
       resourceHeaderLink: { href: "workspace_tool_inventory_register.html", label: "타입별 등록 보기" },
       resources: [
         {
@@ -64,7 +69,13 @@
             { icon: "monitor_heart", text: "Health · Healthy" }
           ],
           usage: { value: 78, meta: "최근 24시간 호출량 14.2K · 성공률 97%" },
-          owner: { label: "Owner", initials: "DP", name: "developer platform", meta: "외부 연동 운영" },
+          owner: { initials: "TN", name: "Taehun Nam", meta: "taehun@example.com", color: "linear-gradient(135deg,#2563eb,#60a5fa)" },
+          sharing: {
+            collaborators: [
+              { initials: "JK", color: "linear-gradient(135deg,#6366f1,#818cf8)" },
+              { initials: "MH", color: "linear-gradient(135deg,#ec4899,#f9a8d4)" }
+            ]
+          },
           connectionsLabel: "Representative function tool",
           connectionsMaxItems: 3,
           connectionsMoreName: "추가 function tool",
@@ -108,7 +119,7 @@
             { icon: "monitor_heart", text: "Health · Stable" }
           ],
           usage: { value: 85, meta: "최근 24시간 호출량 21.8K · 성공률 99%" },
-          owner: { label: "Owner", initials: "KP", name: "knowledge platform", meta: "사내 검색 운영" },
+          owner: { initials: "SY", name: "Sooyeon Park", meta: "sooyeon@example.com", color: "linear-gradient(135deg,#ec4899,#fb7185)" },
           connectionsLabel: "Representative function tool",
           connectionsMaxItems: 3,
           connectionsMoreName: "추가 function tool",
@@ -152,7 +163,13 @@
             { icon: "monitor_heart", text: "Health · Review" }
           ],
           usage: { value: 61, meta: "최근 24시간 호출량 4.3K · 실패율 4.1%" },
-          owner: { label: "Owner", initials: "SR", name: "site reliability", meta: "직접 구현 서버 운영" },
+          owner: { initials: "MH", name: "Minhyuk Lee", meta: "minhyuk@example.com", color: "linear-gradient(135deg,#f59e0b,#fbbf24)" },
+          sharing: {
+            collaborators: [
+              { initials: "YJ", color: "linear-gradient(135deg,#6366f1,#818cf8)" },
+              { initials: "TN", color: "linear-gradient(135deg,#f97316,#fbd38d)" }
+            ]
+          },
           connectionsLabel: "Representative function tool",
           connectionsMaxItems: 3,
           connectionsMoreName: "추가 function tool",
@@ -195,7 +212,7 @@
             { icon: "monitor_heart", text: "Health · Healthy" }
           ],
           usage: { value: 74, meta: "최근 24시간 호출량 18.7K · 성공률 98%" },
-          owner: { label: "Owner", initials: "SRE", name: "site reliability", meta: "incident 대응 운영" },
+          owner: { initials: "JK", name: "Jungkyu Kim", meta: "jungkyu@example.com", color: "linear-gradient(135deg,#7c3aed,#22d3ee)" },
           connectionsLabel: "Representative function tool",
           connectionsMaxItems: 3,
           connectionsMoreName: "추가 function tool",
@@ -224,6 +241,50 @@
             { label: "Detail", icon: "arrow_outward", kind: "open", href: "workspace_tool_inventory_detail.html?item=observability-stack" },
             { label: "Internal 등록", icon: "add_circle", kind: "neutral", href: "workspace_tool_inventory_register.html?type=internal" }
           ]
+        },
+        {
+          categories: ["all", "skill"],
+          status: { label: "Connected", tone: "healthy" },
+          engine: "Skill",
+          icon: "extension",
+          name: "release-briefing-skill",
+          meta: "내 AI Assistant에 붙여 배포 요약과 변경 포인트를 정리하는 skill inventory",
+          color: "linear-gradient(135deg,#f59e0b,#fb7185)",
+          details: [
+            { icon: "category", text: "Format · Skill" },
+            { icon: "smart_toy", text: "Assistant Attach · workspace-assistant" },
+            { icon: "query_stats", text: "Usage · 3.2K attach / invoke" }
+          ],
+          usage: { value: 66, meta: "최근 24시간 attach 184 · invoke 3.2K · 재사용률 82%" },
+          owner: { initials: "HJ", name: "Hyejin Choi", meta: "hyejin@example.com", color: "linear-gradient(135deg,#f59e0b,#fb7185)" },
+          connectionsLabel: "Representative function / skill flow",
+          connectionsMaxItems: 3,
+          connectionsMoreName: "추가 skill flow",
+          connectionsMoreMeta: "대표 흐름 외 나머지 구성",
+          connections: [
+            { abbr: "SK", name: "summarize_release_scope", meta: "배포 범위 요약" },
+            { abbr: "SK", name: "highlight_risk_changes", meta: "위험 변경 포인트 정리" },
+            { abbr: "SK", name: "compose_briefing_note", meta: "공유용 브리핑 생성" }
+          ],
+          secondaryConnectionsLabel: "Connected Consumers",
+          secondaryConnectionsMaxItems: 3,
+          secondaryConnectionsMoreName: "추가 Consumers",
+          secondaryConnectionsMoreMeta: "나머지 연결 대상",
+          secondaryConnections: [
+            { abbr: "AS", name: "workspace-assistant", meta: "Assistant" },
+            { abbr: "CB", name: "release-notes-pilot", meta: "Chatbot" },
+            { abbr: "AG", name: "release automation", meta: "Agent" }
+          ],
+          tagsLabel: "Core Fields",
+          tags: [
+            { icon: "extension", text: "Type · Skill" },
+            { icon: "smart_toy", text: "Assistant Attach" },
+            { icon: "query_stats", text: "Usage 수집" }
+          ],
+          actions: [
+            { label: "Detail", icon: "arrow_outward", kind: "open", href: "workspace_tool_inventory_detail.html?item=release-briefing-skill" },
+            { label: "Skill 등록", icon: "add_circle", kind: "neutral", href: "workspace_tool_inventory_register.html?type=skill" }
+          ]
         }
       ],
       mainPanels: [
@@ -235,7 +296,8 @@
           rows: [
             { title: "External MCP 등록", meta: "외부 제공 MCP 서버의 endpoint, function tool, usage, health check를 등록합니다.", href: "workspace_tool_inventory_register.html?type=external" },
             { title: "Internal MCP 등록", meta: "사내 운영 MCP 서버의 endpoint, function tool, usage, health check를 등록합니다.", href: "workspace_tool_inventory_register.html?type=internal" },
-            { title: "직접 구현 서버 등록", meta: "MCP 또는 REST/SDK/CLI 형태의 직접 구현 서버를 등록합니다.", href: "workspace_tool_inventory_register.html?type=direct" }
+            { title: "직접 구현 서버 등록", meta: "MCP 또는 REST/SDK/CLI 형태의 직접 구현 서버를 등록합니다.", href: "workspace_tool_inventory_register.html?type=direct" },
+            { title: "Skill 등록", meta: "내 AI Assistant에 붙여 쓰는 Skill 자산과 tool 조합을 등록합니다.", href: "workspace_tool_inventory_register.html?type=skill" }
           ],
           footerLink: { href: "workspace_tool_inventory_register.html", label: "통합 등록 화면 보기" }
         },
@@ -247,7 +309,8 @@
           rows: [
             { title: "Agent Hub", meta: "어떤 automation runtime이 이 inventory를 소비하는지 확인합니다.", href: "workspace_agent_hub.html" },
             { title: "Chatbot Hub", meta: "어떤 chatbot endpoint가 이 inventory를 참조하는지 확인합니다.", href: "workspace_chatbot_hub.html" },
-            { title: "Keycenter", meta: "tool 호출에 필요한 key tier와 provider 연결을 확인합니다.", href: "workspace_keycenter_hub.html" }
+            { title: "Keycenter", meta: "tool 호출에 필요한 key tier와 provider 연결을 확인합니다.", href: "workspace_keycenter_hub.html" },
+            { title: "AI Gallery", meta: "내 AI Assistant에 붙여 쓸 Skills와 연결 흐름을 함께 확인합니다.", href: "dej_ai_gallery.html" }
           ],
           footerLink: { href: "portal_launchpad.html", label: "런치패드로 돌아가기" }
         }
@@ -262,7 +325,8 @@
             { title: "developer-ops-bundle", meta: "External MCP", pill: { label: "Connected", tone: "healthy" } },
             { title: "knowledge-discovery-bundle", meta: "Internal MCP", pill: { label: "Connected", tone: "healthy" } },
             { title: "incident-classifier-direct", meta: "Direct Implementation", pill: { label: "Review", tone: "review" } },
-            { title: "incident-response-bundle", meta: "Internal MCP", pill: { label: "Connected", tone: "healthy" } }
+            { title: "incident-response-bundle", meta: "Internal MCP", pill: { label: "Connected", tone: "healthy" } },
+            { title: "release-briefing-skill", meta: "Skill", pill: { label: "Connected", tone: "healthy" } }
           ]
         }
       ]

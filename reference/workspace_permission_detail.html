@@ -61,7 +61,7 @@
       position:sticky;
       top:0;
       z-index:200;
-      height:56px;
+      height:84px;
       background:var(--surface);
       border-bottom:1px solid var(--border);
     }
@@ -69,7 +69,7 @@
       max-width:var(--nav-max);
       height:100%;
       margin:0 auto;
-      padding:0 24px;
+      padding:10px 24px;
       display:flex;
       align-items:center;
       gap:12px;
@@ -136,7 +136,7 @@
     .service-popover {
       position:fixed;
       left:0;
-      top:56px;
+      top:84px;
       width:100vw;
       background:linear-gradient(180deg, rgba(252,251,254,.98) 0%, rgba(246,243,251,.98) 100%);
       border-top:1px solid rgba(236,231,244,.9);
@@ -151,19 +151,86 @@
       margin:0 auto;
       padding:0 24px;
     }
+    .service-popover-shell {
+      display:grid;
+      grid-template-columns:minmax(240px, 280px) minmax(0, 1fr);
+      gap:18px;
+      align-items:start;
+    }
+    .service-mega-intro {
+      padding:22px;
+      border:1px solid rgba(190,24,93,.12);
+      border-radius:24px;
+      background:
+        radial-gradient(circle at top right, rgba(251,113,133,.16), transparent 38%),
+        linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(255,245,250,.96) 100%);
+      box-shadow:0 16px 28px rgba(31,22,50,.05);
+    }
+    .service-mega-kicker {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-bottom:12px;
+      color:var(--brand);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .service-mega-title {
+      font-size:24px;
+      font-weight:800;
+      letter-spacing:-.04em;
+      margin-bottom:10px;
+      color:var(--t1);
+    }
+    .service-mega-desc {
+      color:var(--t2);
+      font-size:13px;
+      line-height:1.65;
+    }
+    .service-mega-points {
+      display:grid;
+      gap:10px;
+      margin-top:18px;
+    }
+    .service-mega-point {
+      display:grid;
+      grid-template-columns:28px minmax(0, 1fr);
+      gap:10px;
+      align-items:start;
+      color:var(--t1);
+      font-size:12px;
+      line-height:1.55;
+    }
+    .service-mega-point .material-icons-round {
+      width:28px;
+      height:28px;
+      border-radius:10px;
+      display:grid;
+      place-items:center;
+      color:var(--brand);
+      background:rgba(190,24,93,.10);
+      font-size:16px;
+    }
     .service-groups {
       display:grid;
-      grid-template-columns:repeat(6, minmax(0, 1fr));
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:14px;
     }
     .service-group {
       min-width:0;
-      padding:0 30px;
+      padding:18px;
+      border:1px solid rgba(236,231,244,.96);
+      border-radius:22px;
+      background:rgba(255,255,255,.78);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
     }
-    .service-group + .service-group { border-left:1px solid var(--border); }
+    .service-group + .service-group { border-left:none; }
     .service-group-title {
-      font-size:15px;
-      font-weight:700;
-      margin-bottom:18px;
+      font-size:14px;
+      font-weight:800;
+      margin-bottom:16px;
     }
     .service-links { display:grid; gap:18px; }
     .service-link {
@@ -277,8 +344,8 @@
       display:none;
     }
     .search-wrap {
-      flex:1;
-      max-width:440px;
+      width:100%;
+      max-width:520px;
       min-width:0;
       position:relative;
     }
@@ -1032,7 +1099,8 @@
     }
     .editor-table-footer {
       display:flex;
-      justify-content:flex-end;
+      align-items:center;
+      justify-content:space-between;
       gap:18px;
       padding:12px 16px;
       border-top:1px solid var(--border);
@@ -1040,6 +1108,11 @@
       font-size:12px;
       font-weight:700;
       background:#fff;
+    }
+    .table-pagination {
+      display:flex;
+      align-items:center;
+      gap:8px;
     }
     .table-user {
       font-weight:700;
@@ -1280,6 +1353,10 @@
       border-color:transparent;
       background:linear-gradient(135deg,var(--brand),var(--brand-strong));
     }
+    .mini-btn:disabled {
+      cursor:not-allowed;
+      opacity:.48;
+    }
     .tone-pill {
       display:inline-flex;
       align-items:center;
@@ -1330,13 +1407,10 @@
     }
 
     @media (max-width: 1240px) {
-      .service-groups { grid-template-columns:repeat(2, minmax(0, 1fr)); }
-      .service-group:nth-child(odd) { border-right:1px solid var(--border); }
-      .service-group:nth-child(n + 3) {
-        border-top:1px solid var(--border);
-        padding-top:18px;
+      .service-popover-shell {
+        grid-template-columns:1fr;
       }
-      .service-group + .service-group { border-left:none; }
+      .service-groups { grid-template-columns:repeat(2, minmax(0, 1fr)); }
       .hero-stats {
         grid-template-columns:repeat(2, minmax(0,1fr));
       }
@@ -1351,6 +1425,7 @@
     }
 
     @media (max-width: 820px) {
+      .topbar { height:56px; }
       .page { padding:20px 16px 36px; }
       .topbar-inner { padding:0 16px; }
       .search-ai { display:none; }
@@ -1391,10 +1466,9 @@
       .service-groups { grid-template-columns:1fr; }
       .service-group {
         padding:16px 18px;
-        border-right:none;
-        border-top:1px solid var(--border);
       }
-      .service-group:first-child { border-top:none; }
+      .service-popover-shell { gap:14px; }
+      .service-mega-intro { padding:18px; border-radius:20px; }
       .service-popover { top:56px; padding:14px 0 16px; }
       .service-popover-inner { padding:0 16px; }
       .service-outlinks {
@@ -1860,10 +1934,10 @@
       }
     };
 
+    const API_BASE = "/api/v2/permissions";
     const params = new URLSearchParams(window.location.search);
-    const realmKey = params.get("realm") || "database-realm";
-    const realm = REALMS[realmKey] || REALMS["database-realm"];
-    const displayRealm = createDisplayRealm(realm);
+    const realmKey = (params.get("realm") || "").trim();
+    const app = document.getElementById("app");
 
     function escapeHtml(value) {
       return String(value)
@@ -1906,108 +1980,250 @@
     }
 
     function approvalTone(value) {
-      if (value.includes("자동")) return "done";
-      if (value.includes("검토")) return "review";
+      if (value.includes("보유")) return "done";
+      if (value.includes("관리") || value.includes("승인")) return "done";
+      if (value.includes("요청") || value.includes("검토")) return "review";
       return "pending";
     }
 
-    function createEmail(name, fallbackIndex) {
-      const normalized = name
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, ".")
-        .replace(/(^\.+|\.+$)/g, "");
-      return `${normalized || `member${fallbackIndex + 1}`}@lge.com`;
-    }
-
-    function inferRoleGroupIndexes(roleName, roleIndex, groupCount) {
-      if (!groupCount) return [];
-      const lower = roleName.toLowerCase();
-      if (lower.includes("admin")) return [0];
-      if (lower.includes("viewer") || lower.includes("readonly")) return [Math.min(2, groupCount - 1)];
-      if (lower.includes("developer")) return [Math.min(1, groupCount - 1)];
-      if (
-        lower.includes("operator") ||
-        lower.includes("maintainer") ||
-        lower.includes("approver") ||
-        lower.includes("publisher") ||
-        lower.includes("uploader") ||
-        lower.includes("reviewer") ||
-        lower === "user"
-      ) {
-        return [Math.min(1, groupCount - 1)];
-      }
-      return [Math.min(roleIndex, groupCount - 1)];
-    }
-
-    function createRoleAssignments(currentRealm) {
-      const loginLabels = ["Today", "1d ago", "2d ago", "4d ago", "7d ago", "12d ago"];
-      return currentRealm.roles.map((role, roleIndex) => {
-        const groupIndexes = inferRoleGroupIndexes(role.name, roleIndex, currentRealm.memberGroups.length);
-        const groups = groupIndexes
-          .map((groupIndex) => currentRealm.memberGroups[groupIndex])
-          .filter(Boolean);
-
-        const users = groups.flatMap((group, groupIndex) =>
-          group.people.map((person, personIndex) => ({
-            name: person.name,
-            email: createEmail(person.name, personIndex),
-            lastLogin: loginLabels[(roleIndex + groupIndex + personIndex) % loginLabels.length],
-            meta: person.meta
-          }))
-        ).filter((person, index, array) => (
-          array.findIndex((candidate) => candidate.email === person.email) === index
-        ));
-
-        const linkedGroups = groups.map((group, groupIndex) => ({
-          name: `${group.title} Group`,
-          description: group.meta,
-          members: group.count,
-          source: group.people.map((person) => person.name).join(", ") || `role ${role.name}`,
-          id: `${role.name}-${groupIndex}`
-        }));
-
-        return {
-          ...role,
-          users,
-          groups: linkedGroups
-        };
+    function buildQuery(searchParams) {
+      const query = new URLSearchParams();
+      Object.entries(searchParams || {}).forEach(([key, value]) => {
+        if (value === undefined || value === null || value === "") {
+          return;
+        }
+        query.set(key, String(value));
       });
+      const encoded = query.toString();
+      return encoded ? `?${encoded}` : "";
     }
 
-    function createDisplayRealm(currentRealm) {
-      const roles = Array.isArray(currentRealm.roles) ? currentRealm.roles : [];
-      const sourceGroups = Array.isArray(currentRealm.memberGroups) ? currentRealm.memberGroups : [];
-      const adminRole = roles.find((role) => role.name.toLowerCase() === "admin");
-      const baseAdminGroup = sourceGroups[0] || { people: [] };
+    async function requestJson(path, options = {}) {
+      const { allowStatus = [] } = options;
+      const response = await fetch(`${API_BASE}${path}`, {
+        credentials: "same-origin",
+        headers: {
+          Accept: "application/json"
+        }
+      });
 
-      const adminGroup = {
-        ...baseAdminGroup,
-        title: "admin",
-        meta: "기본 owner 그룹",
-        count: adminRole ? `${adminRole.members}명` : (baseAdminGroup.count || "0명")
+      if (!response.ok) {
+        if (allowStatus.includes(response.status)) {
+          return { __status: response.status };
+        }
+
+        const payload = await response.json().catch(() => null);
+        const message = payload && payload.error && payload.error.message
+          ? payload.error.message
+          : `${response.status} ${response.statusText}`;
+        const error = new Error(message);
+        error.status = response.status;
+        throw error;
+      }
+
+      return response.json();
+    }
+
+    function extractData(payload) {
+      if (!payload || payload.__status) {
+        return null;
+      }
+      if (payload && typeof payload === "object" && "data" in payload) {
+        return payload.data;
+      }
+      return payload;
+    }
+
+    function extractItems(payload) {
+      if (!payload || payload.__status) {
+        return [];
+      }
+      if (Array.isArray(payload.items)) {
+        return payload.items;
+      }
+      if (payload.data && Array.isArray(payload.data.items)) {
+        return payload.data.items;
+      }
+      if (Array.isArray(payload.data)) {
+        return payload.data;
+      }
+      if (Array.isArray(payload)) {
+        return payload;
+      }
+      return [];
+    }
+
+    function extractNextCursor(payload) {
+      if (!payload || payload.__status) {
+        return null;
+      }
+      if (payload.page && typeof payload.page.nextCursor === "string") {
+        return payload.page.nextCursor;
+      }
+      if (payload.data && payload.data.page && typeof payload.data.page.nextCursor === "string") {
+        return payload.data.page.nextCursor;
+      }
+      return null;
+    }
+
+    async function fetchAllPages(path, params = {}, options = {}) {
+      const items = [];
+      let cursor = null;
+
+      while (true) {
+        const payload = await requestJson(`${path}${buildQuery({
+          ...params,
+          ...(cursor ? { cursor } : {})
+        })}`, options);
+
+        if (payload && payload.__status) {
+          return { items: [], status: payload.__status };
+        }
+
+        items.push(...extractItems(payload));
+        cursor = extractNextCursor(payload);
+        if (!cursor) {
+          break;
+        }
+      }
+
+      return { items, status: 200 };
+    }
+
+    function normalizeText(value) {
+      return String(value || "").trim();
+    }
+
+    function formatNumber(value) {
+      const numeric = Number(value);
+      return Number.isFinite(numeric)
+        ? new Intl.NumberFormat("ko-KR").format(numeric)
+        : "-";
+    }
+
+    function formatDateTime(value, fallback = "정보 없음") {
+      if (!value) {
+        return fallback;
+      }
+
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) {
+        return fallback;
+      }
+
+      return new Intl.DateTimeFormat("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(date);
+    }
+
+    function formatRequestDate(value) {
+      return formatDateTime(value, "시간 정보 없음");
+    }
+
+    function formatRelativeLogin(value) {
+      if (!value) {
+        return "Never";
+      }
+
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) {
+        return "Unknown";
+      }
+
+      const now = new Date();
+      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const startOfTarget = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      const dayDiff = Math.floor((startOfToday.getTime() - startOfTarget.getTime()) / 86400000);
+
+      if (dayDiff <= 0) {
+        return "Today";
+      }
+      if (dayDiff === 1) {
+        return "Yesterday";
+      }
+      return `${dayDiff}d ago`;
+    }
+
+    function toInitials(value) {
+      const source = normalizeText(value);
+      if (!source) {
+        return "NA";
+      }
+
+      const parts = source.split(/\s+/).filter(Boolean);
+      if (parts.length > 1) {
+        return parts.slice(0, 2).map((part) => part.charAt(0).toUpperCase()).join("");
+      }
+
+      return source.replace(/[^a-zA-Z0-9가-힣]/g, "").slice(0, 2).toUpperCase() || "NA";
+    }
+
+    function toProjectHref(project) {
+      const id = normalizeText(project && project.id);
+      const name = normalizeText(project && (project.label || project.name));
+      return name || id
+        ? `workspace_project_detail.html?project=${encodeURIComponent(name || id)}`
+        : "workspace_projects_hub.html";
+    }
+
+    function toTypeMeta(kind) {
+      const meta = {
+        platform: { typeLabel: "Platform Realm", statusTone: "healthy" },
+        project: { typeLabel: "Project Realm", statusTone: "healthy" },
+        resource: { typeLabel: "Resource Realm", statusTone: "healthy" },
+        scoped: { typeLabel: "Scoped Realm", statusTone: "healthy" }
       };
 
-      return {
-        ...currentRealm,
-        memberGroups: [adminGroup, ...sourceGroups.slice(1)]
-      };
+      return meta[kind] || { typeLabel: "Permission Realm", statusTone: "healthy" };
+    }
+
+    function toStatusLabel(status) {
+      if (status === "review") {
+        return { label: "Review", tone: "review" };
+      }
+      return { label: "Active", tone: "healthy" };
+    }
+
+    function normalizeRequestStatus(status) {
+      if (status === "approved") return "approved";
+      if (status === "rejected" || status === "cancelled") return "rejected";
+      return "pending";
     }
 
     function requestTone(status) {
-      if (status === "done") return "done";
-      if (status === "review") return "review";
+      const normalized = normalizeRequestStatus(status);
+      if (normalized === "approved") return "done";
+      if (normalized === "rejected") return "review";
       return "pending";
     }
 
     function requestLabel(status) {
-      if (status === "done") return "완료";
-      if (status === "review") return "검토";
+      const normalized = normalizeRequestStatus(status);
+      if (normalized === "approved") return "승인";
+      if (normalized === "rejected") return "거절";
       return "대기";
     }
 
     function renderRequests(items) {
+      if (!items.length) {
+        return `
+          <article class="request-row">
+            <div class="request-main">
+              <div class="request-top">
+                <div class="request-title">표시할 권한 요청이 없습니다.</div>
+              </div>
+              <div class="request-meta">현재 realm 기준으로 조회 가능한 요청이 없습니다.</div>
+            </div>
+          </article>
+        `;
+      }
+
       return items.map((item) => `
-        <article class="request-row" data-request-status="${escapeHtml(item.status)}">
+        <article class="request-row" data-request-status="${escapeHtml(normalizeRequestStatus(item.status))}">
           <div class="request-main">
             <div class="request-top">
               <div class="request-title">${escapeHtml(item.title)}</div>
@@ -2017,14 +2233,27 @@
             <div class="request-submeta">${escapeHtml(item.submeta)}</div>
           </div>
           <div class="request-actions">
-            <button class="mini-btn primary" type="button">${item.status === "done" ? "이력 보기" : "승인"}</button>
-            <button class="mini-btn" type="button">${item.status === "done" ? "상세" : "보류"}</button>
+            <button class="mini-btn primary" type="button">${item.status === "pending" ? "대기 중" : "상세 보기"}</button>
+            <button class="mini-btn" type="button">${escapeHtml(item.actionLabel || "요청 확인")}</button>
           </div>
         </article>
       `).join("");
     }
 
     function renderTargets(items) {
+      if (!items.length) {
+        return `
+          <article class="target-row">
+            <div class="target-main">
+              <div class="target-top">
+                <div class="target-name">연결된 프로젝트가 없습니다.</div>
+              </div>
+              <div class="target-meta">현재 Permission Realm에 바인딩된 프로젝트가 없습니다.</div>
+            </div>
+          </article>
+        `;
+      }
+
       return items.map((item) => `
         <article class="target-row">
           <div class="target-main">
@@ -2054,7 +2283,11 @@
       `).join("");
     }
 
-    function renderUserRows(items) {
+    function renderUserRows(items, { restricted = false } = {}) {
+      if (restricted) {
+        return `<tr><td colspan="4">이 Role의 사용자 목록은 현재 계정으로 조회할 수 없습니다.</td></tr>`;
+      }
+
       if (!items.length) {
         return `<tr><td colspan="4">연결된 사용자가 없습니다.</td></tr>`;
       }
@@ -2075,7 +2308,11 @@
       `).join("");
     }
 
-    function renderGroupRows(items) {
+    function renderGroupRows(items, { restricted = false } = {}) {
+      if (restricted) {
+        return `<tr><td colspan="4">이 Role의 그룹 목록은 현재 계정으로 조회할 수 없습니다.</td></tr>`;
+      }
+
       if (!items.length) {
         return `<tr><td colspan="4">연결된 그룹이 없습니다.</td></tr>`;
       }
@@ -2095,15 +2332,45 @@
       `).join("");
     }
 
-    function createOwners(currentRealm) {
-      const ownerGroup = (currentRealm.memberGroups && currentRealm.memberGroups[0]) || { people: [] };
-      return ownerGroup.people.slice(0, 2).map((person) => ({
-        role: "admin",
-        ...person
-      }));
+    function paginateClientItems(items, requestedPage, pageSize = 10) {
+      const total = items.length;
+      const totalPages = total > 0 ? Math.ceil(total / pageSize) : 1;
+      const page = Math.min(Math.max(requestedPage || 1, 1), totalPages);
+      const start = total === 0 ? 0 : (page - 1) * pageSize;
+      const end = total === 0 ? 0 : Math.min(start + pageSize, total);
+
+      return {
+        items: items.slice(start, end),
+        page,
+        total,
+        totalPages,
+        start,
+        end
+      };
+    }
+
+    function formatClientPageSummary(result) {
+      if (!result.total) {
+        return "0건";
+      }
+
+      return `${formatNumber(result.start + 1)}-${formatNumber(result.end)} / ${formatNumber(result.total)}건 · ${formatNumber(result.page)} / ${formatNumber(result.totalPages)} 페이지`;
     }
 
     function renderOwners(items) {
+      if (!items.length) {
+        return `
+          <article class="owner-row">
+            <div class="person-avatar">NA</div>
+            <div class="owner-main">
+              <div class="person-name">조회 가능한 Realm 소유자 정보가 없습니다.</div>
+              <div class="person-meta">사용자 IAM 기준으로 확인 가능한 owner 프로필이 없거나 연결된 사용자가 없습니다.</div>
+            </div>
+            <div class="owner-role">info</div>
+          </article>
+        `;
+      }
+
       return items.map((item) => `
         <article class="owner-row">
           <div class="person-avatar">${escapeHtml(item.initials)}</div>
@@ -2116,33 +2383,24 @@
       `).join("");
     }
 
-    function createChangeHistory(currentRealm) {
-      const owners = createOwners(currentRealm);
-      const primaryOwner = owners[0] ? owners[0].name : "Owner";
-      const backupOwner = owners[1] ? owners[1].name : primaryOwner;
-      return [
-        {
-          kind: "activity",
-          kindLabel: "운영",
-          title: "멤버 목록 정리",
-          detail: `${primaryOwner}가 비활성 멤버를 정리했습니다. · 2026-06-12 10:14 KST`
-        },
-        {
-          kind: "deploy",
-          kindLabel: "정책",
-          title: "Role 정책 수정",
-          detail: `${backupOwner}가 승인 기준과 역할 설명을 갱신했습니다. · 2026-06-11 16:28 KST`
-        },
-        {
-          kind: "created",
-          kindLabel: "연결",
-          title: "연결 프로젝트 목록 점검",
-          detail: `${primaryOwner}가 연결 프로젝트 기준을 다시 확인했습니다. · 2026-06-10 13:42 KST`
-        }
-      ];
-    }
-
     function renderHistory(items) {
+      if (!items.length) {
+        return `
+          <div class="timeline-row" data-kind="info">
+            <div class="timeline-rail"><span class="timeline-dot" aria-hidden="true"></span></div>
+            <div class="timeline-card">
+              <div class="timeline-card-head">
+                <div class="timeline-main">
+                  <div class="timeline-title">최근 활동이 없습니다.</div>
+                  <div class="timeline-meta">현재 realm에서 표시할 활동 이력이 없습니다.</div>
+                </div>
+                <div class="timeline-chip">Info</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
       return items.map((item) => `
         <div class="timeline-row" data-kind="${escapeHtml(item.kind)}">
           <div class="timeline-rail"><span class="timeline-dot" aria-hidden="true"></span></div>
@@ -2159,11 +2417,35 @@
       `).join("");
     }
 
-    function createOidcConfig(currentRealmKey, currentRealm) {
-      const realmSlug = currentRealmKey.replace(/-realm$/, "");
-      const clientId = `${realmSlug.replace(/-/g, "-")}-web`;
+    function createOidcConfig(currentRealmId, currentRealmName, oidcAccess) {
+      if (oidcAccess && typeof oidcAccess === "object") {
+        return [
+          { key: "Realm ID", value: normalizeText(oidcAccess.realmId) || currentRealmId || "-" },
+          { key: "Issuer", value: normalizeText(oidcAccess.issuer) || "-" },
+          { key: "Auth Endpoint", value: normalizeText(oidcAccess.authorizationEndpoint) || "-" },
+          { key: "Token Endpoint", value: normalizeText(oidcAccess.tokenEndpoint) || "-" },
+          { key: "UserInfo", value: normalizeText(oidcAccess.userinfoEndpoint) || "-" },
+          { key: "JWKS URI", value: normalizeText(oidcAccess.jwksUri) || "-" },
+          { key: "Client ID", value: normalizeText(oidcAccess.clientId) || "-" },
+          { key: "Redirect URI", value: normalizeText(oidcAccess.redirectUri || oidcAccess.callbackPath) || "-" },
+          { key: "Scopes", value: Array.isArray(oidcAccess.scopes) ? oidcAccess.scopes.join(" ") : "-" },
+          {
+            key: "Claims",
+            value: oidcAccess.claims
+              ? Object.entries(oidcAccess.claims).map(([key, value]) => `${key} -> ${value}`).join(", ")
+              : "-"
+          }
+        ];
+      }
+
+      const realmSlugSource = normalizeText(currentRealmName) || normalizeText(currentRealmId) || "permission-realm";
+      const realmSlug = realmSlugSource
+        .toLowerCase()
+        .replace(/[^a-z0-9-]+/g, "-")
+        .replace(/(^-+|-+$)/g, "");
+      const clientId = `${realmSlug || "permission-realm"}-web`;
       return [
-        { key: "Realm ID", value: currentRealmKey },
+        { key: "Realm ID", value: currentRealmId || "-" },
         { key: "Issuer", value: `https://sso.workspace.local/realms/${realmSlug}` },
         { key: "Auth Endpoint", value: `https://sso.workspace.local/realms/${realmSlug}/protocol/openid-connect/auth` },
         { key: "Token Endpoint", value: `https://sso.workspace.local/realms/${realmSlug}/protocol/openid-connect/token` },
@@ -2176,20 +2458,351 @@
       ];
     }
 
-    document.title = `${realm.title} - Permission Detail`;
-    const connectedProjects = (realm.targets || []).filter((item) => item.type === "Project");
-    const owners = createOwners(displayRealm);
-    const changeHistory = createChangeHistory(displayRealm);
-    const heroStats = realm.heroStats.map((item, index) => (
-      index === realm.heroStats.length - 1
-        ? { label: "연결된 프로젝트", value: String(connectedProjects.length), meta: `프로젝트 ${connectedProjects.length}` }
-        : item
-    ));
-    const oidcConfig = createOidcConfig(realmKey, realm);
-    const editorRoles = createRoleAssignments(displayRealm);
+    function renderState(title, description) {
+      document.title = `${title} - Permission Detail`;
+      app.innerHTML = `
+        <div
+          data-ax-topbar
+          data-active-key="permission"
+          data-search-placeholder="Realm, Role, 요청 상태를 검색하세요..."
+          data-search-source="workspace-permission-detail"
+          data-search-source-label="Permission Detail"
+          data-search-default-type="permission"
+        ></div>
+        <main class="page" style="padding-top:48px;">
+          <section class="panel hero">
+            <div class="hero-top">
+              <div>
+                <div class="eyebrow"><span class="material-icons-round" style="font-size:16px;">shield</span>Accessibility · IAM & Approvals</div>
+                <div class="hero-title-row">
+                  <h1 class="hero-title">${escapeHtml(title)}</h1>
+                </div>
+                <p class="hero-desc">${escapeHtml(description)}</p>
+              </div>
+              <div class="hero-actions">
+                <a class="action-btn secondary" href="workspace_permission_hub.html"><span class="material-icons-round" style="font-size:18px;">arrow_back</span>Permission Hub</a>
+              </div>
+            </div>
+          </section>
+        </main>
+      `;
 
-    const app = document.getElementById("app");
-    app.innerHTML = `
+      mountRenderedTopbar();
+    }
+
+    function mountRenderedTopbar() {
+      if (typeof window.mountAxStudioTopbar !== "function") {
+        return;
+      }
+
+      document.querySelectorAll("[data-ax-topbar]").forEach((host) => {
+        if (!host.dataset.axTopbarMounted) {
+          window.mountAxStudioTopbar(host);
+          host.dataset.axTopbarMounted = "true";
+        }
+      });
+    }
+
+    function toRoleSummary(roleName, memberCount, memberAccessStatus) {
+      if (memberAccessStatus === 403) {
+        return "멤버 상세 조회 권한 필요";
+      }
+      if (roleName === "admin") {
+        return `관리 권한 role · 멤버 ${formatNumber(memberCount)}명`;
+      }
+      return `배정 멤버 ${formatNumber(memberCount)}명`;
+    }
+
+    function toRoleApproval(capabilities) {
+      if (capabilities && capabilities.canApprove) {
+        return "관리 가능";
+      }
+      if (capabilities && capabilities.canRequest) {
+        return "요청 가능";
+      }
+      return "조회 전용";
+    }
+
+    function buildRoleAccessMeta({ roleName, memberCount, directUserCount, groupCount, canInspectMembers, canInspectGroups, approvalLabel, currentUserRoles }) {
+      const items = [
+        `role:${roleName}`,
+        `유효 멤버 ${formatNumber(memberCount)}명`
+      ];
+
+      items.push(
+        canInspectMembers
+          ? `직접 사용자 ${formatNumber(directUserCount)}명`
+          : "사용자 상세 제한"
+      );
+      items.push(
+        canInspectGroups
+          ? `연결 그룹 ${formatNumber(groupCount)}개`
+          : "그룹 상세 제한"
+      );
+
+      if (approvalLabel) {
+        items.push(`현재 사용자 ${approvalLabel}`);
+      }
+
+      if (Array.isArray(currentUserRoles) && currentUserRoles.includes(roleName)) {
+        items.push("현재 사용자 보유 role");
+      }
+
+      return items;
+    }
+
+    function formatAccessSource(value) {
+      if (value === "system-admin") {
+        return "System admin";
+      }
+      if (value === "user-iam") {
+        return "User IAM";
+      }
+      return "Permission API";
+    }
+
+    function buildHistory(detail, requests, access) {
+      const items = [];
+      items.push({
+        kind: "activity",
+        kindLabel: "Realm",
+        title: `${normalizeText(detail.name) || "Permission Realm"} 상태`,
+        detail: `${detail.status === "review" ? "Review" : "Active"} · 최근 변경 ${formatDateTime(detail.updatedAt)}`
+      });
+
+      requests.slice(0, 2).forEach((request) => {
+        const statusLabel = requestLabel(request.status);
+        items.push({
+          kind: "request",
+          kindLabel: "Request",
+          title: `${normalizeText(request.roleName) || "role"} 요청 ${statusLabel}`,
+          detail: `${normalizeText(request.requester && request.requester.name) || "Unknown"} · ${formatRequestDate(request.decidedAt || request.createdAt)}`
+        });
+      });
+
+      if (access.members === 403 || access.groups === 403) {
+        items.push({
+          kind: "review",
+          kindLabel: "Access",
+          title: "권한 관리 상세 조회 제한",
+          detail: "현재 계정에는 role별 사용자 또는 그룹 상세 조회 권한이 없습니다."
+        });
+      }
+
+      return items.slice(0, 3);
+    }
+
+    function buildViewModel(detail, roles, membersResult, groupsResult, bindingsData, requestsResult, oidcAccess) {
+      const typeMeta = toTypeMeta(detail.kind);
+      const statusMeta = toStatusLabel(detail.status);
+      const capabilities = detail.capabilities || {};
+      const access = detail.access || {};
+      const currentUserRoles = Array.isArray(detail.currentUserRoles) && detail.currentUserRoles.length
+        ? detail.currentUserRoles
+        : (Array.isArray(access.currentUserRoles) ? access.currentUserRoles : []);
+      const accessLevelLabel = access.accessLevel === "manage"
+        ? "관리 가능"
+        : (capabilities.canRequest ? "요청 가능" : "조회 가능");
+      const accessSourceLabel = formatAccessSource(access.visibilitySource);
+      const members = membersResult.items || [];
+      const groups = groupsResult.items || [];
+      const requests = requestsResult.items || [];
+      const canInspectMembers = access.canInspectMembers !== undefined ? Boolean(access.canInspectMembers) : membersResult.status !== 403;
+      const canInspectGroups = access.canInspectGroups !== undefined ? Boolean(access.canInspectGroups) : groupsResult.status !== 403;
+      const canInspectBindings = access.canInspectBindings !== undefined ? Boolean(access.canInspectBindings) : Array.isArray(bindingsData);
+      const bindingSource = canInspectBindings ? bindingsData : (Array.isArray(detail.boundProjects) ? detail.boundProjects : []);
+      const requestCounts = requests.reduce((counts, item) => {
+        const normalizedStatus = normalizeRequestStatus(item && item.status);
+        counts.total += 1;
+        counts[normalizedStatus] += 1;
+        return counts;
+      }, {
+        total: 0,
+        pending: 0,
+        approved: 0,
+        rejected: 0
+      });
+      const approvalLabel = toRoleApproval(capabilities);
+
+      const editorRoles = roles.map((role) => {
+        const roleMembers = canInspectMembers
+          ? members.filter((member) => Array.isArray(member.roles) && member.roles.includes(role.name))
+          : [];
+        const roleGroups = canInspectGroups
+          ? groups.filter((group) => Array.isArray(group.roles) && group.roles.includes(role.name))
+          : [];
+
+        const users = roleMembers.map((member) => ({
+          name: normalizeText(member.name) || normalizeText(member.userId) || normalizeText(member.id) || "Unknown",
+          email: normalizeText(member.email) || "-",
+          lastLogin: formatRelativeLogin(member.lastLoginedAt),
+          meta: Array.isArray(member.roles) ? member.roles.join(", ") : role.name
+        }));
+
+        const mappedGroups = roleGroups.map((group) => ({
+          id: normalizeText(group.id) || `${role.name}-group`,
+          name: normalizeText(group.name) || "Unnamed Group",
+          description: normalizeText(group.description) || normalizeText(group.path) || "-",
+          members: `${formatNumber(group.memberCount)}명`,
+          source: Array.isArray(group.roles) ? group.roles.join(", ") : role.name
+        }));
+
+        return {
+          name: role.name,
+          members: String(role.memberCount),
+          summary: toRoleSummary(role.name, role.memberCount, membersResult.status),
+          approval: currentUserRoles.includes(role.name) ? "보유중" : approvalLabel,
+          canInspectMembers,
+          canInspectGroups,
+          accessMeta: buildRoleAccessMeta({
+            roleName: role.name,
+            memberCount: role.memberCount,
+            directUserCount: roleMembers.length,
+            groupCount: roleGroups.length,
+            canInspectMembers,
+            canInspectGroups,
+            approvalLabel,
+            currentUserRoles
+          }),
+          users,
+          groups: mappedGroups
+        };
+      });
+
+      const owners = [];
+      if (detail.owner) {
+        owners.push({
+          initials: toInitials(detail.owner.name || detail.owner.userId),
+          name: normalizeText(detail.owner.name) || normalizeText(detail.owner.userId) || "Unknown",
+          meta: normalizeText(detail.owner.email) || `${normalizeText(detail.name) || "Realm"} owner`,
+          role: normalizeText(detail.owner.role) || "owner"
+        });
+      }
+      if (canInspectMembers) {
+        members
+          .filter((member) => Array.isArray(member.roles) && member.roles.includes("admin"))
+          .slice(0, 3)
+          .forEach((member) => {
+            if (owners.some((item) => normalizeText(item.name) === normalizeText(member.name) || normalizeText(item.meta) === normalizeText(member.email))) {
+              return;
+            }
+
+            owners.push({
+              initials: toInitials(member.name || member.userId),
+              name: normalizeText(member.name) || normalizeText(member.userId) || "Unknown",
+              meta: normalizeText(member.email) || normalizeText(detail.name) || "admin",
+              role: "admin"
+            });
+          });
+      }
+
+      const connectedProjects = bindingSource.map((project) => ({
+        type: "Project",
+        name: normalizeText(project.label || project.name) || normalizeText(project.id) || "Unnamed Project",
+        meta: normalizeText(project.description) || (normalizeText(project.role) ? `binding role · ${project.role}` : "Permission Realm binding"),
+        href: toProjectHref(project)
+      }));
+      const projectCount = canInspectBindings ? connectedProjects.length : Number(detail.projectCount || 0);
+
+      return {
+        title: normalizeText(detail.name) || normalizeText(params.get("name")) || "Permission Realm",
+        typeLabel: typeMeta.typeLabel,
+        statusLabel: statusMeta.label,
+        statusTone: statusMeta.tone,
+        description: normalizeText(detail.summary) || normalizeText(detail.description) || "실제 Permission API 응답으로 realm 상세 상태를 보여줍니다.",
+        relatedAction: {
+          href: "workspace_projects_hub.html",
+          label: "프로젝트 허브 보기"
+        },
+        realmSectionDescription: owners.length
+          ? "사용자 IAM 기준으로 확인된 Realm 소유자와 필요한 OIDC 접근 정보를 함께 보여줍니다."
+          : "사용자 IAM 기준 realm 소유자 정보를 우선 확인하고, 없으면 제한 사유와 OIDC 접근 정보만 보여줍니다.",
+        accessSectionDescription: currentUserRoles.length
+          ? `현재 사용자 role ${currentUserRoles.join(", ")} 기준으로 Role 상세를 해석합니다.`
+          : "현재 사용자 IAM 접근 기준으로 Role 상세와 제한 범위를 함께 보여줍니다.",
+        heroStats: [
+          {
+            label: "포함 Role",
+            value: formatNumber(roles.length),
+            meta: currentUserRoles.length
+              ? `내 role ${currentUserRoles.join(", ")} · 전체 ${formatNumber(roles.length)}개`
+              : (roles.length ? roles.map((role) => `${role.name} ${formatNumber(role.memberCount)}`).join(" · ") : "등록된 role 없음")
+          },
+          {
+            label: "배정 인원",
+            value: formatNumber(detail.memberCount),
+            meta: canInspectMembers
+              ? `중복포함 ${formatNumber(detail.memberCount)}명`
+              : "상세 멤버는 권한 범위에 따라 제한됩니다."
+          },
+          {
+            label: "연결된 프로젝트",
+            value: formatNumber(projectCount),
+            meta: canInspectBindings ? `프로젝트 ${formatNumber(connectedProjects.length)}건` : "프로젝트 상세는 접근 권한에 따라 제한됩니다."
+          },
+          {
+            label: "권한 요청",
+            value: formatNumber(requestCounts.total),
+            meta: `대기 ${formatNumber(requestCounts.pending)}건 · 승인 ${formatNumber(requestCounts.approved)}건 · 거절 ${formatNumber(requestCounts.rejected)}건`
+          }
+        ],
+        overview: [
+          { key: "가시성 기준", value: accessSourceLabel },
+          { key: "내 접근 수준", value: accessLevelLabel },
+          { key: "내 Realm Role", value: currentUserRoles.join(", ") || "없음" },
+          { key: "식별자", value: normalizeText(detail.id) || "-" },
+          { key: "Capabilities", value: Object.entries(capabilities).filter(([, enabled]) => enabled).map(([key]) => key).join(", ") || "없음" }
+        ],
+        checkpoints: [
+          {
+            icon: capabilities.canApprove ? "verified_user" : (currentUserRoles.length ? "badge" : "visibility"),
+            title: currentUserRoles.length ? `내 role ${currentUserRoles.join(", ")}` : (capabilities.canApprove ? "관리 가능한 Realm" : "조회 가능한 Realm"),
+            meta: capabilities.canApprove
+              ? `${accessSourceLabel} 기준으로 멤버, 요청, 바인딩 상세를 관리할 수 있습니다.`
+              : `${accessSourceLabel} 기준으로 노출 가능한 permission API 데이터만 표시합니다.`
+          },
+          {
+            icon: canInspectMembers && canInspectGroups ? "groups" : "lock",
+            title: canInspectMembers && canInspectGroups
+              ? `사용자 ${formatNumber(members.length)}명 · 그룹 ${formatNumber(groups.length)}개`
+              : "권한 관리 상세 조회 제한",
+            meta: canInspectMembers && canInspectGroups
+              ? "role별 사용자 목록과 그룹 목록을 실제 API 응답으로 구성했습니다."
+              : "권한 범위에 따라 사용자/그룹 상세는 제한될 수 있습니다."
+          },
+          {
+            icon: requests.length ? "pending_actions" : "event_available",
+            title: requests.length ? `요청 ${formatNumber(requests.length)}건 확인` : "진행 중인 요청 없음",
+            meta: requests.length
+              ? `대기 ${formatNumber(requestCounts.pending)}건 · 승인 ${formatNumber(requestCounts.approved)}건 · 거절 ${formatNumber(requestCounts.rejected)}건`
+              : "현재 realm 기준 권한 요청이 없습니다."
+          }
+        ],
+        owners,
+        oidcConfig: createOidcConfig(detail.id, detail.name, oidcAccess),
+        editorRoles,
+        requests: requests.map((request) => ({
+          status: request.status,
+          title: `${normalizeText(request.roleName) || "role"} access request`,
+          meta: `${normalizeText(request.requester && request.requester.name) || "Unknown"} · ${normalizeText(request.reason) || "사유 없음"}`,
+          submeta: request.status === "pending"
+            ? `요청 생성 · ${formatRequestDate(request.createdAt)}`
+            : `${requestLabel(request.status)} 처리 · ${formatRequestDate(request.decidedAt || request.createdAt)}`,
+          actionLabel: request.status === "pending" ? "요청 확인" : "처리 결과"
+        })),
+        requestCounts,
+        connectedProjects,
+        changeHistory: buildHistory(detail, requests, {
+          members: membersResult.status,
+          groups: groupsResult.status,
+          bindings: canInspectBindings ? 200 : 403
+        })
+      };
+    }
+
+    function renderPage(model) {
+      document.title = `${model.title} - Permission Detail`;
+      app.innerHTML = `
       <div
         data-ax-topbar
         data-active-key="permission"
@@ -2198,91 +2811,6 @@
         data-search-source-label="Permission Detail"
         data-search-default-type="permission"
       ></div>
-      <template data-legacy-topbar>
-        <div class="topbar-inner">
-          <a class="topbar-brand" href="portal_launchpad.html" aria-label="AX Studio">
-            <span class="brand-mark" aria-hidden="true">
-              <img src="${logoDataUrl}" alt="AX Studio" />
-            </span>
-            <span class="brand-name">AX Studio</span>
-          </a>
-          <div class="logo-menu" id="serviceMenuWrap">
-            <button class="menu-trigger" id="serviceMenuButton" type="button" aria-label="전체 메뉴 열기" aria-haspopup="true" aria-expanded="false" aria-controls="serviceMenuPopover">
-              <span class="material-icons-round">apps</span>
-              <span class="material-icons-round menu-caret">expand_more</span>
-            </button>
-            <div class="service-popover" id="serviceMenuPopover" aria-labelledby="serviceMenuButton" hidden>
-              <div class="service-popover-inner">
-                <div class="service-groups">
-                  <section class="service-group">
-                    <div class="service-group-title">Store</div>
-                    <div class="service-links">
-                      <a class="service-link" href="dej_app_store.html"><span class="material-icons-round service-link-icon">widgets</span><span class="service-link-copy"><span class="service-link-title">App Gallery</span><span class="service-link-desc">실행형 개발 앱과 워크스페이스 도구를 발견하고 살펴보기</span></span></a>
-                      <a class="service-link" href="dej_agent_store.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">AI Gallery</span><span class="service-link-desc">챗봇과 tool 자산을 전시하고 재사용 흐름으로 연결</span></span></a>
-                    </div>
-                  </section>
-                  <section class="service-group">
-                    <div class="service-group-title">Accessibility</div>
-                    <div class="service-links">
-                      <a class="service-link" href="workspace_domain_hub.html"><span class="material-icons-round service-link-icon">apartment</span><span class="service-link-copy"><span class="service-link-title">Domain</span><span class="service-link-desc">DNS 및 도메인 관리</span></span></a>
-                      <a class="service-link is-current" href="workspace_permission_hub.html"><span class="material-icons-round service-link-icon">groups</span><span class="service-link-copy"><span class="service-link-title">Permission</span><span class="service-link-desc">IAM 및 권한 관리</span></span></a>
-                    </div>
-                  </section>
-                  <section class="service-group">
-                    <div class="service-group-title">Storage</div>
-                    <div class="service-links">
-                      <a class="service-link" href="workspace_database_hub.html"><span class="material-icons-round service-link-icon">storage</span><span class="service-link-copy"><span class="service-link-title">Database</span><span class="service-link-desc">데이터베이스 관리(MongoDB, PostgreSQL, Redis 등)</span></span></a>
-                      <a class="service-link" href="workspace_s3_hub.html"><span class="material-icons-round service-link-icon">folder</span><span class="service-link-copy"><span class="service-link-title">Buckets</span><span class="service-link-desc">S3 스토리지 및 버킷 관리</span></span></a>
-                    </div>
-                  </section>
-                  <section class="service-group">
-                    <div class="service-group-title">Development</div>
-                    <div class="service-links">
-                      <a class="service-link" href="workspace_tools_hub.html"><span class="material-icons-round service-link-icon">web</span><span class="service-link-copy"><span class="service-link-title">Consoles</span><span class="service-link-desc">데이터베이스 웹 콘솔 모음</span></span></a>
-                      <a class="service-link" href="workspace_projects_hub.html"><span class="material-icons-round service-link-icon">public</span><span class="service-link-copy"><span class="service-link-title">Project/Publish</span><span class="service-link-desc">개발 프로젝트 관리(IDE 작업 공간)</span></span></a>
-                      <a class="service-link" href="#"><span class="material-icons-round service-link-icon">science</span><span class="service-link-copy"><span class="service-link-title">Jupyter</span><span class="service-link-desc">노트북 실험 및 분석 환경</span></span></a>
-                    </div>
-                  </section>
-                  <section class="service-group">
-                    <div class="service-group-title">AI</div>
-                    <div class="service-links">
-                      <a class="service-link" href="workspace_agent_hub.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">Workflow</span><span class="service-link-desc">Dify workflow와 승인형 자동화 런타임을 운영</span></span></a>
-                      <a class="service-link" href="workspace_chatbot_hub.html"><span class="material-icons-round service-link-icon">chat</span><span class="service-link-copy"><span class="service-link-title">Chatbot</span><span class="service-link-desc">API와 Frontend URL 기반 챗봇 엔드포인트를 관리</span></span></a>
-                      <a class="service-link" href="workspace_tool_inventory_hub.html"><span class="material-icons-round service-link-icon">inventory_2</span><span class="service-link-copy"><span class="service-link-title">Tool Inventory</span><span class="service-link-desc">에이전트가 사용하는 연결된 MCP 및 도구 자산을 관리</span></span></a>
-                      <a class="service-link" href="workspace_keycenter_hub.html"><span class="material-icons-round service-link-icon">vpn_key</span><span class="service-link-copy"><span class="service-link-title">Keycenter</span><span class="service-link-desc">발급된 LLM 키와 연결 상태를 관리</span></span></a>
-                    </div>
-                  </section>
-                  <section class="service-group">
-                    <div class="service-group-title">Support</div>
-                    <div class="service-links">
-                      <a class="service-link" href="#"><span class="material-icons-round service-link-icon">description</span><span class="service-link-copy"><span class="service-link-title">다큐먼트</span><span class="service-link-desc">가이드와 운영 문서를 확인합니다</span></span></a>
-                      <a class="service-link" href="about_dej.html"><span class="material-icons-round service-link-icon">timeline</span><span class="service-link-copy"><span class="service-link-title">About DEJ</span><span class="service-link-desc">DEJ의 역사와 CEJ·DEJ 흐름을 확인합니다</span></span></a>
-                      <a class="service-link" href="#"><span class="material-icons-round service-link-icon">chat_bubble_outline</span><span class="service-link-copy"><span class="service-link-title">챗봇</span><span class="service-link-desc">지원 챗봇으로 빠르게 문의합니다</span></span></a>
-                      <a class="service-link" href="#"><span class="material-icons-round service-link-icon">campaign</span><span class="service-link-copy"><span class="service-link-title">요청하기</span><span class="service-link-desc">기능 요청이나 지원 요청을 등록합니다</span></span></a>
-                    </div>
-                  </section>
-                </div>
-                <div class="service-outlinks" aria-label="외부 서비스 바로가기">
-                  <div class="service-outlinks-title">DEJ 시스템</div>
-                  <div class="service-outlink-list">
-                    <a class="service-outlink" href="https://dej-chatbot.apps.hedej.lge.com" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">forum</span><span class="service-outlink-copy"><span class="service-outlink-title">DEJ 챗봇</span><span class="service-outlink-desc">Workspace 지원 챗봇</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
-                    <a class="service-outlink" href="https://workspace.hedej.lge.com/heans" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">open_in_new</span><span class="service-outlink-copy"><span class="service-outlink-title">HEANS</span><span class="service-outlink-desc">HEANS 서비스 바로가기</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
-                    <a class="service-outlink" href="https://workspace.hedej.lge.com/hevpds" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">open_in_new</span><span class="service-outlink-copy"><span class="service-outlink-title">HEVPDS</span><span class="service-outlink-desc">HEVPDS 서비스 바로가기</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="search-wrap">
-            <span class="material-icons-round ico">search</span>
-            <input class="search-input" placeholder="Realm, Role, 요청 상태를 검색하세요..." />
-            <div class="search-ai"><span class="material-icons-round">auto_awesome</span>AI</div>
-          </div>
-          <div class="tb-spacer"></div>
-          <div class="tb-icon"><span class="material-icons-round">notifications_none</span><div class="dot"></div></div>
-          <div class="avatar">TN</div>
-        </div>
-      </template>
 
       <main class="page">
         <nav class="breadcrumbs" aria-label="Breadcrumb">
@@ -2290,7 +2818,7 @@
           <span class="material-icons-round" aria-hidden="true">chevron_right</span>
           <a href="workspace_permission_hub.html">Permission Hub</a>
           <span class="material-icons-round" aria-hidden="true">chevron_right</span>
-          <span>${escapeHtml(realm.title)}</span>
+          <span>${escapeHtml(model.title)}</span>
         </nav>
 
         <section class="panel hero">
@@ -2298,18 +2826,18 @@
             <div>
               <div class="eyebrow"><span class="material-icons-round" style="font-size:16px;">shield</span>Accessibility · IAM & Approvals</div>
               <div class="hero-title-row">
-                <h1 class="hero-title">${escapeHtml(realm.title)}</h1>
-                <span class="pill engine">${escapeHtml(realm.typeLabel)}</span>
-                <span class="pill status-${realm.statusTone === "healthy" ? "healthy" : realm.statusTone === "warning" ? "warning" : "danger"}">${escapeHtml(realm.statusLabel)}</span>
+                <h1 class="hero-title">${escapeHtml(model.title)}</h1>
+                <span class="pill engine">${escapeHtml(model.typeLabel)}</span>
+                <span class="pill status-${model.statusTone === "healthy" ? "healthy" : model.statusTone === "review" ? "warning" : "danger"}">${escapeHtml(model.statusLabel)}</span>
               </div>
-              <p class="hero-desc">${escapeHtml(realm.description)}</p>
+              <p class="hero-desc">${escapeHtml(model.description)}</p>
             </div>
             <div class="hero-actions">
               <a class="action-btn secondary" href="workspace_permission_hub.html"><span class="material-icons-round" style="font-size:18px;">arrow_back</span>Permission Hub</a>
-              <a class="action-btn primary" href="${escapeHtml(realm.relatedAction.href)}"><span class="material-icons-round" style="font-size:18px;">open_in_new</span>${escapeHtml(realm.relatedAction.label)}</a>
+              <a class="action-btn primary" href="${escapeHtml(model.relatedAction.href)}"><span class="material-icons-round" style="font-size:18px;">open_in_new</span>${escapeHtml(model.relatedAction.label)}</a>
             </div>
           </div>
-          <div class="hero-stats">${renderStats(heroStats)}</div>
+          <div class="hero-stats">${renderStats(model.heroStats)}</div>
         </section>
 
         <div class="layout">
@@ -2319,18 +2847,18 @@
                 <div>
                   <div class="section-kicker"><span class="material-icons-round">monitor_heart</span>Realm</div>
                   <h2 class="section-title">Realm 정보</h2>
-                  <p class="section-desc">admin owner 정보와 필요한 OIDC 접근 정보만 간단히 볼 수 있습니다.</p>
-                </div>
-              </div>
-              <div class="overview-grid">
-                <article class="card">
-                  <div class="card-head">
-                    <div>
-                      <div class="card-title">소유자 정보</div>
-                      <div class="card-desc">기본으로 생성된 admin 그룹 owner를 볼 수 있습니다.</div>
-                    </div>
+                  <p class="section-desc">${escapeHtml(model.realmSectionDescription)}</p>
                   </div>
-                  <div class="owner-list">${renderOwners(owners)}</div>
+                </div>
+                <div class="overview-grid">
+                  <article class="card">
+                    <div class="card-head">
+                      <div>
+                        <div class="card-title">소유자 정보</div>
+                        <div class="card-desc">기본으로 생성된 admin 그룹 owner를 볼 수 있습니다.</div>
+                      </div>
+                    </div>
+                  <div class="owner-list">${renderOwners(model.owners)}</div>
                   <details class="disclosure">
                     <summary>
                       <span>OIDC 접근 정보</span>
@@ -2338,7 +2866,7 @@
                       <span class="material-icons-round disclosure-icon" style="font-size:18px;">expand_more</span>
                     </summary>
                     <div class="disclosure-body">
-                      <div class="kv-list">${renderKvList(oidcConfig)}</div>
+                      <div class="kv-list">${renderKvList(model.oidcConfig)}</div>
                     </div>
                   </details>
                 </article>
@@ -2350,7 +2878,7 @@
                 <div>
                   <div class="section-kicker"><span class="material-icons-round">edit_square</span>Access</div>
                   <h2 class="section-title">권한 관리</h2>
-                  <p class="section-desc">Role별 사용자와 그룹 구성을 같은 흐름에서 볼 수 있습니다.</p>
+                  <p class="section-desc">${escapeHtml(model.accessSectionDescription)}</p>
                 </div>
               </div>
               <div class="editor-shell">
@@ -2411,7 +2939,11 @@
                         </table>
                         <div class="editor-table-footer">
                           <span>페이지 당 10</span>
-                          <span id="userTableSummary"></span>
+                          <div class="table-pagination">
+                            <button class="mini-btn" id="userPrevPageBtn" type="button">이전</button>
+                            <span id="userTableSummary"></span>
+                            <button class="mini-btn" id="userNextPageBtn" type="button">다음</button>
+                          </div>
                         </div>
                       </div>
                     </section>
@@ -2441,7 +2973,11 @@
                         </table>
                         <div class="editor-table-footer">
                           <span>페이지 당 10</span>
-                          <span id="groupTableSummary"></span>
+                          <div class="table-pagination">
+                            <button class="mini-btn" id="groupPrevPageBtn" type="button">이전</button>
+                            <span id="groupTableSummary"></span>
+                            <button class="mini-btn" id="groupNextPageBtn" type="button">다음</button>
+                          </div>
                         </div>
                       </div>
                     </section>
@@ -2451,24 +2987,24 @@
             </section>
 
             <section class="panel section">
-              <div class="section-head">
-                <div>
-                  <div class="section-kicker"><span class="material-icons-round">pending_actions</span>Requests</div>
-                  <h2 class="section-title">권한 요청</h2>
-                  <p class="section-desc">대기, 검토, 완료 요청을 상태별로 볼 수 있습니다.</p>
+                <div class="section-head">
+                  <div>
+                    <div class="section-kicker"><span class="material-icons-round">pending_actions</span>Requests</div>
+                    <h2 class="section-title">권한 요청</h2>
+                  <p class="section-desc">권한 요청을 대기, 승인, 거절 3단계로 묶어 건수와 함께 볼 수 있습니다.</p>
+                  </div>
                 </div>
-              </div>
               <div class="request-shell">
                 <div class="request-toolbar">
                   <div class="filter-tabs">
-                    <button class="filter-tab is-active" type="button" data-filter="all">전체</button>
-                    <button class="filter-tab" type="button" data-filter="pending">대기</button>
-                    <button class="filter-tab" type="button" data-filter="review">검토</button>
-                    <button class="filter-tab" type="button" data-filter="done">완료</button>
+                    <button class="filter-tab is-active" type="button" data-filter="all">전체 ${escapeHtml(formatNumber(model.requestCounts.total))}</button>
+                    <button class="filter-tab" type="button" data-filter="pending">대기 ${escapeHtml(formatNumber(model.requestCounts.pending))}</button>
+                    <button class="filter-tab" type="button" data-filter="approved">승인 ${escapeHtml(formatNumber(model.requestCounts.approved))}</button>
+                    <button class="filter-tab" type="button" data-filter="rejected">거절 ${escapeHtml(formatNumber(model.requestCounts.rejected))}</button>
                   </div>
                   <div class="request-summary" id="requestSummary"></div>
                 </div>
-                <div class="request-list" id="requestList">${renderRequests(realm.requests)}</div>
+                <div class="request-list" id="requestList">${renderRequests(model.requests)}</div>
               </div>
             </section>
 
@@ -2481,7 +3017,7 @@
                 </div>
                 <a class="section-link" href="workspace_projects_hub.html">프로젝트 허브 이동<span class="material-icons-round">chevron_right</span></a>
               </div>
-              <div class="target-list">${renderTargets(connectedProjects)}</div>
+              <div class="target-list">${renderTargets(model.connectedProjects)}</div>
             </section>
           </div>
 
@@ -2490,12 +3026,12 @@
               <section class="panel timeline-panel">
                 <div class="panel-header">
                   <div class="panel-title-wrap">
-                    <div class="panel-kicker"><span class="material-icons-round">event_note</span>Recent Activity</div>
-                    <div class="panel-title">프로젝트 타임라인</div>
-                    <div class="panel-subtitle">시간 순서대로 핵심 이벤트만 간단하게 이어 보이도록 정리했습니다.</div>
-                  </div>
+                  <div class="panel-kicker"><span class="material-icons-round">event_note</span>Recent Activity</div>
+                  <div class="panel-title">프로젝트 타임라인</div>
+                  <div class="panel-subtitle">시간 순서대로 핵심 이벤트만 간단하게 이어 보이도록 정리했습니다.</div>
                 </div>
-                <div class="timeline-list">${renderHistory(changeHistory)}</div>
+              </div>
+                <div class="timeline-list">${renderHistory(model.changeHistory)}</div>
               </section>
             </div>
           </aside>
@@ -2503,160 +3039,213 @@
       </main>
       `;
 
-    const menuWrap = document.getElementById("serviceMenuWrap");
-    const menuButton = document.getElementById("serviceMenuButton");
-    const menuPopover = document.getElementById("serviceMenuPopover");
+      mountRenderedTopbar();
+    }
 
-    if (menuWrap && menuButton && menuPopover) {
-      const setOpen = (open) => {
-        menuWrap.classList.toggle("is-open", open);
-        menuButton.setAttribute("aria-expanded", String(open));
-        menuPopover.hidden = !open;
+    function bindPageInteractions(editorRoles) {
+      const filterButtons = Array.from(document.querySelectorAll("[data-filter]"));
+      const requestRows = Array.from(document.querySelectorAll("[data-request-status]"));
+      const requestSummary = document.getElementById("requestSummary");
+      const roleList = document.getElementById("roleList");
+      const roleListSummary = document.getElementById("roleListSummary");
+      const roleSearchInput = document.getElementById("roleSearchInput");
+      const userSearchInput = document.getElementById("userSearchInput");
+      const groupSearchInput = document.getElementById("groupSearchInput");
+      const selectedRoleName = document.getElementById("selectedRoleName");
+      const selectedRoleSummary = document.getElementById("selectedRoleSummary");
+      const selectedRoleMeta = document.getElementById("selectedRoleMeta");
+      const selectedRoleApproval = document.getElementById("selectedRoleApproval");
+      const userTableBody = document.getElementById("userTableBody");
+      const groupTableBody = document.getElementById("groupTableBody");
+      const userTableSummary = document.getElementById("userTableSummary");
+      const groupTableSummary = document.getElementById("groupTableSummary");
+      const userPrevPageBtn = document.getElementById("userPrevPageBtn");
+      const userNextPageBtn = document.getElementById("userNextPageBtn");
+      const groupPrevPageBtn = document.getElementById("groupPrevPageBtn");
+      const groupNextPageBtn = document.getElementById("groupNextPageBtn");
+
+      const editorState = {
+        activeRole: editorRoles[0] ? editorRoles[0].name : "",
+        roleQuery: "",
+        userQuery: "",
+        groupQuery: "",
+        userPage: 1,
+        groupPage: 1
       };
 
-      setOpen(false);
+      function includesQuery(values, query) {
+        const normalizedQuery = query.trim().toLowerCase();
+        if (!normalizedQuery) return true;
+        return values.some((value) => String(value).toLowerCase().includes(normalizedQuery));
+      }
 
-      menuButton.addEventListener("click", (event) => {
-        event.preventDefault();
-        setOpen(!menuWrap.classList.contains("is-open"));
-      });
+      function getFilteredRoles() {
+        return editorRoles.filter((item) => includesQuery([item.name, item.summary, item.approval], editorState.roleQuery));
+      }
 
-      document.addEventListener("click", (event) => {
-        if (!menuWrap.contains(event.target)) setOpen(false);
-      });
+      function syncActiveRole(filteredRoles) {
+        if (filteredRoles.some((item) => item.name === editorState.activeRole)) return;
+        editorState.activeRole = filteredRoles[0] ? filteredRoles[0].name : "";
+      }
 
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          setOpen(false);
-          menuButton.focus();
-        }
-      });
-    }
+      function renderEditor() {
+        const filteredRoles = getFilteredRoles();
+        syncActiveRole(filteredRoles);
+        const activeRole = filteredRoles.find((item) => item.name === editorState.activeRole) || null;
 
-    const filterButtons = Array.from(document.querySelectorAll("[data-filter]"));
-    const requestRows = Array.from(document.querySelectorAll("[data-request-status]"));
-    const requestSummary = document.getElementById("requestSummary");
-    const roleList = document.getElementById("roleList");
-    const roleListSummary = document.getElementById("roleListSummary");
-    const roleSearchInput = document.getElementById("roleSearchInput");
-    const userSearchInput = document.getElementById("userSearchInput");
-    const groupSearchInput = document.getElementById("groupSearchInput");
-    const selectedRoleName = document.getElementById("selectedRoleName");
-    const selectedRoleSummary = document.getElementById("selectedRoleSummary");
-    const selectedRoleMeta = document.getElementById("selectedRoleMeta");
-    const selectedRoleApproval = document.getElementById("selectedRoleApproval");
-    const userTableBody = document.getElementById("userTableBody");
-    const groupTableBody = document.getElementById("groupTableBody");
-    const userTableSummary = document.getElementById("userTableSummary");
-    const groupTableSummary = document.getElementById("groupTableSummary");
+        roleList.innerHTML = renderRoleList(filteredRoles, editorState.activeRole);
+        roleListSummary.textContent = `${filteredRoles.length} / ${editorRoles.length}`;
 
-    const editorState = {
-      activeRole: editorRoles[0] ? editorRoles[0].name : "",
-      roleQuery: "",
-      userQuery: "",
-      groupQuery: ""
-    };
-
-    function includesQuery(values, query) {
-      const normalizedQuery = query.trim().toLowerCase();
-      if (!normalizedQuery) return true;
-      return values.some((value) => String(value).toLowerCase().includes(normalizedQuery));
-    }
-
-    function getFilteredRoles() {
-      return editorRoles.filter((item) => includesQuery([item.name, item.summary, item.approval], editorState.roleQuery));
-    }
-
-    function syncActiveRole(filteredRoles) {
-      if (filteredRoles.some((item) => item.name === editorState.activeRole)) return;
-      editorState.activeRole = filteredRoles[0] ? filteredRoles[0].name : "";
-    }
-
-    function renderEditor() {
-      const filteredRoles = getFilteredRoles();
-      syncActiveRole(filteredRoles);
-      const activeRole = filteredRoles.find((item) => item.name === editorState.activeRole) || null;
-
-      roleList.innerHTML = renderRoleList(filteredRoles, editorState.activeRole);
-      roleListSummary.textContent = `${filteredRoles.length} / ${editorRoles.length}`;
-
-      Array.from(roleList.querySelectorAll("[data-role-name]")).forEach((button) => {
-        button.addEventListener("click", () => {
-          editorState.activeRole = button.dataset.roleName;
-          renderEditor();
+        Array.from(roleList.querySelectorAll("[data-role-name]")).forEach((button) => {
+          button.addEventListener("click", () => {
+            editorState.activeRole = button.dataset.roleName;
+            editorState.userPage = 1;
+            editorState.groupPage = 1;
+            renderEditor();
+          });
         });
+
+        if (!activeRole) {
+          selectedRoleName.textContent = "Role 없음";
+          selectedRoleSummary.textContent = "선택 가능한 Role이 없습니다.";
+          selectedRoleMeta.textContent = "";
+          selectedRoleApproval.className = "tone-pill review";
+          selectedRoleApproval.textContent = "확인 필요";
+          userTableBody.innerHTML = renderUserRows([]);
+          groupTableBody.innerHTML = renderGroupRows([]);
+          userTableSummary.textContent = "0건";
+          groupTableSummary.textContent = "0건";
+          userPrevPageBtn.disabled = true;
+          userNextPageBtn.disabled = true;
+          groupPrevPageBtn.disabled = true;
+          groupNextPageBtn.disabled = true;
+          return;
+        }
+
+        const filteredUsers = activeRole.users.filter((item) => (
+          includesQuery([item.name, item.email, item.meta, item.lastLogin], editorState.userQuery)
+        ));
+        const filteredGroups = activeRole.groups.filter((item) => (
+          includesQuery([item.name, item.description, item.members, item.source], editorState.groupQuery)
+        ));
+        const pagedUsers = paginateClientItems(filteredUsers, editorState.userPage);
+        const pagedGroups = paginateClientItems(filteredGroups, editorState.groupPage);
+
+        editorState.userPage = pagedUsers.page;
+        editorState.groupPage = pagedGroups.page;
+
+        selectedRoleName.textContent = activeRole.name;
+        selectedRoleSummary.textContent = activeRole.summary;
+        selectedRoleMeta.textContent = activeRole.accessMeta.join(" · ");
+        selectedRoleApproval.className = `tone-pill ${approvalTone(activeRole.approval)}`;
+        selectedRoleApproval.textContent = activeRole.approval;
+        userTableBody.innerHTML = renderUserRows(pagedUsers.items, { restricted: !activeRole.canInspectMembers });
+        groupTableBody.innerHTML = renderGroupRows(pagedGroups.items, { restricted: !activeRole.canInspectGroups });
+        userTableSummary.textContent = activeRole.canInspectMembers ? formatClientPageSummary(pagedUsers) : "조회 권한 없음";
+        groupTableSummary.textContent = activeRole.canInspectGroups ? formatClientPageSummary(pagedGroups) : "조회 권한 없음";
+        userPrevPageBtn.disabled = !activeRole.canInspectMembers || pagedUsers.page <= 1;
+        userNextPageBtn.disabled = !activeRole.canInspectMembers || pagedUsers.page >= pagedUsers.totalPages;
+        groupPrevPageBtn.disabled = !activeRole.canInspectGroups || pagedGroups.page <= 1;
+        groupNextPageBtn.disabled = !activeRole.canInspectGroups || pagedGroups.page >= pagedGroups.totalPages;
+      }
+
+      function updateRequestFilter(status) {
+        filterButtons.forEach((button) => {
+          button.classList.toggle("is-active", button.dataset.filter === status);
+        });
+
+        let visibleCount = 0;
+        requestRows.forEach((row) => {
+          const match = status === "all" || row.dataset.requestStatus === status;
+          row.style.display = match ? "" : "none";
+          if (match) visibleCount += 1;
+        });
+
+        const labelMap = {
+          all: "전체 요청",
+          pending: "대기 요청",
+          approved: "승인 요청",
+          rejected: "거절 요청"
+        };
+        requestSummary.textContent = `${labelMap[status]} ${visibleCount}건`;
+      }
+
+      filterButtons.forEach((button) => {
+        button.addEventListener("click", () => updateRequestFilter(button.dataset.filter));
+      });
+      roleSearchInput.addEventListener("input", (event) => {
+        editorState.roleQuery = event.target.value;
+        renderEditor();
+      });
+      userSearchInput.addEventListener("input", (event) => {
+        editorState.userQuery = event.target.value;
+        editorState.userPage = 1;
+        renderEditor();
+      });
+      groupSearchInput.addEventListener("input", (event) => {
+        editorState.groupQuery = event.target.value;
+        editorState.groupPage = 1;
+        renderEditor();
+      });
+      userPrevPageBtn.addEventListener("click", () => {
+        editorState.userPage = Math.max(editorState.userPage - 1, 1);
+        renderEditor();
+      });
+      userNextPageBtn.addEventListener("click", () => {
+        editorState.userPage += 1;
+        renderEditor();
+      });
+      groupPrevPageBtn.addEventListener("click", () => {
+        editorState.groupPage = Math.max(editorState.groupPage - 1, 1);
+        renderEditor();
+      });
+      groupNextPageBtn.addEventListener("click", () => {
+        editorState.groupPage += 1;
+        renderEditor();
       });
 
-      if (!activeRole) {
-        selectedRoleName.textContent = "Role 없음";
-        selectedRoleSummary.textContent = "선택 가능한 Role이 없습니다.";
-        selectedRoleMeta.textContent = "";
-        selectedRoleApproval.className = "tone-pill review";
-        selectedRoleApproval.textContent = "확인 필요";
-        userTableBody.innerHTML = renderUserRows([]);
-        groupTableBody.innerHTML = renderGroupRows([]);
-        userTableSummary.textContent = "0건";
-        groupTableSummary.textContent = "0건";
+      renderEditor();
+      updateRequestFilter("all");
+    }
+
+    async function loadRealmDetail() {
+      if (!realmKey) {
+        renderState("Realm 식별자 필요", "Permission Hub에서 realm을 선택한 뒤 상세 화면으로 진입해 주세요.");
         return;
       }
 
-      const filteredUsers = activeRole.users.filter((item) => (
-        includesQuery([item.name, item.email, item.meta, item.lastLogin], editorState.userQuery)
-      ));
-      const filteredGroups = activeRole.groups.filter((item) => (
-        includesQuery([item.name, item.description, item.members, item.source], editorState.groupQuery)
-      ));
+      renderState("Permission Detail", "실제 permission API 데이터를 불러오고 있습니다.");
 
-      selectedRoleName.textContent = activeRole.name;
-      selectedRoleSummary.textContent = activeRole.summary;
-      selectedRoleMeta.textContent = `${activeRole.capabilities.join(" · ")} · 사용자 ${filteredUsers.length}명 · 그룹 ${filteredGroups.length}개`;
-      selectedRoleApproval.className = `tone-pill ${approvalTone(activeRole.approval)}`;
-      selectedRoleApproval.textContent = activeRole.approval;
-      userTableBody.innerHTML = renderUserRows(filteredUsers);
-      groupTableBody.innerHTML = renderGroupRows(filteredGroups);
-      userTableSummary.textContent = `${filteredUsers.length}건`;
-      groupTableSummary.textContent = `${filteredGroups.length}건`;
+      try {
+        const [detailPayload, oidcPayload, rolesPayload, membersResult, groupsResult, bindingsPayload, requestsResult] = await Promise.all([
+          requestJson(`/realms/${encodeURIComponent(realmKey)}`),
+          requestJson(`/realms/${encodeURIComponent(realmKey)}/oidc`),
+          requestJson(`/realms/${encodeURIComponent(realmKey)}/roles`),
+          fetchAllPages(`/realms/${encodeURIComponent(realmKey)}/members`, { limit: 100 }, { allowStatus: [403] }),
+          fetchAllPages(`/realms/${encodeURIComponent(realmKey)}/groups`, { limit: 100 }, { allowStatus: [403] }),
+          requestJson(`/realms/${encodeURIComponent(realmKey)}/bindings`, { allowStatus: [403] }),
+          fetchAllPages(`/realms/${encodeURIComponent(realmKey)}/requests`, { limit: 100 }, { allowStatus: [403] })
+        ]);
+
+        const detail = extractData(detailPayload) || {};
+        const oidcAccess = extractData(oidcPayload) || null;
+        const roles = extractData(rolesPayload) || [];
+        const bindings = extractData(bindingsPayload);
+        const requests = {
+          items: requestsResult.items || [],
+          status: requestsResult.status || 200
+        };
+
+        const model = buildViewModel(detail, roles, membersResult, groupsResult, bindings, requests, oidcAccess);
+        renderPage(model);
+        bindPageInteractions(model.editorRoles);
+      } catch (error) {
+        console.error("Failed to load permission detail", error);
+        renderState("Permission Detail 로드 실패", error && error.message ? error.message : "실제 permission API 응답을 불러오지 못했습니다.");
+      }
     }
 
-    function updateRequestFilter(status) {
-      filterButtons.forEach((button) => {
-        button.classList.toggle("is-active", button.dataset.filter === status);
-      });
-
-      let visibleCount = 0;
-      requestRows.forEach((row) => {
-        const match = status === "all" || row.dataset.requestStatus === status;
-        row.style.display = match ? "" : "none";
-        if (match) visibleCount += 1;
-      });
-
-      const labelMap = {
-        all: "전체 요청",
-        pending: "대기 요청",
-        review: "검토 요청",
-        done: "완료 이력"
-      };
-      requestSummary.textContent = `${labelMap[status]} ${visibleCount}건`;
-    }
-
-    filterButtons.forEach((button) => {
-      button.addEventListener("click", () => updateRequestFilter(button.dataset.filter));
-    });
-    roleSearchInput.addEventListener("input", (event) => {
-      editorState.roleQuery = event.target.value;
-      renderEditor();
-    });
-    userSearchInput.addEventListener("input", (event) => {
-      editorState.userQuery = event.target.value;
-      renderEditor();
-    });
-    groupSearchInput.addEventListener("input", (event) => {
-      editorState.groupQuery = event.target.value;
-      renderEditor();
-    });
-
-    renderEditor();
-    updateRequestFilter("all");
+    loadRealmDetail();
   </script>
   <script src="ax_studio_topbar.js"></script>
 </body>

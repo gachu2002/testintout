@@ -59,16 +59,22 @@ export const launchpadSectionStatus = {
   },
   banner: {
     apis: [{ contract: 'accepted', method: 'GET', path: '/api/v2/launchpad/overview' }],
-    evidence: 'Verified as the DEJ/release/event/security banner rail.',
+    evidence:
+      'Verified against the current portal banner fallback behavior with focused and broad visual checks plus project checks.',
     fieldsUsed: [
       'hero.title',
       'hero.subtitle',
       'hero.workspaceName',
+      'hero.heroStats[].label',
+      'hero.heroStats[].value',
+      'hero.heroStats[].note',
       'serviceMenu.items[].title',
       'serviceMenu.items[].links[].label',
+      'serviceMenu.items[].links[].href',
       'announcements.items[].title',
       'announcements.items[].message',
       'announcements.items[].type',
+      'announcements.items[].href',
     ],
     id: 'launchpad-banner-rail',
     page: 'Launchpad',

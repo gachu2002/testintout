@@ -8,150 +8,1262 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
   <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
   <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <style>
+    .hub-invite-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 430;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(15, 23, 42, .52);
+      backdrop-filter: blur(10px);
+    }
+    .hub-invite-backdrop[hidden] {
+      display: none !important;
+    }
+    .hub-invite-shell {
+      width: min(980px, calc(100vw - 32px));
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 28px;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at top right, rgba(34, 211, 238, .12), transparent 24%),
+        linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid rgba(214, 216, 219, .88);
+      box-shadow: 0 32px 80px rgba(15, 23, 42, .22);
+    }
+    .hub-invite-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .hub-invite-copy {
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+    }
+    .hub-invite-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--brand);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .hub-invite-kicker .material-icons-round {
+      font-size: 14px;
+    }
+    .hub-invite-head h2 {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -.04em;
+      line-height: 1.06;
+    }
+    .hub-invite-subtitle {
+      color: var(--t2);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .hub-invite-close {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #eef2f7;
+      color: var(--t2);
+      transition: background .15s ease, color .15s ease;
+    }
+    .hub-invite-close:hover {
+      background: #e5eaf1;
+      color: var(--t1);
+    }
+    .hub-invite-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .hub-invite-panel {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      gap: 14px;
+      padding: 20px;
+      border-radius: 22px;
+      border: 1px solid rgba(214, 216, 219, .82);
+      background: rgba(255, 255, 255, .92);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .72);
+    }
+    .hub-invite-section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .hub-invite-section-head h3 {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.15;
+    }
+    .hub-invite-section-meta {
+      color: var(--t3);
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: right;
+    }
+    .hub-invite-list {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      max-height: 360px;
+      overflow: auto;
+    }
+    .hub-invite-list::-webkit-scrollbar,
+    .hub-invite-search-results::-webkit-scrollbar {
+      width: 8px;
+    }
+    .hub-invite-list::-webkit-scrollbar-thumb,
+    .hub-invite-search-results::-webkit-scrollbar-thumb {
+      background: rgba(146, 152, 160, .4);
+      border-radius: 999px;
+    }
+    .hub-invite-person {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(214, 216, 219, .78);
+      background: #fbfcfe;
+    }
+    .hub-invite-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, .08);
+      flex-shrink: 0;
+    }
+    .hub-invite-person-copy {
+      min-width: 0;
+      display: grid;
+      gap: 4px;
+    }
+    .hub-invite-person-name {
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+    .hub-invite-person-meta {
+      color: var(--t2);
+      font-size: 12px;
+      line-height: 1.45;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .hub-invite-remove-btn,
+    .hub-invite-add-btn {
+      height: 34px;
+      padding: 0 12px;
+      border: none;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 800;
+      transition: all .15s ease;
+      white-space: nowrap;
+    }
+    .hub-invite-remove-btn {
+      background: var(--brand-soft);
+      color: var(--brand);
+    }
+    .hub-invite-remove-btn:hover {
+      background: rgba(124, 58, 237, .22);
+    }
+    .hub-invite-add-btn {
+      background: rgba(34, 211, 238, .14);
+      color: #0f766e;
+    }
+    .hub-invite-add-btn:hover {
+      background: rgba(34, 211, 238, .22);
+    }
+    .hub-invite-search {
+      display: grid;
+      gap: 12px;
+    }
+    .hub-invite-search-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 14px;
+      border: 1px solid rgba(214, 216, 219, .94);
+      border-radius: 14px;
+      background: #fff;
+      color: var(--t1);
+      font: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border .15s ease, box-shadow .15s ease;
+    }
+    .hub-invite-search-input:focus {
+      border-color: rgba(124, 58, 237, .32);
+      box-shadow: 0 0 0 4px rgba(124, 58, 237, .08);
+    }
+    .hub-invite-search-results {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      max-height: 304px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+    .hub-invite-empty {
+      padding: 18px;
+      border-radius: 16px;
+      border: 1px dashed rgba(214, 216, 219, .9);
+      background: #fbfcfe;
+      color: var(--t3);
+      font-size: 13px;
+      line-height: 1.55;
+      text-align: center;
+    }
+    .hub-invite-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(214, 216, 219, .74);
+    }
+    .hub-invite-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 44px;
+      padding: 0 18px;
+      border: none;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 800;
+      transition: all .15s ease;
+    }
+    .hub-invite-action.ghost {
+      background: #fff;
+      color: var(--t2);
+      border: 1px solid rgba(214, 216, 219, .94);
+    }
+    .hub-invite-action.primary {
+      background: var(--brand);
+      color: #fff;
+      box-shadow: 0 12px 24px rgba(124, 58, 237, .18);
+    }
+    .hub-invite-action.primary:hover {
+      background: var(--brand-h);
+    }
+    .hero-stats {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+    .stat-card {
+      padding: 14px;
+      gap: 10px;
+    }
+    .stat-copy {
+      gap: 2px;
+    }
+    .resource-footer-actions {
+      flex-shrink: 0;
+    }
+    .resource-actions {
+      flex-wrap: nowrap;
+      align-items: center;
+    }
+    .resource-action-btn {
+      height: 34px;
+      padding: 0 14px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      justify-content: center;
+      white-space: nowrap;
+    }
+    .resource-action-btn.open {
+      background: var(--blue-bg);
+      border-color: rgba(79, 140, 255, .18);
+      color: var(--blue);
+      box-shadow: none;
+    }
+    .resource-action-btn.open:hover {
+      background: color-mix(in srgb, var(--blue) 10%, #ffffff);
+      color: var(--blue);
+    }
+    .resource-action-btn.invite {
+      background: var(--brand);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 10px 20px color-mix(in srgb, var(--brand) 22%, transparent);
+    }
+    .resource-action-btn.invite:hover {
+      background: var(--brand-h);
+    }
+
+    @media (max-width: 980px) {
+      .hub-invite-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 1160px) {
+      .hero-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 800px) {
+      .hub-invite-shell {
+        padding: 22px;
+        border-radius: 24px;
+      }
+      .hub-invite-head {
+        flex-direction: column;
+      }
+      .hub-invite-head h2 {
+        font-size: 28px;
+      }
+      .hub-invite-section-head {
+        flex-direction: column;
+      }
+    }
+    @media (max-width: 640px) {
+      .hub-invite-backdrop {
+        padding: 16px;
+      }
+      .hub-invite-shell {
+        width: min(100%, calc(100vw - 16px));
+        max-height: calc(100vh - 24px);
+        padding: 18px;
+        border-radius: 22px;
+      }
+      .hub-invite-head h2 {
+        font-size: 24px;
+      }
+      .hub-invite-person {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+      .hub-invite-remove-btn,
+      .hub-invite-add-btn {
+        grid-column: 1 / -1;
+        width: 100%;
+      }
+      .hub-invite-actions {
+        flex-direction: column-reverse;
+      }
+      .hub-invite-action {
+        width: 100%;
+      }
+    }
+    @media (max-width: 720px) {
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+      .resource-actions {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
 </head>
 <body>
   <div id="app"></div>
   <script>
-    window.HUB_CONFIG = {
-      documentTitle: "Agent Hub",
-      activeKey: "agent-hub",
-      theme: {
-        bg: "#f7f3ff",
-        brand: "#7c3aed",
-        brandH: "#6d28d9",
-        brandBg: "#ede9fe",
-        brandSoft: "rgba(124,58,237,.14)",
-        accent2: "#22d3ee"
-      },
-      searchPlaceholder: "Agent 이름과 연결된 LLM Key를 검색하세요...",
-      eyebrow: "AI · Automation Runtimes",
-      title: "Agent Hub",
-      description: "실제로 업무를 실행하는 Dify agent를 모았습니다. 이 화면은 agent 자체와 연결된 LLM Key를 빠르게 확인하는 데 집중합니다.",
-      primaryAction: { href: "workspace_project_detail.html?project=coverity-ai", icon: "add_circle", label: "새 Agent 생성" },
-      heroStats: [
-        { icon: "smart_toy", value: "4", label: "등록 Runtime", note: "Running 3 · Review 1", color: "linear-gradient(135deg,#7c3aed,#8b5cf6)" },
-        { icon: "account_tree", value: "3", label: "Workflow Lane", note: "Dify orchestration", color: "linear-gradient(135deg,#6d28d9,#a78bfa)" },
-        { icon: "approval", value: "2", label: "Approval Step", note: "human checkpoint", color: "linear-gradient(135deg,#8b5cf6,#c4b5fd)" },
-        { icon: "vpn_key", value: "4", label: "Linked Keys", note: "shared + prod pools", color: "linear-gradient(135deg,#5b21b6,#8b5cf6)" }
-      ],
-      filters: [
-        { id: "dify", icon: "smart_toy", label: "Dify" }
-      ],
-      resourceSectionIcon: "smart_toy",
-      resourceSectionLabel: "Agent Fleet",
-      resourceTitle: "Agents",
-      resourceDescription: "카드는 복잡한 실행 메타보다 어떤 Dify agent가 어떤 LLM Key에 연결되어 있는지 먼저 읽히도록 정리했습니다.",
-      resourceHeaderLink: { href: "workspace_keycenter_hub.html", label: "Keycenter 연결 보기" },
-      resources: [
-        {
-          categories: ["dify"],
-          status: { label: "Running", tone: "healthy" },
-          engine: "Dify",
-          icon: "account_tree",
-          name: "campaign-orchestrator",
-          meta: "프로모션 운영 승인 플로와 게시 단계를 자동으로 묶는 orchestration runtime",
-          color: "linear-gradient(135deg,#7c3aed,#22d3ee)",
-          connectionsLabel: "Connected LLM Key",
-          connections: [
-            { abbr: "KEY", name: "OpenAI Gateway Pool", meta: "Shared Gateway" }
-          ],
-          actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_agent_detail.html?item=campaign-orchestrator" }
-          ]
+    (() => {
+      const API_BASE = "/api/v2/agents";
+      const STORAGE_KEY = "workspace.agentHub.customResources";
+      const typeIcons = {
+        all: "apps",
+        workflow: "account_tree",
+        reviewer: "fact_check",
+        ops: "monitoring"
+      };
+      const typeColors = {
+        workflow: "linear-gradient(135deg,#7c3aed,#22d3ee)",
+        reviewer: "linear-gradient(135deg,#ec4899,#fb7185)",
+        ops: "linear-gradient(135deg,#0f766e,#34d399)"
+      };
+      const statMeta = {
+        agents: { icon: "smart_toy", color: "linear-gradient(135deg,#7c3aed,#8b5cf6)" },
+        workflow: { icon: "account_tree", color: "linear-gradient(135deg,#6d28d9,#a78bfa)" },
+        reviewer: { icon: "fact_check", color: "linear-gradient(135deg,#ec4899,#fb7185)" },
+        linkedTools: { icon: "build_circle", color: "linear-gradient(135deg,#2563eb,#60a5fa)" },
+        approval: { icon: "approval", color: "linear-gradient(135deg,#5b21b6,#8b5cf6)" }
+      };
+      const ownerPalette = [
+        "linear-gradient(135deg,#f472b6,#b40e4d)",
+        "linear-gradient(135deg,#34d399,#0d9488)",
+        "linear-gradient(135deg,#4f8cff,#3b6fcf)",
+        "linear-gradient(135deg,#22d3ee,#0086cc)",
+        "linear-gradient(135deg,#f59e0b,#d97706)",
+        "linear-gradient(135deg,#a78bfa,#7c5fcf)"
+      ];
+
+      const fallbackConfig = {
+        documentTitle: "Agent Hub",
+        activeKey: "agent-hub",
+        panelVariant: "briefing",
+        connectionsType: "key",
+        secondaryConnectionsType: "tool",
+        theme: {
+          bg: "#f7f3ff",
+          brand: "#7c3aed",
+          brandH: "#6d28d9",
+          brandBg: "#ede9fe",
+          brandSoft: "rgba(124,58,237,.14)",
+          accent2: "#22d3ee"
         },
-        {
-          categories: ["dify"],
-          status: { label: "Running", tone: "healthy" },
-          engine: "Dify",
-          icon: "schema",
-          name: "release-notes-pilot",
-          meta: "배포 로그, 티켓, 문서를 엮어 릴리즈 노트를 만드는 doc automation runtime",
-          color: "linear-gradient(135deg,#2563eb,#60a5fa)",
-          connectionsLabel: "Connected LLM Key",
-          connections: [
-            { abbr: "KEY", name: "Production Paid Pool", meta: "Paid Provider Tier" }
-          ],
-          actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_agent_detail.html?item=release-notes-pilot" }
-          ]
-        },
-        {
-          categories: ["dify"],
-          status: { label: "Running", tone: "healthy" },
-          engine: "Dify",
-          icon: "fact_check",
-          name: "repo-review-guard",
-          meta: "MR 위험도를 읽고 reviewer queue를 구성하는 approval-oriented runtime",
-          color: "linear-gradient(135deg,#ec4899,#fb7185)",
-          connectionsLabel: "Connected LLM Key",
-          connections: [
-            { abbr: "KEY", name: "Workspace Shared Pool", meta: "Team Shared Tier" }
-          ],
-          actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_agent_detail.html?item=repo-review-guard" }
-          ]
-        },
-        {
-          categories: ["dify"],
-          status: { label: "Review", tone: "review" },
-          engine: "Dify",
-          icon: "monitoring",
-          name: "incident-triage-bot",
-          meta: "장애 접수 내용을 분류하고 대응 담당자를 배정하는 ops automation runtime",
-          color: "linear-gradient(135deg,#0f766e,#34d399)",
-          connectionsLabel: "Connected LLM Key",
-          connections: [
-            { abbr: "KEY", name: "Sandbox Experiment Pool", meta: "Limited Scope Tier" }
-          ],
-          actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_agent_detail.html?item=incident-triage-bot" }
-          ]
+        searchPlaceholder: "Agent 이름과 연결된 모델과 런타임을 검색하세요...",
+        eyebrow: "AI · Automation Runtimes",
+        title: "Agent Hub",
+        description: "실제로 업무를 실행하는 Dify agent를 모았습니다. 최신 카드 구조를 유지하면서 현재 API가 제공하는 model, runtime, tool 연결 상태를 함께 확인합니다.",
+        primaryAction: { href: "workspace_agent_register.html", icon: "add_circle", label: "새 Agent 생성" },
+        resourceSectionIcon: "smart_toy",
+        resourceSectionLabel: "Agent Fleet",
+        resourceTitle: "Agents",
+        resourceDescription: "Agent 정보를 준비하고 있습니다.",
+        resourceHeaderLink: { href: "workspace_keycenter_hub.html", label: "Keycenter 연결 보기" },
+        filters: [
+          { id: "all", icon: "apps", label: "전체" }
+        ],
+        heroStats: [],
+        resources: [],
+        mainPanels: [
+          {
+            icon: "tips_and_updates",
+            label: "Tips",
+            title: "운영 팁",
+            description: "Agent 카드는 실행 흐름과 연결 상태 판단에 필요한 정보만 남기고, 운영 기준은 아래 패널에서 짧게 확인하는 구조로 맞췄습니다.",
+            rows: [
+              { title: "Agent는 실행 흐름이 먼저 읽혀야 합니다", meta: "entry channel보다 단계 수와 approval checkpoint를 우선 노출합니다." },
+              { title: "소유자와 공유 멤버를 함께 보여줍니다", meta: "누가 운영하고 있는지 카드 하단에서 바로 읽을 수 있게 유지합니다." },
+              { title: "연결 정보는 칩으로 짧게 요약합니다", meta: "model, tool, runtime 연결을 카드 안에서 빠르게 훑을 수 있게 둡니다." }
+            ],
+            footerLink: { href: "workspace_keycenter_hub.html", label: "Keycenter 보기" }
+          },
+          {
+            icon: "menu_book",
+            label: "Guide Links",
+            title: "가이드 링크",
+            description: "연관 허브와 운영 기준 링크를 별도 패널에 둡니다.",
+            rows: [
+              { title: "Keycenter", meta: "shared gateway key와 paid tier 정책을 확인합니다.", href: "workspace_keycenter_hub.html" },
+              { title: "Projects Hub", meta: "agent가 연결된 프로젝트 맥락을 확인합니다.", href: "workspace_projects_hub.html" },
+              { title: "Tool Inventory", meta: "외부 도구나 MCP 연결 구성을 확인합니다.", href: "workspace_tool_inventory_hub.html" }
+            ],
+            footerLink: { href: "portal_launchpad.html", label: "런치패드로 돌아가기" }
+          }
+        ],
+        sidebarPanels: [
+          {
+            icon: "monitor_heart",
+            label: "Service Health",
+            title: "현재 서비스 상태",
+            description: "운영 중인 agent service의 health 상태를 우측에서 짧게 확인합니다.",
+            rows: [
+              { title: "Agent 상태 동기화 중", meta: "runtime status", pill: { label: "Loading", tone: "pending" } }
+            ]
+          }
+        ]
+      };
+
+      const toArray = (value) => Array.isArray(value) ? value.filter(Boolean) : [];
+
+      const parseStoredAgents = () => {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          console.warn("Failed to parse stored agents", error);
+          return [];
         }
-      ],
-      mainPanels: [
-        {
-          icon: "tips_and_updates",
-          label: "Model",
-          title: "Agent Hub 분리 기준",
-          description: "Agent Hub는 챗봇 노출면이 아니라 자동화 실행 주체를 다룹니다. 그래서 endpoint보다 workflow route, approval checkpoint, 그리고 어떤 key pool을 쓰는지가 먼저 읽히도록 정리합니다.",
-          rows: [
-            { title: "Agent는 실행 흐름이 먼저 읽혀야 합니다", meta: "entry channel보다 단계 수, approval, key policy 같은 orchestration 메타를 우선 노출합니다." },
-            { title: "Key는 Keycenter에서 연결합니다", meta: "agent 페이지에서는 secret 자체가 아니라 어떤 key pool을 참조하는지만 읽히게 둡니다." },
-            { title: "프로젝트 바인딩보다 운영 기준을 먼저 보여줍니다", meta: "실행 주체를 비교할 때는 workflow 구조와 key tier가 먼저 보이는 편이 더 자연스럽습니다." }
-          ],
-          footerLink: { href: "workspace_keycenter_hub.html", label: "Keycenter 보기" }
-        },
-        {
-          icon: "menu_book",
-          label: "Guide Links",
-          title: "연결 기준",
-          description: "Agent Hub에서는 실행 주체를 보고, credential과 tier 정책은 Keycenter에서 이어서 확인하는 흐름입니다.",
-          rows: [
-            { title: "OpenAI Gateway Pool", meta: "공용 agent가 함께 쓰는 shared gateway key입니다.", href: "workspace_keycenter_hub.html" },
-            { title: "Production Paid Pool", meta: "운영 워크로드용 paid provider key tier입니다.", href: "workspace_keycenter_hub.html" },
-            { title: "Sandbox Experiment Pool", meta: "실험성 agent가 붙는 제한된 key pool입니다.", href: "workspace_keycenter_hub.html" }
-          ],
-          footerLink: { href: "portal_launchpad.html", label: "런치패드로 돌아가기" }
+      };
+
+      const buildStoredAgent = (item) => {
+        const name = String(item?.name || "").trim();
+        if (!name) return null;
+
+        const summary = String(item?.summary || "").trim();
+        const description = summary || "사용자 등록 Dify agent";
+        const createdAt = item?.createdAt || new Date().toISOString();
+        const id = item?.key || name;
+
+        return {
+          id,
+          slug: id,
+          name,
+          summary: description,
+          type: "workflow",
+          typeLabel: "Dify",
+          status: "review",
+          statusLabel: "Draft",
+          triggerChannel: "manual",
+          createdAt,
+          updatedAt: createdAt,
+          toolCount: 0,
+          workflow: { stepCount: 3 },
+          auth: { mode: "workspace" },
+          owner: { name: "Workspace User" },
+          authors: [{ name: "Workspace User" }],
+          runtime: {
+            provider: "dify",
+            statusLabel: "Draft"
+          },
+          model: {
+            primary: "Dify"
+          },
+          toolInventoryRefs: []
+        };
+      };
+
+      const getPayloadData = (payload) => {
+        if (payload && typeof payload === "object" && "data" in payload) {
+          return payload.data;
         }
-      ],
-      sidebarPanels: [
-        {
+        return payload;
+      };
+
+      const fetchJson = async (url) => {
+        const response = await fetch(url, {
+          method: "GET",
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: {
+            Accept: "application/json"
+          }
+        });
+
+        if (!response.ok) {
+          const message = await response.text().catch(() => "");
+          throw new Error(message || `Request failed: ${response.status}`);
+        }
+
+        return response.json();
+      };
+
+      const resolveSettledData = (result, fallback = {}) => {
+        if (result.status !== "fulfilled") {
+          return fallback;
+        }
+
+        return getPayloadData(result.value);
+      };
+
+      const withTimeout = (promise, ms, label) => {
+        let timerId;
+        const timeoutPromise = new Promise((_, reject) => {
+          timerId = window.setTimeout(() => {
+            reject(new Error(`${label} timed out after ${ms}ms`));
+          }, ms);
+        });
+
+        return Promise.race([promise, timeoutPromise]).finally(() => {
+          if (timerId) {
+            window.clearTimeout(timerId);
+          }
+        });
+      };
+
+      const renderConfig = (config, retry = 30) => {
+        window.HUB_CONFIG = config;
+        if (typeof window.renderWorkspaceResourceHub === "function") {
+          window.renderWorkspaceResourceHub(config);
+          window.setTimeout(() => {
+            if (typeof window.refreshConceptEndpointOverlay === "function") {
+              window.refreshConceptEndpointOverlay();
+            }
+          }, 0);
+          return;
+        }
+        if (retry > 0) {
+          window.setTimeout(() => renderConfig(config, retry - 1), 100);
+        }
+      };
+
+      const formatDate = (value) => {
+        if (!value) return "-";
+        const date = new Date(value);
+        if (Number.isNaN(date.valueOf())) return "-";
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}.${month}.${day}`;
+      };
+
+      const getInitials = (value) => {
+        const parts = String(value || "").trim().split(/\s+/).filter(Boolean);
+        if (!parts.length) return "AG";
+        if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+        return parts.map((part) => part[0]).join("").slice(0, 2).toUpperCase();
+      };
+
+      const toAbbr = (value, fallback) => {
+        const letters = String(value || "").replace(/[^a-z0-9]/gi, "").toUpperCase();
+        return (letters.slice(0, 4) || fallback).toUpperCase();
+      };
+
+      const getStatusTone = (status) => {
+        if (status === "running") return "healthy";
+        if (status === "review") return "review";
+        return "pending";
+      };
+
+      const getOwnerColor = (seed) => {
+        const source = String(seed || "agent");
+        const index = Array.from(source).reduce((acc, char) => acc + char.charCodeAt(0), 0) % ownerPalette.length;
+        return ownerPalette[index];
+      };
+
+      const formatProviderLabel = (value) => {
+        const text = String(value || "").trim();
+        if (!text) return "Runtime";
+        return text.replace(/^./, (char) => char.toUpperCase());
+      };
+
+      const buildHeroStats = (cards) => {
+        return toArray(cards).map((card) => ({
+          icon: statMeta[card.id]?.icon || "insights",
+          color: statMeta[card.id]?.color || "linear-gradient(135deg,#7c3aed,#22d3ee)",
+          value: String(card.value ?? 0),
+          label: card.label,
+          note: card.note || ""
+        }));
+      };
+
+      const buildFilters = (types) => {
+        const items = toArray(types);
+        const normalized = items.some((item) => item.id === "all")
+          ? items
+          : [{ id: "all", label: "전체" }, ...items];
+
+        return normalized.length ? normalized.map((item) => ({
+          id: item.id,
+          icon: typeIcons[item.id] || "smart_toy",
+          label: item.label || item.id
+        })) : fallbackConfig.filters;
+      };
+
+      const buildOwner = (item) => {
+        if (!item?.owner?.name) return null;
+        return {
+          label: "Owner",
+          name: item.owner.name,
+          initials: getInitials(item.owner.name),
+          meta: `${String(item.auth?.mode || item.authMode || "workspace").toUpperCase()} auth`,
+          color: getOwnerColor(item.owner.name)
+        };
+      };
+
+      const buildSharing = (item) => {
+        const ownerName = String(item?.owner?.name || "").toLowerCase();
+        const collaborators = toArray(item?.authors)
+          .map((author) => author?.name)
+          .filter(Boolean)
+          .filter((name, index, list) => list.indexOf(name) === index)
+          .filter((name) => String(name).toLowerCase() !== ownerName)
+          .map((name) => ({
+            initials: getInitials(name),
+            color: getOwnerColor(name)
+          }));
+
+        return collaborators.length ? { collaborators } : null;
+      };
+
+      const buildModelConnections = (item) => {
+        const providerLabel = formatProviderLabel(item.runtime?.provider);
+        const modelItems = toArray(item.model?.items);
+        const source = modelItems.length ? modelItems : [item.model?.primary || item.runtime?.provider].filter(Boolean);
+
+        return source.slice(0, 4).map((name, index) => ({
+          abbr: toAbbr(name, "LLM"),
+          name,
+          meta: `${index === 0 ? "Primary model" : "Connected model"} · ${providerLabel} runtime`,
+          color: typeColors[item.type] || getOwnerColor(name)
+        }));
+      };
+
+      const buildToolConnections = (item) => {
+        const toolRefs = toArray(item.toolInventoryRefs);
+        return toolRefs.slice(0, 3).map((toolRef, index) => ({
+          abbr: toAbbr(toolRef, "TL"),
+          name: toolRef,
+          meta: index === 0 ? `Tool inventory · ${item.toolCount || toolRefs.length} linked` : "Shared automation tool",
+          color: typeColors[item.type] || getOwnerColor(toolRef)
+        }));
+      };
+
+      const buildDetails = (item) => {
+        const approvalCount = toArray(item.approval?.checkpoints).length;
+        const authMode = item.auth?.mode || item.authMode || "workspace";
+        return [
+          { icon: "account_tree", text: `Workflow ${item.workflow?.stepCount || 0}단계` },
+          { icon: "inventory_2", text: `Tool ${item.toolCount || 0}개` },
+          { icon: "approval", text: item.approval?.required ? `Approval ${approvalCount || 1}단계` : "Approval 없음" },
+          { icon: "shield", text: `Auth ${String(authMode).toUpperCase()}` }
+        ];
+      };
+
+      const buildActions = (item) => {
+        const actions = [];
+        const detailHref = `workspace_agent_detail.html?item=${encodeURIComponent(item.id || item.slug || item.name || "agent")}`;
+        const openHref = item.openUrl || item.runtime?.url || detailHref;
+        const hasRuntimeOpenUrl = Boolean(item.openUrl || item.runtime?.url);
+        const openAction = {
+          label: hasRuntimeOpenUrl ? "Open Agent" : "Open",
+          icon: "open_in_new",
+          kind: "open",
+          href: openHref
+        };
+
+        if (hasRuntimeOpenUrl) {
+          openAction.attributes = {
+            target: "_blank",
+            rel: "noopener noreferrer"
+          };
+        }
+
+        actions.push({
+          label: "Detail",
+          icon: "arrow_outward",
+          kind: "open",
+          href: detailHref
+        });
+        actions.push(openAction);
+
+        const inviteNames = toArray(item.authors)
+          .map((author) => author?.name)
+          .filter(Boolean);
+        if (!inviteNames.length && item.owner?.name) {
+          inviteNames.push(item.owner.name);
+        }
+
+        actions.push({
+          label: "초대",
+          icon: "person_add",
+          kind: "invite",
+          attributes: {
+            "data-invite-trigger": true,
+            "data-agent-key": item.id || item.slug || item.name,
+            "data-agent-name": item.name,
+            "data-invite-members": inviteNames.join("|"),
+            "data-invite-context": `${item.typeLabel || "Agent"} · ${item.runtime?.provider || "runtime"}`
+          }
+        });
+
+        return actions;
+      };
+
+      const buildResource = (item) => ({
+        categories: ["all", item.type || "workflow"],
+        status: {
+          label: item.statusLabel || item.status || "Review",
+          tone: getStatusTone(item.status)
+        },
+        engine: `${item.typeLabel || "Workflow"} Agent · ${formatProviderLabel(item.runtime?.provider)}`,
+        icon: typeIcons[item.type] || "smart_toy",
+        name: item.name,
+        meta: item.summary || [
+          item.typeLabel || "Agent",
+          item.triggerChannel ? `Trigger ${item.triggerChannel}` : "",
+          item.runtime?.statusLabel || item.statusLabel || item.status || "Review"
+        ].filter(Boolean).join(" · "),
+        color: typeColors[item.type] || getOwnerColor(item.id || item.name),
+        details: buildDetails(item),
+        owner: buildOwner(item),
+        sharing: buildSharing(item),
+        connections: buildModelConnections(item),
+        secondaryConnections: buildToolConnections(item),
+        actions: buildActions(item),
+        footer: [
+          item.triggerChannel ? `Trigger ${item.triggerChannel}` : "",
+          item.updatedAt ? `Updated ${formatDate(item.updatedAt)}` : ""
+        ].filter(Boolean).join(" · ")
+      });
+
+      const buildMainPanels = ({ tipsPanel, guideLinksPanel }) => {
+        const panels = [];
+
+        if (toArray(tipsPanel?.rows).length) {
+          panels.push({
+            icon: tipsPanel.icon || "tips_and_updates",
+            label: tipsPanel.label || "Tips",
+            title: Object.prototype.hasOwnProperty.call(tipsPanel, "title") ? (tipsPanel.title || "") : "운영 팁",
+            description: tipsPanel.description || "Agent Hub는 자동화 실행 흐름과 운영 메타를 빠르게 읽는 화면으로 유지합니다.",
+            rows: toArray(tipsPanel.rows).map((row) => ({
+              title: row?.title || "",
+              meta: row?.meta || "",
+              href: row?.href
+            })),
+            footerLink: tipsPanel.footerLink || undefined
+          });
+        }
+
+        if (toArray(guideLinksPanel?.rows).length) {
+          panels.push({
+            icon: guideLinksPanel.icon || "menu_book",
+            label: guideLinksPanel.label || "Guide Links",
+            title: Object.prototype.hasOwnProperty.call(guideLinksPanel, "title") ? (guideLinksPanel.title || "") : "가이드 링크",
+            description: guideLinksPanel.description || "실행 주체 화면에서 credential 정책과 연결 허브로 자연스럽게 이동할 수 있게 구성합니다.",
+            rows: toArray(guideLinksPanel.rows).map((row) => ({
+              title: row?.title || "",
+              meta: row?.meta || "",
+              href: row?.href
+            })),
+            footerLink: guideLinksPanel.footerLink || undefined
+          });
+        }
+
+        return panels.length ? panels : fallbackConfig.mainPanels;
+      };
+
+      const buildSidebarPanels = ({ runtimePanel, items }) => {
+        if (toArray(runtimePanel?.rows).length) {
+          return [{
+            icon: runtimePanel.icon || "monitor_heart",
+            label: runtimePanel.label || "Service Health",
+            title: runtimePanel.title || "현재 서비스 상태",
+            description: runtimePanel.description || "운영 중인 agent service의 health 상태를 우측에서 짧게 확인합니다.",
+            rows: toArray(runtimePanel.rows).map((row) => ({
+              title: row?.title || row?.id || "agent",
+              meta: [row?.meta, row?.description].filter(Boolean).join(" · "),
+              pill: row?.pill ? {
+                label: row.pill.label,
+                tone: row.pill.tone
+              } : undefined
+            }))
+          }];
+        }
+
+        return [{
           icon: "monitor_heart",
-          label: "Service Status",
+          label: "Service Health",
           title: "현재 서비스 상태",
           description: "운영 중인 agent service의 health 상태를 우측에서 짧게 확인합니다.",
-          rows: [
-            { title: "campaign-orchestrator", meta: "Dify Workflow", pill: { label: "Healthy", tone: "healthy" } },
-            { title: "release-notes-pilot", meta: "Doc Automation", pill: { label: "Healthy", tone: "healthy" } },
-            { title: "repo-review-guard", meta: "Review Runtime", pill: { label: "Healthy", tone: "healthy" } },
-            { title: "incident-triage-bot", meta: "Ops Runtime", pill: { label: "Healthy", tone: "healthy" } }
-          ]
-        }
-      ]
-    };
+          rows: toArray(items).slice(0, 8).map((item) => ({
+            title: item.name,
+            meta: `생성일 ${formatDate(item.createdAt)}`,
+            pill: {
+              label: item.statusLabel || item.status || "Review",
+              tone: getStatusTone(item.status)
+            }
+          }))
+        }];
+      };
+
+      const buildHubConfig = ({ listPayload, filtersPayload = {}, statsPayload = {}, modelsPayload = {}, runtimePayload = {}, tipsPayload = {}, guideLinksPayload = {} }) => {
+        const items = [...parseStoredAgents().map(buildStoredAgent).filter(Boolean), ...toArray(listPayload.items)];
+        return {
+          ...fallbackConfig,
+          heroStats: buildHeroStats(statsPayload.cards),
+          filters: buildFilters(filtersPayload.types),
+          resources: items.length ? items.map(buildResource) : [],
+          resourceDescription: items.length
+            ? "최신 멤버/연결 칩 UI 위에 /api/v2/agents의 workflow, runtime, model, tool 정보를 다시 연결했습니다."
+            : "표시할 Agent가 없습니다.",
+          mainPanels: buildMainPanels({
+            tipsPanel: tipsPayload,
+            guideLinksPanel: guideLinksPayload,
+            modelsPanel: modelsPayload
+          }),
+          sidebarPanels: buildSidebarPanels({
+            runtimePanel: runtimePayload,
+            items
+          })
+        };
+      };
+
+      const bootstrap = async () => {
+        const listPromise = fetchJson(`${API_BASE}?limit=100`);
+        const filtersPromise = withTimeout(fetchJson(`${API_BASE}/filters`), 5000, "GET /api/v2/agents/filters");
+        const statsPromise = withTimeout(fetchJson(`${API_BASE}/stats`), 5000, "GET /api/v2/agents/stats");
+        const modelsPromise = withTimeout(fetchJson(`${API_BASE}/panels/models`), 5000, "GET /api/v2/agents/panels/models");
+        const runtimePromise = withTimeout(fetchJson(`${API_BASE}/panels/runtime-status`), 5000, "GET /api/v2/agents/panels/runtime-status");
+        const tipsPromise = withTimeout(fetchJson("/api/v2/panels/tips?surface=agents"), 5000, "GET /api/v2/panels/tips?surface=agents");
+        const guideLinksPromise = withTimeout(fetchJson("/api/v2/panels/guide-links?surface=agents"), 5000, "GET /api/v2/panels/guide-links?surface=agents");
+
+        const listPayload = getPayloadData(await listPromise);
+        renderConfig(buildHubConfig({ listPayload }));
+
+        Promise.allSettled([
+          filtersPromise,
+          statsPromise,
+          modelsPromise,
+          runtimePromise,
+          tipsPromise,
+          guideLinksPromise
+        ]).then(([filtersResult, statsResult, modelsResult, runtimeResult, tipsResult, guideLinksResult]) => {
+          renderConfig(buildHubConfig({
+            listPayload,
+            filtersPayload: resolveSettledData(filtersResult),
+            statsPayload: resolveSettledData(statsResult),
+            modelsPayload: resolveSettledData(modelsResult),
+            runtimePayload: resolveSettledData(runtimeResult),
+            tipsPayload: resolveSettledData(tipsResult),
+            guideLinksPayload: resolveSettledData(guideLinksResult)
+          }));
+        });
+      };
+
+      renderConfig(fallbackConfig);
+      bootstrap().catch((error) => {
+        console.warn("Failed to load /api/v2/agents hub data", error);
+        const storedFallback = buildHubConfig({ listPayload: { items: [] } });
+        renderConfig({
+          ...storedFallback,
+          heroStats: [],
+          resourceDescription: storedFallback.resources.length
+            ? "API를 불러오지 못해 현재 브라우저에 저장된 사용자 등록 Agent만 표시합니다."
+            : "Agent 정보를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.",
+          mainPanels: [{
+            icon: "error",
+            label: "Load Error",
+            title: "Agent Hub 데이터를 읽지 못했습니다.",
+            description: "권한 또는 API 응답 상태를 확인해 주세요.",
+            rows: [{ title: "API 호출 실패", meta: String(error?.message || error || "Unknown error") }]
+          }],
+          sidebarPanels: storedFallback.resources.length
+            ? storedFallback.sidebarPanels
+            : [{
+                icon: "monitor_heart",
+                label: "Service Health",
+                title: "현재 서비스 상태",
+                description: "Agent 상태를 불러오지 못했습니다.",
+                rows: [{ title: "상태 동기화 실패", meta: "runtime status", pill: { label: "Error", tone: "incident" } }]
+              }]
+        });
+      });
+    })();
   </script>
+  <div class="hub-invite-backdrop" id="hubInviteModal" hidden>
+    <div class="hub-invite-shell" role="dialog" aria-modal="true" aria-labelledby="hubInviteTitle">
+      <div class="hub-invite-head">
+        <div class="hub-invite-copy">
+          <div class="hub-invite-kicker"><span class="material-icons-round">group_add</span>Agent Invite</div>
+          <h2 id="hubInviteTitle">운영 멤버 초대</h2>
+          <p class="hub-invite-subtitle" id="hubInviteSubtitle">현재 연결된 운영 멤버를 관리하고, 사람을 검색하거나 직접 추가할 수 있습니다.</p>
+        </div>
+        <button class="hub-invite-close" type="button" id="hubInviteClose" aria-label="초대 모달 닫기">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+
+      <div class="hub-invite-layout">
+        <section class="hub-invite-panel">
+          <div class="hub-invite-section-head">
+            <div>
+              <h3>현재 초대된 사람</h3>
+            </div>
+            <div class="hub-invite-section-meta" id="hubInviteCount"></div>
+          </div>
+          <div class="hub-invite-list" id="hubInviteList"></div>
+        </section>
+
+        <section class="hub-invite-panel">
+          <div class="hub-invite-section-head">
+            <div>
+              <h3>사람 검색</h3>
+            </div>
+            <div class="hub-invite-section-meta">이름, 팀, 메일 또는 신규 추가</div>
+          </div>
+          <div class="hub-invite-search">
+            <input class="hub-invite-search-input" id="hubInviteSearchInput" type="text" placeholder="사람 검색" aria-label="사람 검색" />
+            <div class="hub-invite-search-results" id="hubInviteSearchResults"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="hub-invite-actions">
+        <button class="hub-invite-action ghost" type="button" id="hubInviteDone">닫기</button>
+        <button class="hub-invite-action primary" type="button" id="hubInviteConfirm">
+          <span class="material-icons-round">done</span>완료
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="workspace_resource_hub_shared.js"></script>
   <script src="ax_studio_topbar.js"></script>
   <script src="concept_endpoint_overlay.js"></script>
+  <script>
+    (() => {
+      const inviteModal = document.getElementById("hubInviteModal");
+      const inviteClose = document.getElementById("hubInviteClose");
+      const inviteDone = document.getElementById("hubInviteDone");
+      const inviteConfirm = document.getElementById("hubInviteConfirm");
+      const inviteTitle = document.getElementById("hubInviteTitle");
+      const inviteSubtitle = document.getElementById("hubInviteSubtitle");
+      const inviteCount = document.getElementById("hubInviteCount");
+      const inviteList = document.getElementById("hubInviteList");
+      const inviteSearchInput = document.getElementById("hubInviteSearchInput");
+      const inviteSearchResults = document.getElementById("hubInviteSearchResults");
+      if (!inviteModal || !inviteClose || !inviteDone || !inviteConfirm || !inviteTitle || !inviteSubtitle || !inviteCount || !inviteList || !inviteSearchInput || !inviteSearchResults) return;
+
+      const directory = [
+        { name: "Taehun Nam", role: "Agent Owner", team: "Workspace AI", email: "taehun.nam@lge.com", initials: "TN", color: "linear-gradient(135deg,#f472b6,#b40e4d)" },
+        { name: "Ara Kim", role: "Prompt Engineer", team: "AI Governance", email: "ara.kim@lge.com", initials: "AR", color: "linear-gradient(135deg,#a78bfa,#7c5fcf)" },
+        { name: "Jieun Lee", role: "Backend Engineer", team: "Platform API", email: "jieun.lee@lge.com", initials: "JL", color: "linear-gradient(135deg,#34d399,#0d9488)" },
+        { name: "Sora Park", role: "Conversation Designer", team: "Design Systems", email: "sora.park@lge.com", initials: "SP", color: "linear-gradient(135deg,#4f8cff,#3b6fcf)" },
+        { name: "Daniel Choi", role: "SRE", team: "Infra Operations", email: "daniel.choi@lge.com", initials: "DC", color: "linear-gradient(135deg,#0ea5e9,#2563eb)" },
+        { name: "Nari Han", role: "Data Engineer", team: "AI Platform", email: "nari.han@lge.com", initials: "NH", color: "linear-gradient(135deg,#f59e0b,#d97706)" },
+        { name: "Minki Kang", role: "Workflow Engineer", team: "Automation Runtime", email: "minki.kang@lge.com", initials: "MK", color: "linear-gradient(135deg,#22d3ee,#0086cc)" },
+        { name: "Minsu Seo", role: "Release Manager", team: "DevOps", email: "minsu.seo@lge.com", initials: "MS", color: "linear-gradient(135deg,#a78bfa,#7c5fcf)" },
+        { name: "QA Engineer", role: "QA Engineer", team: "Quality", email: "qa.engineer@lge.com", initials: "QA", color: "linear-gradient(135deg,#22d3ee,#0086cc)" }
+      ];
+
+      const inviteStore = {};
+      let activeInviteTrigger = null;
+      let activeInviteAgent = null;
+
+      const escapeHtml = (value) => String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+
+      const getInitials = (value) => {
+        const trimmed = String(value || "").trim();
+        if (!trimmed) return "NM";
+        if (/\s/.test(trimmed)) {
+          return trimmed
+            .split(/\s+/)
+            .map((part) => part[0] || "")
+            .join("")
+            .slice(0, 2)
+            .toUpperCase();
+        }
+        return trimmed.slice(0, 2).toUpperCase();
+      };
+
+      const normalizeNameFromEmail = (value) => {
+        const localPart = String(value || "").split("@")[0] || "";
+        const normalized = localPart.replace(/[._-]+/g, " ").trim();
+        if (!normalized) return "New Member";
+        if (/^[a-z0-9 ]+$/i.test(normalized)) {
+          return normalized.replace(/\b[a-z]/g, (match) => match.toUpperCase());
+        }
+        return normalized;
+      };
+
+      const createManualMember = (query) => {
+        const trimmed = String(query || "").trim();
+        const email = trimmed.includes("@")
+          ? trimmed.toLowerCase()
+          : `${trimmed.toLowerCase().replace(/[^a-z0-9]+/g, ".").replace(/(^\.|\.$)/g, "") || "new.member"}@invite.local`;
+        const name = trimmed.includes("@") ? normalizeNameFromEmail(trimmed) : trimmed;
+        return {
+          name,
+          role: "Pending Invite",
+          team: "Agent Collaborator",
+          email,
+          initials: getInitials(name),
+          color: "linear-gradient(135deg,#6b7280,#374151)",
+          isManual: true
+        };
+      };
+
+      const getDirectoryMember = (name) => {
+        return directory.find((member) => member.name.toLowerCase() === String(name || "").toLowerCase()) || {
+          name,
+          role: "Agent Collaborator",
+          team: "Workspace AI",
+          email: `${String(name || "member").toLowerCase().replace(/\s+/g, ".")}@lge.com`,
+          initials: getInitials(name),
+          color: "linear-gradient(135deg,#6b7280,#374151)"
+        };
+      };
+
+      const getInviteAgentData = (trigger) => {
+        const currentNames = String(trigger.dataset.inviteMembers || "")
+          .split("|")
+          .map((name) => name.trim())
+          .filter(Boolean);
+        return {
+          key: trigger.dataset.agentKey || trigger.dataset.agentName || "agent",
+          name: trigger.dataset.agentName || trigger.dataset.agentKey || "Agent",
+          context: trigger.dataset.inviteContext || "연결된 운영 멤버를 관리합니다.",
+          currentNames
+        };
+      };
+
+      const ensureInviteState = (agentState) => {
+        if (!agentState) return [];
+        if (!inviteStore[agentState.key]) {
+          const uniqueNames = Array.from(new Set(agentState.currentNames));
+          inviteStore[agentState.key] = uniqueNames.map((name) => ({ ...getDirectoryMember(name) }));
+        }
+        return inviteStore[agentState.key];
+      };
+
+      const getFilteredCandidates = () => {
+        if (!activeInviteAgent) return [];
+        const invitedNames = new Set(ensureInviteState(activeInviteAgent).map((member) => member.name));
+        const query = inviteSearchInput.value.trim().toLowerCase();
+        const filteredMembers = directory.filter((member) => {
+          if (invitedNames.has(member.name)) return false;
+          if (!query) return true;
+          return [member.name, member.team, member.role, member.email].some((field) => field.toLowerCase().includes(query));
+        });
+
+        const hasExactMatch = [...directory, ...ensureInviteState(activeInviteAgent)].some((member) =>
+          [member.name, member.email].some((field) => String(field || "").toLowerCase() === query)
+        );
+
+        if (query && !hasExactMatch) {
+          filteredMembers.push(createManualMember(inviteSearchInput.value));
+        }
+
+        return filteredMembers;
+      };
+
+      const renderInviteList = () => {
+        const invitedMembers = ensureInviteState(activeInviteAgent);
+        inviteCount.textContent = `${invitedMembers.length}명`;
+        if (!invitedMembers.length) {
+          inviteList.innerHTML = '<div class="hub-invite-empty">초대된 사람이 없습니다.</div>';
+          return;
+        }
+
+        inviteList.innerHTML = invitedMembers.map((member) => `
+          <div class="hub-invite-person">
+            <div class="hub-invite-avatar" style="background:${member.color}">${escapeHtml(member.initials)}</div>
+            <div class="hub-invite-person-copy">
+              <div class="hub-invite-person-name">${escapeHtml(member.name)}</div>
+              <div class="hub-invite-person-meta">${escapeHtml(member.role)} · ${escapeHtml(member.team)} · ${escapeHtml(member.email)}</div>
+            </div>
+            <button class="hub-invite-remove-btn" type="button" data-invite-remove="${encodeURIComponent(member.name)}">
+              <span class="material-icons-round">delete</span>삭제
+            </button>
+          </div>
+        `).join("");
+      };
+
+      const renderInviteSearchResults = () => {
+        const candidates = getFilteredCandidates();
+        if (!candidates.length) {
+          inviteSearchResults.innerHTML = '<div class="hub-invite-empty">검색 결과가 없습니다. 다른 이름이나 팀으로 찾아보세요.</div>';
+          return;
+        }
+
+        inviteSearchResults.innerHTML = candidates.map((member) => `
+          <div class="hub-invite-person">
+            <div class="hub-invite-avatar" style="background:${member.color}">${escapeHtml(member.initials)}</div>
+            <div class="hub-invite-person-copy">
+              <div class="hub-invite-person-name">${escapeHtml(member.name)}</div>
+              <div class="hub-invite-person-meta">${member.isManual ? `직접 입력 · ${escapeHtml(member.email)}` : `${escapeHtml(member.role)} · ${escapeHtml(member.team)} · ${escapeHtml(member.email)}`}</div>
+            </div>
+            <button class="hub-invite-add-btn" type="button" data-invite-add="${encodeURIComponent(member.name)}">
+              <span class="material-icons-round">${member.isManual ? "add_circle" : "person_add"}</span>${member.isManual ? "신규 추가" : "추가"}
+            </button>
+          </div>
+        `).join("");
+      };
+
+      const renderInviteModal = () => {
+        if (!activeInviteAgent) return;
+        inviteTitle.textContent = `${activeInviteAgent.name} 운영 멤버 초대`;
+        inviteSubtitle.textContent = `${activeInviteAgent.context} 사람을 검색하거나 직접 새 멤버를 추가할 수 있습니다.`;
+        renderInviteList();
+        renderInviteSearchResults();
+      };
+
+      const setInviteOpen = (isOpen) => {
+        inviteModal.hidden = !isOpen;
+        inviteModal.setAttribute("aria-hidden", String(!isOpen));
+        document.body.style.overflow = isOpen ? "hidden" : "";
+        if (isOpen) {
+          renderInviteModal();
+          inviteSearchInput.focus();
+        }
+      };
+
+      const openInviteForTrigger = (trigger) => {
+        activeInviteTrigger = trigger;
+        activeInviteAgent = getInviteAgentData(trigger);
+        if (!activeInviteAgent) return;
+        ensureInviteState(activeInviteAgent);
+        inviteSearchInput.value = "";
+        setInviteOpen(true);
+      };
+
+      const closeInviteModal = () => {
+        setInviteOpen(false);
+        activeInviteTrigger?.focus();
+      };
+
+      document.addEventListener("click", (event) => {
+        const trigger = event.target.closest("[data-invite-trigger]");
+        if (!trigger) return;
+        event.preventDefault();
+        event.stopPropagation();
+        openInviteForTrigger(trigger);
+      });
+
+      [inviteClose, inviteDone, inviteConfirm].forEach((button) => {
+        button.addEventListener("click", closeInviteModal);
+      });
+
+      inviteModal.addEventListener("click", (event) => {
+        if (event.target === inviteModal) {
+          closeInviteModal();
+        }
+      });
+
+      inviteSearchInput.addEventListener("input", () => {
+        renderInviteSearchResults();
+      });
+
+      inviteList.addEventListener("click", (event) => {
+        const removeButton = event.target.closest("[data-invite-remove]");
+        if (!removeButton || !activeInviteAgent) return;
+        const memberName = decodeURIComponent(removeButton.dataset.inviteRemove || "");
+        inviteStore[activeInviteAgent.key] = ensureInviteState(activeInviteAgent).filter((member) => member.name !== memberName);
+        renderInviteList();
+        renderInviteSearchResults();
+      });
+
+      inviteSearchResults.addEventListener("click", (event) => {
+        const addButton = event.target.closest("[data-invite-add]");
+        if (!addButton || !activeInviteAgent) return;
+        const memberName = decodeURIComponent(addButton.dataset.inviteAdd || "");
+        const directoryMember = directory.find((member) => member.name.toLowerCase() === memberName.toLowerCase());
+        const nextMember = directoryMember ? { ...directoryMember } : createManualMember(memberName);
+        inviteStore[activeInviteAgent.key] = [...ensureInviteState(activeInviteAgent), { ...nextMember }];
+        renderInviteList();
+        renderInviteSearchResults();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !inviteModal.hidden) {
+          closeInviteModal();
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

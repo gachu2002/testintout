@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <link rel="stylesheet" href="workspace_detail_shared.css" />
+  <style>
+    .form-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .stack,
+    .preview-list {
+      display: grid;
+      gap: 16px;
+    }
+    .field-card,
+    .preview-card,
+    .type-card {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+      box-shadow: 0 14px 28px rgba(15, 23, 42, .04);
+    }
+    .field-card,
+    .preview-card {
+      padding: 20px;
+    }
+    .field-label,
+    .mini-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .text-input,
+    .text-area {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      padding: 0 14px;
+      font: inherit;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+    .text-input {
+      height: 48px;
+    }
+    .text-area {
+      min-height: 132px;
+      padding-top: 14px;
+      padding-bottom: 14px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+    .text-input:focus,
+    .text-area:focus {
+      border-color: rgba(124, 58, 237, .34);
+      box-shadow: 0 0 0 4px rgba(124, 58, 237, .08);
+    }
+    .field-help,
+    .preview-help,
+    .form-note {
+      margin-top: 10px;
+      color: var(--subtle);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .type-card {
+      position: relative;
+      padding: 18px;
+      border-color: rgba(124, 58, 237, .3);
+      box-shadow: 0 16px 30px rgba(15, 23, 42, .08), inset 0 0 0 1px rgba(124, 58, 237, .1);
+      background: linear-gradient(180deg, #ffffff 0%, #f7f3ff 100%);
+    }
+    .type-card input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .type-top,
+    .preview-top,
+    .preview-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .type-icon,
+    .preview-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #fff;
+      background: linear-gradient(135deg, #7c3aed, #22d3ee);
+    }
+    .type-title,
+    .preview-title {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      margin-bottom: 4px;
+    }
+    .type-desc,
+    .preview-meta,
+    .preview-value {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .preview-list {
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .preview-item {
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: #fbfcfe;
+    }
+    .preview-value strong {
+      color: var(--text);
+      font-weight: 800;
+    }
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(124, 58, 237, .1);
+      color: #7c3aed;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .action-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .action-row .action-btn {
+      min-width: 148px;
+      justify-content: center;
+    }
+    @media (max-width: 980px) {
+      .form-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 720px) {
+      .action-row {
+        flex-direction: column-reverse;
+      }
+      .action-row .action-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    (() => {
+      const STORAGE_KEY = "workspace.agentHub.customResources";
+      const RESERVED_KEYS = [
+        "campaign-orchestrator",
+        "release-notes-pilot",
+        "repo-review-guard",
+        "incident-triage-bot"
+      ];
+
+      const parseStoredAgents = () => {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          console.warn("Failed to parse stored agents", error);
+          return [];
+        }
+      };
+
+      const normalizeKey = (value) => String(value || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "") || "agent";
+
+      const app = document.getElementById("app");
+      app.innerHTML = `
+        <div
+          data-ax-topbar
+          data-active-key="agent-hub"
+          data-search-placeholder="Agent 이름, Dify, draft를 검색하세요..."
+          data-search-source="workspace-agent-register"
+          data-search-source-label="Agent Register"
+          data-search-default-type="agent"
+        ></div>
+
+        <main class="page">
+          <nav class="breadcrumbs" aria-label="Breadcrumb">
+            <a href="portal_launchpad.html">Launchpad</a>
+            <span class="material-icons-round" aria-hidden="true">chevron_right</span>
+            <a href="workspace_agent_hub.html">Agent Hub</a>
+            <span class="material-icons-round" aria-hidden="true">chevron_right</span>
+            <span>New Agent</span>
+          </nav>
+
+          <section class="panel hero">
+            <div class="hero-top">
+              <div>
+                <div class="eyebrow"><span class="material-icons-round" style="font-size:16px;">smart_toy</span>AI · Automation Runtimes</div>
+                <div class="hero-title-row">
+                  <h1 class="hero-title">새 Agent 생성</h1>
+                  <span class="pill engine">Dify</span>
+                </div>
+                <p class="hero-desc">Chatbot 등록 화면과 같은 패턴으로, Agent 이름과 설명만 입력하면 Dify 유형의 draft agent를 생성해 Agent Hub에 바로 반영합니다.</p>
+              </div>
+              <div class="hero-actions">
+                <a class="action-btn secondary" href="workspace_agent_hub.html"><span class="material-icons-round">arrow_back</span>Agent Hub</a>
+              </div>
+            </div>
+          </section>
+
+          <form class="form-layout" id="agentRegisterForm">
+            <div class="stack">
+              <section class="panel section">
+                <div class="section-head">
+                  <div>
+                    <div class="section-kicker"><span class="material-icons-round">badge</span>Basic</div>
+                    <h2 class="section-title">기본 정보</h2>
+                    <p class="section-desc">허브 카드에 바로 노출할 최소 정보만 입력합니다.</p>
+                  </div>
+                </div>
+                <div class="stack">
+                  <article class="field-card">
+                    <label class="field-label" for="agentName"><span class="material-icons-round" style="font-size:16px;">smart_toy</span>Agent 이름</label>
+                    <input class="text-input" id="agentName" name="name" type="text" placeholder="예: customer-support-orchestrator" autocomplete="off" required />
+                    <div class="field-help">허브 카드 제목과 상세 페이지의 agent id 생성 기준으로 사용됩니다.</div>
+                  </article>
+
+                  <article class="field-card">
+                    <label class="field-label" for="agentSummary"><span class="material-icons-round" style="font-size:16px;">description</span>설명</label>
+                    <textarea class="text-area" id="agentSummary" name="summary" placeholder="예: 고객 문의를 분류하고 FAQ chatbot과 사내 도구를 orchestration 하는 agent" required></textarea>
+                    <div class="field-help">Agent Hub 카드의 요약 문구와 상세 페이지 소개 문장에 사용됩니다.</div>
+                  </article>
+
+                  <article class="field-card">
+                    <div class="field-label"><span class="material-icons-round" style="font-size:16px;">category</span>Agent 유형</div>
+                    <label class="type-card" data-type="Dify">
+                      <input type="radio" name="type" value="Dify" checked />
+                      <div class="type-top">
+                        <div>
+                          <div class="type-title">Dify</div>
+                          <div class="type-desc">Dify runtime 기반으로 동작하는 agent 유형으로 고정 생성됩니다.</div>
+                        </div>
+                        <div class="type-icon"><span class="material-icons-round">hub</span></div>
+                      </div>
+                    </label>
+                  </article>
+                </div>
+              </section>
+            </div>
+
+            <aside class="stack">
+              <section class="panel section">
+                <div class="section-head">
+                  <div>
+                    <div class="section-kicker"><span class="material-icons-round">preview</span>Preview</div>
+                    <h2 class="section-title">생성 미리보기</h2>
+                    <p class="section-desc">입력값으로 Agent Hub 카드가 어떻게 보일지 간단히 확인합니다.</p>
+                  </div>
+                </div>
+                <article class="preview-card">
+                  <div class="preview-top">
+                    <div>
+                      <div class="preview-title" id="previewName">새 agent</div>
+                      <div class="preview-meta" id="previewMeta">사용자 등록 Dify agent</div>
+                    </div>
+                    <div class="preview-icon"><span class="material-icons-round">smart_toy</span></div>
+                  </div>
+                  <div class="preview-list">
+                    <div class="preview-item">
+                      <div>
+                        <div class="mini-kicker"><span class="material-icons-round" style="font-size:16px;">sell</span>Agent 유형</div>
+                        <div class="preview-value"><strong>Dify</strong></div>
+                      </div>
+                      <div class="status-chip"><span class="material-icons-round" style="font-size:16px;">edit_note</span>Draft</div>
+                    </div>
+                    <div class="preview-item">
+                      <div>
+                        <div class="mini-kicker"><span class="material-icons-round" style="font-size:16px;">notes</span>설명</div>
+                        <div class="preview-value" id="previewSummary">사용자 등록 Dify agent 설명이 여기에 표시됩니다.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="preview-help">생성된 항목은 현재 브라우저의 localStorage에 저장되며, Agent Hub 카드 목록과 상태 패널에 함께 반영됩니다.</div>
+                </article>
+              </section>
+
+              <section class="panel section">
+                <div class="section-head">
+                  <div>
+                    <div class="section-kicker"><span class="material-icons-round">done</span>Create</div>
+                    <h2 class="section-title">생성 실행</h2>
+                    <p class="section-desc">입력이 끝나면 생성 요청 이유를 함께 남기고 바로 Agent Hub로 돌아가 새 항목을 확인할 수 있습니다.</p>
+                  </div>
+                </div>
+                <article class="field-card">
+                  <label class="field-label" for="agentRequestReason"><span class="material-icons-round" style="font-size:16px;">edit_note</span>에이전트 생성 요청 이유</label>
+                  <textarea class="text-area" id="agentRequestReason" name="requestReason" placeholder="예: 고객 문의 자동 분류 PoC를 위해 Dify agent가 필요합니다."></textarea>
+                  <div class="field-help">필요한 배경이나 기대 효과를 텍스트로 남길 수 있습니다.</div>
+                </article>
+                <div class="form-note">같은 이름에서 만들어지는 Agent ID는 중복 생성되지 않도록 막아두었습니다.</div>
+                <div class="action-row">
+                  <a class="action-btn secondary" href="workspace_agent_hub.html"><span class="material-icons-round">close</span>취소</a>
+                  <button class="action-btn primary" type="submit"><span class="material-icons-round">check_circle</span>Agent 생성</button>
+                </div>
+              </section>
+            </aside>
+          </form>
+        </main>
+      `;
+
+      const form = document.getElementById("agentRegisterForm");
+      const nameInput = document.getElementById("agentName");
+      const summaryInput = document.getElementById("agentSummary");
+      const requestReasonInput = document.getElementById("agentRequestReason");
+      const previewName = document.getElementById("previewName");
+      const previewMeta = document.getElementById("previewMeta");
+      const previewSummary = document.getElementById("previewSummary");
+
+      const updatePreview = () => {
+        const name = nameInput.value.trim();
+        const summary = summaryInput.value.trim();
+        previewName.textContent = name || "새 agent";
+        previewMeta.textContent = name ? `${name} · 사용자 등록 Dify agent` : "사용자 등록 Dify agent";
+        previewSummary.textContent = summary || "사용자 등록 Dify agent 설명이 여기에 표시됩니다.";
+      };
+
+      [nameInput, summaryInput].forEach((input) => {
+        input.addEventListener("input", () => {
+          input.setCustomValidity("");
+          updatePreview();
+        });
+      });
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        nameInput.setCustomValidity("");
+        summaryInput.setCustomValidity("");
+        requestReasonInput.setCustomValidity("");
+
+        const name = nameInput.value.trim();
+        const summary = summaryInput.value.trim();
+        const requestReason = requestReasonInput.value.trim();
+
+        if (!name) {
+          nameInput.reportValidity();
+          return;
+        }
+
+        if (!summary) {
+          summaryInput.reportValidity();
+          return;
+        }
+
+        const key = normalizeKey(name);
+        const stored = parseStoredAgents();
+        const reserved = new Set([...RESERVED_KEYS, ...stored.map((item) => item.key)]);
+        if (reserved.has(key)) {
+          nameInput.setCustomValidity("이미 등록된 이름입니다. 다른 이름을 입력하세요.");
+          nameInput.reportValidity();
+          nameInput.focus();
+          return;
+        }
+
+        stored.unshift({
+          key,
+          name,
+          summary,
+          requestReason,
+          type: "Dify",
+          createdAt: new Date().toISOString()
+        });
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
+        window.location.href = "workspace_agent_hub.html";
+      });
+
+      updatePreview();
+    })();
+  </script>
+  <script src="ax_studio_topbar.js"></script>
+</body>
+</html>

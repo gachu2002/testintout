@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <!-- Launchpad latest FE contract: /api/v2/launchpad/overview(banners 포함), /api/v2/launchpad/my-work, /api/v2/launchpad/resources -->
+  <!-- Launchpad latest FE contract: /api/v2/launchpad/overview, /api/v2/launchpad/my-work, /api/v2/launchpad/resources -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -507,9 +507,8 @@
     .banner {
       position:relative; overflow:hidden; border-radius:18px;
       background:
-        radial-gradient(circle at 12% 18%, rgba(14,165,233,.12), transparent 30%),
-        radial-gradient(circle at 82% 20%, rgba(99,102,241,.12), transparent 32%),
-        linear-gradient(90deg, #eff6ff 0%, #eef8ff 52%, #f5f3ff 100%);
+        radial-gradient(circle at top right, rgba(180,14,77,.08), transparent 34%),
+        linear-gradient(90deg, #f7eff3 0%, #eef3f8 58%, #ece6f4 100%);
       border:1px solid rgba(214,216,219,.75);
       padding:30px 32px 24px;
       display:flex; align-items:center; justify-content:space-between; gap:24px;
@@ -521,13 +520,13 @@
       min-height:168px;
       padding:24px 28px 22px;
       background:
-        radial-gradient(circle at 10% 16%, rgba(255,255,255,.22), transparent 24%),
-        radial-gradient(circle at 18% 80%, rgba(34,211,238,.28), transparent 28%),
-        radial-gradient(circle at 78% 24%, rgba(59,130,246,.34), transparent 30%),
-        radial-gradient(circle at 88% 78%, rgba(168,85,247,.24), transparent 26%),
-        linear-gradient(135deg, #081a3a 0%, #0f4c81 42%, #26145c 100%);
+        radial-gradient(circle at 12% 14%, rgba(255,255,255,.22), transparent 24%),
+        radial-gradient(circle at 20% 72%, rgba(34,211,238,.24), transparent 26%),
+        radial-gradient(circle at 84% 28%, rgba(59,130,246,.26), transparent 30%),
+        radial-gradient(circle at 72% 82%, rgba(14,165,233,.22), transparent 28%),
+        linear-gradient(135deg, #031b31 0%, #074064 48%, #052743 100%);
       border-color:rgba(255,255,255,.16);
-      box-shadow:0 20px 48px rgba(12,19,43,.22);
+      box-shadow:0 18px 44px rgba(12,19,43,.18);
     }
     .dej-banner::before {
       content:'';
@@ -592,11 +591,11 @@
     .banner-dot { width:6px; height:6px; border:0; padding:0; border-radius:999px; background:rgba(95,101,109,.45); cursor:pointer; transition:all .2s; }
     .banner-dot.on { width:20px; border-radius:999px; background:var(--brand); }
     .dej-banner .banner-cta {
-      background:linear-gradient(135deg, #38bdf8, #818cf8);
+      background:linear-gradient(135deg, #0284c7, #22d3ee);
       color:#f8fbff;
-      box-shadow:0 12px 28px rgba(59,130,246,.28);
+      box-shadow:0 10px 24px rgba(14,165,233,.22);
     }
-    .dej-banner .banner-cta:hover { background:linear-gradient(135deg, #0ea5e9, #6366f1); }
+    .dej-banner .banner-cta:hover { background:linear-gradient(135deg, #0369a1, #38bdf8); }
     .dej-banner .banner-ghost {
       background:rgba(7,29,48,.72);
       color:#e0f7ff;
@@ -604,9 +603,7 @@
     }
     .dej-banner .banner-ghost:hover { background:rgba(14,165,233,.16); border-color:rgba(125,211,252,.46); }
     .dej-banner .banner-dot.on { background:#38bdf8; }
-    .release-banner,
-    .learning-banner,
-    .research-banner,
+    .event-banner,
     .security-banner {
       min-height:168px;
       padding:26px 30px 24px;
@@ -614,39 +611,19 @@
       color:#fff;
       box-shadow:0 18px 44px rgba(12,19,43,.16);
     }
-    .release-banner {
+    .event-banner {
       background:
-        radial-gradient(circle at 16% 18%, rgba(255,255,255,.95), transparent 20%),
-        radial-gradient(circle at 84% 18%, rgba(244,114,182,.18), transparent 28%),
-        radial-gradient(circle at 72% 84%, rgba(251,113,133,.12), transparent 24%),
-        linear-gradient(135deg, #fff8fc 0%, #fff1f6 46%, #ffe4ee 100%);
-      border-color:rgba(244,114,182,.22);
-      box-shadow:0 18px 40px rgba(244,114,182,.12);
-    }
-    .learning-banner {
-      background:
-        radial-gradient(circle at 18% 16%, rgba(255,255,255,.18), transparent 22%),
-        radial-gradient(circle at 84% 20%, rgba(56,189,248,.38), transparent 28%),
-        radial-gradient(circle at 66% 84%, rgba(168,85,247,.3), transparent 30%),
-        linear-gradient(135deg, #1d4ed8 0%, #0f766e 54%, #312e81 100%);
-    }
-    .research-banner {
-      background:
-        radial-gradient(circle at 16% 18%, rgba(255,255,255,.16), transparent 22%),
-        radial-gradient(circle at 84% 22%, rgba(16,185,129,.36), transparent 28%),
-        radial-gradient(circle at 70% 82%, rgba(45,212,191,.24), transparent 28%),
-        linear-gradient(135deg, #14532d 0%, #0f766e 48%, #164e63 100%);
+        radial-gradient(circle at 86% 18%, rgba(125,211,252,.32), transparent 28%),
+        radial-gradient(circle at 62% 88%, rgba(167,139,250,.24), transparent 30%),
+        linear-gradient(135deg, #102047 0%, #155e75 54%, #0f2f54 100%);
     }
     .security-banner {
       background:
-        radial-gradient(circle at 16% 20%, rgba(255,255,255,.14), transparent 22%),
-        radial-gradient(circle at 86% 18%, rgba(34,197,94,.26), transparent 28%),
-        radial-gradient(circle at 70% 82%, rgba(250,204,21,.18), transparent 24%),
-        linear-gradient(135deg, #111827 0%, #0f172a 34%, #14532d 100%);
+        radial-gradient(circle at 88% 18%, rgba(52,211,153,.3), transparent 30%),
+        radial-gradient(circle at 64% 88%, rgba(14,165,233,.22), transparent 30%),
+        linear-gradient(135deg, #06231f 0%, #0f3f3e 52%, #09233d 100%);
     }
-    .release-banner::before,
-    .learning-banner::before,
-    .research-banner::before,
+    .event-banner::before,
     .security-banner::before {
       content:'';
       position:absolute;
@@ -655,13 +632,7 @@
       background:linear-gradient(90deg, rgba(2,12,24,.58) 0%, rgba(3,20,38,.28) 52%, rgba(3,20,38,.05) 100%);
       pointer-events:none;
     }
-    .release-banner::before {
-      background:
-        linear-gradient(90deg, rgba(122,28,74,.16) 0%, rgba(190,24,93,.06) 46%, rgba(255,255,255,0) 100%);
-    }
-    .release-banner .banner-eye,
-    .learning-banner .banner-eye,
-    .research-banner .banner-eye,
+    .event-banner .banner-eye,
     .security-banner .banner-eye {
       padding:6px 9px;
       border-radius:999px;
@@ -669,76 +640,32 @@
       color:#e0f7ff;
       box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
     }
-    .release-banner .banner-eye {
-      background:rgba(255,255,255,.82);
-      color:#be185d;
-      box-shadow:inset 0 0 0 1px rgba(244,114,182,.18);
-    }
-    .release-banner .banner-title,
-    .learning-banner .banner-title,
-    .research-banner .banner-title,
+    .event-banner .banner-title,
     .security-banner .banner-title {
       max-width:680px;
       color:#fff;
       text-shadow:0 3px 16px rgba(0,0,0,.55);
     }
-    .release-banner .banner-title {
-      color:#831843;
-      text-shadow:none;
-    }
-    .release-banner .banner-desc,
-    .learning-banner .banner-desc,
-    .research-banner .banner-desc,
+    .event-banner .banner-desc,
     .security-banner .banner-desc {
       max-width:680px;
       color:rgba(236,249,255,.9);
       text-shadow:0 2px 10px rgba(0,0,0,.44);
     }
-    .release-banner .banner-desc {
-      color:rgba(131,24,67,.84);
-      text-shadow:none;
-    }
-    .release-banner .banner-cta { background:linear-gradient(135deg, #fdf2f8, #fbcfe8); color:#9d174d; box-shadow:0 12px 28px rgba(190,24,93,.24); }
-    .release-banner .banner-cta:hover { background:linear-gradient(135deg, #fce7f3, #f9a8d4); }
-    .learning-banner .banner-cta { background:linear-gradient(135deg, #dbeafe, #c4b5fd); color:#1e3a8a; box-shadow:0 12px 28px rgba(49,46,129,.24); }
-    .learning-banner .banner-cta:hover { background:linear-gradient(135deg, #bfdbfe, #a78bfa); }
-    .research-banner .banner-cta { background:linear-gradient(135deg, #d1fae5, #99f6e4); color:#115e59; box-shadow:0 12px 28px rgba(15,118,110,.24); }
-    .research-banner .banner-cta:hover { background:linear-gradient(135deg, #a7f3d0, #5eead4); }
-    .security-banner .banner-cta { background:linear-gradient(135deg, #dcfce7, #fde68a); color:#14532d; box-shadow:0 12px 28px rgba(20,83,45,.24); }
-    .security-banner .banner-cta:hover { background:linear-gradient(135deg, #bbf7d0, #fcd34d); }
-    .release-banner .banner-ghost,
-    .learning-banner .banner-ghost,
-    .research-banner .banner-ghost,
+    .event-banner .banner-cta { background:linear-gradient(135deg, #2563eb, #22d3ee); box-shadow:0 10px 24px rgba(37,99,235,.2); }
+    .event-banner .banner-cta:hover { background:linear-gradient(135deg, #1d4ed8, #38bdf8); }
+    .security-banner .banner-cta { background:linear-gradient(135deg, #059669, #22d3ee); box-shadow:0 10px 24px rgba(5,150,105,.2); }
+    .security-banner .banner-cta:hover { background:linear-gradient(135deg, #047857, #38bdf8); }
+    .event-banner .banner-ghost,
     .security-banner .banner-ghost {
       background:rgba(7,29,48,.68);
       color:#e0f7ff;
       border-color:rgba(125,211,252,.26);
     }
-    .release-banner .banner-ghost {
-      background:rgba(255,255,255,.88);
-      color:#9d174d;
-      border-color:rgba(244,114,182,.24);
-    }
-    .release-banner .banner-ghost:hover,
-    .learning-banner .banner-ghost:hover,
-    .research-banner .banner-ghost:hover,
+    .event-banner .banner-ghost:hover,
     .security-banner .banner-ghost:hover { background:rgba(14,165,233,.16); border-color:rgba(125,211,252,.46); }
-    .release-banner .banner-ghost:hover { background:#fff1f6; border-color:rgba(244,114,182,.38); }
-    .release-banner .banner-dot.on { background:#f472b6; }
-    .learning-banner .banner-dot.on { background:#8b5cf6; }
-    .research-banner .banner-dot.on { background:#14b8a6; }
-    .security-banner .banner-dot.on { background:#84cc16; }
-    .banner-no-side {
-      display:block;
-      min-height:0;
-    }
-    .banner-no-side .banner-body {
-      max-width:100%;
-    }
-    .banner-no-side .banner-title,
-    .banner-no-side .banner-desc {
-      max-width:860px;
-    }
+    .event-banner .banner-dot.on { background:#60a5fa; }
+    .security-banner .banner-dot.on { background:#34d399; }
     .banner-visual-card {
       position:relative;
       z-index:2;
@@ -1787,7 +1714,7 @@
                 <span class="material-icons-round service-link-icon">smart_toy</span>
                 <span class="service-link-copy">
                   <span class="service-link-title">AI Gallery</span>
-                  <span class="service-link-desc">업무에 바로 쓰는 AI Assistant와 Skills를 모아보기</span>
+                  <span class="service-link-desc">챗봇과 tool 자산을 전시하고 재사용 흐름으로 연결</span>
                 </span>
               </a>
             </div>
@@ -1905,7 +1832,7 @@
                 <span class="material-icons-round service-link-icon">inventory_2</span>
                 <span class="service-link-copy">
                   <span class="service-link-title">Tool Inventory</span>
-                  <span class="service-link-desc">쓸 수 있는 MCP, Skill, Tool을 한곳에서 관리</span>
+                  <span class="service-link-desc">에이전트가 사용하는 연결된 MCP 및 도구 자산을 관리</span>
                 </span>
               </a>
               <a class="service-link" href="workspace_keycenter_hub.html">
@@ -1938,7 +1865,7 @@
                 <span class="material-icons-round service-link-icon">timeline</span>
                 <span class="service-link-copy">
                   <span class="service-link-title">About DEJ</span>
-                  <span class="service-link-desc">DEJ 소개와 주요 소식을 확인합니다</span>
+                  <span class="service-link-desc">DEJ의 역사와 CEJ·DEJ 흐름을 확인합니다</span>
                 </span>
               </a>
               <a class="service-link" href="dej_chatbot_trial.html">
@@ -2013,9 +1940,130 @@
     </div>
   </div>
 
-  <div class="banner-carousel" data-banner-carousel>
-    <div class="banner-track" data-banner-track></div>
-    <div class="banner-dots" data-banner-dots aria-label="배너 선택"></div>
+    <div class="banner-carousel" data-banner-carousel>
+    <div class="banner-track">
+      <section class="banner banner-slide dej-banner is-active" data-banner-slide data-launchpad-banner="dej" aria-label="About DEJ 소개" aria-hidden="false">
+        <div class="dej-pipeline-bg" aria-hidden="true">
+          <div class="pipeline-orbit">
+            <span class="pipeline-loop left"></span>
+            <span class="pipeline-loop right"></span>
+            <span class="pipeline-knot"></span>
+            <span class="pipeline-label cej"><strong>CEJ</strong><span>Customer Experience Journey</span></span>
+            <span class="pipeline-label dej"><strong>DEJ</strong><span>Development Experience Journey</span></span>
+          </div>
+          <span class="pipeline-side-label connectivity">Connectivity</span>
+          <span class="pipeline-side-label customization">Customization</span>
+          <span class="pipeline-side-label data">3C 2S 고객경험 영역의 데이터</span>
+          <span class="pipeline-side-label core">품질무결성</span>
+          <span class="pipeline-side-label speed">제때개발</span>
+          <span class="pipeline-side-label value">Core Value</span>
+        </div>
+        <div class="banner-body">
+          <div class="banner-eye"><span class="material-icons-round">timeline</span>About DEJ</div>
+          <div class="banner-title">DEJ는 개발 경험을 고객 경험의 흐름 안에서 다시 설계하는 여정입니다.</div>
+          <div class="banner-desc">Development Experience Journey는 고객 중심 개발 플랫폼을 만들기 위한 관점입니다. 기존 포털의 소개와 역사는 About DEJ에 간결하게 남기고, 실제 실행 동선은 AX Studio의 앱, AI, 프로젝트 도구로 이어지게 구성했습니다.</div>
+          <div class="banner-actions" style="margin-top:14px">
+            <a class="banner-cta" href="about_dej.html" style="display:inline-flex;align-items:center;justify-content:center;gap:6px"><span class="material-icons-round" style="font-size:17px">account_tree</span>CEJ·DEJ 파이프라인 보기</a>
+            <a class="banner-ghost" href="about_dej.html#history" style="display:inline-flex;align-items:center;justify-content:center;gap:6px"><span class="material-icons-round" style="font-size:17px">history</span>히스토리 보기</a>
+          </div>
+        </div>
+        <div class="banner-side">
+          <div class="dej-snapshot">
+            <div class="dej-snapshot-title">DEJ Core Snapshot</div>
+            <div class="dej-snapshot-item">
+              <div class="dej-snapshot-icon"><span class="material-icons-round">hub</span></div>
+              <div><div class="dej-snapshot-name">Connectivity</div><div class="dej-snapshot-desc">고객 경험 데이터와 개발 실행 도구를 연결</div></div>
+            </div>
+            <div class="dej-snapshot-item">
+              <div class="dej-snapshot-icon"><span class="material-icons-round">bolt</span></div>
+              <div><div class="dej-snapshot-name">제때개발</div><div class="dej-snapshot-desc">필요한 순간에 바로 만들고 배포하는 실행력</div></div>
+            </div>
+            <div class="dej-snapshot-item">
+              <div class="dej-snapshot-icon"><span class="material-icons-round">route</span></div>
+              <div><div class="dej-snapshot-name">CEJ → DEJ</div><div class="dej-snapshot-desc">고객 여정에서 개발 여정으로 이어지는 파이프라인</div></div>
+            </div>
+          </div>
+          <div class="banner-dots" aria-label="배너 선택">
+            <button class="banner-dot on" type="button" data-banner-dot="0" aria-label="About DEJ 배너 보기" aria-current="true"></button>
+            <button class="banner-dot" type="button" data-banner-dot="1" aria-label="AI Code Review 배너 보기" aria-current="false"></button>
+            <button class="banner-dot" type="button" data-banner-dot="2" aria-label="AX Studio 컨퍼런스 배너 보기" aria-current="false"></button>
+            <button class="banner-dot" type="button" data-banner-dot="3" aria-label="AX Studio 보안 공지 배너 보기" aria-current="false"></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="banner banner-slide" data-banner-slide data-launchpad-banner="release" aria-label="AI Code Review 출시 안내" aria-hidden="true">
+        <div class="banner-body">
+          <div class="banner-eye"><span class="material-icons-round">rocket_launch</span>New Release · v2.4</div>
+          <div class="banner-title">AI Code Review가 출시되었습니다</div>
+          <div class="banner-desc">MR 코드를 AI가 자동으로 리뷰합니다. GitLab MCP와 연동하여 코드 품질을 한 단계 높여보세요. 평균 리뷰 시간 <strong>72% 단축</strong> 효과를 확인하세요.</div>
+        </div>
+        <div class="banner-side">
+          <div class="banner-actions">
+            <button class="banner-cta">자세히 보기</button>
+            <button class="banner-ghost">나중에</button>
+          </div>
+          <div class="banner-dots" aria-label="배너 선택">
+            <button class="banner-dot on" type="button" data-banner-dot="0" aria-label="About DEJ 배너 보기" aria-current="true"></button>
+            <button class="banner-dot" type="button" data-banner-dot="1" aria-label="AI Code Review 배너 보기" aria-current="false"></button>
+            <button class="banner-dot" type="button" data-banner-dot="2" aria-label="AX Studio 컨퍼런스 배너 보기" aria-current="false"></button>
+            <button class="banner-dot" type="button" data-banner-dot="3" aria-label="AX Studio 보안 공지 배너 보기" aria-current="false"></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="banner banner-slide event-banner" data-banner-slide data-launchpad-banner="event" aria-label="AX Studio 컨퍼런스 안내" aria-hidden="true">
+        <div class="banner-body">
+          <div class="banner-eye"><span class="material-icons-round">event</span>AX Studio Conference</div>
+          <div class="banner-title">AX Studio Conference에서 새로운 개발 경험 워크플로우를 만나보세요.</div>
+          <div class="banner-desc">App Gallery, AI Gallery, MCP, 프로젝트 허브를 하나의 여정으로 연결하는 세션을 준비했습니다. 팀별 활용 사례와 실습 중심 데모를 통해 AX Studio의 다음 방향을 확인하세요.</div>
+          <div class="banner-actions" style="margin-top:14px">
+            <button class="banner-cta" type="button">일정 확인</button>
+            <button class="banner-ghost" type="button">세션 보기</button>
+          </div>
+        </div>
+        <div class="banner-side">
+          <div class="banner-visual-card">
+            <div class="visual-card-top"><div class="visual-card-icon"><span class="material-icons-round">groups</span></div>Conference</div>
+            <div class="visual-card-title">AX Studio Day</div>
+            <div class="visual-card-meta">Live Demo · Best Practice · Roadmap Talk</div>
+            <div class="visual-chip-row"><span class="visual-chip">App Gallery</span><span class="visual-chip">AI Gallery</span><span class="visual-chip">MCP</span></div>
+          </div>
+          <div class="banner-dots" aria-label="배너 선택">
+            <button class="banner-dot on" type="button" data-banner-dot="0" aria-label="About DEJ 배너 보기" aria-current="true"></button>
+            <button class="banner-dot" type="button" data-banner-dot="1" aria-label="AI Code Review 배너 보기" aria-current="false"></button>
+            <button class="banner-dot" type="button" data-banner-dot="2" aria-label="AX Studio 컨퍼런스 배너 보기" aria-current="false"></button>
+            <button class="banner-dot" type="button" data-banner-dot="3" aria-label="AX Studio 보안 공지 배너 보기" aria-current="false"></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="banner banner-slide security-banner" data-banner-slide data-launchpad-banner="security" aria-label="AX Studio 보안 공지" aria-hidden="true">
+        <div class="banner-body">
+          <div class="banner-eye"><span class="material-icons-round">security</span>Security Notice</div>
+          <div class="banner-title">AX Studio 보안 공지: MCP 연결과 API Key 관리 기준이 강화됩니다.</div>
+          <div class="banner-desc">안전한 AI 활용을 위해 키 회전, 접근 권한, 외부 도구 연결 정책을 다시 점검해 주세요. 프로젝트별 보안 체크리스트와 운영 가이드를 함께 제공합니다.</div>
+          <div class="banner-actions" style="margin-top:14px">
+            <button class="banner-cta" type="button">공지 확인</button>
+            <button class="banner-ghost" type="button">체크리스트</button>
+          </div>
+        </div>
+        <div class="banner-side">
+          <div class="banner-visual-card">
+            <div class="visual-card-top"><div class="visual-card-icon"><span class="material-icons-round">verified_user</span></div>Security</div>
+            <div class="visual-card-title">Access Guard</div>
+            <div class="visual-card-meta">Key Rotation · Permission Review · MCP Policy</div>
+            <div class="visual-chip-row"><span class="visual-chip">API Key</span><span class="visual-chip">MCP</span><span class="visual-chip">권한 점검</span></div>
+          </div>
+          <div class="banner-dots" aria-label="배너 선택">
+            <button class="banner-dot on" type="button" data-banner-dot="0" aria-label="About DEJ 배너 보기" aria-current="true"></button>
+            <button class="banner-dot" type="button" data-banner-dot="1" aria-label="AI Code Review 배너 보기" aria-current="false"></button>
+            <button class="banner-dot" type="button" data-banner-dot="2" aria-label="AX Studio 컨퍼런스 배너 보기" aria-current="false"></button>
+            <button class="banner-dot" type="button" data-banner-dot="3" aria-label="AX Studio 보안 공지 배너 보기" aria-current="false"></button>
+          </div>
+        </div>
+      </section>
+    </div>
   </div>
 
     <div class="content-zone">
@@ -2027,7 +2075,7 @@
           <div class="gallery-section-head">
             <div class="gallery-section-copy">
               <div class="gallery-section-title">DEJ App Gallery</div>
-              <div class="gallery-section-desc">자주 쓰는 개발 앱과 운영 도구를 한곳에서 열어볼 수 있습니다. 필요한 앱을 찾아 바로 실행해 보세요.</div>
+              <div class="gallery-section-desc">개발과 운영에 필요한 실행형 앱을 발견하고 바로 살펴볼 수 있는 공간입니다. 앱은 이후 AI Gallery의 챗봇·Tools 흐름과 자연스럽게 연결됩니다.</div>
             </div>
             <a class="sec-label-more" href="dej_app_gallery.html">갤러리 열기 <span class="material-icons-round">chevron_right</span></a>
           </div>
@@ -2039,11 +2087,11 @@
             </div>
             <div class="agent-spotlight-eyebrow">DEJ App Gallery</div>
             <div class="agent-spotlight-title">Code Server</div>
-            <div class="agent-spotlight-desc">브라우저에서 바로 코드를 열고 저장소, 터미널, 확장을 한 화면에서 사용할 수 있습니다. 프로젝트를 시작하거나 기존 작업을 이어갈 때 빠르게 들어갈 수 있는 작업 공간입니다.</div>
+            <div class="agent-spotlight-desc">브라우저에서 바로 개발 환경을 열고 저장소, 터미널, 확장을 한 번에 다루는 대표 워크스페이스 앱입니다. 여기에 AI Gallery의 챗봇과 tool 자산을 연결하면 코드 리뷰, 운영 점검, 문서 탐색 흐름까지 자연스럽게 이어집니다.</div>
             <div class="agent-spotlight-points">
               <div class="agent-spotlight-point"><span class="material-icons-round">rocket_launch</span><span>프로젝트 생성 직후 바로 접속할 수 있어 온보딩 속도가 빠릅니다.</span></div>
               <div class="agent-spotlight-point"><span class="material-icons-round">extension</span><span>사내 확장, Git 연동, 터미널 작업까지 브라우저 한 화면에서 이어집니다.</span></div>
-              <div class="agent-spotlight-point"><span class="material-icons-round">smart_toy</span><span>자주 쓰는 AI Assistant와 Skills를 함께 붙여 더 빠르게 작업할 수 있습니다.</span></div>
+              <div class="agent-spotlight-point"><span class="material-icons-round">smart_toy</span><span>AI Gallery의 챗봇과 tool 자산을 연결해 작업 흐름을 자동화할 수 있습니다.</span></div>
             </div>
             <div class="agent-spotlight-tags">
               <span class="agent-spotlight-tag"><span class="material-icons-round">apps</span>실행형 앱</span>
@@ -2065,7 +2113,7 @@
           <div class="gallery-section-head">
             <div class="gallery-section-copy">
               <div class="gallery-section-title">DEJ AI Gallery</div>
-              <div class="gallery-section-desc">업무에 바로 쓸 수 있는 AI Assistant와 Skills를 모아 두었습니다. 필요한 도우미를 찾아 바로 사용해 보세요.</div>
+              <div class="gallery-section-desc">앱 위에서 재사용할 수 있는 챗봇과 tool 자산을 전시하는 공간입니다. MCP, 키, 권한 정책은 배경 메타로 두고 무엇을 바로 가져다 쓸 수 있는지가 먼저 읽히도록 구성합니다.</div>
             </div>
             <a class="sec-label-more" href="dej_ai_gallery.html">갤러리 열기 <span class="material-icons-round">chevron_right</span></a>
           </div>
@@ -2077,12 +2125,12 @@
             </div>
             <div class="agent-spotlight-eyebrow">DEJ AI Gallery</div>
             <div class="agent-spotlight-title">MCP 허브</div>
-            <div class="agent-spotlight-desc">MCP 허브에서는 키와 MCP 서버 연결 상태를 확인하고, 사용할 수 있는 도구를 한눈에 볼 수 있습니다. 필요한 연결을 정리한 뒤 바로 작업에 활용해 보세요.</div>
+            <div class="agent-spotlight-desc">MCP 허브는 LLM 키와 MCP 서버를 연결하고, 사용자와 에이전트 단위로 어떤 MCP에 접근할지 허가를 제어하는 중앙 허브입니다. App Gallery에서 고른 개발 환경과 연결될 때 가장 큰 가치를 만듭니다.</div>
             <div class="agent-spotlight-points">
-              <div class="agent-spotlight-point"><span class="material-icons-round">vpn_key</span><span>Keycenter에서 발급한 키를 연결해 바로 사용할 수 있습니다.</span></div>
-              <div class="agent-spotlight-point"><span class="material-icons-round">admin_panel_settings</span><span>MCP별 접근 권한과 만료 설정을 확인할 수 있습니다.</span></div>
-              <div class="agent-spotlight-point"><span class="material-icons-round">link</span><span>Code Server, Jupyter Lab 같은 작업 화면에서 바로 불러 쓸 수 있습니다.</span></div>
-              <div class="agent-spotlight-point"><span class="material-icons-round">rule</span><span>허용된 도구만 보여서 필요한 것만 빠르게 선택할 수 있습니다.</span></div>
+              <div class="agent-spotlight-point"><span class="material-icons-round">vpn_key</span><span>키 센터와 연동해 OpenAI, Claude, 사내 키를 한 곳에서 연결합니다.</span></div>
+              <div class="agent-spotlight-point"><span class="material-icons-round">admin_panel_settings</span><span>MCP별 승인, 회수, 만료 정책을 적용해 사용자 접근 권한을 세밀하게 관리합니다.</span></div>
+              <div class="agent-spotlight-point"><span class="material-icons-round">link</span><span>Code Server, Jupyter Lab 같은 앱과 연결해 실제 업무 화면에서 바로 에이전트를 실행합니다.</span></div>
+              <div class="agent-spotlight-point"><span class="material-icons-round">rule</span><span>에이전트 실행 전 허용된 MCP만 노출해 안전한 툴 사용 흐름을 만듭니다.</span></div>
             </div>
             <div class="agent-spotlight-tags">
               <span class="agent-spotlight-tag"><span class="material-icons-round">smart_toy</span>에이전트 허브</span>
@@ -2320,9 +2368,12 @@
       serviceGroups: document.querySelector('[data-launchpad-service-groups]'),
       heroGreet: document.querySelector('[data-launchpad-hero-greet]'),
       heroStats: document.querySelector('[data-launchpad-hero-stats]'),
-      bannerCarousel: document.querySelector('[data-banner-carousel]'),
-      bannerTrack: document.querySelector('[data-banner-track]'),
-      bannerDots: document.querySelector('[data-banner-dots]'),
+      banners: {
+        dej: document.querySelector('[data-launchpad-banner="dej"]'),
+        release: document.querySelector('[data-launchpad-banner="release"]'),
+        event: document.querySelector('[data-launchpad-banner="event"]'),
+        security: document.querySelector('[data-launchpad-banner="security"]'),
+      },
       appSpotlight: document.querySelector('[data-launchpad-app-spotlight]'),
       appStrip: document.querySelector('[data-launchpad-app-strip]'),
       aiSpotlight: document.querySelector('[data-launchpad-ai-spotlight]'),
@@ -2341,7 +2392,6 @@
       currentArticleTab: 'all',
       articles: [],
       articleTabs: [],
-      currentBannerIndex: 0,
     };
 
     const sampleHrefMap = {
@@ -2411,60 +2461,6 @@
       return typePalette[type] || typePalette.default;
     }
 
-    function getHeroGreetingName(value) {
-      const raw = String(value || '').trim();
-      const local = raw.split('@')[0].trim();
-
-      if (!local) return 'Workspace User';
-
-      if (/[._-]/.test(local) && !/\s/.test(local)) {
-        return local
-          .split(/[._-]+/)
-          .filter(Boolean)
-          .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-          .join(' ');
-      }
-
-      return local;
-    }
-
-    function getHeroTitle(hero) {
-      if (hero?.title) return hero.title;
-      return `${getHeroGreetingName(hero?.userName)} 님, 반갑습니다 👋`;
-    }
-
-    function getHeroSubtitle(summary, hero) {
-      if (!summary) return hero?.subtitle || '';
-
-      const unreadCount = Number(summary.unreadNotificationCount || 0);
-      const runningCount = Number(summary.recentJobStatus?.running || 0);
-
-      if (unreadCount > 0 && runningCount > 0) {
-        return `읽지 않은 알림 ${unreadCount}건과 진행 중인 작업 ${runningCount}건이 있습니다.`;
-      }
-
-      if (unreadCount > 0) {
-        return `읽지 않은 알림 ${unreadCount}건을 먼저 확인해 보세요.`;
-      }
-
-      if (runningCount > 0) {
-        return `진행 중인 작업 ${runningCount}건을 여기에서 바로 확인할 수 있습니다.`;
-      }
-
-      return '새 알림 없이 작업을 바로 시작할 수 있습니다.';
-    }
-
-    function getBannerThemeClass(theme) {
-      return {
-        dej: 'dej-banner',
-        release: 'release-banner',
-        event: 'learning-banner',
-        learning: 'learning-banner',
-        research: 'research-banner',
-        security: 'security-banner',
-      }[theme] || '';
-    }
-
     async function apiGet(path) {
       const response = await fetch(path, {
         credentials: 'same-origin',
@@ -2516,6 +2512,60 @@
       const diffHours = Math.round(diffMinutes / 60);
       if (Math.abs(diffHours) < 24) return rtf.format(diffHours, 'hour');
       return rtf.format(Math.round(diffHours / 24), 'day');
+    }
+
+    function renderBannerDots() {
+      return `
+        <div class="banner-dots" aria-label="배너 선택">
+          <button class="banner-dot" type="button" data-banner-dot="0" aria-label="런치패드 메인 배너 보기"></button>
+          <button class="banner-dot" type="button" data-banner-dot="1" aria-label="릴리즈 배너 보기"></button>
+          <button class="banner-dot" type="button" data-banner-dot="2" aria-label="스포트라이트 배너 보기"></button>
+          <button class="banner-dot" type="button" data-banner-dot="3" aria-label="보안 배너 보기"></button>
+        </div>
+      `;
+    }
+
+    function getHeroGreetingName(value) {
+      const raw = String(value || '').trim();
+      const local = raw.split('@')[0].trim();
+
+      if (!local) return 'Workspace User';
+
+      if (/[._-]/.test(local) && !/\s/.test(local)) {
+        return local
+          .split(/[._-]+/)
+          .filter(Boolean)
+          .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(' ');
+      }
+
+      return local;
+    }
+
+    function getHeroTitle(hero) {
+      if (hero?.title) return hero.title;
+      return `${getHeroGreetingName(hero?.userName)} 님, 반갑습니다 👋`;
+    }
+
+    function getHeroSubtitle(summary, hero) {
+      if (!summary) return hero?.subtitle || '';
+
+      const unreadCount = Number(summary.unreadNotificationCount || 0);
+      const runningCount = Number(summary.recentJobStatus?.running || 0);
+
+      if (unreadCount > 0 && runningCount > 0) {
+        return `읽지 않은 알림 ${unreadCount}건과 진행 중인 작업 ${runningCount}건이 있습니다.`;
+      }
+
+      if (unreadCount > 0) {
+        return `읽지 않은 알림 ${unreadCount}건을 먼저 확인해 보세요.`;
+      }
+
+      if (runningCount > 0) {
+        return `진행 중인 작업 ${runningCount}건을 여기에서 바로 확인할 수 있습니다.`;
+      }
+
+      return '새 알림 없이 작업을 바로 시작할 수 있습니다.';
     }
 
     function renderServiceMenu(groups) {
@@ -2575,266 +2625,79 @@
       }).join('') || renderEmpty('Hero 지표가 없습니다.');
     }
 
-    function buildDejBannerConfig(hero, serviceMenu) {
+    function renderDejBanner(hero, serviceMenu) {
+      const section = elements.banners.dej;
+      if (!section || !hero) return;
+
       const quickLinks = (serviceMenu?.items || [])
         .flatMap((group) => group.links || [])
         .filter((link) => ['/workspace/app-gallery', '/workspace/ai-gallery', '/docs/about-dej'].includes(link.href))
         .slice(0, 2);
 
-      return {
-        id: 'launchpad-overview',
-        type: 'info',
-        theme: 'dej',
-        visualMode: 'snapshot',
-        showBackdrop: true,
-        eyebrow: '오늘의 Workspace',
-        title: hero?.title || '오늘의 Workspace',
-        message: hero?.subtitle || '지금 필요한 앱과 작업 현황을 한눈에 확인해 보세요.',
-        primaryAction: (quickLinks[0] && {
-          label: quickLinks[0].label,
-          href: quickLinks[0].href,
-          icon: quickLinks[0].icon,
-        }) || { label: 'App Gallery', href: 'dej_app_gallery.html', icon: 'widgets' },
-        secondaryAction: (quickLinks[1] && {
-          label: quickLinks[1].label,
-          href: quickLinks[1].href,
-          icon: quickLinks[1].icon,
-        }) || { label: 'AI Gallery', href: 'dej_ai_gallery.html', icon: 'smart_toy' },
-        chips: (hero?.heroStats || []).slice(0, 3).map((stat) => stat.label).filter(Boolean),
-        snapshotTitle: hero?.workspaceName || 'DEJ Workspace',
-        snapshotRows: (hero?.heroStats || []).slice(0, 3).map((stat) => ({
-          icon: stat.icon || 'data_usage',
-          title: stat.label || '-',
-          description: stat.note ? `${stat.value || '-'} · ${stat.note}` : `${stat.value || '-'}`,
-        })),
-      };
-    }
+      section.querySelector('.banner-body').innerHTML = `
+        <div class="banner-eye"><span class="material-icons-round">timeline</span>Launchpad Overview API</div>
+        <div class="banner-title">${escapeHtml(hero.title || '오늘의 Workspace')}</div>
+        <div class="banner-desc">${escapeHtml(hero.subtitle || 'Workspace overview를 한 번의 집계 응답으로 가져옵니다.')}</div>
+        <div class="banner-actions" style="margin-top:14px">
+          ${(quickLinks.length ? quickLinks : [
+            { label: 'App Gallery', href: 'dej_app_gallery.html', icon: 'widgets' },
+            { label: 'AI Gallery', href: 'dej_ai_gallery.html', icon: 'smart_toy' },
+          ]).map((link, index) => `
+            <a class="${index === 0 ? 'banner-cta' : 'banner-ghost'}" href="${escapeHtml(resolvePreviewHref(link.href, 'index.html'))}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px">
+              <span class="material-icons-round" style="font-size:17px">${escapeHtml(iconMap[link.icon] || link.icon || 'open_in_new')}</span>${escapeHtml(link.label)}
+            </a>
+          `).join('')}
+        </div>
+      `;
 
-    function buildFallbackBanners(hero, serviceMenu, announcements) {
-      const releaseItem = announcements.find((item) => item.type !== 'security') || announcements[0] || null;
-      const spotlightItem = announcements[1] || releaseItem;
-      const securityItem = announcements.find((item) => item.type === 'security') || announcements[1] || announcements[0] || null;
-
-      return [
-        buildDejBannerConfig(hero, serviceMenu),
-        {
-          id: 'release-fallback',
-          type: 'release',
-          theme: 'release',
-          eyebrow: '새로운 소식',
-          title: releaseItem?.title || 'AI Code Review가 출시되었습니다',
-          message: releaseItem?.message || 'MR 코드를 AI가 자동으로 리뷰합니다. GitLab MCP와 연동하여 코드 품질을 한 단계 높여보세요.',
-          publishedAt: releaseItem?.publishedAt,
-          primaryAction: { label: '가이드 열기', href: releaseItem?.href || 'dej_app_gallery.html', icon: 'rocket_launch' },
-          secondaryAction: { label: 'App Gallery 보기', href: 'dej_app_gallery.html', icon: 'widgets' },
-          chips: [releaseItem?.type || 'release', releaseItem?.publishedAt ? formatRelativeTime(releaseItem.publishedAt) : '최근 등록', '추천 앱'],
-        },
-        {
-          id: 'spotlight-fallback',
-          type: 'info',
-          theme: 'learning',
-          eyebrow: '추천 보기',
-          title: spotlightItem?.title || 'AX Studio Conference 소식을 확인해 보세요.',
-          message: spotlightItem?.message || '새로 공개된 기능과 사용 방법을 한 번에 살펴볼 수 있습니다.',
-          publishedAt: spotlightItem?.publishedAt,
-          primaryAction: { label: '관련 문서 보기', href: spotlightItem?.href || 'about_dej.html', icon: 'campaign' },
-          secondaryAction: { label: 'AI Gallery 보기', href: 'dej_ai_gallery.html', icon: 'smart_toy' },
-          chips: ['Spotlight', 'App Gallery', 'AI Gallery'],
-        },
-        {
-          id: 'security-fallback',
-          type: 'security',
-          theme: 'security',
-          eyebrow: 'Security Notice',
-          title: securityItem?.title || 'AX Studio 보안 공지: MCP 연결과 API Key 관리 기준이 강화됩니다.',
-          message: securityItem?.message || '안전한 AI 활용을 위해 키 회전, 접근 권한, 외부 도구 연결 정책을 다시 점검해 주세요.',
-          publishedAt: securityItem?.publishedAt,
-          primaryAction: { label: '보안 가이드', href: securityItem?.href || 'workspace_keycenter_hub.html', icon: 'security' },
-          secondaryAction: { label: 'Keycenter 보기', href: 'workspace_keycenter_hub.html', icon: 'vpn_key' },
-          chips: ['Security', 'API Key', 'MCP Policy'],
-        },
-      ].filter(Boolean);
-    }
-
-    function getBannerVisualTitle(item) {
-      if (item.visualTitle) return item.visualTitle;
-      if (item.theme === 'learning' || item.theme === 'event') return 'Learning Spotlight';
-      if (item.theme === 'research') return 'Research Program';
-      if (item.theme === 'release') return 'Product Release';
-      if (item.theme === 'security') return 'Access Guard';
-      return item.title || 'Announcement';
-    }
-
-    function getBannerVisualMeta(item) {
-      if (item.visualMeta) return item.visualMeta;
-      if (item.publishedAt) return `${formatDate(item.publishedAt)} 기준`;
-      return item.theme === 'dej' ? '현재 작업 현황' : '최근 업데이트';
-    }
-
-    function getBannerChips(item) {
-      const chips = Array.isArray(item.chips) ? item.chips.filter(Boolean) : [];
-      if (chips.length) return chips.slice(0, 3);
-      return [
-        item.type || 'notice',
-        item.publishedAt ? formatRelativeTime(item.publishedAt) : '최근 등록',
-        '바로가기',
-      ];
-    }
-
-    function renderDejSide(item) {
-      const snapshotRows = Array.isArray(item.snapshotRows) ? item.snapshotRows : [];
-      if (!snapshotRows.length && !item.snapshotTitle) {
-        return '';
-      }
-      return `
+      section.querySelector('.banner-side').innerHTML = `
         <div class="dej-snapshot">
-          <div class="dej-snapshot-title">${escapeHtml(item.snapshotTitle || 'DEJ Workspace')}</div>
-          ${snapshotRows.map((row) => `
+          <div class="dej-snapshot-title">${escapeHtml(hero.workspaceName || 'DEJ Workspace')}</div>
+          ${(hero.heroStats || []).slice(0, 3).map((stat) => `
             <div class="dej-snapshot-item">
-              <div class="dej-snapshot-icon"><span class="material-icons-round">${escapeHtml(row.icon || 'data_usage')}</span></div>
+              <div class="dej-snapshot-icon"><span class="material-icons-round">${escapeHtml(stat.icon || 'data_usage')}</span></div>
               <div>
-                <div class="dej-snapshot-name">${escapeHtml(row.title || '-')}</div>
-                <div class="dej-snapshot-desc">${escapeHtml(row.description || '-')}</div>
+                <div class="dej-snapshot-name">${escapeHtml(stat.label || '-')}</div>
+                <div class="dej-snapshot-desc">${escapeHtml(stat.value || '-')} · ${escapeHtml(stat.note || 'overview')}</div>
               </div>
             </div>
           `).join('')}
         </div>
+        ${renderBannerDots()}
       `;
     }
 
-    function renderBannerSide(item, palette) {
-      const visualMode = item?.visualMode || 'card';
-      if (visualMode === 'none') {
-        return '';
-      }
+    function renderAnnouncementBanner(key, item, options = {}) {
+      const section = elements.banners[key];
+      if (!section) return;
 
-      if (visualMode === 'snapshot') {
-        return renderDejSide(item);
-      }
+      const palette = getTypePalette(item?.type || options.type || 'default');
+      const primaryHref = resolvePreviewHref(item?.href || options.primaryHref || '#', '#');
+      const secondaryHref = resolvePreviewHref(options.secondaryHref || primaryHref, primaryHref);
 
-      return `
-        <div class="banner-visual-card">
-          <div class="visual-card-top"><div class="visual-card-icon"><span class="material-icons-round">${escapeHtml(item.visualIcon || palette.icon)}</span></div>${escapeHtml((item.type || 'announcement').toUpperCase())}</div>
-          <div class="visual-card-title">${escapeHtml(getBannerVisualTitle(item))}</div>
-          <div class="visual-card-meta">${escapeHtml(getBannerVisualMeta(item))}</div>
-          <div class="visual-chip-row">
-            ${getBannerChips(item).map((chip) => `<span class="visual-chip">${escapeHtml(chip)}</span>`).join('')}
-          </div>
+      section.querySelector('.banner-body').innerHTML = `
+        <div class="banner-eye"><span class="material-icons-round">${escapeHtml(palette.icon)}</span>${escapeHtml(options.eyebrow || item?.title || 'Announcement')}</div>
+        <div class="banner-title">${escapeHtml(item?.title || options.fallbackTitle || '안내 배너')}</div>
+        <div class="banner-desc">${escapeHtml(item?.message || options.fallbackMessage || '안내 메시지가 없습니다.')}</div>
+        <div class="banner-actions" style="margin-top:14px">
+          <a class="banner-cta" href="${escapeHtml(primaryHref)}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px"><span class="material-icons-round" style="font-size:17px">${escapeHtml(palette.icon)}</span>${escapeHtml(options.primaryLabel || '자세히 보기')}</a>
+          <a class="banner-ghost" href="${escapeHtml(secondaryHref)}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px"><span class="material-icons-round" style="font-size:17px">open_in_new</span>${escapeHtml(options.secondaryLabel || '관련 화면 열기')}</a>
         </div>
       `;
-    }
 
-    function renderBannerSlide(item, index) {
-      const palette = getTypePalette(item?.type || 'default');
-      const primaryAction = item?.primaryAction || {};
-      const secondaryAction = item?.secondaryAction || {};
-      const primaryHref = primaryAction.href || item?.href || '';
-      const secondaryHref = secondaryAction.href || '';
-      const hasPrimaryAction = Boolean((primaryAction.label || '').trim() && primaryHref);
-      const hasSecondaryAction = Boolean((secondaryAction.label || '').trim() && secondaryHref);
-      const themeClass = getBannerThemeClass(item?.theme);
-      const sideHtml = renderBannerSide(item, palette);
-      const hasSide = Boolean(sideHtml.trim());
-      const slideClasses = ['banner', 'banner-slide', themeClass, hasSide ? '' : 'banner-no-side', index === 0 ? 'is-active' : ''].filter(Boolean).join(' ');
-
-      return `
-        <section class="${slideClasses}" data-banner-slide data-banner-id="${escapeHtml(item?.id || `banner-${index}`)}" aria-label="${escapeHtml(item?.title || 'Launchpad banner')}" aria-hidden="${index === 0 ? 'false' : 'true'}">
-          ${item?.showBackdrop ? `
-            <div class="dej-pipeline-bg" aria-hidden="true">
-              <div class="pipeline-orbit">
-                <span class="pipeline-loop left"></span>
-                <span class="pipeline-loop right"></span>
-                <span class="pipeline-knot"></span>
-                <span class="pipeline-label cej"><strong>CEJ</strong><span>Customer Experience Journey</span></span>
-                <span class="pipeline-label dej"><strong>DEJ</strong><span>Development Experience Journey</span></span>
-              </div>
-              <span class="pipeline-side-label connectivity">Connectivity</span>
-              <span class="pipeline-side-label customization">Customization</span>
-              <span class="pipeline-side-label data">3C 2S 고객경험 영역의 데이터</span>
-              <span class="pipeline-side-label core">품질무결성</span>
-              <span class="pipeline-side-label speed">제때개발</span>
-              <span class="pipeline-side-label value">Core Value</span>
-            </div>
-          ` : ''}
-          <div class="banner-body">
-            <div class="banner-eye"><span class="material-icons-round">${escapeHtml(item?.eyebrowIcon || palette.icon)}</span>${escapeHtml(item?.eyebrow || item?.title || 'Announcement')}</div>
-            <div class="banner-title">${escapeHtml(item?.title || '안내 배너')}</div>
-            <div class="banner-desc">${escapeHtml(item?.message || '표시할 안내 메시지가 없습니다.')}</div>
-            ${(hasPrimaryAction || hasSecondaryAction) ? `
-              <div class="banner-actions" style="margin-top:14px">
-                ${hasPrimaryAction ? `
-                  <a class="banner-cta" href="${escapeHtml(resolvePreviewHref(primaryHref, '#'))}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px"><span class="material-icons-round" style="font-size:17px">${escapeHtml(primaryAction.icon || palette.icon)}</span>${escapeHtml(primaryAction.label)}</a>
-                ` : ''}
-                ${hasSecondaryAction ? `
-                  <a class="banner-ghost" href="${escapeHtml(resolvePreviewHref(secondaryHref, '#'))}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px"><span class="material-icons-round" style="font-size:17px">${escapeHtml(secondaryAction.icon || 'open_in_new')}</span>${escapeHtml(secondaryAction.label)}</a>
-                ` : ''}
-              </div>
-            ` : ''}
+      section.querySelector('.banner-side').innerHTML = `
+        <div class="banner-visual-card">
+          <div class="visual-card-top"><div class="visual-card-icon"><span class="material-icons-round">${escapeHtml(palette.icon)}</span></div>${escapeHtml((item?.type || options.type || 'announcement').toUpperCase())}</div>
+          <div class="visual-card-title">${escapeHtml(item?.title || options.fallbackTitle || 'Announcement')}</div>
+          <div class="visual-card-meta">${escapeHtml(item?.publishedAt ? `${formatDate(item.publishedAt)} 기준` : 'recent update')}</div>
+          <div class="visual-chip-row">
+            <span class="visual-chip">${escapeHtml(item?.type || options.type || 'notice')}</span>
+            <span class="visual-chip">${escapeHtml(item?.publishedAt ? formatRelativeTime(item.publishedAt) : 'recent')}</span>
+            <span class="visual-chip">/api/v2/launchpad/announcements</span>
           </div>
-          ${hasSide ? `
-            <div class="banner-side">
-              ${sideHtml}
-            </div>
-          ` : ''}
-        </section>
+        </div>
+        ${renderBannerDots()}
       `;
-    }
-
-    function renderBannerDots(items) {
-      if (!elements.bannerDots) return;
-      if (!Array.isArray(items) || items.length < 2) {
-        elements.bannerDots.innerHTML = '';
-        return;
-      }
-
-      elements.bannerDots.innerHTML = items.map((item, index) => `
-        <button class="banner-dot${index === 0 ? ' on' : ''}" type="button" data-banner-dot="${index}" aria-label="${escapeHtml(item?.title || `배너 ${index + 1} 보기`)}" aria-current="${index === 0 ? 'true' : 'false'}"></button>
-      `).join('');
-    }
-
-    function isBannerVisible(item) {
-      if (!item || item.status === 'archived' || item.status === 'hidden') {
-        return false;
-      }
-
-      const now = Date.now();
-      const startAt = item.startAt ? new Date(item.startAt).getTime() : null;
-      const endAt = item.endAt ? new Date(item.endAt).getTime() : null;
-      if (startAt && !Number.isNaN(startAt) && startAt > now) return false;
-      if (endAt && !Number.isNaN(endAt) && endAt < now) return false;
-      return true;
-    }
-
-    function getSortedBanners(items) {
-      return items
-        .filter(isBannerVisible)
-        .sort((a, b) => {
-          const pinnedGap = Number(Boolean(b?.pinned)) - Number(Boolean(a?.pinned));
-          if (pinnedGap) return pinnedGap;
-          const priorityGap = (Number(b?.priority) || 0) - (Number(a?.priority) || 0);
-          if (priorityGap) return priorityGap;
-          const dateA = new Date(a?.publishedAt || a?.updatedAt || 0).getTime() || 0;
-          const dateB = new Date(b?.publishedAt || b?.updatedAt || 0).getTime() || 0;
-          return dateB - dateA;
-        });
-    }
-
-    function renderBanners(banners, hero, serviceMenu, announcements) {
-      if (!elements.bannerTrack || !elements.bannerCarousel) return;
-
-      const sourceBanners = Array.isArray(banners) && banners.length
-        ? getSortedBanners(banners)
-        : getSortedBanners(buildFallbackBanners(hero, serviceMenu, announcements));
-
-      if (!sourceBanners.length) {
-        elements.bannerTrack.innerHTML = `<section class="banner banner-slide is-active" data-banner-slide aria-hidden="false">${renderStatus('표시할 배너가 없습니다.')}</section>`;
-        if (elements.bannerDots) elements.bannerDots.innerHTML = '';
-        return;
-      }
-
-      state.currentBannerIndex = 0;
-      elements.bannerTrack.innerHTML = sourceBanners.map((item, index) => renderBannerSlide(item, index)).join('');
-      renderBannerDots(sourceBanners);
     }
 
     function renderAppPreview(items) {
@@ -3135,18 +2998,15 @@
     }
 
     function initBannerCarousel() {
-      const carousel = elements.bannerCarousel;
+      const carousel = document.querySelector('[data-banner-carousel]');
       if (!carousel) return;
 
       const slides = Array.from(carousel.querySelectorAll('[data-banner-slide]'));
       const dots = Array.from(carousel.querySelectorAll('[data-banner-dot]'));
       if (slides.length < 2 || !dots.length) return;
-      const rotationIntervalMs = 10000;
-      let rotationTimer = null;
 
       const setSlide = (nextIndex) => {
         const activeIndex = (Number(nextIndex) + slides.length) % slides.length;
-        state.currentBannerIndex = activeIndex;
         slides.forEach((slide, index) => {
           const active = index === activeIndex;
           slide.classList.toggle('is-active', active);
@@ -3159,32 +3019,13 @@
         });
       };
 
-      const stopRotation = () => {
-        if (rotationTimer) {
-          window.clearInterval(rotationTimer);
-          rotationTimer = null;
-        }
-      };
-
-      const startRotation = () => {
-        stopRotation();
-        rotationTimer = window.setInterval(() => {
-          setSlide(state.currentBannerIndex + 1);
-        }, rotationIntervalMs);
-      };
-
       carousel.addEventListener('click', (event) => {
         const dot = event.target.closest('[data-banner-dot]');
         if (!dot) return;
         setSlide(Number(dot.dataset.bannerDot) || 0);
-        startRotation();
       });
 
-      carousel.addEventListener('mouseenter', stopRotation);
-      carousel.addEventListener('mouseleave', startRotation);
-
       setSlide(0);
-      startRotation();
     }
 
     elements.articleTabs?.addEventListener('click', (event) => {
@@ -3211,8 +3052,33 @@
 
         renderServiceMenu(overview?.serviceMenu?.items || []);
         renderHero(overview?.hero, myWork?.summary);
+        renderDejBanner(overview?.hero, overview?.serviceMenu);
+
         const announcements = Array.isArray(overview?.announcements?.items) ? overview.announcements.items : [];
-        renderBanners(overview?.banners, overview?.hero, overview?.serviceMenu, announcements);
+        const releaseItem = announcements.find((item) => item.type !== 'security') || announcements[0];
+        const securityItem = announcements.find((item) => item.type === 'security') || announcements[1] || announcements[0];
+
+        renderAnnouncementBanner('release', releaseItem, {
+          eyebrow: 'Launchpad Release',
+          primaryLabel: '가이드 열기',
+          secondaryLabel: 'App Gallery 보기',
+          secondaryHref: 'dej_app_gallery.html',
+          type: 'release',
+        });
+        renderAnnouncementBanner('event', announcements[1] || releaseItem, {
+          eyebrow: 'Launchpad Spotlight',
+          primaryLabel: '관련 문서 보기',
+          secondaryLabel: 'AI Gallery 보기',
+          secondaryHref: 'dej_ai_gallery.html',
+          type: 'info',
+        });
+        renderAnnouncementBanner('security', securityItem, {
+          eyebrow: 'Security Notice',
+          primaryLabel: '보안 가이드',
+          secondaryLabel: 'Keycenter 보기',
+          secondaryHref: 'workspace_keycenter_hub.html',
+          type: 'security',
+        });
 
         renderAppPreview(overview?.storeSpotlight?.featuredApps || []);
         renderAiPreview(overview?.storeSpotlight?.aiSpotlight || null);

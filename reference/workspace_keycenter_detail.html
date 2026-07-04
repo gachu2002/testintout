@@ -140,6 +140,43 @@
       font-size: 12px;
       font-weight: 800;
     }
+    .author-list {
+      display: grid;
+      gap: 10px;
+    }
+    .author-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #fff;
+    }
+    .author-main {
+      min-width: 0;
+    }
+    .author-name {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+    }
+    .author-meta {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      margin-top: 4px;
+      word-break: break-word;
+    }
+    .author-side {
+      color: var(--subtle);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      text-align: right;
+    }
     .section-card-spacer {
       margin-top: 18px;
     }
@@ -232,33 +269,101 @@
       font-weight: 700;
       line-height: 1;
     }
-    .usage-total-grid {
+    .usage-total-groups {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 14px;
     }
-    .usage-total-card {
+    .usage-total-group {
       border: 1px solid var(--border);
       border-radius: 16px;
       background: #fff;
       padding: 16px;
-      min-height: 104px;
     }
-    .usage-total-label {
+    .usage-total-group-head {
+      display: grid;
+      gap: 4px;
+      margin-bottom: 14px;
+    }
+    .usage-total-group-title {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+    }
+    .usage-total-group-meta {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .usage-total-list {
+      display: grid;
+      gap: 10px;
+    }
+    .usage-total-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: start;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+    .usage-total-row:first-child {
+      padding-top: 0;
+      border-top: 0;
+    }
+    .usage-total-row-label {
       color: var(--subtle);
       font-size: 11px;
       font-weight: 800;
       letter-spacing: .05em;
       text-transform: uppercase;
-      margin-bottom: 10px;
     }
-    .usage-total-value {
-      font-size: 24px;
+    .usage-total-row-meta {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      margin-top: 4px;
+    }
+    .usage-total-row-value {
+      font-size: 22px;
       font-weight: 800;
       letter-spacing: -.04em;
-      margin-bottom: 6px;
+      text-align: right;
     }
-    .usage-total-meta {
+    .usage-total-row-side {
+      display: grid;
+      justify-items: end;
+      gap: 4px;
+    }
+    .usage-total-row-side-meta {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .usage-total-footer {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .usage-total-footer-label {
+      color: var(--subtle);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .usage-total-footer-value {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+    }
+    .usage-total-footer-meta {
+      width: 100%;
       color: var(--muted);
       font-size: 12px;
       line-height: 1.5;
@@ -373,7 +478,7 @@
       .access-grid,
       .usage-detail-grid,
       .usage-chart-grid,
-      .usage-total-grid {
+      .usage-total-groups {
         grid-template-columns: 1fr;
       }
       .project-card {
@@ -405,6 +510,18 @@
         min-width: 0;
         width: 100%;
       }
+      .usage-total-row {
+        grid-template-columns: 1fr;
+      }
+      .usage-total-row-side {
+        justify-items: start;
+      }
+      .author-item {
+        grid-template-columns: 1fr;
+      }
+      .author-side {
+        text-align: left;
+      }
     }
   </style>
 </head>
@@ -423,6 +540,20 @@
           <div class="secret-label">${row.label}</div>
           <div class="secret-value"><span class="mono">${row.value}</span></div>
           <div class="secret-meta">${row.meta || ""}</div>
+        </article>
+      `).join("")}</div>`;
+    }
+    function authorList(rows) {
+      const items = Array.isArray(rows) && rows.length
+        ? rows
+        : [{ name: "등록된 author 없음", meta: "현재 이 key에 추가 author가 연결되어 있지 않습니다.", role: "None" }];
+      return `<div class="author-list">${items.map((row) => `
+        <article class="author-item">
+          <div class="author-main">
+            <div class="author-name">${escapeHtml(row?.name || "-")}</div>
+            <div class="author-meta">${escapeHtml(row?.meta || "권한이 부여된 author")}</div>
+          </div>
+          <div class="author-side">${escapeHtml(row?.role || "Author")}</div>
         </article>
       `).join("")}</div>`;
     }
@@ -471,12 +602,73 @@
     function modelChips(models) {
       return `<div class="model-chip-grid">${models.map((model) => `<span class="model-chip"><span class="material-icons-round" style="font-size:14px;color:var(--brand)">model_training</span>${model}</span>`).join("")}</div>`;
     }
+    function groupUsageTotals(rows) {
+      if (!Array.isArray(rows) || !rows.length) {
+        return [];
+      }
+
+      if (rows[0] && Array.isArray(rows[0].items)) {
+        return rows;
+      }
+
+      const requestItems = rows.filter((row) => /요청|성공|실패/i.test(String(row?.label || "")));
+      const tokenItems = rows.filter((row) => /토큰|input|output|cached/i.test(String(row?.label || "")));
+      const miscItems = rows.filter((row) => !requestItems.includes(row) && !tokenItems.includes(row));
+      const groups = [];
+
+      if (requestItems.length) {
+        groups.push({
+          title: "요청 흐름",
+          meta: "선택한 기간 동안 발생한 요청 결과를 함께 봅니다.",
+          items: requestItems
+        });
+      }
+
+      if (tokenItems.length) {
+        groups.push({
+          title: "토큰 사용량",
+          meta: "총 토큰과 input/output/cache 구성을 함께 봅니다.",
+          items: tokenItems
+        });
+      }
+
+      if (miscItems.length) {
+        groups.push({
+          title: "추가 집계",
+          meta: "비용이나 기타 부가 지표입니다.",
+          items: miscItems
+        });
+      }
+
+      return groups;
+    }
     function usageTotals(rows) {
-      return `<div class="usage-total-grid">${rows.map((row) => `
-        <article class="usage-total-card">
-          <div class="usage-total-label">${row.label}</div>
-          <div class="usage-total-value">${row.value}</div>
-          <div class="usage-total-meta">${row.meta}</div>
+      const groups = groupUsageTotals(rows);
+      return `<div class="usage-total-groups">${groups.map((group) => `
+        <article class="usage-total-group">
+          <div class="usage-total-group-head">
+            <div class="usage-total-group-title">${group.title}</div>
+            <div class="usage-total-group-meta">${group.meta || ""}</div>
+          </div>
+          <div class="usage-total-list">${(group.items || []).map((row) => `
+            <div class="usage-total-row">
+              <div>
+                <div class="usage-total-row-label">${row.label}</div>
+                <div class="usage-total-row-meta">${row.meta || ""}</div>
+              </div>
+              <div class="usage-total-row-side">
+                <div class="usage-total-row-value">${row.value}</div>
+                ${row.sideMeta ? `<div class="usage-total-row-side-meta">${row.sideMeta}</div>` : ""}
+              </div>
+            </div>
+          `).join("")}</div>
+          ${group.footer ? `
+            <div class="usage-total-footer">
+              <div class="usage-total-footer-label">${group.footer.label}</div>
+              <div class="usage-total-footer-value">${group.footer.value}</div>
+              ${group.footer.meta ? `<div class="usage-total-footer-meta">${group.footer.meta}</div>` : ""}
+            </div>
+          ` : ""}
         </article>
       `).join("")}</div>`;
     }
@@ -535,6 +727,27 @@
       const primaryMetric = item.statusCards[1];
       return `
         <section class="panel section">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker"><span class="material-icons-round">vpn_key</span>Key Scope</div>
+              <h2 class="section-title">키와 모델 범위</h2>
+              <p class="section-desc">현재 연결된 key 정보와 호출 가능한 모델 범위를 함께 확인할 수 있습니다.</p>
+            </div>
+          </div>
+          <div class="usage-detail-grid">
+            <article class="card">
+              <div class="card-title">키 정보</div>
+              <div class="card-desc">현재 사용 중인 key와 연결 방식입니다.</div>
+              ${keyRows(usage.keyInfo)}
+            </article>
+            <article class="card">
+              <div class="card-title">사용 가능 모델</div>
+              <div class="card-desc">이 key로 바로 호출할 수 있는 모델 범위입니다.</div>
+              ${modelChips(usage.models)}
+            </article>
+          </div>
+        </section>
+        <section class="panel section">
           <div class="usage-toolbar">
             <div>
               <div class="section-kicker"><span class="material-icons-round">stacked_bar_chart</span>Usage Overview</div>
@@ -558,27 +771,6 @@
             <div class="card-desc">현재 발급 상태와 사용 흐름을 한 번에 볼 수 있습니다.</div>
             <div class="section-stack">${healthSummary(item.statusCards)}</div>
           </article>
-        </section>
-        <section class="panel section">
-          <div class="section-head">
-            <div>
-              <div class="section-kicker"><span class="material-icons-round">vpn_key</span>Key Scope</div>
-              <h2 class="section-title">키와 모델 범위</h2>
-              <p class="section-desc">현재 연결된 key 정보와 호출 가능한 모델 범위를 함께 확인할 수 있습니다.</p>
-            </div>
-          </div>
-          <div class="usage-detail-grid">
-            <article class="card">
-              <div class="card-title">키 정보</div>
-              <div class="card-desc">현재 사용 중인 key와 연결 방식입니다.</div>
-              ${keyRows(usage.keyInfo)}
-            </article>
-            <article class="card">
-              <div class="card-title">사용 가능 모델</div>
-              <div class="card-desc">이 key로 바로 호출할 수 있는 모델 범위입니다.</div>
-              ${modelChips(usage.models)}
-            </article>
-          </div>
         </section>
         <section class="panel section">
           <div class="section-head">
@@ -609,13 +801,13 @@
                 <div class="card-desc">요청, 토큰, 비용, 성공률 흐름을 함께 볼 수 있습니다.</div>
               </div>
               <label class="usage-filter">모델
-                <select>
-                  ${usage.filters.map((filter) => `<option${filter === usage.selectedFilter ? " selected" : ""}>${filter}</option>`).join("")}
+                <select data-usage-filter-key="${item.key}">
+                  ${usage.filters.map((filter) => `<option value="${escapeHtml(filter)}"${filter === usage.selectedFilter ? " selected" : ""}>${filter}</option>`).join("")}
                 </select>
               </label>
             </div>
             <div class="usage-chart-shell">
-              <div class="usage-chart-grid">${usage.charts.map((chart) => usageChart(chart)).join("")}</div>
+              <div class="usage-chart-grid" data-usage-chart-grid-key="${item.key}">${usage.charts.map((chart) => usageChart(chart)).join("")}</div>
             </div>
           </article>
         </section>
@@ -628,7 +820,7 @@
             <div>
               <div class="section-kicker"><span class="material-icons-round">vpn_key</span>Access</div>
               <h2 class="section-title">접근 정보</h2>
-              <p class="section-desc">이 key의 tier, 연결 정보, 발급 메타를 함께 확인할 수 있습니다.</p>
+              <p class="section-desc">이 key의 tier, 연결 정보, owner/author 메타를 함께 확인할 수 있습니다.</p>
             </div>
             <a class="section-link" href="${item.accessLink.href}">${item.accessLink.label}<span class="material-icons-round">chevron_right</span></a>
           </div>
@@ -638,8 +830,14 @@
               <div class="kv-list">${kv(item.accessInfo)}</div>
             </article>
             <article class="card">
-              <div class="card-title">발급 정보</div>
+              <div class="card-title">발급 및 접근 주체</div>
+              <div class="card-desc">owner 정보와 현재 author 목록입니다.</div>
               ${secretGrid(item.registration)}
+              <div class="section-card-spacer">
+                <div class="card-title">Author 목록</div>
+                <div class="card-desc">이 key에 접근 가능한 author 주체입니다.</div>
+                ${authorList(item.authorList)}
+              </div>
             </article>
           </div>
         </section>
@@ -881,6 +1079,7 @@
 
     const rawItems = [
       {
+        id: "kc-openai-prod-014",
         key: "openai-support-prod-key",
         title: "openai-support-prod-key",
         description: "support-assistant-api와 campaign-orchestrator가 함께 사용하는 paid tier key입니다.",
@@ -947,6 +1146,7 @@
         ]
       },
       {
+        id: "kc-anthropic-shared-007",
         key: "anthropic-review-guard-key",
         title: "anthropic-review-guard-key",
         description: "repo-review-guard와 release-notes-pilot이 함께 쓰는 paid tier key입니다.",
@@ -1012,6 +1212,7 @@
         ]
       },
       {
+        id: "kc-internal-rag-021",
         key: "internal-docs-rag-key",
         title: "internal-docs-rag-key",
         description: "docs-guide-widget와 workspace-knowledge가 함께 참조하는 asf tier key입니다.",
@@ -1078,6 +1279,7 @@
         ]
       },
       {
+        id: "kc-azure-ops-005",
         key: "azure-ops-briefing-key",
         title: "azure-ops-briefing-key",
         description: "ops-briefing-bot과 incident-triage-bot이 공유하는 paid tier key입니다.",
@@ -1143,6 +1345,7 @@
         ]
       },
       {
+        id: "kc-openai-partner-003",
         key: "partner-pricing-review-key",
         title: "partner-pricing-review-key",
         description: "pricing-advisor-bot 파일럿 검토에 사용하는 free tier key입니다.",
@@ -1208,6 +1411,7 @@
         ]
       },
       {
+        id: "kc-internal-tool-010",
         key: "internal-tool-runtime-key",
         title: "internal-tool-runtime-key",
         description: "workspace-knowledge와 billing-service가 공유하는 dej-base tier key입니다.",
@@ -1275,18 +1479,808 @@
       }
     ];
 
+    const DETAIL_ITEMS = Object.fromEntries(rawItems.flatMap((item) => {
+      const builtItem = buildItem(item);
+      return [
+        [item.id, builtItem],
+        [item.key, builtItem]
+      ];
+    }));
+
+    const LEGACY_ITEM_TO_ID = Object.fromEntries(rawItems.map((item) => [item.key, item.id]));
+    const RAW_ITEMS_BY_ID = Object.fromEntries(rawItems.map((item) => [item.id, item]));
+    const RAW_ITEMS_BY_KEY = Object.fromEntries(rawItems.map((item) => [item.key, item]));
+
+    function getPayloadData(payload) {
+      return payload && typeof payload === "object" && !Array.isArray(payload) && payload.data && typeof payload.data === "object"
+        ? payload.data
+        : (payload && typeof payload === "object" && !Array.isArray(payload) ? payload : {});
+    }
+
+    function formatCompactNumber(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return "0";
+      return new Intl.NumberFormat("en-US", {
+        notation: "compact",
+        maximumFractionDigits: number >= 100 ? 0 : 1
+      }).format(number);
+    }
+
+    function formatDetailedNumber(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return "0";
+      return new Intl.NumberFormat("en-US", {
+        maximumFractionDigits: 0
+      }).format(number);
+    }
+
+    function formatCurrency(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return "$0.00";
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(number);
+    }
+
+    function formatPercent(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return "0%";
+      return `${Math.round(number)}%`;
+    }
+
+    function formatDate(value) {
+      const normalized = String(value || "").trim();
+      return normalized ? normalized.slice(0, 10) : "-";
+    }
+
+    function formatLabelDate(value) {
+      const normalized = formatDate(value);
+      return normalized !== "-" ? normalized.slice(5) : "-";
+    }
+
+    function formatPeriodLabel(period) {
+      const startDate = formatDate(period?.startDate);
+      const endDate = formatDate(period?.endDate);
+      return startDate !== "-" && endDate !== "-" ? `${startDate} - ${endDate}` : "선택 기간";
+    }
+
+    function maskApiKeyPreview(value) {
+      const normalized = String(value || "").trim();
+      if (!normalized) return "-";
+      if (normalized.length <= 3) return normalized;
+      return `${normalized.slice(0, 3)}${"*".repeat(Math.max(normalized.length - 3, 8))}`;
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function getProviderTheme(providers, tierCode) {
+      return { bg: "#fff4dd", brand: "#f59e0b", brandH: "#d97706", brandBg: "#ffe5a3", brandSoft: "rgba(245,158,11,.18)", accent: "#f97316" };
+    }
+
+    function hasNumericValue(value) {
+      return Number.isFinite(Number(value));
+    }
+
+    function getUsageMetricSnapshotForModel(day, selectedModel) {
+      if (!selectedModel || selectedModel === "all") {
+        return day?.totals || {};
+      }
+
+      const modelMetrics = (Array.isArray(day?.models) ? day.models : []).find((model) => model?.model === selectedModel);
+      if (!modelMetrics) {
+        return {};
+      }
+
+      const requestCount = Number(modelMetrics?.requestCount || 0);
+      const explicitSuccess = hasNumericValue(modelMetrics?.successRequestCount) ? Number(modelMetrics.successRequestCount) : null;
+      const explicitFailed = hasNumericValue(modelMetrics?.failedRequestCount) ? Number(modelMetrics.failedRequestCount) : null;
+
+      if (explicitSuccess !== null || explicitFailed !== null) {
+        return {
+          ...modelMetrics,
+          successRequestCount: explicitSuccess !== null ? explicitSuccess : Math.max(requestCount - (explicitFailed || 0), 0),
+          failedRequestCount: explicitFailed !== null ? explicitFailed : Math.max(requestCount - (explicitSuccess || 0), 0)
+        };
+      }
+
+      const dayModels = Array.isArray(day?.models) ? day.models : [];
+      const dayFailedTotal = Number(day?.totals?.failedRequestCount || 0);
+      const totalModelRequests = dayModels.reduce((sum, model) => sum + Number(model?.requestCount || 0), 0);
+
+      if (requestCount > 0 && dayFailedTotal > 0 && totalModelRequests > 0) {
+        const proportionalFailed = (dayFailedTotal * requestCount) / totalModelRequests;
+        return {
+          ...modelMetrics,
+          successRequestCount: Math.max(requestCount - proportionalFailed, 0),
+          failedRequestCount: proportionalFailed
+        };
+      }
+
+      return {
+        ...modelMetrics,
+        successRequestCount: requestCount,
+        failedRequestCount: 0
+      };
+    }
+
+    function buildUsageCharts(usage, selectedModel = "all") {
+      const days = Array.isArray(usage?.days) ? usage.days : [];
+      const labels = days.map((day) => formatLabelDate(day?.date));
+      const metricDays = days.map((day) => getUsageMetricSnapshotForModel(day, selectedModel));
+      const suffix = selectedModel && selectedModel !== "all" ? ` · ${selectedModel}` : "";
+      return [
+        {
+          title: "Token Consumption",
+          meta: `기간별 token 흐름${suffix}`,
+          labels,
+          series: [
+            { label: "Total", color: "#14b8a6", values: metricDays.map((metrics) => Number(metrics?.totalTokens || 0)) },
+            { label: "Completion", color: "#2563eb", values: metricDays.map((metrics) => Number(metrics?.outputTokens || 0)) },
+            { label: "Prompt", color: "#f59e0b", values: metricDays.map((metrics) => Number(metrics?.inputTokens || 0)) }
+          ]
+        },
+        {
+          title: "Requests per Day",
+          meta: `일별 요청 수${suffix}`,
+          labels,
+          series: [
+            { label: "Requests", color: "#38bdf8", values: metricDays.map((metrics) => Number(metrics?.requestCount || 0)) }
+          ]
+        },
+        {
+          title: "Daily Expenditure (USD)",
+          meta: `일별 비용 추이${suffix}`,
+          labels,
+          series: [
+            { label: "Spend", color: "#10b981", values: metricDays.map((metrics) => Number(metrics?.usageCost || 0)) }
+          ]
+        },
+        {
+          title: "Success vs Failed Requests",
+          meta: `성공/실패 요청 흐름${suffix}`,
+          labels,
+          series: [
+            { label: "Success", color: "#14b8a6", values: metricDays.map((metrics) => Number(metrics?.successRequestCount || 0)) },
+            { label: "Failed", color: "#ef4444", values: metricDays.map((metrics) => Number(metrics?.failedRequestCount || 0)) }
+          ]
+        }
+      ];
+    }
+
+    function roundMetricValue(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return 0;
+      return Math.round(number * 1000) / 1000;
+    }
+
+    function buildSyntheticUsageDays(usage) {
+      if (Array.isArray(usage?.days) && usage.days.length) {
+        return usage.days;
+      }
+
+      const modelNames = (Array.isArray(usage?.filters) ? usage.filters : []).filter((filter) => filter && filter !== "all");
+      const charts = Array.isArray(usage?.charts) ? usage.charts : [];
+      const labels = charts[0]?.labels || [];
+
+      if (!modelNames.length || !labels.length) {
+        return [];
+      }
+
+      const weightSeed = modelNames.map((_, index) => modelNames.length - index);
+      const weightTotal = weightSeed.reduce((sum, value) => sum + value, 0) || 1;
+      const normalizedWeights = weightSeed.map((value) => value / weightTotal);
+      const getChart = (title) => charts.find((chart) => chart?.title === title) || null;
+      const getSeriesValues = (chartTitle, seriesLabel) => {
+        const chart = getChart(chartTitle);
+        const series = (chart?.series || []).find((item) => item?.label === seriesLabel);
+        return Array.isArray(series?.values) ? series.values : [];
+      };
+
+      const totalTokens = getSeriesValues("Token Consumption", "Total");
+      const outputTokens = getSeriesValues("Token Consumption", "Completion");
+      const inputTokens = getSeriesValues("Token Consumption", "Prompt");
+      const requestCounts = getSeriesValues("Requests per Day", "Requests");
+      const usageCosts = getSeriesValues("Daily Expenditure (USD)", "Spend");
+      const successCounts = getSeriesValues("Success vs Failed Requests", "Success");
+      const failedCounts = getSeriesValues("Success vs Failed Requests", "Failed");
+
+      return labels.map((label, labelIndex) => ({
+        date: `2026-${label}`,
+        totals: {
+          totalTokens: Number(totalTokens[labelIndex] || 0),
+          outputTokens: Number(outputTokens[labelIndex] || 0),
+          inputTokens: Number(inputTokens[labelIndex] || 0),
+          requestCount: Number(requestCounts[labelIndex] || 0),
+          successRequestCount: Number(successCounts[labelIndex] || 0),
+          failedRequestCount: Number(failedCounts[labelIndex] || 0),
+          usageCost: Number(usageCosts[labelIndex] || 0),
+          cacheWriteTokens: 0,
+          cacheReadTokens: 0
+        },
+        models: modelNames.map((model, modelIndex) => {
+          const weight = normalizedWeights[modelIndex] || 0;
+          return {
+            model,
+            totalTokens: roundMetricValue((totalTokens[labelIndex] || 0) * weight),
+            outputTokens: roundMetricValue((outputTokens[labelIndex] || 0) * weight),
+            inputTokens: roundMetricValue((inputTokens[labelIndex] || 0) * weight),
+            requestCount: roundMetricValue((requestCounts[labelIndex] || 0) * weight),
+            successRequestCount: roundMetricValue((successCounts[labelIndex] || 0) * weight),
+            failedRequestCount: roundMetricValue((failedCounts[labelIndex] || 0) * weight),
+            usageCost: roundMetricValue((usageCosts[labelIndex] || 0) * weight),
+            cacheWriteTokens: 0,
+            cacheReadTokens: 0
+          };
+        })
+      }));
+    }
+
+    function initializeUsageInsights(usage) {
+      if (!usage || typeof usage !== "object") {
+        return usage;
+      }
+
+      if (!Array.isArray(usage.days) || !usage.days.length) {
+        usage.days = buildSyntheticUsageDays(usage);
+      }
+
+      usage.selectedFilter = usage.selectedFilter || "all";
+      usage.charts = buildUsageCharts(usage, usage.selectedFilter);
+      return usage;
+    }
+
+    function updateUsageCharts(key, selectedModel) {
+      const usage = usageInsightsByKey[key];
+      if (!usage) {
+        return;
+      }
+
+      usage.selectedFilter = selectedModel || "all";
+      usage.charts = buildUsageCharts(usage, usage.selectedFilter);
+
+      const chartGrid = document.querySelector(`[data-usage-chart-grid-key="${key}"]`);
+      if (chartGrid) {
+        chartGrid.innerHTML = usage.charts.map((chart) => usageChart(chart)).join("");
+      }
+    }
+
+    function initializeUsageChartFilters() {
+      document.querySelectorAll("[data-usage-filter-key]").forEach((select) => {
+        const key = select.dataset.usageFilterKey;
+        const usage = usageInsightsByKey[key];
+        if (!usage) {
+          return;
+        }
+
+        select.value = usage.selectedFilter || "all";
+        select.addEventListener("change", (event) => {
+          updateUsageCharts(key, event.target.value);
+        });
+      });
+    }
+
+    function normalizeAuthorList(keyItem) {
+      const source = Array.isArray(keyItem?.authors)
+        ? keyItem.authors
+        : Array.isArray(keyItem?.authorList)
+          ? keyItem.authorList
+          : Array.isArray(keyItem?.authorSubs)
+            ? keyItem.authorSubs
+            : [];
+
+      return source.map((entry) => {
+        if (typeof entry === "string") {
+          return {
+            name: entry,
+            meta: "권한이 부여된 author",
+            role: "Author"
+          };
+        }
+
+        if (!entry || typeof entry !== "object") {
+          return null;
+        }
+
+        const name = entry.name || entry.email || entry.sub || entry.id || "";
+        if (!name) {
+          return null;
+        }
+
+        const meta = entry.email && entry.email !== name
+          ? entry.email
+          : entry.description || entry.sub || "권한이 부여된 author";
+
+        return {
+          name,
+          meta,
+          role: entry.role || entry.type || "Author"
+        };
+      }).filter(Boolean);
+    }
+
+    function buildDynamicItemFromApi(keyItem, usage, tierDetail) {
+      const theme = getProviderTheme(keyItem?.providers, keyItem?.tier?.code);
+      const usageModels = Array.isArray(usage?.models) ? usage.models : [];
+      const usageModelNames = usageModels.map((model) => model?.model).filter(Boolean);
+      const tierModels = Array.isArray(tierDetail?.availableModels) ? tierDetail.availableModels.filter(Boolean) : [];
+      const accessibleModels = tierModels.length ? tierModels : usageModelNames;
+      const usageFilters = usageModelNames.length ? [...new Set(usageModelNames)] : [];
+      const topModel = usage?.summary?.topModel?.model || usageModels[0]?.model || "-";
+      const totalRequests = Number(usage?.totals?.requestCount || 0);
+      const failedRequests = Number(usage?.totals?.failedRequestCount || 0);
+      const failureRate = totalRequests > 0 ? ((failedRequests / totalRequests) * 100).toFixed(1) : "0.0";
+      const consumerProjects = Array.isArray(keyItem?.consumerProjects) ? keyItem.consumerProjects : [];
+      const limitValue = keyItem?.usage?.limit;
+      const hasLimit = limitValue !== null && limitValue !== undefined && Number.isFinite(Number(limitValue));
+      const usagePeriodLabel = formatPeriodLabel(usage?.period);
+      const periodSpendValue = formatCurrency(usage?.totals?.usageCost);
+      const periodSpendNumber = Number(usage?.totals?.usageCost || 0);
+      const periodQuotaPercent = hasLimit && Number.isFinite(periodSpendNumber)
+        ? `${Math.round((periodSpendNumber / Number(limitValue)) * 100)}%`
+        : "N/A";
+      const periodQuotaMeta = hasLimit
+        ? `${periodSpendValue} / ${formatCurrency(limitValue)}`
+        : "선택 기간 limit 정보 없음";
+      const activeModelCount = Number(usage?.summary?.modelCount || usageModels.length || 0);
+      const quotaValue = hasLimit
+        ? `${formatCurrency(keyItem?.usage?.spend)} / ${formatCurrency(limitValue)}`
+        : `${formatCurrency(keyItem?.usage?.spend)} / limit 없음`;
+      const authorEntries = normalizeAuthorList(keyItem);
+
+      usageInsightsByKey[keyItem.id] = {
+        period: formatPeriodLabel(usage?.period),
+        keyInfo: [
+          {
+            label: "API 키 정보",
+            value: `<span class="mono">${escapeHtml(maskApiKeyPreview(keyItem?.secret || "-"))}</span>`,
+            meta: "응답에는 항상 마스킹된 preview만 표시합니다.",
+            actionIcon: "content_copy"
+          },
+          {
+            label: "Account Identifier",
+            value: escapeHtml(keyItem?.accountIdentifier || keyItem?.name || keyItem?.id || "-"),
+            meta: "LiteLLM usage scope 식별자입니다.",
+            actionIcon: "badge"
+          }
+        ],
+        models: accessibleModels,
+        days: Array.isArray(usage?.days) ? usage.days : [],
+        totals: [
+          {
+            title: "요청 흐름",
+            meta: "선택한 기간 동안 발생한 요청 결과를 함께 봅니다.",
+            items: [
+              { label: "총 요청 수", value: formatDetailedNumber(usage?.totals?.requestCount), meta: "선택 기간 전체 요청" },
+              { label: "성공 요청", value: formatDetailedNumber(usage?.totals?.successRequestCount), meta: "성공 응답 기준" },
+              { label: "실패 요청", value: formatDetailedNumber(usage?.totals?.failedRequestCount), meta: "실패 응답 기준" }
+            ]
+          },
+          {
+            title: "토큰 사용량",
+            meta: "총 토큰과 input/output/cache 구성을 함께 봅니다.",
+            items: [
+              { label: "총 토큰 수", value: formatDetailedNumber(usage?.totals?.totalTokens), meta: "input + output + cache 포함" },
+              { label: "Input Tokens", value: formatDetailedNumber(usage?.totals?.inputTokens), meta: "prompt/input token 합계" },
+              { label: "Output Tokens", value: formatDetailedNumber(usage?.totals?.outputTokens), meta: "completion/output token 합계" },
+              {
+                label: "Cached Tokens",
+                value: formatDetailedNumber(Number(usage?.totals?.cacheWriteTokens || 0) + Number(usage?.totals?.cacheReadTokens || 0)),
+                meta: "cache write + read token 합계",
+                sideMeta: `write ${formatDetailedNumber(usage?.totals?.cacheWriteTokens)} · read ${formatDetailedNumber(usage?.totals?.cacheReadTokens)}`
+              }
+            ],
+            footer: {
+              label: "총 지출",
+              value: formatCurrency(usage?.totals?.usageCost),
+              meta: "LiteLLM aggregate spend"
+            }
+          }
+        ],
+        filters: ["all", ...usageFilters],
+        selectedFilter: "all",
+        charts: buildUsageCharts(usage)
+      };
+
+      return {
+        id: keyItem.id,
+        key: keyItem.id,
+        title: keyItem?.name || keyItem?.accountIdentifier || keyItem?.id || "llm-key",
+        description: `${keyItem?.tier?.label || "Key"} key 상세입니다. author 범위, budget usage, 연결된 project를 함께 확인할 수 있습니다.`,
+        heroIcon: "vpn_key",
+        typeLabel: String(keyItem?.tier?.label || keyItem?.tier?.code || "unknown").toLowerCase(),
+        statusLabel: String(keyItem?.status || "active").toLowerCase() === "active" ? "Active" : String(keyItem?.status || "review"),
+        statusTone: String(keyItem?.status || "active").toLowerCase() === "active" ? "healthy" : "review",
+        theme,
+        accessLink: { href: "workspace_keycenter_hub.html", label: "Keycenter Hub 보기" },
+        connectedLink: { href: "workspace_projects_hub.html", label: "프로젝트 허브 보기" },
+        actions: [
+          { label: "Keycenter Hub", icon: "vpn_key", href: "workspace_keycenter_hub.html" },
+          { label: "Projects Hub", icon: "arrow_outward", variant: "primary", href: "workspace_projects_hub.html" }
+        ],
+        heroStats: [
+          { label: "Key Tier", value: String(keyItem?.tier?.label || keyItem?.tier?.code || "-").toLowerCase(), meta: "현재 key tier" },
+          { label: "Model Scope", value: String(accessibleModels.length || usage?.summary?.modelCount || usageModels.length || 0), meta: topModel !== "-" ? `${topModel} 포함` : "사용 모델 수" },
+          { label: "Quota", value: formatPercent(keyItem?.usage?.percent), meta: quotaValue },
+          { label: "Surface", value: String(consumerProjects.length), meta: "연결된 프로젝트 수" }
+        ],
+        accessInfo: [
+          { key: "Key Tier", value: escapeHtml(keyItem?.tier?.label || keyItem?.tier?.code || "-") },
+          { key: "Key ID", value: `<span class="mono">${escapeHtml(keyItem?.id || "-")}</span>` },
+          { key: "Account Identifier", value: `<span class="mono">${escapeHtml(keyItem?.accountIdentifier || "-")}</span>` },
+          { key: "Providers", value: escapeHtml((keyItem?.providers || []).join(", ") || "-") }
+        ],
+        registration: [
+          { label: "Owner", value: escapeHtml(keyItem?.owner || "-"), meta: "현재 owner sub" },
+          { label: "생성일", value: formatDate(keyItem?.createdAt), meta: "key 생성 시각" },
+          { label: "수정일", value: formatDate(keyItem?.updatedAt), meta: "최근 수정 시각" }
+        ],
+        authorList: authorEntries,
+        statusCards: [
+          { title: "발급 상태", meta: "현재 key 상태", value: String(keyItem?.status || "active").toLowerCase() === "active" ? "Active" : String(keyItem?.status || "review") },
+          { title: "선택 기간 사용량", meta: "전체 token 기준", value: formatCompactNumber(usage?.totals?.totalTokens) },
+          { title: "오류율", meta: "실패 요청 비율", value: `${failureRate}%` }
+        ],
+        usageSummary: [
+          { label: "Requests", value: formatDetailedNumber(totalRequests), meta: usagePeriodLabel || "선택 기간 전체 요청" },
+          { label: "Quota", value: periodQuotaPercent, meta: periodQuotaMeta },
+          { label: "Spend", value: periodSpendValue, meta: usagePeriodLabel || "선택 기간 집계" },
+          { label: "Models", value: String(activeModelCount), meta: topModel !== "-" ? `${topModel} 포함` : "사용 모델 수" }
+        ],
+        connectedItems: consumerProjects.length
+          ? consumerProjects.map((project) => ({
+            title: project?.name || project?.id || "project",
+            meta: "현재 이 key를 참조하는 project binding입니다.",
+            badge: "Project",
+            tags: ["Workspace", "Binding"],
+            sideLabel: "Binding",
+            sideValue: project?.id || "Direct",
+            href: "workspace_projects_hub.html",
+            linkLabel: "프로젝트 허브 보기"
+          }))
+          : [{
+            title: "연결된 프로젝트 없음",
+            meta: "현재 consumer project binding이 확인되지 않았습니다.",
+            badge: "Project",
+            tags: ["No Binding"],
+            sideLabel: "Binding",
+            sideValue: "None",
+            href: "workspace_projects_hub.html",
+            linkLabel: "프로젝트 허브 보기"
+          }],
+        guideTips: [
+          { title: "상세 페이지는 key id 기준으로 여는 편이 안전합니다", meta: "동일 name이 여러 개 있어도 id 기준이면 정확한 key를 바로 조회할 수 있습니다.", side: "ID" },
+          { title: "usage와 모델 범위는 함께 봅니다", meta: "현재 budget usage는 `/keys/:id`, 접근 가능한 모델 전체 목록은 `/tiers/:id`가 담당합니다.", side: "Usage" },
+          { title: "추가 consumer 연결 전에는 quota를 먼저 확인합니다", meta: "같은 key를 여러 surface가 공유하면 작은 증가도 전체 headroom에 영향을 줄 수 있습니다.", side: "Quota" }
+        ]
+      };
+    }
+
+    function buildUnavailableItem(id) {
+      usageInsightsByKey[id] = {
+        period: "선택 기간",
+        keyInfo: [
+          { label: "Key ID", value: `<span class="mono">${escapeHtml(id)}</span>`, meta: "요청한 detail id", actionIcon: "badge" },
+          { label: "상태", value: "Unavailable", meta: "API 응답 또는 sample fallback을 찾지 못했습니다.", actionIcon: "error_outline" }
+        ],
+        models: [],
+        totals: [
+          {
+            title: "요청 흐름",
+            meta: "선택한 기간 요청 집계를 불러오지 못했습니다.",
+            items: [
+              { label: "총 요청 수", value: "0", meta: "usage 정보를 불러오지 못했습니다." },
+              { label: "성공 요청", value: "0", meta: "usage 정보를 불러오지 못했습니다." },
+              { label: "실패 요청", value: "0", meta: "usage 정보를 불러오지 못했습니다." }
+            ]
+          },
+          {
+            title: "토큰 사용량",
+            meta: "토큰 상세 집계를 불러오지 못했습니다.",
+            items: [
+              { label: "총 토큰 수", value: "0", meta: "usage 정보를 불러오지 못했습니다." },
+              { label: "Input Tokens", value: "0", meta: "usage 정보를 불러오지 못했습니다." },
+              { label: "Output Tokens", value: "0", meta: "usage 정보를 불러오지 못했습니다." },
+              { label: "Cached Tokens", value: "0", meta: "usage 정보를 불러오지 못했습니다.", sideMeta: "write 0 · read 0" }
+            ],
+            footer: {
+              label: "총 지출",
+              value: "$0.00",
+              meta: "usage 정보를 불러오지 못했습니다."
+            }
+          }
+        ],
+        filters: ["all"],
+        selectedFilter: "all",
+        charts: buildUsageCharts({ days: [] })
+      };
+
+      return {
+        id,
+        key: id,
+        title: id,
+        description: "요청한 key detail 데이터를 바로 불러오지 못했습니다. id 값과 접근 권한을 확인해 주세요.",
+        heroIcon: "vpn_key",
+        typeLabel: "unknown",
+        statusLabel: "Unavailable",
+        statusTone: "review",
+        theme: getProviderTheme([], "review"),
+        accessLink: { href: "workspace_keycenter_hub.html", label: "Keycenter Hub 보기" },
+        connectedLink: { href: "workspace_keycenter_hub.html", label: "허브로 돌아가기" },
+        actions: [
+          { label: "Keycenter Hub", icon: "vpn_key", href: "workspace_keycenter_hub.html" }
+        ],
+        heroStats: [
+          { label: "Key ID", value: id, meta: "요청한 detail 식별자" },
+          { label: "Model Scope", value: "0", meta: "불러온 usage 데이터 없음" },
+          { label: "Quota", value: "0%", meta: "usage 데이터 없음" },
+          { label: "Surface", value: "0", meta: "연결 정보 없음" }
+        ],
+        accessInfo: [
+          { key: "Key ID", value: `<span class="mono">${escapeHtml(id)}</span>` },
+          { key: "상태", value: "Unavailable" },
+          { key: "원인", value: "sample fallback 또는 API detail 조회 실패" }
+        ],
+        registration: [
+          { label: "Key ID", value: escapeHtml(id), meta: "요청한 detail 식별자" }
+        ],
+        authorList: [],
+        statusCards: [
+          { title: "발급 상태", meta: "데이터를 찾지 못했습니다.", value: "Unavailable" },
+          { title: "선택 기간 사용량", meta: "usage 정보를 불러오지 못했습니다.", value: "0" },
+          { title: "오류율", meta: "집계 가능한 요청이 없습니다.", value: "0.0%" }
+        ],
+        usageSummary: [
+          { label: "Status", value: "Unavailable", meta: "detail 응답을 다시 확인해 주세요." },
+          { label: "Quota", value: "0%", meta: "usage 정보 없음" },
+          { label: "Spend", value: "$0.00", meta: "usage 정보 없음" },
+          { label: "Surface", value: "0", meta: "연결 정보 없음" }
+        ],
+        connectedItems: [{
+          title: "연결 정보를 확인할 수 없습니다",
+          meta: "허브에서 다시 선택하거나 id와 접근 권한을 확인해 주세요.",
+          badge: "Notice",
+          tags: ["Unavailable"],
+          sideLabel: "Binding",
+          sideValue: "Unknown",
+          href: "workspace_keycenter_hub.html",
+          linkLabel: "Keycenter Hub 보기"
+        }],
+        guideTips: [
+          { title: "detail 진입은 key id 기준으로 확인합니다", meta: "동일 name이 여러 개 있을 수 있어 id 기준 진입이 안전합니다.", side: "ID" },
+          { title: "접근 권한이 없으면 detail 조회가 실패할 수 있습니다", meta: "owner, author, admin 또는 담당 tier manager 범위를 확인해 주세요.", side: "Access" },
+          { title: "허브에서 다시 열어 최신 id를 확인합니다", meta: "오래된 링크나 잘못된 id면 허브에서 재진입하는 편이 빠릅니다.", side: "Retry" }
+        ]
+      };
+    }
+
+    Object.values(usageInsightsByKey).forEach((usage) => {
+      if (!Array.isArray(usage?.keyInfo)) return;
+      usage.keyInfo = usage.keyInfo.map((row) => {
+        if (row?.label !== "API 키") {
+          return row;
+        }
+
+        const rawValue = String(row?.value || "").replace(/<[^>]+>/g, "");
+        return {
+          ...row,
+          label: "API 키 정보",
+          value: `<span class="mono">${escapeHtml(maskApiKeyPreview(rawValue))}</span>`
+        };
+      });
+    });
+
+    Object.values(usageInsightsByKey).forEach((usage) => {
+      initializeUsageInsights(usage);
+    });
+
+    async function fetchJson(url) {
+      const response = await fetch(url, {
+        method: "GET",
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: {
+          Accept: "application/json"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed: ${response.status} ${response.statusText}`);
+      }
+
+      return response.json();
+    }
+
+    function normalizeText(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function normalizeTierValue(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function resolveSampleSeed(params, resolvedId) {
+      const legacyItem = params.get("item");
+      if (legacyItem && RAW_ITEMS_BY_KEY[legacyItem]) {
+        return RAW_ITEMS_BY_KEY[legacyItem];
+      }
+
+      if (resolvedId && RAW_ITEMS_BY_ID[resolvedId]) {
+        return RAW_ITEMS_BY_ID[resolvedId];
+      }
+
+      return null;
+    }
+
+    function findMatchingKeyItem(items, seedItem) {
+      const list = Array.isArray(items) ? items : [];
+      if (!seedItem || !list.length) return null;
+
+      const desiredKey = normalizeText(seedItem.key);
+      const desiredTitle = normalizeText(seedItem.title);
+      const desiredTier = normalizeTierValue(seedItem.typeLabel);
+
+      const exactAccountIdentifier = list.find((item) => normalizeText(item?.accountIdentifier) === desiredKey);
+      if (exactAccountIdentifier) return exactAccountIdentifier;
+
+      const exactNameAndTier = list.find((item) =>
+        normalizeText(item?.name) === desiredTitle &&
+        (
+          normalizeTierValue(item?.tier?.label) === desiredTier ||
+          normalizeTierValue(item?.tier?.code) === desiredTier
+        )
+      );
+      if (exactNameAndTier) return exactNameAndTier;
+
+      const exactNameMatches = list.filter((item) => normalizeText(item?.name) === desiredTitle);
+      if (exactNameMatches.length === 1) {
+        return exactNameMatches[0];
+      }
+
+      const looseMatches = list.filter((item) =>
+        normalizeText(item?.name) === desiredTitle ||
+        normalizeText(item?.accountIdentifier) === desiredKey
+      );
+      if (looseMatches.length === 1) {
+        return looseMatches[0];
+      }
+
+      return null;
+    }
+
+    async function resolveApiKeyFromSample(seedItem) {
+      if (!seedItem) return null;
+
+      const candidates = Array.from(new Set([seedItem.key, seedItem.title].filter(Boolean)));
+      for (const candidate of candidates) {
+        const payload = await fetchJson(`/api/v2/keycenter/keys?limit=100&q=${encodeURIComponent(candidate)}`);
+        const data = getPayloadData(payload);
+        const match = findMatchingKeyItem(data?.items, seedItem);
+        if (match) {
+          return match;
+        }
+      }
+
+      return null;
+    }
+
+    function getUsageWindow() {
+      const endDate = new Date();
+      const startDate = new Date(endDate);
+      startDate.setDate(endDate.getDate() - 13);
+      const toDateString = (value) => value.toISOString().slice(0, 10);
+      return {
+        startDate: toDateString(startDate),
+        endDate: toDateString(endDate)
+      };
+    }
+
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.body.appendChild(script);
+      });
+    }
+
+    async function bootstrapDetailConfig() {
+      const params = new URLSearchParams(window.location.search);
+      const legacyItem = params.get("item");
+      const requestedId = params.get("id");
+      const seedItem = resolveSampleSeed(params, requestedId);
+
+      if (!requestedId && legacyItem && LEGACY_ITEM_TO_ID[legacyItem]) {
+        params.set("id", LEGACY_ITEM_TO_ID[legacyItem]);
+        const nextSearch = params.toString();
+        const nextUrl = `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""}${window.location.hash || ""}`;
+        window.history.replaceState({}, "", nextUrl);
+      }
+
+      const resolvedId = params.get("id");
+      if (!resolvedId) {
+        return;
+      }
+
+      try {
+        let keyItem;
+        try {
+          const keyPayload = await fetchJson(`/api/v2/keycenter/keys/${encodeURIComponent(resolvedId)}`);
+          keyItem = getPayloadData(keyPayload);
+        } catch (error) {
+          const resolvedFromSample = await resolveApiKeyFromSample(seedItem);
+          if (!resolvedFromSample) {
+            throw error;
+          }
+
+          keyItem = resolvedFromSample;
+          params.set("id", keyItem.id);
+          const nextSearch = params.toString();
+          const nextUrl = `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""}${window.location.hash || ""}`;
+          window.history.replaceState({}, "", nextUrl);
+        }
+
+        const usageWindow = getUsageWindow();
+        const [usagePayload, tierPayload] = await Promise.all([
+          fetchJson(`/api/v2/keycenter/tiers/usage?startDate=${encodeURIComponent(usageWindow.startDate)}&endDate=${encodeURIComponent(usageWindow.endDate)}&key=${encodeURIComponent(keyItem?.id || resolvedId)}`),
+          keyItem?.tier?.id
+            ? fetchJson(`/api/v2/keycenter/tiers/${encodeURIComponent(keyItem.tier.id)}`)
+                .catch((error) => {
+                  console.warn("Failed to load tier detail for keycenter detail", {
+                    keyId: keyItem?.id || resolvedId,
+                    tierId: keyItem?.tier?.id || null,
+                    error
+                  });
+                  return { data: null };
+                })
+            : Promise.resolve({ data: null })
+        ]);
+        const usage = getPayloadData(usagePayload);
+        const tierDetail = getPayloadData(tierPayload);
+        DETAIL_ITEMS[keyItem.id] = buildItem(buildDynamicItemFromApi(keyItem, usage, tierDetail));
+      } catch (error) {
+        console.warn("Failed to hydrate keycenter detail from API", error);
+        if (!DETAIL_ITEMS[resolvedId]) {
+          DETAIL_ITEMS[resolvedId] = buildItem(buildUnavailableItem(resolvedId));
+        }
+      }
+    }
+
     window.DETAIL_PAGE_CONFIG = {
-      paramName: "item",
+      paramName: "id",
       pageTitle: "Keycenter Detail",
       hubLabel: "Keycenter",
       hubHref: "workspace_keycenter_hub.html",
       activeHubKey: "keycenter",
       eyebrow: "AI · Issued LLM Keys",
       searchPlaceholder: "key 이름, tier, model, connected surface를 검색하세요...",
-      items: Object.fromEntries(rawItems.map((item) => [item.key, buildItem(item)]))
+      items: DETAIL_ITEMS
     };
   </script>
-  <script src="workspace_detail_shared.js"></script>
-  <script src="ax_studio_topbar.js"></script>
+  <script>
+    bootstrapDetailConfig()
+      .catch((error) => {
+        console.warn("Failed to initialize keycenter detail page", error);
+      })
+      .finally(async () => {
+        try {
+          await loadScript("workspace_detail_shared.js");
+          await loadScript("ax_studio_topbar.js");
+          initializeUsageChartFilters();
+        } catch (error) {
+          console.error("Failed to load keycenter detail scripts", error);
+        }
+      });
+  </script>
 </body>
 </html>

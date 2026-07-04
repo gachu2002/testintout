@@ -8,6 +8,71 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
   <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
   <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <style>
+    .resource-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(214, 216, 219, .74);
+    }
+    .resource-pagination[hidden] {
+      display: none !important;
+    }
+    .resource-pagination-summary {
+      color: var(--t2);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .resource-pagination-controls {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .resource-pagination-btn {
+      min-width: 38px;
+      height: 38px;
+      padding: 0 12px;
+      border: 1px solid rgba(214, 216, 219, .94);
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #fff;
+      color: var(--t2);
+      font-size: 12px;
+      font-weight: 800;
+      transition: all .15s ease;
+    }
+    .resource-pagination-btn:hover:not(:disabled) {
+      border-color: rgba(245, 158, 11, .28);
+      color: var(--brand);
+      background: rgba(245, 158, 11, .06);
+    }
+    .resource-pagination-btn.is-active {
+      border-color: rgba(245, 158, 11, .24);
+      background: var(--brand-soft);
+      color: var(--brand);
+    }
+    .resource-pagination-btn:disabled {
+      opacity: .42;
+      cursor: not-allowed;
+    }
+    @media (max-width: 980px) {
+      .resource-pagination {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .resource-pagination-controls {
+        justify-content: flex-start;
+      }
+    }
+  </style>
 </head>
 <body>
   <div id="app"></div>
@@ -15,6 +80,7 @@
     window.HUB_CONFIG = {
       documentTitle: "Keycenter",
       activeKey: "keycenter",
+      panelVariant: "briefing",
       theme: {
         bg: "#fff9ed",
         brand: "#f59e0b",
@@ -24,19 +90,20 @@
         accent2: "#f97316"
       },
       searchPlaceholder: "key 이름, tier, model, connected surface를 검색하세요...",
-      eyebrow: "AI · Issued LLM Keys",
+      eyebrow: "AI · Key Usage and Inventory",
       title: "Keycenter",
-      description: "LLM key를 발급하고 key tier, model 범위, 회전 주기, 연결된 사용처를 함께 관리합니다. 예시 tier는 free, paid, asf, dej-base 기준으로 정리했습니다.",
+      description: "LLM key를 발급하고 기간별 사용량, key tier, 허용 모델, 회전 주기, 연결된 사용처를 함께 관리합니다. 상단은 usage 집계, 본문은 실제 issued key inventory를 보여주는 구성을 기준으로 정리했습니다.",
       primaryAction: { href: "workspace_project_detail.html?project=coverity-ai", icon: "vpn_key", label: "새 Key 발급 요청" },
       secondaryAction: { href: "workspace_chatbot_hub.html", icon: "chat", label: "Chatbot Hub 보기" },
       heroStats: [
-        { icon: "vpn_key", value: "32", label: "Issued Keys", note: "active and review", color: "linear-gradient(135deg,#f59e0b,#f97316)" },
-        { icon: "layers", value: "4", label: "Key Tier", note: "free · paid · asf · dej-base", color: "linear-gradient(135deg,#d97706,#f59e0b)" },
-        { icon: "published_with_changes", value: "5", label: "Rotate Soon", note: "14일 이내 교체 예정", color: "linear-gradient(135deg,#ea580c,#fb923c)" },
-        { icon: "link", value: "14", label: "Bound Surfaces", note: "chatbot · agent · tool inventory", color: "linear-gradient(135deg,#f59e0b,#fbbf24)" }
+        { icon: "query_stats", value: "184K", label: "Requests (7d)", note: "접근 가능한 key 기준 최근 7일", color: "linear-gradient(135deg,#f59e0b,#f97316)" },
+        { icon: "token", value: "92.6M", label: "Tokens (7d)", note: "input · output · cache 포함", color: "linear-gradient(135deg,#d97706,#f59e0b)" },
+        { icon: "paid", value: "$428.37", label: "Usage Cost (7d)", note: "최근 7일 LiteLLM aggregate spend", color: "linear-gradient(135deg,#ea580c,#fb923c)" },
+        { icon: "model_training", value: "7", label: "Active Models", note: "최근 7일 실제 호출 발생 모델", color: "linear-gradient(135deg,#f59e0b,#fbbf24)" }
       ],
       filters: [
         { id: "all", icon: "apps", label: "전체" },
+        { id: "dej-base", icon: "apartment", label: "dej-base" },
         { id: "openai", icon: "auto_awesome", label: "OpenAI" },
         { id: "anthropic", icon: "psychology", label: "Anthropic" },
         { id: "azure", icon: "cloud", label: "Azure" },
@@ -47,7 +114,7 @@
       resourceSectionIcon: "vpn_key",
       resourceSectionLabel: "Issued Key Inventory",
       resourceTitle: "LLM Keys",
-      resourceDescription: "각 카드는 하나의 발급된 key를 나타냅니다. key tier, 허용 모델, 회전 일정, 연결된 사용처를 함께 확인한 뒤 상세 페이지에서 key별 상태를 이어서 볼 수 있습니다.",
+      resourceDescription: "각 카드는 하나의 발급된 key를 나타냅니다. 상단 usage 집계로 전체 흐름을 먼저 보고, 아래에서 key tier, 허용 모델, 회전 일정, 연결된 사용처를 key 단위로 이어서 확인하는 구성을 기준으로 합니다.",
       resourceHeaderLink: { href: "workspace_tool_inventory_hub.html", label: "Tool Inventory 연결 보기" },
       resources: [
         {
@@ -82,7 +149,7 @@
             { icon: "schedule", text: "rotate 11d" }
           ],
           actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?item=openai-support-prod-key" }
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?id=kc-openai-prod-014" }
           ]
         },
         {
@@ -117,7 +184,7 @@
             { icon: "psychology", text: "reasoning" }
           ],
           actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?item=anthropic-review-guard-key" }
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?id=kc-anthropic-shared-007" }
           ]
         },
         {
@@ -152,7 +219,7 @@
             { icon: "schedule", text: "rotate 24d" }
           ],
           actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?item=internal-docs-rag-key" }
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?id=kc-internal-rag-021" }
           ]
         },
         {
@@ -187,7 +254,7 @@
             { icon: "schedule", text: "rotate 9d" }
           ],
           actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?item=azure-ops-briefing-key" }
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?id=kc-azure-ops-005" }
           ]
         },
         {
@@ -222,11 +289,11 @@
             { icon: "fact_check", text: "review state" }
           ],
           actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?item=partner-pricing-review-key" }
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?id=kc-openai-partner-003" }
           ]
         },
         {
-          categories: ["all", "internal", "production"],
+          categories: ["all", "dej-base", "internal", "production"],
           status: { label: "Active", tone: "healthy" },
           engine: "dej-base",
           icon: "vpn_key",
@@ -257,7 +324,7 @@
             { icon: "schedule", text: "rotate 21d" }
           ],
           actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?item=internal-tool-runtime-key" }
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?id=kc-internal-tool-010" }
           ]
         }
       ],
@@ -265,14 +332,14 @@
         {
           icon: "tips_and_updates",
           label: "Usage Guide",
-          title: "키를 볼 때 먼저 확인할 항목",
-          description: "Keycenter에서는 key 이름보다도 현재 free, paid, asf, dej-base 중 어떤 tier로 운영되고, 어떤 model 범위를 열어주며, 어떤 surface에 연결되어 있는지가 더 중요합니다.",
+          title: "사용량을 볼 때 먼저 확인할 항목",
+          description: "Keycenter에서는 key 이름만 보는 것보다 어떤 기간과 범위로 usage를 집계했는지, 어떤 tier와 model 범위가 실제 호출을 만들었는지 함께 읽는 편이 더 중요합니다.",
           rows: [
-            { title: "연결된 사용처를 먼저 확인합니다", meta: "같은 tier key라도 chatbot, agent, tool inventory마다 영향 범위가 다를 수 있습니다." },
-            { title: "회전 일정과 사용량을 함께 봅니다", meta: "사용량이 높은 key는 회전 시점과 교체 범위를 같이 확인해야 안전합니다." },
-            { title: "허용 모델 범위를 같이 확인합니다", meta: "같은 tier라도 허용된 모델이 다르면 실제 연결 가능 surface가 달라집니다." }
+            { title: "기간과 집계 범위를 먼저 맞춥니다", meta: "같은 key라도 최근 7일, 30일, 특정 incident 기간에 따라 usage 해석이 달라집니다." },
+            { title: "사용량이 높은 key는 회전 일정과 같이 봅니다", meta: "호출이 집중된 key는 rotate 시점과 교체 대상 surface를 함께 확인해야 안전합니다." },
+            { title: "모델 사용량과 연결 surface를 함께 읽습니다", meta: "같은 tier라도 어떤 model이 실제로 많이 호출됐는지에 따라 영향 범위가 달라집니다." }
           ],
-          footerLink: { href: "workspace_keycenter_detail.html?item=openai-support-prod-key", label: "예시 key 보기" }
+          footerLink: { href: "workspace_keycenter_detail.html?id=kc-openai-prod-014", label: "예시 key 보기" }
         },
         {
           icon: "menu_book",
@@ -301,20 +368,617 @@
         },
         {
           icon: "model_training",
-          label: "Model Mix",
-          title: "주요 모델 연결 현황",
-          description: "현재 가장 많이 연결된 모델 범위를 요약해서 볼 수 있습니다.",
+          label: "Model Usage",
+          title: "주요 모델 사용 현황",
+          description: "현재 선택한 기간에 실제 usage가 발생한 모델 흐름을 요약해서 볼 수 있습니다.",
           rows: [
-            { title: "gpt-4.1", meta: "support, pricing, ops key에서 공통 사용", pill: { label: "Wide", tone: "healthy" } },
-            { title: "gpt-4o", meta: "지원 응답과 고속 처리 흐름에 연결", pill: { label: "Active", tone: "info" } },
-            { title: "claude-3.7-sonnet", meta: "review와 문서 reasoning에 사용", pill: { label: "Focused", tone: "healthy" } },
-            { title: "internal-rag-1", meta: "retrieval 및 tool runtime 전용", pill: { label: "Scoped", tone: "pending" } }
+            { title: "gpt-4.1", meta: "최근 7일 요청과 비용 비중이 가장 큰 운영 모델", pill: { label: "Top Usage", tone: "healthy" } },
+            { title: "gpt-4o", meta: "고속 응답 흐름에서 호출량이 꾸준히 유지됨", pill: { label: "Active", tone: "info" } },
+            { title: "claude-3.7-sonnet", meta: "review와 문서 reasoning 구간에서 집중 사용", pill: { label: "Focused", tone: "healthy" } },
+            { title: "internal-rag-1", meta: "retrieval 및 tool runtime 전용으로 제한적 사용", pill: { label: "Scoped", tone: "pending" } }
           ]
         }
       ]
     };
   </script>
   <script src="workspace_resource_hub_shared.js"></script>
+  <script>
+    (() => {
+      const API_BASE = "/api/v2/keycenter";
+      const fallbackConfig = window.HUB_CONFIG || {};
+      const PAGE_LIMIT = 100;
+      const PAGE_SIZE = 6;
+      const HERO_GRADIENTS = [
+        "linear-gradient(135deg,#f59e0b,#f97316)",
+        "linear-gradient(135deg,#d97706,#f59e0b)",
+        "linear-gradient(135deg,#ea580c,#fb923c)",
+        "linear-gradient(135deg,#f59e0b,#fbbf24)",
+        "linear-gradient(135deg,#b45309,#f59e0b)"
+      ];
+      const paginationState = {
+        currentPage: 1,
+        activeFilter: "all"
+      };
+
+      const normalizeKey = (value) => String(value || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
+
+      const toArray = (value) => Array.isArray(value) ? value : [];
+      const getPayloadData = (payload) => (
+        payload && typeof payload === "object" && !Array.isArray(payload) && payload.data && typeof payload.data === "object"
+          ? payload.data
+          : (payload && typeof payload === "object" && !Array.isArray(payload) ? payload : {})
+      );
+
+      const formatCompactNumber = (value) => {
+        const number = Number(value);
+        if (!Number.isFinite(number)) return "0";
+        return new Intl.NumberFormat("en-US", {
+          notation: "compact",
+          maximumFractionDigits: number >= 100 ? 0 : 1
+        }).format(number);
+      };
+
+      const formatCurrency = (value) => {
+        const number = Number(value);
+        if (!Number.isFinite(number)) return "$0.00";
+        return new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(number);
+      };
+
+      const formatShortDate = (value) => {
+        const normalized = String(value || "").trim();
+        if (!normalized) return "";
+        return normalized.slice(0, 10);
+      };
+
+      const capitalize = (value) => {
+        const normalized = String(value || "").trim();
+        if (!normalized) return "";
+        return normalized.charAt(0).toUpperCase() + normalized.slice(1);
+      };
+
+      const toTitleWords = (value) => String(value || "")
+        .split(/[\s._:/-]+/)
+        .filter(Boolean)
+        .map((part) => capitalize(part.toLowerCase()))
+        .join(" ");
+
+      const getInitials = (value) => String(value || "")
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((part) => part[0] || "")
+        .join("")
+        .slice(0, 2)
+        .toUpperCase() || "KC";
+
+      const buildHeroStats = (statsPayload) => {
+        const period = statsPayload?.period || {};
+        const stats = statsPayload?.stats || {};
+        const startDate = String(period.startDate || "").trim();
+        const endDate = String(period.endDate || "").trim();
+        const periodLabel = startDate && endDate ? `${startDate} ~ ${endDate}` : "최근 집계 기준";
+        const requestedDays = Math.max(1, Number(fallbackConfig.defaultStatsDays || 7));
+
+        return [
+          {
+            icon: "vpn_key",
+            value: formatCompactNumber(stats.issuedKeys),
+            label: "Issued Keys",
+            note: "접근 가능한 key 기준",
+            color: HERO_GRADIENTS[0]
+          },
+          {
+            icon: "query_stats",
+            value: formatCompactNumber(stats.requestCount),
+            label: `Requests (${requestedDays}d)`,
+            note: periodLabel,
+            color: HERO_GRADIENTS[1]
+          },
+          {
+            icon: "token",
+            value: formatCompactNumber(stats.totalTokens),
+            label: `Tokens (${requestedDays}d)`,
+            note: "input · output · cache 포함",
+            color: HERO_GRADIENTS[2]
+          },
+          {
+            icon: "paid",
+            value: formatCurrency(stats.usageCost),
+            label: `Usage Cost (${requestedDays}d)`,
+            note: "LiteLLM aggregate spend",
+            color: HERO_GRADIENTS[3]
+          }
+        ];
+      };
+
+      const inferFilterIcon = (item) => {
+        const candidates = [
+          normalizeKey(item?.code),
+          normalizeKey(item?.label),
+          normalizeKey(item?.id)
+        ].filter(Boolean);
+
+        if (candidates.some((value) => value.includes("free"))) return "auto_awesome";
+        if (candidates.some((value) => value.includes("paid"))) return "paid";
+        if (candidates.some((value) => value.includes("dej"))) return "apartment";
+        if (candidates.some((value) => value.includes("asf"))) return "apartment";
+        if (candidates.some((value) => value.includes("deposit"))) return "savings";
+        if (candidates.some((value) => value.includes("playground"))) return "stadia_controller";
+        if (candidates.some((value) => value.includes("review"))) return "fact_check";
+        return "vpn_key";
+      };
+
+      const buildFilters = (filterItems) => toArray(filterItems).map((item, index) => ({
+        id: item?.id || (index === 0 ? "all" : `tier-${index}`),
+        icon: inferFilterIcon(item),
+        label: item?.label || item?.code || item?.id || `Tier ${index + 1}`
+      }));
+
+      const resourceSignals = (resource) => {
+        const tags = toArray(resource?.tags).map((tag) => tag?.text || "");
+        const detailTexts = toArray(resource?.details).map((detail) => detail?.text || "");
+        return [
+          resource?.engine,
+          resource?.name,
+          resource?.meta,
+          ...tags,
+          ...detailTexts
+        ]
+          .map((value) => normalizeKey(value))
+          .filter(Boolean);
+      };
+
+      const findMatchingTierIds = (resource, filterItems) => {
+        const signals = resourceSignals(resource);
+        return toArray(filterItems)
+          .filter((item) => item?.id && item.id !== "all")
+          .filter((item) => {
+            const aliases = [
+              normalizeKey(item?.id).replace(/-tier$/g, ""),
+              normalizeKey(item?.code),
+              normalizeKey(item?.label)
+            ]
+              .flatMap((value) => [value, ...String(value || "").split("-")])
+              .filter((value) => value && value.length >= 3);
+
+            return aliases.some((alias) => signals.some((signal) => signal === alias || signal.includes(alias) || alias.includes(signal)));
+          })
+          .map((item) => item.id);
+      };
+
+      const applyFilterCategories = (resources, filterItems) => toArray(resources).map((resource) => {
+        const categories = new Set(["all", ...toArray(resource?.categories)]);
+        findMatchingTierIds(resource, filterItems).forEach((filterId) => categories.add(filterId));
+        return {
+          ...resource,
+          categories: Array.from(categories)
+        };
+      });
+
+      const fetchJson = async (url) => {
+        const response = await fetch(url, {
+          method: "GET",
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: {
+            Accept: "application/json"
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Request failed: ${response.status} ${response.statusText}`);
+        }
+
+        return response.json();
+      };
+
+      const getResourcePanel = () => document.getElementById("resource-panel");
+      const getResourceGrid = () => document.getElementById("resourceGrid");
+      const getResourceCards = () => Array.from(document.querySelectorAll("[data-resource-card]"));
+      const getEmptyState = () => document.getElementById("resourceEmptyState");
+      const getActiveFilter = () => {
+        const activeTab = document.querySelector("[data-resource-filter].is-active");
+        return activeTab?.dataset?.resourceFilter || "all";
+      };
+      const getCardTags = (card) => String(card?.dataset?.resourceTags || "")
+        .split(/\s+/)
+        .filter(Boolean);
+
+      const ensurePagination = () => {
+        const panel = getResourcePanel();
+        const emptyState = getEmptyState();
+        if (!panel || !emptyState) return null;
+
+        let pagination = document.getElementById("keycenterFleetPagination");
+        if (pagination) return pagination;
+
+        pagination = document.createElement("nav");
+        pagination.id = "keycenterFleetPagination";
+        pagination.className = "resource-pagination";
+        pagination.hidden = true;
+        pagination.setAttribute("aria-label", "LLM Keys pagination");
+        pagination.innerHTML = `
+          <div class="resource-pagination-summary" id="keycenterFleetPaginationSummary"></div>
+          <div class="resource-pagination-controls" id="keycenterFleetPaginationControls"></div>
+        `;
+        emptyState.insertAdjacentElement("afterend", pagination);
+        return pagination;
+      };
+
+      const renderPaginationControls = (totalItems, totalPages) => {
+        const pagination = ensurePagination();
+        if (!pagination) return;
+
+        const summary = document.getElementById("keycenterFleetPaginationSummary");
+        const controls = document.getElementById("keycenterFleetPaginationControls");
+        if (!summary || !controls) return;
+
+        if (totalItems <= PAGE_SIZE) {
+          pagination.hidden = true;
+          controls.innerHTML = "";
+          summary.textContent = totalItems ? `총 ${totalItems}개` : "";
+          return;
+        }
+
+        pagination.hidden = false;
+        const startItem = (paginationState.currentPage - 1) * PAGE_SIZE + 1;
+        const endItem = Math.min(totalItems, paginationState.currentPage * PAGE_SIZE);
+        summary.textContent = `${startItem}-${endItem} / 총 ${totalItems}개`;
+
+        const pageButtons = Array.from({ length: totalPages }, (_, index) => {
+          const page = index + 1;
+          return `
+            <button
+              class="resource-pagination-btn${page === paginationState.currentPage ? " is-active" : ""}"
+              type="button"
+              data-resource-page="${page}"
+              aria-label="${page}페이지"
+              aria-current="${page === paginationState.currentPage ? "page" : "false"}"
+            >${page}</button>
+          `;
+        }).join("");
+
+        controls.innerHTML = `
+          <button
+            class="resource-pagination-btn"
+            type="button"
+            data-resource-page-nav="prev"
+            ${paginationState.currentPage === 1 ? "disabled" : ""}
+            aria-label="이전 페이지"
+          >
+            <span class="material-icons-round">chevron_left</span>
+          </button>
+          ${pageButtons}
+          <button
+            class="resource-pagination-btn"
+            type="button"
+            data-resource-page-nav="next"
+            ${paginationState.currentPage === totalPages ? "disabled" : ""}
+            aria-label="다음 페이지"
+          >
+            <span class="material-icons-round">chevron_right</span>
+          </button>
+        `;
+      };
+
+      const applyPagination = ({ resetPage = false } = {}) => {
+        const grid = getResourceGrid();
+        if (!grid) return;
+
+        const cards = getResourceCards();
+        const activeFilter = getActiveFilter();
+        if (resetPage || paginationState.activeFilter !== activeFilter) {
+          paginationState.currentPage = 1;
+          paginationState.activeFilter = activeFilter;
+        }
+
+        const filteredCards = cards.filter((card) => {
+          const tags = getCardTags(card);
+          return activeFilter === "all" || tags.includes(activeFilter);
+        });
+
+        const totalItems = filteredCards.length;
+        const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+        paginationState.currentPage = Math.min(paginationState.currentPage, totalPages);
+
+        const startIndex = (paginationState.currentPage - 1) * PAGE_SIZE;
+        const endIndex = startIndex + PAGE_SIZE;
+        const visibleCards = new Set(filteredCards.slice(startIndex, endIndex));
+
+        cards.forEach((card) => {
+          card.hidden = !visibleCards.has(card);
+        });
+
+        const emptyState = getEmptyState();
+        if (emptyState) {
+          emptyState.classList.toggle("is-visible", totalItems === 0);
+        }
+
+        renderPaginationControls(totalItems, totalPages);
+      };
+
+      const bindPagination = () => {
+        if (window.__keycenterPaginationBound) return;
+        window.__keycenterPaginationBound = true;
+
+        document.addEventListener("click", (event) => {
+          const filterButton = event.target.closest("[data-resource-filter]");
+          if (filterButton) {
+            window.setTimeout(() => applyPagination({ resetPage: true }), 0);
+            return;
+          }
+
+          const pageButton = event.target.closest("[data-resource-page]");
+          if (pageButton) {
+            const nextPage = Number(pageButton.dataset.resourcePage || 1);
+            if (Number.isFinite(nextPage) && nextPage > 0) {
+              paginationState.currentPage = nextPage;
+              applyPagination();
+            }
+            return;
+          }
+
+          const navButton = event.target.closest("[data-resource-page-nav]");
+          if (!navButton) return;
+
+          const totalCards = getResourceCards().filter((card) => {
+            const tags = getCardTags(card);
+            const activeFilter = getActiveFilter();
+            return activeFilter === "all" || tags.includes(activeFilter);
+          }).length;
+          const totalPages = Math.max(1, Math.ceil(totalCards / PAGE_SIZE));
+
+          if (navButton.dataset.resourcePageNav === "prev" && paginationState.currentPage > 1) {
+            paginationState.currentPage -= 1;
+          }
+
+          if (navButton.dataset.resourcePageNav === "next" && paginationState.currentPage < totalPages) {
+            paginationState.currentPage += 1;
+          }
+
+          applyPagination();
+        });
+      };
+
+      const hookRenderer = () => {
+        if (window.__keycenterPaginationHooked) return;
+        if (typeof window.renderWorkspaceResourceHub !== "function") {
+          window.setTimeout(hookRenderer, 100);
+          return;
+        }
+
+        window.__keycenterPaginationHooked = true;
+        const originalRender = window.renderWorkspaceResourceHub;
+        window.renderWorkspaceResourceHub = (config) => {
+          originalRender(config);
+          window.setTimeout(() => applyPagination({ resetPage: true }), 0);
+        };
+      };
+
+      const fetchPagedItems = async (path) => {
+        const items = [];
+        const seenCursors = new Set();
+        let cursor = "";
+
+        for (;;) {
+          const params = new URLSearchParams({ limit: String(PAGE_LIMIT) });
+          if (cursor) params.set("cursor", cursor);
+          const separator = path.includes("?") ? "&" : "?";
+          const payload = getPayloadData(await fetchJson(`${API_BASE}${path}${separator}${params.toString()}`));
+
+          items.push(...toArray(payload.items));
+
+          const nextCursor = String(payload?.page?.nextCursor || "").trim();
+          const hasNext = Boolean(payload?.page?.hasNext && nextCursor);
+          if (!hasNext || seenCursors.has(nextCursor)) {
+            break;
+          }
+
+          seenCursors.add(nextCursor);
+          cursor = nextCursor;
+        }
+
+        return items;
+      };
+
+      const buildTierLookup = (tiers) => new Map(toArray(tiers).map((tier) => [tier.id, tier]));
+
+      const deriveFilterItemsFromTiers = (tiers) => [
+        { id: "all", label: "전체" },
+        ...toArray(tiers).map((tier) => ({
+          id: tier.id,
+          label: tier.label,
+          code: tier.code
+        }))
+      ];
+
+      const getProviderGradient = (providers, tierCode) => {
+        const normalizedProviders = toArray(providers).map((value) => String(value || "").toLowerCase());
+        const normalizedTier = String(tierCode || "").toLowerCase();
+
+        if (normalizedProviders.includes("openai")) return "linear-gradient(135deg,#f59e0b,#f97316)";
+        if (normalizedProviders.includes("anthropic")) return "linear-gradient(135deg,#2563eb,#60a5fa)";
+        if (normalizedProviders.includes("azure")) return "linear-gradient(135deg,#7c3aed,#a78bfa)";
+        if (normalizedProviders.includes("internal")) return "linear-gradient(135deg,#0f766e,#34d399)";
+        if (normalizedProviders.includes("google")) return "linear-gradient(135deg,#16a34a,#84cc16)";
+        if (normalizedTier.includes("free")) return "linear-gradient(135deg,#ef4444,#f97316)";
+        return "linear-gradient(135deg,#b45309,#f59e0b)";
+      };
+
+      const normalizeOwnerDisplay = (owner) => {
+        const raw = String(owner || "").trim();
+        if (!raw) {
+          return {
+            name: "Workspace User",
+            initials: "WU",
+            meta: "owner 정보 없음"
+          };
+        }
+
+        const shortValue = raw.includes("@")
+          ? raw.split("@")[0]
+          : raw.split(/[/:]/).filter(Boolean).pop() || raw;
+        const compact = String(shortValue || "").trim();
+        const looksLikeOpaqueId = compact.length >= 24 && !/[A-Z]/.test(compact) && !compact.includes(".");
+        const name = looksLikeOpaqueId ? `User ${compact.slice(0, 8)}` : (toTitleWords(compact) || compact);
+
+        return {
+          name,
+          initials: getInitials(name),
+          meta: raw
+        };
+      };
+
+      const buildUsageMeta = (usage) => {
+        const spend = Number(usage?.spend);
+        const limit = Number(usage?.limit);
+
+        if (Number.isFinite(limit)) {
+          return `${formatCurrency(spend)} / ${formatCurrency(limit)} budget`;
+        }
+
+        return `${formatCurrency(spend)} used · limit 없음`;
+      };
+
+      const buildModelTags = (tier, keyItem) => {
+        const models = toArray(tier?.availableModels).slice(0, 3);
+        if (models.length) {
+          return models.map((model) => ({
+            icon: "model_training",
+            text: model
+          }));
+        }
+
+        return [
+          { icon: "sell", text: keyItem?.tier?.label || "Unknown Tier" },
+          { icon: "vpn_key", text: keyItem?.secret || "masked key" }
+        ];
+      };
+
+      const buildResourceMeta = (keyItem) => {
+        const projects = toArray(keyItem?.consumerProjects);
+        const summary = projects.length
+          ? `${projects.length} connected project${projects.length > 1 ? "s" : ""}`
+          : "연결된 project 없음";
+        return [keyItem?.accountIdentifier, summary].filter(Boolean).join(" · ");
+      };
+
+      const buildKeyResource = (keyItem, tierLookup) => {
+        const tier = tierLookup.get(keyItem?.tier?.id) || null;
+        const providers = toArray(tier?.providers).length ? toArray(tier.providers) : toArray(keyItem?.providers);
+        const color = getProviderGradient(providers, keyItem?.tier?.code);
+        const ownerInfo = normalizeOwnerDisplay(keyItem?.owner);
+        const modelTags = buildModelTags(tier, keyItem);
+        const projects = toArray(keyItem?.consumerProjects);
+
+        return {
+          categories: [
+            "all",
+            keyItem?.tier?.id || "unknown-tier",
+            ...providers.map((provider) => normalizeKey(provider)).filter(Boolean)
+          ],
+          status: {
+            label: capitalize(keyItem?.status || "active"),
+            tone: String(keyItem?.status || "active").toLowerCase() === "active" ? "healthy" : "review"
+          },
+          engine: keyItem?.tier?.label || keyItem?.tier?.code || "Tier",
+          icon: "vpn_key",
+          name: keyItem?.name || keyItem?.accountIdentifier || keyItem?.id || "llm-key",
+          meta: buildResourceMeta(keyItem),
+          color,
+          usage: {
+            label: "Usage",
+            value: Number(keyItem?.usage?.percent || 0),
+            meta: buildUsageMeta(keyItem?.usage),
+            color: `linear-gradient(90deg,${color.match(/#(?:[0-9a-fA-F]{3}){1,2}/)?.[0] || "#f59e0b"},#fbbf24)`
+          },
+          details: [
+            { icon: "model_training", text: `Models ${toArray(tier?.availableModels).length}` },
+            { icon: "link", text: `Bound Surfaces ${projects.length}` }
+          ],
+          owner: {
+            label: "Owner",
+            initials: ownerInfo.initials,
+            name: ownerInfo.name,
+            meta: ownerInfo.meta,
+            color
+          },
+          connections: projects.map((project) => ({
+            name: project?.name || project?.id || "project",
+            meta: "Connected project",
+            _type: "project"
+          })),
+          tagsLabel: "Allowed Models",
+          tags: modelTags,
+          footer: keyItem?.updatedAt ? `Updated ${formatShortDate(keyItem.updatedAt)}` : "",
+          actions: [
+            {
+              label: "Open",
+              icon: "open_in_new",
+              kind: "open",
+              href: `workspace_keycenter_detail.html?id=${encodeURIComponent(keyItem?.id || "")}`
+            }
+          ]
+        };
+      };
+
+      const bootstrap = async () => {
+        const [statsResult, filtersResult, tiersResult, keysResult] = await Promise.allSettled([
+          fetchJson(`${API_BASE}/tiers/stats`),
+          fetchJson(`${API_BASE}/tiers/filters`),
+          fetchPagedItems("/tiers"),
+          fetchPagedItems("/keys")
+        ]);
+
+        const nextConfig = {
+          ...fallbackConfig
+        };
+
+        if (statsResult.status === "fulfilled") {
+          nextConfig.heroStats = buildHeroStats(getPayloadData(statsResult.value));
+        }
+
+        const tierItems = tiersResult.status === "fulfilled" ? toArray(tiersResult.value) : [];
+        const tierLookup = buildTierLookup(tierItems);
+        const filterItems = filtersResult.status === "fulfilled"
+          ? toArray(getPayloadData(filtersResult.value).items)
+          : deriveFilterItemsFromTiers(tierItems);
+
+        if (filterItems.length) {
+          nextConfig.filters = buildFilters(filterItems);
+        }
+
+        if (keysResult.status === "fulfilled") {
+          const keyItems = toArray(keysResult.value);
+          nextConfig.resources = keyItems.map((item) => buildKeyResource(item, tierLookup));
+        } else if (filterItems.length) {
+          nextConfig.resources = applyFilterCategories(fallbackConfig.resources, filterItems);
+        }
+
+        window.HUB_CONFIG = nextConfig;
+        if (typeof window.renderWorkspaceResourceHub === "function") {
+          window.renderWorkspaceResourceHub(nextConfig);
+        }
+      };
+
+      bindPagination();
+      hookRenderer();
+      window.setTimeout(() => applyPagination({ resetPage: true }), 0);
+
+      bootstrap().catch((error) => {
+        console.warn("Failed to load /api/v2/keycenter hub stats/filters", error);
+      });
+    })();
+  </script>
   <script src="ax_studio_topbar.js"></script>
   <script src="concept_endpoint_overlay.js"></script>
 </body>

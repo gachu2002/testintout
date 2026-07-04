@@ -15,6 +15,8 @@
     window.HUB_CONFIG = {
       documentTitle: "Bucket Hub",
       activeKey: "s3",
+      panelVariant: "briefing",
+      connectionsType: "project",
       theme: {
         bg: "#f1fcfa",
         brand: "#0f766e",
@@ -56,6 +58,13 @@
           name: "workspace-build-artifacts",
           meta: "빌드 결과물과 릴리즈 번들이 쌓이는 공용 아티팩트 버킷",
           color: "linear-gradient(135deg,#0f766e,#2dd4bf)",
+          owner: { initials: "TN", name: "Taehun Nam", meta: "taehun@example.com", color: "linear-gradient(135deg,#0f766e,#2dd4bf)" },
+          sharing: {
+            collaborators: [
+              { initials: "JK", color: "linear-gradient(135deg,#6366f1,#818cf8)" },
+              { initials: "YJ", color: "linear-gradient(135deg,#ec4899,#f9a8d4)" }
+            ]
+          },
           connectionsLabel: "Bound Projects",
           connectionsEqualWidth: true,
           connectionsMaxItems: 4,
@@ -77,6 +86,14 @@
           name: "restaurant-static-assets",
           meta: "메뉴 이미지와 캠페인 에셋이 노출되는 퍼블릭 정적 버킷",
           color: "linear-gradient(135deg,#0ea5e9,#22d3ee)",
+          owner: { initials: "SY", name: "Sooyeon Park", meta: "sooyeon@example.com", color: "linear-gradient(135deg,#0ea5e9,#22d3ee)" },
+          sharing: {
+            collaborators: [
+              { initials: "TN", color: "linear-gradient(135deg,#6366f1,#818cf8)" },
+              { initials: "MH", color: "linear-gradient(135deg,#f97316,#fbd38d)" },
+              { initials: "YJ", color: "linear-gradient(135deg,#10b981,#6ee7b7)" }
+            ]
+          },
           connectionsLabel: "Bound Projects",
           connectionsEqualWidth: true,
           connectionsMaxItems: 4,
@@ -98,6 +115,7 @@
           name: "prompt-catalog-private",
           meta: "프롬프트 번들과 평가 스냅샷이 쌓이는 프라이빗 버킷",
           color: "linear-gradient(135deg,#7c3aed,#a78bfa)",
+          owner: { initials: "MH", name: "Minhyuk Lee", meta: "minhyuk@example.com", color: "linear-gradient(135deg,#7c3aed,#a78bfa)" },
           connectionsLabel: "Bound Projects",
           connectionsEqualWidth: true,
           connectionsMaxItems: 4,
@@ -118,6 +136,13 @@
           name: "compliance-longterm-archive",
           meta: "감사 대응과 장기 보관 데이터를 다루는 컴플라이언스 아카이브 버킷",
           color: "linear-gradient(135deg,#f59e0b,#fbbf24)",
+          owner: { initials: "JK", name: "Jungkyu Kim", meta: "jungkyu@example.com", color: "linear-gradient(135deg,#f59e0b,#fbbf24)" },
+          sharing: {
+            collaborators: [
+              { initials: "TN", color: "linear-gradient(135deg,#6366f1,#818cf8)" },
+              { initials: "SY", color: "linear-gradient(135deg,#ec4899,#f9a8d4)" }
+            ]
+          },
           connectionsLabel: "Bound Projects",
           connectionsEqualWidth: true,
           connectionsMaxItems: 4,
@@ -139,6 +164,7 @@
           name: "media-ingest-dropzone",
           meta: "업로드 게이트웨이와 워커가 함께 쓰는 공용 인입 버킷",
           color: "linear-gradient(135deg,#0891b2,#5eead4)",
+          owner: { initials: "YJ", name: "Yujin Cho", meta: "yujin@example.com", color: "linear-gradient(135deg,#0891b2,#5eead4)" },
           connectionsLabel: "Bound Projects",
           connectionsEqualWidth: true,
           connectionsMaxItems: 4,
@@ -160,6 +186,13 @@
           name: "analytics-report-export",
           meta: "리포트와 다운로드 번들이 배포되는 공용 익스포트 버킷",
           color: "linear-gradient(135deg,#14b8a6,#60a5fa)",
+          owner: { initials: "TN", name: "Taehun Nam", meta: "taehun@example.com", color: "linear-gradient(135deg,#14b8a6,#60a5fa)" },
+          sharing: {
+            collaborators: [
+              { initials: "SY", color: "linear-gradient(135deg,#6366f1,#818cf8)" },
+              { initials: "JK", color: "linear-gradient(135deg,#0891b2,#22d3ee)" }
+            ]
+          },
           connectionsLabel: "Bound Projects",
           connectionsEqualWidth: true,
           connectionsMaxItems: 4,

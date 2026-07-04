@@ -1,7 +1,8 @@
 (() => {
   const logoDataUrl = "data:image/svg+xml,%3csvg%20width='35'%20height='20'%20viewBox='0%200%2035%2020'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M16.7961%2010.1421L21.022%2014.368C23.4543%2016.8004%2027.398%2016.8004%2029.8303%2014.368C32.2627%2011.9356%2032.2627%207.99197%2029.8303%205.5596C27.398%203.12723%2023.4543%203.12723%2021.022%205.5596L20.723%205.85861L18.7019%203.83756L19.0009%203.53856C22.5495%20-0.0100035%2028.3028%20-0.0100042%2031.8514%203.53856C35.4%207.08712%2035.4%2012.8405%2031.8514%2016.389C28.3028%2019.9376%2022.5495%2019.9376%2019.0009%2016.389L12.5757%209.96379L14.5948%207.9447L16.7941%2010.144L16.7961%2010.1421ZM17.6605%208.92103L19.6782%206.90332L17.6572%204.88228L15.6395%206.89998L17.6605%208.92103Z'%20fill='%236D6E72'/%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M14.3637%205.63217L18.6416%209.91016L18.6428%209.90899L20.7901%2012.0562L22.8099%2010.0364L16.3847%203.61113C12.8361%200.0625671%207.08278%200.0625666%203.53422%203.61113C-0.0143374%207.15969%20-0.0143374%2012.913%203.53422%2016.4616C7.08278%2020.0102%2012.8361%2020.0102%2016.3847%2016.4616L16.6801%2016.1662L14.6591%2014.1452L14.3637%2014.4406C11.9313%2016.8729%207.98764%2016.8729%205.55527%2014.4406C3.1229%2012.0082%203.1229%208.06454%205.55527%205.63217C7.98764%203.1998%2011.9313%203.1998%2014.3637%205.63217ZM15.7038%2013.1004L17.7248%2015.1215L19.7453%2013.101L17.7243%2011.0799L15.7038%2013.1004Z'%20fill='%23A50034'/%3e%3crect%20x='15.376'%20y='12.7714'%20width='2.85369'%20height='5.21909'%20transform='rotate(-45%2015.376%2012.7714)'%20fill='%236D6E72'/%3e%3c/svg%3e";
+  const SERVICE_MENU_API = "/api/v2/launchpad/service-menu";
 
-  const serviceGroups = [
+  const defaultServiceGroups = [
     {
       title: "Gallery",
       links: [
@@ -51,28 +52,153 @@
     }
   ];
 
+  const sampleHrefByApiHref = {
+    "/workspace/app-gallery": "dej_app_gallery.html",
+    "/workspace/ai-gallery": "dej_ai_gallery.html",
+    "/workspace/domains": "workspace_domain_hub.html",
+    "/workspace/permissions": "workspace_permission_hub.html",
+    "/workspace/databases": "workspace_database_hub.html",
+    "/workspace/buckets": "workspace_s3_hub.html",
+    "/workspace/consoles": "workspace_tools_hub.html",
+    "/workspace/projects": "workspace_projects_hub.html",
+    "/workspace/jupyter": "#",
+    "/workspace/agents": "workspace_agent_hub.html",
+    "/workspace/chatbots": "workspace_chatbot_hub.html",
+    "/workspace/tool-inventory": "workspace_tool_inventory_hub.html",
+    "/workspace/keycenter": "workspace_keycenter_hub.html",
+    "/docs/guides/getting-started": "#",
+    "/docs/about-dej": "about_dej.html",
+    "/support/chatbot": "dej_chatbot_trial.html",
+    "/support/request": "#"
+  };
+
+  const activeKeyByApiHref = {
+    "/workspace/app-gallery": "app-gallery",
+    "/workspace/ai-gallery": "ai-gallery",
+    "/workspace/domains": "domain",
+    "/workspace/permissions": "permission",
+    "/workspace/databases": "database",
+    "/workspace/buckets": "s3",
+    "/workspace/consoles": "tools",
+    "/workspace/projects": "projects",
+    "/workspace/jupyter": "jupyter",
+    "/workspace/agents": "agent-hub",
+    "/workspace/chatbots": "chatbot-hub",
+    "/workspace/tool-inventory": "tool-inventory",
+    "/workspace/keycenter": "keycenter",
+    "/docs/guides/getting-started": "docs",
+    "/docs/about-dej": "about-dej",
+    "/support/chatbot": "chatbot",
+    "/support/request": "request"
+  };
+
+  const materialIconByApiIcon = {
+    app_gallery: "widgets",
+    ai_gallery: "smart_toy",
+    domain: "apartment",
+    group: "groups",
+    database: "storage",
+    bucket: "folder",
+    console: "web",
+    project: "public",
+    science: "science",
+    workflow: "smart_toy",
+    chat: "chat",
+    inventory: "inventory_2",
+    keycenter: "vpn_key",
+    description: "description",
+    timeline: "timeline",
+    chat_bubble: "chat_bubble_outline",
+    campaign: "campaign"
+  };
+
+  let serviceGroupsPromise = null;
+
   const externalServices = [
     { title: "DEJ 챗봇", desc: "Workspace 지원 챗봇", icon: "forum", href: "https://dej-chatbot.apps.hedej.lge.com" },
     { title: "HEANS", desc: "HEANS 서비스 바로가기", icon: "open_in_new", href: "https://workspace.hedej.lge.com/heans" },
     { title: "HEVPDS", desc: "HEVPDS 서비스 바로가기", icon: "open_in_new", href: "https://workspace.hedej.lge.com/hevpds" }
   ];
 
-  const renderGroups = (activeKey) => serviceGroups.map((group) => `
+  const escapeHtml = (value) => String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+
+  const escapeAttribute = escapeHtml;
+
+  function normalizeApiLink(link = {}) {
+    const apiHref = String(link.href || "").trim();
+    const sampleHref = sampleHrefByApiHref[apiHref] || apiHref || "#";
+    const key = activeKeyByApiHref[apiHref] || "";
+    const title = String(link.label || link.title || "").trim() || "Untitled";
+    const desc = String(link.description || "").trim();
+    const icon = materialIconByApiIcon[String(link.icon || "").trim()] || String(link.icon || "").trim() || "link";
+
+    return {
+      key,
+      title,
+      desc,
+      icon,
+      href: sampleHref
+    };
+  }
+
+  function normalizeServiceGroups(items) {
+    if (!Array.isArray(items) || !items.length) {
+      return defaultServiceGroups;
+    }
+
+    const groups = items
+      .map((group) => ({
+        title: String(group?.title || "").trim(),
+        links: Array.isArray(group?.links) ? group.links.map(normalizeApiLink).filter((link) => link.title) : []
+      }))
+      .filter((group) => group.title && group.links.length);
+
+    return groups.length ? groups : defaultServiceGroups;
+  }
+
+  async function loadServiceGroups() {
+    if (!serviceGroupsPromise) {
+      serviceGroupsPromise = fetch(SERVICE_MENU_API, {
+        credentials: "same-origin",
+        headers: {
+          Accept: "application/json"
+        }
+      })
+        .then(async (response) => {
+          if (!response.ok) {
+            throw new Error(`${response.status} ${response.statusText}`);
+          }
+
+          const payload = await response.json();
+          const items = Array.isArray(payload?.data?.items) ? payload.data.items : payload?.items;
+          return normalizeServiceGroups(items);
+        })
+        .catch(() => defaultServiceGroups);
+    }
+
+    return serviceGroupsPromise;
+  }
+
+  const renderGroups = (serviceGroups, activeKey) => serviceGroups.map((group) => `
     <section class="service-group">
       <div class="service-group-head">
         <div class="service-group-copy">
           <div class="service-group-title-row">
-            <div class="service-group-title">${group.title}</div>
+            <div class="service-group-title">${escapeHtml(group.title)}</div>
           </div>
         </div>
       </div>
       <div class="service-links">
         ${group.links.map((link) => `
-          <a class="service-link ${activeKey === link.key ? "is-current" : ""}" href="${link.href}">
-            <span class="material-icons-round service-link-icon">${link.icon}</span>
+          <a class="service-link ${activeKey === link.key ? "is-current" : ""}" href="${escapeAttribute(link.href)}">
+            <span class="material-icons-round service-link-icon">${escapeHtml(link.icon)}</span>
             <span class="service-link-copy">
-              <span class="service-link-title">${link.title}</span>
-              <span class="service-link-desc">${link.desc}</span>
+              <span class="service-link-title">${escapeHtml(link.title)}</span>
+              <span class="service-link-desc">${escapeHtml(link.desc)}</span>
             </span>
           </a>
         `).join("")}
@@ -85,11 +211,11 @@
       <div class="service-outlinks-title">DEJ 시스템</div>
       <div class="service-outlink-list">
         ${externalServices.map((link) => `
-          <a class="service-outlink" href="${link.href}" target="_blank" rel="noopener noreferrer">
-            <span class="material-icons-round service-outlink-icon">${link.icon}</span>
+          <a class="service-outlink" href="${escapeAttribute(link.href)}" target="_blank" rel="noopener noreferrer">
+            <span class="material-icons-round service-outlink-icon">${escapeHtml(link.icon)}</span>
             <span class="service-outlink-copy">
-              <span class="service-outlink-title">${link.title}</span>
-              <span class="service-outlink-desc">${link.desc}</span>
+              <span class="service-outlink-title">${escapeHtml(link.title)}</span>
+              <span class="service-outlink-desc">${escapeHtml(link.desc)}</span>
             </span>
             <span class="material-icons-round service-outlink-arrow">north_east</span>
           </a>
@@ -98,18 +224,19 @@
     </div>
   `;
 
-  const mountTopbar = (host) => {
+  const mountTopbar = async (host) => {
     const activeKey = host.dataset.activeKey || "";
     const searchPlaceholder = host.dataset.searchPlaceholder || "서비스 검색 또는 챗봇에게 물어보세요";
     const searchSource = host.dataset.searchSource || activeKey || "";
     const searchSourceLabel = host.dataset.searchSourceLabel || "";
     const searchDefaultType = host.dataset.searchDefaultType || "";
     const launchpadHref = host.dataset.launchpadHref || "portal_launchpad.html";
+    const serviceGroups = await loadServiceGroups();
 
     host.innerHTML = `
       <header class="topbar">
         <div class="topbar-inner">
-          <a class="topbar-brand" href="${launchpadHref}" aria-label="AX Studio Launchpad">
+          <a class="topbar-brand" href="${escapeAttribute(launchpadHref)}" aria-label="AX Studio Launchpad">
             <span class="brand-mark" aria-hidden="true">
               <img src="${logoDataUrl}" alt="AX Studio" />
             </span>
@@ -122,17 +249,17 @@
             </button>
             <div class="service-popover" id="serviceMenuPopover" aria-labelledby="serviceMenuButton" hidden>
               <div class="service-popover-inner">
-                <div class="service-groups">${renderGroups(activeKey)}</div>
+                <div class="service-groups">${renderGroups(serviceGroups, activeKey)}</div>
                 ${renderExternalServices()}
               </div>
             </div>
           </div>
           <form class="search-wrap" action="portal_launchpad_search.html">
             <span class="material-icons-round ico">search</span>
-            <input class="search-input" name="q" type="search" placeholder="${searchPlaceholder}" aria-label="${searchPlaceholder}" />
-            ${searchSource ? `<input type="hidden" name="source" value="${searchSource}" />` : ""}
-            ${searchSourceLabel ? `<input type="hidden" name="sourceLabel" value="${searchSourceLabel}" />` : ""}
-            ${searchDefaultType ? `<input type="hidden" name="defaultType" value="${searchDefaultType}" />` : ""}
+            <input class="search-input" name="q" type="search" placeholder="${escapeAttribute(searchPlaceholder)}" aria-label="${escapeAttribute(searchPlaceholder)}" />
+            ${searchSource ? `<input type="hidden" name="source" value="${escapeAttribute(searchSource)}" />` : ""}
+            ${searchSourceLabel ? `<input type="hidden" name="sourceLabel" value="${escapeAttribute(searchSourceLabel)}" />` : ""}
+            ${searchDefaultType ? `<input type="hidden" name="defaultType" value="${escapeAttribute(searchDefaultType)}" />` : ""}
             <span class="search-ai" aria-hidden="true"><span class="material-icons-round">auto_awesome</span><span>AI 검색 가능</span></span>
           </form>
           <div class="tb-spacer"></div>
@@ -177,5 +304,6 @@
     });
   };
 
+  window.mountAxStudioTopbar = mountTopbar;
   document.querySelectorAll("[data-ax-topbar]").forEach(mountTopbar);
 })();

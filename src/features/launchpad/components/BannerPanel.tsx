@@ -4,6 +4,7 @@ import SecurityRoundedIcon from '@mui/icons-material/SecurityRounded';
 import TimelineRoundedIcon from '@mui/icons-material/TimelineRounded';
 import { Box, Button, Paper, Skeleton, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
 
 import { SectionStatusBadge } from '@/components/reference-status';
 import { SmartLink } from '@/components/SmartLink';
@@ -37,6 +38,20 @@ export function BannerPanel({
   showAnnouncementsError?: boolean;
   serviceGroups: ServiceMenuGroup[];
 }) {
+  const [isPaused, setIsPaused] = useState(false);
+  const slides = isLoading ? [] : buildBannerSlides(announcements, hero, serviceGroups);
+  const safeIndex = activeIndex >= 0 && activeIndex < slides.length ? activeIndex : 0;
+
+  useEffect(() => {
+    if (isLoading || isPaused || slides.length < 2) return;
+
+    const intervalId = window.setInterval(() => {
+      onSelect((safeIndex + 1) % slides.length);
+    }, 10000);
+
+    return () => window.clearInterval(intervalId);
+  }, [isLoading, isPaused, onSelect, safeIndex, slides.length]);
+
   if (isLoading) {
     return (
       <Paper
@@ -58,12 +73,13 @@ export function BannerPanel({
     );
   }
 
-  const slides = buildBannerSlides(announcements, hero);
-  const safeIndex = activeIndex >= 0 && activeIndex < slides.length ? activeIndex : 0;
-
   if (slides.length === 0) return null;
   return (
-    <Box sx={{ display: 'grid' }}>
+    <Box
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      sx={{ display: 'grid' }}
+    >
       {slides.map((slide, index) => (
         <BannerSlideFrame
           activeIndex={safeIndex}
@@ -71,7 +87,6 @@ export function BannerPanel({
           isActive={index === safeIndex}
           key={slide.id}
           onSelect={onSelect}
-          serviceGroups={serviceGroups}
           showAnnouncementsError={showAnnouncementsError}
           slide={slide}
           slides={slides}
@@ -86,7 +101,6 @@ function BannerSlideFrame({
   hero,
   isActive,
   onSelect,
-  serviceGroups,
   showAnnouncementsError,
   slide,
   slides,
@@ -95,17 +109,15 @@ function BannerSlideFrame({
   hero?: LaunchpadHero;
   isActive: boolean;
   onSelect: (index: number) => void;
-  serviceGroups: ServiceMenuGroup[];
   showAnnouncementsError: boolean;
   slide: ReferenceBannerSlide;
   slides: ReferenceBannerSlide[];
 }) {
   const visual = getSlideVisual(slide.variant);
   const isDark = slide.variant !== 'release';
-  const titleMaxWidth = slide.variant === 'release' ? 620 : slide.variant === 'dej' ? 700 : 680;
+  const titleMaxWidth = slide.variant === 'release' ? 620 : slide.variant === 'dej' ? 860 : 680;
   const descriptionMaxWidth =
-    slide.variant === 'release' ? 520 : slide.variant === 'dej' ? 700 : 680;
-  const serviceLinkCount = serviceGroups.reduce((total, group) => total + group.links.length, 0);
+    slide.variant === 'release' ? 520 : slide.variant === 'dej' ? 860 : 680;
 
   return (
     <Paper
@@ -200,9 +212,7 @@ function BannerSlideFrame({
             {slide.description}
           </Typography>
 
-          {slide.variant !== 'release' ? (
-            <BannerActions isInteractive={isActive} slide={slide} visual={visual} />
-          ) : null}
+          <BannerActions isInteractive={isActive} slide={slide} visual={visual} />
         </Box>
 
         <Stack
@@ -210,19 +220,8 @@ function BannerSlideFrame({
           spacing={2}
           sx={{ minWidth: { md: 240, xs: 0 }, width: { md: 'auto', xs: '100%' } }}
         >
-          {slide.variant === 'dej' ? (
-            <DejSnapshot
-              hero={hero}
-              serviceGroupCount={serviceGroups.length}
-              serviceLinkCount={serviceLinkCount}
-            />
-          ) : null}
-          {slide.variant === 'event' || slide.variant === 'security' ? (
-            <BannerVisualCard variant={slide.variant} />
-          ) : null}
-          {slide.variant === 'release' ? (
-            <BannerActions inSide isInteractive={isActive} slide={slide} visual={visual} />
-          ) : null}
+          {slide.variant === 'dej' ? <DejSnapshot hero={hero} /> : null}
+          {slide.variant !== 'dej' ? <BannerVisualCard slide={slide} /> : null}
           <BannerDots
             activeIndex={activeIndex}
             accent={visual.dotColor}
@@ -261,7 +260,7 @@ function BannerActions({
           background: visual.ctaBackground,
           borderRadius: '10px',
           boxShadow: visual.ctaShadow,
-          color: '#fff',
+          color: visual.ctaColor,
           flex: { xs: 1, sm: '0 0 auto' },
           fontSize: 13,
           fontWeight: 700,
@@ -363,7 +362,9 @@ function AnnouncementErrorNotice({ isDark }: { isDark: boolean }) {
 function getSlideIcon(variant: BannerVariant) {
   if (variant === 'dej') return <TimelineRoundedIcon sx={{ fontSize: 13 }} />;
   if (variant === 'release') return <RocketLaunchRoundedIcon sx={{ fontSize: 13 }} />;
-  if (variant === 'event') return <EventRoundedIcon sx={{ fontSize: 13 }} />;
+  if (variant === 'learning' || variant === 'research') {
+    return <EventRoundedIcon sx={{ fontSize: 13 }} />;
+  }
 
   return <SecurityRoundedIcon sx={{ fontSize: 13 }} />;
 }

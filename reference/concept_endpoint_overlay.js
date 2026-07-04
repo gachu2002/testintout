@@ -1,6 +1,5 @@
 (() => {
   const GUIDELINE_ROUTE_PREFIX = "/api/v2/sample/guidelines";
-
   const normalize = (value) =>
     String(value || "")
       .replace(/\s+/g, "")
@@ -71,13 +70,39 @@
     const style = document.createElement("style");
     style.dataset.endpointInlineStyle = "true";
     style.textContent = `
-    .endpoint-inline-guide {
+    .endpoint-inline-guide-host {
+      position: relative !important;
+    }
+    .endpoint-inline-guide-host[data-endpoint-guide-placement="header"] {
+      padding-right: 120px;
+    }
+    .endpoint-inline-guide-host[data-endpoint-guide-placement="body"] {
+      padding-top: 42px;
+    }
+    .endpoint-inline-guide-host[data-endpoint-guide-placement="below-actions"] {
+      padding-top: 0;
+    }
+    .endpoint-inline-guide-slot {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      z-index: 18;
+    }
+    .endpoint-inline-guide-slot[data-endpoint-guide-placement="below-actions"] {
       position: relative;
-      z-index: 24;
+      top: auto;
+      right: auto;
+      width: 100%;
+      margin-top: 10px;
       display: flex;
       justify-content: flex-end;
-      margin: 0;
-      pointer-events: none;
+    }
+    .endpoint-inline-guide {
+      position: relative;
+      z-index: 19;
+      display: flex;
+      justify-content: flex-end;
+      max-width: 100%;
     }
     .endpoint-inline-guide-trigger {
       appearance: none;
@@ -96,11 +121,10 @@
       line-height: 1;
       box-shadow: 0 8px 18px rgba(180, 14, 77, 0.08);
       transition: transform .16s ease, box-shadow .16s ease, background .16s ease, border-color .16s ease;
-      pointer-events: auto;
+      position: relative;
+      z-index: 2;
     }
     .endpoint-inline-guide-trigger:hover,
-    .endpoint-inline-guide:hover .endpoint-inline-guide-trigger,
-    .endpoint-inline-guide:focus-within .endpoint-inline-guide-trigger,
     .endpoint-inline-guide.is-open .endpoint-inline-guide-trigger {
       transform: translateY(-1px);
       background: rgba(255, 244, 248, 1);
@@ -141,7 +165,9 @@
       position: absolute;
       top: calc(100% + 10px);
       right: 0;
-      width: min(440px, calc(100vw - 32px));
+      width: min(560px, calc(100vw - 32px));
+      max-height: min(60vh, 720px);
+      overflow: auto;
       padding: 13px;
       border-radius: 16px;
       border: 1px solid rgba(180, 14, 77, 0.14);
@@ -154,9 +180,8 @@
       pointer-events: none;
       transform: translateY(8px);
       transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+      z-index: 20;
     }
-    .endpoint-inline-guide:hover .endpoint-inline-guide-popover,
-    .endpoint-inline-guide:focus-within .endpoint-inline-guide-popover,
     .endpoint-inline-guide.is-open .endpoint-inline-guide-popover {
       opacity: 1;
       visibility: visible;
@@ -226,15 +251,57 @@
       color: var(--t2, var(--text-2, #5f656d));
       line-height: 1.5;
     }
+    .endpoint-inline-guide-sections {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .endpoint-inline-guide-section {
+      display: grid;
+      gap: 8px;
+    }
+    .endpoint-inline-guide-section-copy {
+      display: grid;
+      gap: 4px;
+    }
+    .endpoint-inline-guide-section-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--t1, var(--text-1, #2f3236));
+    }
+    .endpoint-inline-guide-section-summary {
+      font-size: 11px;
+      line-height: 1.5;
+      color: var(--t2, var(--text-2, #5f656d));
+    }
     @media (max-width: 640px) {
+      .endpoint-inline-guide-host[data-endpoint-guide-placement="header"] {
+        padding-right: 108px;
+      }
+      .endpoint-inline-guide-host[data-endpoint-guide-placement="body"] {
+        padding-top: 38px;
+      }
+      .endpoint-inline-guide-host[data-endpoint-guide-placement="below-actions"] {
+        padding-top: 0;
+      }
+      .endpoint-inline-guide-slot {
+        top: 8px;
+        right: 10px;
+      }
+      .endpoint-inline-guide-slot[data-endpoint-guide-placement="below-actions"] {
+        top: auto;
+        right: auto;
+        margin-top: 8px;
+      }
       .endpoint-inline-guide-trigger {
         min-height: 28px;
         padding: 0 10px;
       }
       .endpoint-inline-guide-popover {
-        left: 0;
-        right: auto;
-        width: min(360px, calc(100vw - 24px));
+        left: auto;
+        right: 0;
+        width: min(420px, calc(100vw - 24px));
+        max-height: min(55vh, 720px);
         padding: 12px;
       }
       .endpoint-inline-guide-item {
@@ -261,6 +328,7 @@
     ".time-title",
     ".pipe-title",
     ".ops-title",
+    ".hub-briefing-title",
     ".hub-publish-section-head h3",
     ".hub-invite-section-head h3"
   ].join(", ");
@@ -277,6 +345,8 @@
     ".hub-invite-panel",
     ".timeline-panel",
     ".pipeline-panel",
+    ".hub-briefing-panel",
+    ".hub-briefing-rail",
     ".hero",
     ".portal-hero",
     ".rail-view",
@@ -299,6 +369,7 @@
     ".gallery-section-head",
     ".publish-section-head",
     ".hub-publish-section-head",
+    ".hub-briefing-head",
     ".hub-invite-section-head",
     ".metrics-section-head",
     ".page-head",
@@ -335,51 +406,41 @@
     return heading.closest(CONTAINER_SELECTORS) || heading.parentElement;
   };
 
-  const insertGuide = (target, guideNode) => {
-    const directHeader = Array.from(target.children || []).find((child) =>
-      child.matches?.(DIRECT_HEADER_SELECTORS)
-    );
+  const createGuideSections = (guide, groupMap, pageNote) => {
+    const endpoints = guide.endpoints
+      ? dedupe(guide.endpoints)
+      : dedupe(
+          (guide.groupLabels || []).flatMap((label) => {
+            return groupMap.get(normalize(label)) || [];
+          })
+        );
 
-    const anchorNode = directHeader || target;
-    if (anchorNode) {
-      const computedStyle = window.getComputedStyle(anchorNode);
-      if (computedStyle.position === "static") {
-        anchorNode.style.position = "relative";
-      }
-    }
-
-    guideNode.style.position = "absolute";
-    guideNode.style.top = directHeader ? "10px" : "12px";
-    guideNode.style.right = "12px";
-
-    if (directHeader) {
-      directHeader.appendChild(guideNode);
-      return;
-    }
-
-    const nestedHeader = target.querySelector(DIRECT_HEADER_SELECTORS);
-    if (nestedHeader && target.contains(nestedHeader)) {
-      const computedStyle = window.getComputedStyle(nestedHeader);
-      if (computedStyle.position === "static") {
-        nestedHeader.style.position = "relative";
-      }
-      guideNode.style.top = "10px";
-      nestedHeader.appendChild(guideNode);
-      return;
-    }
-
-    target.appendChild(guideNode);
+    return {
+      summary: guide.summary || "",
+      notes: [guide.note, guide.includePageNote ? pageNote : null].filter(Boolean),
+      endpoints
+    };
   };
 
-  const renderGuide = (guide, endpoints, pageNote) => {
+  const renderGuide = (guide, sections) => {
     const wrapper = document.createElement("div");
     wrapper.className = "endpoint-inline-guide";
     wrapper.dataset.endpointInlineGuide = "true";
+    if (guide.anchorSelector) {
+      wrapper.dataset.endpointAnchorSelector = guide.anchorSelector;
+    }
+    if (guide.placement) {
+      wrapper.dataset.endpointPlacement = guide.placement;
+    }
 
-    const listMarkup = endpoints.length
+    const noteMarkup = sections.notes
+      .map((note) => `<div class="endpoint-inline-guide-note">${note}</div>`)
+      .join("");
+
+    const listMarkup = sections.endpoints.length
       ? `
         <ul class="endpoint-inline-guide-list">
-          ${endpoints
+          ${sections.endpoints
             .map((endpoint) => {
               const parts = splitEndpoint(endpoint);
               return `
@@ -394,11 +455,6 @@
       `
       : '<div class="endpoint-inline-guide-empty">연결된 전용 backend endpoint가 아직 없습니다. 현재는 문서화된 v2 계약 또는 후속 분리 대상만 표시합니다.</div>';
 
-    const noteMarkup = [guide.note, guide.includePageNote ? pageNote : null]
-      .filter(Boolean)
-      .map((text) => `<div class="endpoint-inline-guide-note">${text}</div>`)
-      .join("");
-
     wrapper.innerHTML = `
       <button
         class="endpoint-inline-guide-trigger"
@@ -409,12 +465,12 @@
       >
         <span class="endpoint-inline-guide-kicker">API Guide</span>
       </button>
-      <div class="endpoint-inline-guide-popover" role="dialog" aria-label="${guide.label || "Panel API"}">
+      <div class="endpoint-inline-guide-popover" role="dialog" aria-label="${guide.label || "Panel API"}" hidden>
         <div class="endpoint-inline-guide-head">
           <div class="endpoint-inline-guide-kicker">Connected API</div>
           <div class="endpoint-inline-guide-label">${guide.label || "Panel API"}</div>
         </div>
-        ${guide.summary ? `<div class="endpoint-inline-guide-summary">${guide.summary}</div>` : ""}
+        ${sections.summary ? `<div class="endpoint-inline-guide-summary">${sections.summary}</div>` : ""}
         ${noteMarkup}
         ${listMarkup}
       </div>
@@ -423,16 +479,53 @@
     return wrapper;
   };
 
-  const resolveGuideEndpoints = (guide, groupMap) => {
-    if (guide.endpoints) {
-      return dedupe(guide.endpoints);
+  const insertGuide = (target, guideNode) => {
+    const anchorSelector = guideNode.dataset.endpointAnchorSelector;
+    if (anchorSelector) {
+      const anchorTarget = target.querySelector(anchorSelector);
+      if (anchorTarget && target.contains(anchorTarget)) {
+        const slot = document.createElement("div");
+        slot.className = "endpoint-inline-guide-slot";
+        slot.dataset.endpointGuideSlot = "true";
+        slot.dataset.endpointGuidePlacement = guideNode.dataset.endpointPlacement || "below-actions";
+        slot.appendChild(guideNode);
+
+        anchorTarget.classList.add("endpoint-inline-guide-host");
+        anchorTarget.dataset.endpointGuidePlacement = slot.dataset.endpointGuidePlacement;
+        anchorTarget.appendChild(slot);
+        return;
+      }
     }
 
-    const fromGroups = (guide.groupLabels || []).flatMap((label) => {
-      return groupMap.get(normalize(label)) || [];
-    });
+    const directHeader = Array.from(target.children || []).find((child) =>
+      child.matches?.(DIRECT_HEADER_SELECTORS)
+    );
+    const nestedHeader = directHeader || target.querySelector(DIRECT_HEADER_SELECTORS);
 
-    return dedupe(fromGroups);
+    const slot = document.createElement("div");
+    slot.className = "endpoint-inline-guide-slot";
+    slot.dataset.endpointGuideSlot = "true";
+    slot.appendChild(guideNode);
+
+    if (nestedHeader && target.contains(nestedHeader)) {
+      nestedHeader.classList.add("endpoint-inline-guide-host");
+      nestedHeader.dataset.endpointGuidePlacement = "header";
+      nestedHeader.appendChild(slot);
+      return;
+    }
+
+    target.classList.add("endpoint-inline-guide-host");
+    target.dataset.endpointGuidePlacement = "body";
+    target.insertBefore(slot, target.firstChild);
+  };
+
+  const hasExistingGuide = (target) => {
+    return Array.from(target.children || []).some((child) => {
+      return (
+        child.matches?.("[data-endpoint-guide-slot]") ||
+        child.matches?.("[data-endpoint-inline-guide]")
+      );
+    });
   };
 
   const fetchGuideline = async (filename) => {
@@ -458,63 +551,79 @@
     }
   };
 
+  let activeGuideNodes = [];
+  let documentListenersBound = false;
+
+  const syncGuideState = (guideNode) => {
+    const trigger = guideNode.querySelector(".endpoint-inline-guide-trigger");
+    const popover = guideNode.querySelector(".endpoint-inline-guide-popover");
+    const isOpen = guideNode.classList.contains("is-open");
+    if (trigger) {
+      trigger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    }
+    if (popover) {
+      popover.hidden = !isOpen;
+    }
+  };
+
+  const closeGuides = (exceptNode = null) => {
+    activeGuideNodes.forEach((guideNode) => {
+      if (guideNode === exceptNode) return;
+      guideNode.classList.remove("is-open");
+      syncGuideState(guideNode);
+    });
+  };
+
+  const bindDocumentListeners = () => {
+    if (documentListenersBound) return;
+    documentListenersBound = true;
+
+    document.addEventListener("click", (event) => {
+      if (activeGuideNodes.some((guideNode) => guideNode.contains(event.target))) return;
+      closeGuides();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") return;
+      closeGuides();
+    });
+  };
+
   const init = async () => {
     const filename = detectFilename();
     const config = await fetchGuideline(filename);
 
-    if (!config || !Array.isArray(config.guides) || !config.guides.length) {
+    if (!config) {
       return;
     }
 
-    document.querySelectorAll("[data-endpoint-overlay], [data-endpoint-inline-guide]").forEach((node) =>
-      node.remove()
-    );
+    document
+      .querySelectorAll("[data-endpoint-overlay], [data-endpoint-inline-guide], [data-endpoint-guide-slot]")
+      .forEach((node) => node.remove());
 
     ensureStyle();
-
+    activeGuideNodes = [];
     const groupMap = new Map(
       (config.groups || []).map((group) => [normalize(group.label), group.endpoints || []])
     );
-    const guideNodes = [];
 
-    config.guides.forEach((guide) => {
+    (config.guides || []).forEach((guide) => {
       const target = resolveTarget(guide);
-      if (!target || target.querySelector("[data-endpoint-inline-guide]")) {
+      if (!target || hasExistingGuide(target)) {
         return;
       }
 
-      const guideNode = renderGuide(
-        guide,
-        resolveGuideEndpoints(guide, groupMap),
-        config.note
-      );
+      const sections = createGuideSections(guide, groupMap, config.note);
+      const guideNode = renderGuide(guide, sections);
       insertGuide(target, guideNode);
-      guideNodes.push(guideNode);
+      activeGuideNodes.push(guideNode);
     });
 
-    if (!guideNodes.length) {
+    if (!activeGuideNodes.length) {
       return;
     }
 
-    const syncGuideState = (guideNode) => {
-      const trigger = guideNode.querySelector(".endpoint-inline-guide-trigger");
-      if (trigger) {
-        trigger.setAttribute(
-          "aria-expanded",
-          guideNode.classList.contains("is-open") ? "true" : "false"
-        );
-      }
-    };
-
-    const closeGuides = (exceptNode = null) => {
-      guideNodes.forEach((guideNode) => {
-        if (guideNode === exceptNode) return;
-        guideNode.classList.remove("is-open");
-        syncGuideState(guideNode);
-      });
-    };
-
-    guideNodes.forEach((guideNode) => {
+    activeGuideNodes.forEach((guideNode) => {
       const trigger = guideNode.querySelector(".endpoint-inline-guide-trigger");
       if (!trigger) return;
 
@@ -529,23 +638,19 @@
       });
     });
 
-    document.addEventListener("click", (event) => {
-      if (guideNodes.some((guideNode) => guideNode.contains(event.target))) return;
-      closeGuides();
-    });
+    bindDocumentListeners();
+  };
 
-    document.addEventListener("keydown", (event) => {
-      if (event.key !== "Escape") return;
-      closeGuides();
-    });
+  window.refreshConceptEndpointOverlay = () => {
+    void init();
   };
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
-      void init();
+      window.refreshConceptEndpointOverlay();
     }, { once: true });
     return;
   }
 
-  void init();
+  window.refreshConceptEndpointOverlay();
 })();

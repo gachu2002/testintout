@@ -15,6 +15,11 @@
     window.HUB_CONFIG = {
       documentTitle: "Permission Hub",
       activeKey: "permission",
+      panelVariant: "briefing",
+      connectionsType: "project",
+      searchSource: "permissions",
+      searchSourceLabel: "Permission Hub",
+      searchDefaultType: "hub",
       theme: {
         bg: "#fff5fa",
         brand: "#be185d",
@@ -26,217 +31,40 @@
       searchPlaceholder: "Realm, Role, 요청 상태를 검색하세요...",
       eyebrow: "Accessibility · IAM & Approvals",
       title: "Permission Hub",
-      description: "워크스페이스 Permission Realm 모음입니다. 각 카드에서 Realm 안에 포함된 Role과 현재 배정된 인원 수를 함께 보고, 요청 목록은 우측 패널에서 바로 확인합니다.",
-      primaryAction: { href: "workspace_project_detail.html?project=coverity-ai", icon: "person_add", label: "새 권한 요청" },
-      secondaryAction: { href: "workspace_projects_hub.html", icon: "inventory_2", label: "프로젝트 허브 보기" },
+      description: "Permission Realm 모음입니다. 각 카드에서 Realm 안에 포함된 Role, 프로젝트 바인딩, 요청 Inbox를 한 화면에서 확인합니다.",
+      primaryAction: { href: "workspace_permission_detail.html", icon: "person_add", label: "새권한 요청" },
+      secondaryAction: { href: "workspace_projects_hub.html", icon: "inventory_2", label: "프로젝트 목록" },
       utilityAction: null,
       createAction: null,
       heroStats: [
-        { icon: "admin_panel_settings", value: "5", label: "등록 Realm", note: "platform 1 · project 2 · resource 2", color: "linear-gradient(135deg,#be185d,#ec4899)" },
-        { icon: "badge", value: "17", label: "포함 Role", note: "realm 내부 role 기준", color: "linear-gradient(135deg,#db2777,#f472b6)" },
-        { icon: "groups", value: "124", label: "배정 인원", note: "중복 포함", color: "linear-gradient(135deg,#9d174d,#fb7185)" },
-        { icon: "approval", value: "7", label: "요청 대기", note: "permission realm inbox", color: "linear-gradient(135deg,#e11d48,#fb7185)" }
+        { icon: "admin_panel_settings", value: "-", label: "등록 Realm", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#be185d,#ec4899)" },
+        { icon: "badge", value: "-", label: "포함 Role", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#db2777,#f472b6)" },
+        { icon: "groups", value: "-", label: "배정 인원", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#9d174d,#fb7185)" },
+        { icon: "approval", value: "-", label: "요청 대기", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#e11d48,#fb7185)" }
       ],
       filters: [
-        { id: "all", icon: "apps", label: "전체" },
-        { id: "platform", icon: "admin_panel_settings", label: "플랫폼" },
-        { id: "project", icon: "inventory_2", label: "프로젝트" },
-        { id: "resource", icon: "storage", label: "리소스" },
-        { id: "scoped", icon: "vpn_key", label: "Scoped" }
+        { id: "all", icon: "apps", label: "전체" }
       ],
       resourceSectionIcon: "admin_panel_settings",
       resourceSectionLabel: "Permission Realms",
       resourceTitle: "Realms",
-      resourceDescription: "워크스페이스에서 사용하는 Permission Realm을 한곳에 모았습니다. 카드에서는 연결된 프로젝트와 Realm 안에 포함된 Role을 함께 보고, 자세한 요청 흐름은 우측 목록에서 확인합니다.",
+      resourceDescription: "Permission Realm 목록을 불러오는 중입니다.",
       resourceHeaderLink: { href: "workspace_projects_hub.html", label: "프로젝트 연결 보기" },
-      resources: [
-        {
-          categories: ["all", "platform"],
-          status: { label: "Active", tone: "healthy" },
-          engine: "Platform Realm",
-          icon: "badge",
-          name: "Workspace Realm",
-          meta: "워크스페이스 전역 운영과 설정을 다루는 Realm",
-          color: "linear-gradient(135deg,#be185d,#fb7185)",
-          tagsLabel: "Roles",
-          connectionsLabel: "Connected Projects",
-          connectionsEqualWidth: true,
-          connectionsMaxItems: 4,
-          connectionsLayoutClass: "is-fixed-projects",
-          connections: [
-            { abbr: "HB", name: "hermes-be", meta: "platform ops", color: "linear-gradient(135deg,#be185d,#fb7185)" },
-            { abbr: "WW", name: "workspace-web", meta: "workspace admin", color: "linear-gradient(135deg,#ec4899,#fb7185)" }
-          ],
-          tags: [
-            { icon: "badge", text: "admin(5)" },
-            { icon: "badge", text: "operator(7)" },
-            { icon: "badge", text: "viewer(6)" }
-          ],
-          actions: [
-            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_permission_detail.html?realm=workspace-realm" }
-          ]
-        },
-        {
-          categories: ["all", "project"],
-          status: { label: "Active", tone: "healthy" },
-          engine: "Project Realm",
-          icon: "task_alt",
-          name: "Project Realm",
-          meta: "프로젝트 설정과 배포를 다루는 기본 Realm",
-          color: "linear-gradient(135deg,#2563eb,#60a5fa)",
-          tagsLabel: "Roles",
-          connectionsLabel: "Connected Projects",
-          connectionsEqualWidth: true,
-          connectionsMaxItems: 4,
-          connectionsLayoutClass: "is-fixed-projects",
-          connections: [
-            { abbr: "HB", name: "hermes-be", meta: "backend service", color: "linear-gradient(135deg,#2563eb,#60a5fa)" },
-            { abbr: "RS", name: "restaurant", meta: "product app", color: "linear-gradient(135deg,#1d4ed8,#38bdf8)" },
-            { abbr: "CW", name: "coverity-ai", meta: "ai workspace", color: "linear-gradient(135deg,#0ea5e9,#67e8f9)" }
-          ],
-          tags: [
-            { icon: "badge", text: "admin(4)" },
-            { icon: "badge", text: "maintainer(8)" },
-            { icon: "badge", text: "developer(14)" },
-            { icon: "badge", text: "viewer(8)" }
-          ],
-          actions: [
-            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_permission_detail.html?realm=project-realm" }
-          ]
-        },
-        {
-          categories: ["all", "project"],
-          status: { label: "Active", tone: "healthy" },
-          engine: "Project Realm",
-          icon: "visibility",
-          name: "Publish Realm",
-          meta: "배포 승인과 퍼블리시 제어를 다루는 Realm",
-          color: "linear-gradient(135deg,#7c3aed,#c084fc)",
-          tagsLabel: "Roles",
-          connectionsLabel: "Connected Projects",
-          connectionsEqualWidth: true,
-          connectionsMaxItems: 4,
-          connectionsLayoutClass: "is-fixed-projects",
-          connections: [
-            { abbr: "WF", name: "workspace-fe", meta: "release publish", color: "linear-gradient(135deg,#7c3aed,#c084fc)" },
-            { abbr: "RS", name: "restaurant", meta: "campaign publish", color: "linear-gradient(135deg,#8b5cf6,#c4b5fd)" }
-          ],
-          tags: [
-            { icon: "badge", text: "admin(3)" },
-            { icon: "badge", text: "approver(9)" },
-            { icon: "badge", text: "publisher(6)" },
-            { icon: "badge", text: "viewer(9)" }
-          ],
-          actions: [
-            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_permission_detail.html?realm=publish-realm" }
-          ]
-        },
-        {
-          categories: ["all", "resource"],
-          status: { label: "Active", tone: "healthy" },
-          engine: "Resource Realm",
-          icon: "vpn_key",
-          name: "Database Realm",
-          meta: "DB 리소스 접근과 운영 제어를 다루는 Realm",
-          color: "linear-gradient(135deg,#0f766e,#14b8a6)",
-          tagsLabel: "Roles",
-          connectionsLabel: "Connected Projects",
-          connectionsEqualWidth: true,
-          connectionsMaxItems: 4,
-          connectionsLayoutClass: "is-fixed-projects",
-          connections: [
-            { abbr: "HB", name: "hermes-be", meta: "primary db", color: "linear-gradient(135deg,#0f766e,#14b8a6)" },
-            { abbr: "PA", name: "payment-api", meta: "mysql access", color: "linear-gradient(135deg,#0d9488,#5eead4)" },
-            { abbr: "CP", name: "profile-api", meta: "mongo access", color: "linear-gradient(135deg,#14b8a6,#99f6e4)" }
-          ],
-          tags: [
-            { icon: "badge", text: "admin(2)" },
-            { icon: "badge", text: "operator(6)" },
-            { icon: "badge", text: "readonly(8)" }
-          ],
-          actions: [
-            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_permission_detail.html?realm=database-realm" }
-          ]
-        },
-        {
-          categories: ["all", "resource"],
-          status: { label: "Active", tone: "healthy" },
-          engine: "Resource Realm",
-          icon: "folder",
-          name: "Bucket Realm",
-          meta: "버킷 업로드와 퍼블릭 에셋 반영을 다루는 Realm",
-          color: "linear-gradient(135deg,#0f766e,#5eead4)",
-          tagsLabel: "Roles",
-          connectionsLabel: "Connected Projects",
-          connectionsEqualWidth: true,
-          connectionsMaxItems: 4,
-          connectionsLayoutClass: "is-fixed-projects",
-          connections: [
-            { abbr: "RS", name: "restaurant", meta: "asset upload", color: "linear-gradient(135deg,#0f766e,#5eead4)" },
-            { abbr: "CS", name: "creator-studio", meta: "media ingest", color: "linear-gradient(135deg,#14b8a6,#99f6e4)" },
-            { abbr: "OD", name: "ops-dashboard", meta: "report export", color: "linear-gradient(135deg,#0d9488,#67e8f9)" }
-          ],
-          tags: [
-            { icon: "badge", text: "admin(2)" },
-            { icon: "badge", text: "uploader(11)" },
-            { icon: "badge", text: "viewer(8)" }
-          ],
-          actions: [
-            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_permission_detail.html?realm=bucket-realm" }
-          ]
-        },
-        {
-          categories: ["all", "scoped"],
-          status: { label: "Review", tone: "review" },
-          engine: "Scoped Realm",
-          icon: "smart_toy",
-          name: "AI Tool Realm",
-          meta: "에이전트와 MCP 연동용 최소 권한 Realm",
-          color: "linear-gradient(135deg,#ec4899,#fb7185)",
-          tagsLabel: "Roles",
-          connectionsLabel: "Connected Projects",
-          connectionsEqualWidth: true,
-          connectionsMaxItems: 4,
-          connectionsLayoutClass: "is-fixed-projects",
-          connections: [
-            { abbr: "CW", name: "coverity-ai", meta: "agent access", color: "linear-gradient(135deg,#ec4899,#fb7185)" },
-            { abbr: "CA", name: "catalog-ai", meta: "mcp workflow", color: "linear-gradient(135deg,#db2777,#f472b6)" }
-          ],
-          tags: [
-            { icon: "badge", text: "admin(1)" },
-            { icon: "badge", text: "user(3)" },
-            { icon: "badge", text: "reviewer(2)" },
-            { icon: "badge", text: "viewer(2)" }
-          ],
-          actions: [
-            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_permission_detail.html?realm=ai-tool-realm" }
-          ]
-        }
-      ],
+      resources: [],
       mainPanels: [
         {
           icon: "tips_and_updates",
           label: "Tips",
           title: "권한 운영 팁",
-          description: "Realm 카드는 포함된 Role과 인원 수만 남기고, 승인 흐름은 우측 패널에서 보는 단순 구조로 맞췄습니다.",
-          rows: [
-            { title: "카드는 Realm 기준으로 봅니다", meta: "상세 scope나 예외 조건은 카드 안에 넣지 않고, Realm 안에 포함된 Role과 현재 인원 수만 읽히게 유지합니다." },
-            { title: "요청 목록은 permission realm inbox 기준입니다", meta: "새 권한 요청과 승인 대기는 우측 요청 목록에서 바로 확인하는 흐름을 전제로 둡니다." },
-            { title: "리소스 연결은 Open 이후에 확인합니다", meta: "DB, Bucket, Domain 같은 리소스 연관성은 각 허브나 상세 화면에서 이어서 보는 구조입니다." }
-          ],
-          footerLink: { href: "workspace_projects_hub.html", label: "프로젝트 허브 보기" }
+          description: "운영 팁을 불러오는 중입니다.",
+          rows: []
         },
         {
           icon: "menu_book",
           label: "Guide Links",
           title: "가이드 링크",
-          description: "운영 문서와 관련 허브 진입점은 카드 안에 넣지 않고, 링크 패널에서 분리해 여는 방식으로 정리했습니다.",
-          rows: [
-            { title: "프로젝트 허브", meta: "Role이 실제로 어느 프로젝트 운영과 연결되는지 확인합니다.", href: "workspace_projects_hub.html" },
-            { title: "Database Hub", meta: "DB 운영 Role이 연결되는 데이터 리소스를 확인합니다.", href: "workspace_database_hub.html" },
-            { title: "Bucket Hub", meta: "업로드/퍼블릭 에셋 Role이 연결되는 버킷을 확인합니다.", href: "workspace_s3_hub.html" }
-          ],
-          footerLink: { href: "portal_launchpad.html", label: "런치패드로 돌아가기" }
+          description: "가이드 링크를 불러오는 중입니다.",
+          rows: []
         }
       ],
       summary: null,
@@ -245,20 +73,646 @@
           icon: "pending_actions",
           label: "Request List",
           title: "현재 요청 목록",
-          description: "permission realm에서 들어온 요청 목록을 우측 레일에서 바로 확인합니다.",
-          rows: [
-            { title: "coverity-ai external reviewer", meta: "Scoped access · 72h 요청", pill: { label: "Pending", tone: "pending" } },
-            { title: "restaurant bucket uploader add", meta: "Bucket Uploader · 멤버 2명 추가", pill: { label: "Review", tone: "review" } },
-            { title: "workspace admin member remove", meta: "Workspace Admin · 멤버 1명 회수", pill: { label: "Pending", tone: "pending" } },
-            { title: "publish approver rotation", meta: "Project Maintainer · approver 교체", pill: { label: "Draft", tone: "draft" } },
-            { title: "ai tool scoped access request", meta: "AI Tool Scoped Access · 새 멤버 요청", pill: { label: "Review", tone: "review" } }
-          ]
+          description: "Permission request inbox를 불러오는 중입니다.",
+          rows: []
         }
       ]
     };
   </script>
   <script src="workspace_resource_hub_shared.js"></script>
   <script src="ax_studio_topbar.js"></script>
+  <script>
+    (() => {
+      const API_BASE = "/api/v2";
+      const REALM_PAGE_LIMIT = 100;
+      const REQUEST_PANEL_LIMIT = 8;
+      const FALLBACK_CONFIG = window.HUB_CONFIG;
+      const KIND_META = {
+        platform: {
+          label: "플랫폼",
+          engine: "Platform Realm",
+          icon: "admin_panel_settings",
+          color: "linear-gradient(135deg,#be185d,#fb7185)"
+        },
+        project: {
+          label: "프로젝트",
+          engine: "Project Realm",
+          icon: "task_alt",
+          color: "linear-gradient(135deg,#2563eb,#60a5fa)"
+        },
+        resource: {
+          label: "리소스",
+          engine: "Resource Realm",
+          icon: "storage",
+          color: "linear-gradient(135deg,#0f766e,#5eead4)"
+        },
+        scoped: {
+          label: "Scoped",
+          engine: "Scoped Realm",
+          icon: "vpn_key",
+          color: "linear-gradient(135deg,#db2777,#f472b6)"
+        }
+      };
+      const STATUS_META = {
+        active: { label: "Active", tone: "healthy" },
+        review: { label: "Review", tone: "review" }
+      };
+      const REQUEST_STATUS_META = {
+        pending: { label: "Pending", tone: "pending" },
+        approved: { label: "Approved", tone: "healthy" },
+        rejected: { label: "Rejected", tone: "incident" },
+        cancelled: { label: "Cancelled", tone: "muted" }
+      };
+
+      function buildQuery(params) {
+        const searchParams = new URLSearchParams();
+        Object.entries(params || {}).forEach(([key, value]) => {
+          if (value === undefined || value === null || value === "") {
+            return;
+          }
+          searchParams.set(key, String(value));
+        });
+
+        const query = searchParams.toString();
+        return query ? `?${query}` : "";
+      }
+
+      async function requestJson(path, options) {
+        const response = await fetch(`${API_BASE}${path}`, {
+          credentials: "same-origin",
+          headers: {
+            Accept: "application/json"
+          },
+          ...(options || {})
+        });
+
+        if (!response.ok) {
+          throw new Error(`${response.status} ${response.statusText}`);
+        }
+
+        return response.json();
+      }
+
+      async function fetchJson(path, params) {
+        return requestJson(`${path}${buildQuery(params)}`);
+      }
+
+      function extractData(payload, fallback) {
+        if (payload && typeof payload === "object" && "data" in payload) {
+          return payload.data;
+        }
+        return payload ?? fallback;
+      }
+
+      function extractItems(payload) {
+        if (payload && Array.isArray(payload.items)) {
+          return payload.items;
+        }
+        if (payload && payload.data && Array.isArray(payload.data.items)) {
+          return payload.data.items;
+        }
+        return [];
+      }
+
+      function extractNextCursor(payload) {
+        if (payload && payload.page && typeof payload.page.nextCursor === "string") {
+          return payload.page.nextCursor;
+        }
+        if (payload && payload.data && payload.data.page && typeof payload.data.page.nextCursor === "string") {
+          return payload.data.page.nextCursor;
+        }
+        return null;
+      }
+
+      function extractPageTotal(payload, fallback) {
+        if (payload && payload.page && Number.isFinite(payload.page.total)) {
+          return payload.page.total;
+        }
+        if (payload && payload.data && payload.data.page && Number.isFinite(payload.data.page.total)) {
+          return payload.data.page.total;
+        }
+        return fallback;
+      }
+
+      function formatNumber(value) {
+        const amount = Number(value);
+        if (!Number.isFinite(amount)) {
+          return "-";
+        }
+        return new Intl.NumberFormat("ko-KR").format(amount);
+      }
+
+      function formatDateTime(value) {
+        if (!value) {
+          return "최근 수정 정보 없음";
+        }
+
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return "최근 수정 정보 없음";
+        }
+
+        return `Updated ${new Intl.DateTimeFormat("ko-KR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit"
+        }).format(date)}`;
+      }
+
+      function formatRequestDate(value) {
+        if (!value) {
+          return "시간 정보 없음";
+        }
+
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return "시간 정보 없음";
+        }
+
+        return new Intl.DateTimeFormat("ko-KR", {
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit"
+        }).format(date);
+      }
+
+      function normalizeText(value) {
+        return String(value || "").trim();
+      }
+
+      function refineSectionDescription(value, fallback) {
+        const text = normalizeText(value) || normalizeText(fallback);
+        if (!text) {
+          return "";
+        }
+
+        return text
+          .replace(/\s+/g, " ")
+          .replace(/permission request inbox/gi, "Permission Request Inbox")
+          .replace(/permission realm/gi, "Permission Realm")
+          .replace(/우측\s*레일/g, "우측 패널")
+          .replace(/빠르게 오갈 수 있게 구성합니다\./g, "한 번에 이어 볼 수 있게 정리했습니다.")
+          .replace(/빠르게 파악하는 역할에 집중합니다\./g, "빠르게 읽을 수 있게 정리했습니다.")
+          .trim();
+      }
+
+      function truncateText(value, maxLength) {
+        const text = normalizeText(value);
+        if (!text || text.length <= maxLength) {
+          return text;
+        }
+        return `${text.slice(0, maxLength - 1)}...`;
+      }
+
+      function toAbbr(value, fallback) {
+        const text = normalizeText(value);
+        if (!text) {
+          return fallback;
+        }
+
+        const parts = text.split(/[^a-zA-Z0-9]+/).filter(Boolean);
+        if (parts.length >= 2) {
+          return parts.slice(0, 2).map(part => part.charAt(0).toUpperCase()).join("");
+        }
+
+        return text.slice(0, 2).toUpperCase();
+      }
+
+      function getKindMeta(kind) {
+        return KIND_META[kind] || {
+          label: "Realm",
+          engine: "Permission Realm",
+          icon: "admin_panel_settings",
+          color: "linear-gradient(135deg,#be185d,#fb7185)"
+        };
+      }
+
+      function getStatusMeta(status) {
+        return STATUS_META[status] || { label: "Unknown", tone: "info" };
+      }
+
+      function getRequestStatusMeta(status) {
+        return REQUEST_STATUS_META[status] || { label: "Unknown", tone: "info" };
+      }
+
+      function buildKindCounts(realms, filterData) {
+        const counts = new Map(Object.keys(KIND_META).map(kind => [kind, 0]));
+
+        (realms || []).forEach(realm => {
+          const key = normalizeText(realm.kind);
+          if (!counts.has(key)) {
+            counts.set(key, 0);
+          }
+          counts.set(key, (counts.get(key) || 0) + 1);
+        });
+
+        const apiKinds = Array.isArray(filterData && filterData.kinds) ? filterData.kinds : [];
+        apiKinds.forEach(item => {
+          const key = normalizeText(item && item.value);
+          if (!key) {
+            return;
+          }
+          counts.set(key, Number(item && item.count) || 0);
+        });
+
+        return counts;
+      }
+
+      function buildHeroStats(stats, realms, filterData) {
+        const kindCounts = buildKindCounts(realms, filterData);
+        const totalAssignedUsers = (realms || []).reduce((sum, realm) => (
+          sum + (Array.isArray(realm && realm.roles)
+            ? realm.roles.reduce((roleSum, role) => roleSum + (Number(role && role.memberCount) || 0), 0)
+            : 0)
+        ), 0);
+        const totalMembers = Number(stats && stats.totalMembers);
+        const pendingRequests = Number(stats && stats.pendingRequests);
+        const boundProjectCount = Number(stats && stats.boundProjectCount);
+        const manageableRealms = Number(stats && stats.manageableRealms);
+
+        return [
+          {
+            icon: "admin_panel_settings",
+            value: formatNumber(Number(stats && stats.totalRealms) || (realms || []).length),
+            label: "등록 Realm",
+            note: `scoped ${formatNumber(kindCounts.get("scoped") || 0)}`,
+            color: "linear-gradient(135deg,#be185d,#ec4899)"
+          },
+          {
+            icon: "groups",
+            value: formatNumber(Number.isFinite(totalMembers) ? totalMembers : totalAssignedUsers),
+            label: "배정 인원",
+            note: "중복 포함 총 사용자수",
+            color: "linear-gradient(135deg,#9d174d,#fb7185)"
+          },
+          {
+            icon: "account_tree",
+            value: formatNumber(Number.isFinite(boundProjectCount) ? boundProjectCount : (realms || []).reduce((sum, realm) => sum + Number(realm && realm.projectCount || 0), 0)),
+            label: "연결된 프로젝트",
+            note: "프로젝트 바인딩 기준",
+            color: "linear-gradient(135deg,#db2777,#f472b6)"
+          },
+          {
+            icon: "approval",
+            value: formatNumber(Number.isFinite(pendingRequests) ? pendingRequests : 0),
+            label: "요청 대기",
+            note: `manageable realms ${formatNumber(Number.isFinite(manageableRealms) ? manageableRealms : 0)}`,
+            color: "linear-gradient(135deg,#e11d48,#fb7185)"
+          }
+        ];
+      }
+
+      function buildFilters(filterData, realms) {
+        const kindCounts = buildKindCounts(realms, filterData);
+
+        return [
+          { id: "all", icon: "apps", label: "전체" },
+          ...Object.keys(KIND_META)
+            .filter(kind => (kindCounts.get(kind) || 0) > 0)
+            .map(kind => ({
+              id: kind,
+              icon: KIND_META[kind].icon,
+              label: `${KIND_META[kind].label} (${formatNumber(kindCounts.get(kind) || 0)})`
+            }))
+        ];
+      }
+
+      function buildResourceDescription(total) {
+        if (!Number.isFinite(total) || total <= 0) {
+          return refineSectionDescription(
+            "",
+            "조회 가능한 Permission Realm이 없습니다. 권한과 연동 상태를 확인해 주세요."
+          );
+        }
+
+        return refineSectionDescription(
+          `${formatNumber(total)}개의 Permission Realm을 한곳에 모았습니다. 각 카드에서는 연결된 프로젝트와 포함된 Role을 함께 보고, 요청 흐름은 우측 패널에서 이어서 확인합니다.`,
+          FALLBACK_CONFIG.resourceDescription
+        );
+      }
+
+      function buildTipsPanel(panel) {
+        if (!panel) {
+          return FALLBACK_CONFIG.mainPanels[0];
+        }
+
+        return {
+          icon: panel.icon || "tips_and_updates",
+          label: panel.label || "Tips",
+          title: panel.title || "권한 운영 팁",
+          description: refineSectionDescription(
+            panel.description,
+            FALLBACK_CONFIG.mainPanels[0] && FALLBACK_CONFIG.mainPanels[0].description
+          ),
+          rows: panel.rows || [],
+          footerLink: panel.footerLink
+        };
+      }
+
+      function buildGuidePanel(panel) {
+        if (!panel) {
+          return FALLBACK_CONFIG.mainPanels[1];
+        }
+
+        return {
+          icon: panel.icon || "menu_book",
+          label: panel.label || "Guide Links",
+          title: panel.title || "가이드 링크",
+          description: refineSectionDescription(
+            panel.description,
+            FALLBACK_CONFIG.mainPanels[1] && FALLBACK_CONFIG.mainPanels[1].description
+          ),
+          rows: panel.rows || [],
+          footerLink: panel.footerLink
+        };
+      }
+
+      function buildRequestPanel(requests, realmMap) {
+        const rows = (requests || []).slice(0, REQUEST_PANEL_LIMIT).map(request => {
+          const statusMeta = getRequestStatusMeta(request && request.status);
+          const realm = realmMap.get(normalizeText(request && request.realmId));
+          const requesterName = normalizeText(request && request.requester && request.requester.name) || "unknown";
+          const roleName = normalizeText(request && request.roleName) || "role";
+          const realmName = normalizeText(realm && realm.name) || "Unknown Realm";
+          const metaParts = [
+            realmName,
+            roleName,
+            requesterName,
+            formatRequestDate(request && request.createdAt)
+          ];
+          const reason = truncateText(request && request.reason, 48);
+
+          return {
+            title: `${requesterName} · ${roleName}`,
+            meta: reason ? `${metaParts.join(" · ")} · ${reason}` : metaParts.join(" · "),
+            pill: statusMeta
+          };
+        });
+
+        return {
+          icon: "pending_actions",
+          label: "Request List",
+          title: "현재 요청 목록",
+          description: refineSectionDescription(
+            (requests || []).length
+              ? `${formatNumber((requests || []).length)}개의 최신 권한 요청을 우측 패널에서 바로 확인합니다.`
+              : "현재 조회 가능한 권한 요청은 없지만, 새 요청이 들어오면 우측 패널에서 바로 확인합니다.",
+            "Permission request inbox의 최신 요청을 실제 API 응답 기준으로 보여줍니다."
+          ),
+          rows: rows.length ? rows : [
+            {
+              title: "표시할 요청이 없습니다.",
+              meta: "현재 조회 가능한 permission request가 없습니다."
+            }
+          ]
+        };
+      }
+
+      function toConnection(binding, color) {
+        return {
+          abbr: toAbbr(binding && binding.label, "PR"),
+          name: normalizeText(binding && binding.label) || "Unnamed Project",
+          meta: normalizeText(binding && binding.role) ? `binding role · ${binding.role}` : "project binding",
+          color,
+          href: toProjectDetailHref(binding)
+        };
+      }
+
+      function toPermissionDetailHref(realm) {
+        const realmId = normalizeText(realm && realm.id);
+        if (!realmId) {
+          return "workspace_permission_detail.html";
+        }
+
+        return `workspace_permission_detail.html?realm=${encodeURIComponent(realmId)}&name=${encodeURIComponent(normalizeText(realm && realm.name) || realmId)}&kind=${encodeURIComponent(normalizeText(realm && realm.kind) || "scoped")}&status=${encodeURIComponent(normalizeText(realm && realm.status) || "active")}`;
+      }
+
+      function toProjectDetailHref(binding) {
+        const projectId = normalizeText(binding && binding.id);
+        const projectName = normalizeText(binding && binding.label);
+        const projectKey = projectName || projectId;
+        if (!projectKey) {
+          return "workspace_projects_hub.html";
+        }
+
+        return `workspace_project_detail.html?project=${encodeURIComponent(projectKey)}`;
+      }
+
+      function getViewerRoleNames(realm) {
+        const directRoles = Array.isArray(realm && realm.currentUserRoles) ? realm.currentUserRoles : [];
+        if (directRoles.length) {
+          return [...new Set(directRoles.map(role => normalizeText(role)).filter(Boolean))];
+        }
+
+        const capabilityRoles = [];
+        if (realm && realm.capabilities && realm.capabilities.canApprove) {
+          capabilityRoles.push("admin");
+        }
+
+        return capabilityRoles;
+      }
+
+      function buildResource(realm) {
+        const kindMeta = getKindMeta(realm && realm.kind);
+        const statusMeta = getStatusMeta(realm && realm.status);
+        const boundProjects = Array.isArray(realm && realm.boundProjects) ? realm.boundProjects : [];
+        const roles = Array.isArray(realm && realm.roles) ? realm.roles : [];
+        const currentUserRoles = new Set(getViewerRoleNames(realm));
+        const capabilityChips = [];
+
+        if (realm && realm.capabilities && realm.capabilities.canApprove) {
+          capabilityChips.push({ icon: "verified_user", text: "Manage enabled" });
+        } else if (realm && realm.capabilities && realm.capabilities.canRequest) {
+          capabilityChips.push({ icon: "person_add", text: "Request enabled" });
+        }
+
+        return {
+          id: realm.id,
+          categories: ["all", normalizeText(realm.kind)].filter(Boolean),
+          status: statusMeta,
+          engine: kindMeta.engine,
+          icon: kindMeta.icon,
+          name: normalizeText(realm.name) || "Unnamed Realm",
+          meta: refineSectionDescription(
+            realm && realm.description,
+            `${kindMeta.label} Permission Realm`
+          ),
+          color: kindMeta.color,
+          details: [
+            { icon: "groups", text: `Members ${formatNumber(realm && realm.memberCount)}` },
+            ...capabilityChips
+          ],
+          tagsFirst: true,
+          connectionsLabel: "Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: boundProjects.map(binding => toConnection(binding, kindMeta.color)),
+          tagsLabel: "Roles",
+          tags: roles.map(role => ({
+            icon: "badge",
+            text: `${normalizeText(role && role.name) || "role"}(${formatNumber(role && role.memberCount)})`,
+            className: currentUserRoles.has(normalizeText(role && role.name)) ? "is-active-role" : "",
+            title: currentUserRoles.has(normalizeText(role && role.name))
+              ? "현재 접속자가 가진 role"
+              : ""
+          })),
+          footer: formatDateTime(realm && realm.updatedAt),
+          actions: [
+            {
+              kind: "open",
+              label: "Detail",
+              icon: "open_in_new",
+              href: toPermissionDetailHref(realm)
+            }
+          ]
+        };
+      }
+
+      async function fetchAllPages(path, params) {
+        const items = [];
+        let cursor = null;
+        let total = 0;
+        let hasNext = true;
+
+        while (hasNext) {
+          const payload = await fetchJson(path, {
+            ...(params || {}),
+            limit: params && params.limit ? params.limit : REALM_PAGE_LIMIT,
+            ...(cursor ? { cursor } : {})
+          });
+          const pageItems = extractItems(payload);
+          const nextCursor = extractNextCursor(payload);
+          const pageTotal = extractPageTotal(payload, total || pageItems.length);
+
+          items.push(...pageItems);
+          total = pageTotal;
+          cursor = nextCursor;
+          hasNext = Boolean(nextCursor);
+
+          if (!pageItems.length || (pageTotal > 0 && items.length >= pageTotal)) {
+            hasNext = false;
+          }
+        }
+
+        return {
+          items,
+          page: {
+            total: total || items.length
+          }
+        };
+      }
+
+      function renderConfig(config) {
+        window.HUB_CONFIG = config;
+        if (typeof window.renderWorkspaceResourceHub === "function") {
+          window.renderWorkspaceResourceHub(config);
+          if (typeof window.refreshConceptEndpointOverlay === "function") {
+            requestAnimationFrame(() => {
+              window.refreshConceptEndpointOverlay();
+            });
+          }
+        }
+      }
+
+      async function loadPermissionHub() {
+        const results = await Promise.allSettled([
+          fetchAllPages("/permissions/realms", { limit: REALM_PAGE_LIMIT, sort: "-updatedAt" }),
+          fetchJson("/permissions/realms/stats"),
+          fetchJson("/permissions/realms/filters"),
+          fetchJson("/permissions/requests", { limit: REQUEST_PANEL_LIMIT, sort: "-createdAt" }),
+          fetchJson("/panels/tips", { surface: "permissions" }),
+          fetchJson("/panels/guide-links", { surface: "permissions" })
+        ]);
+
+        const [
+          realmsResult,
+          statsResult,
+          filtersResult,
+          requestsResult,
+          tipsResult,
+          guideResult
+        ] = results;
+
+        if (realmsResult.status !== "fulfilled") {
+          throw realmsResult.reason;
+        }
+
+        const realmsPayload = realmsResult.value;
+        const realmItems = extractItems(realmsPayload);
+        const statsPayload = statsResult.status === "fulfilled" ? extractData(statsResult.value, null) : null;
+        const filtersPayload = filtersResult.status === "fulfilled" ? extractData(filtersResult.value, null) : null;
+        const requestsPayload = requestsResult.status === "fulfilled" ? requestsResult.value : null;
+        const tipsPayload = tipsResult.status === "fulfilled" ? extractData(tipsResult.value, null) : null;
+        const guidePayload = guideResult.status === "fulfilled" ? extractData(guideResult.value, null) : null;
+        const realmMap = new Map(realmItems.map(item => [normalizeText(item && item.id), item]));
+        const resourceTotal = extractPageTotal(realmsPayload, realmItems.length);
+
+        renderConfig({
+          ...FALLBACK_CONFIG,
+          heroStats: buildHeroStats(statsPayload, realmItems, filtersPayload),
+          filters: buildFilters(filtersPayload, realmItems),
+          resourceDescription: buildResourceDescription(resourceTotal),
+          resources: realmItems.map(buildResource),
+          mainPanels: [
+            buildTipsPanel(tipsPayload),
+            buildGuidePanel(guidePayload)
+          ],
+          sidebarPanels: [
+            buildRequestPanel(extractItems(requestsPayload), realmMap)
+          ]
+        });
+      }
+
+      const handleLoadError = (error) => {
+        console.warn("[permission_hub] Failed to load permission hub data", error);
+
+        renderConfig({
+          ...FALLBACK_CONFIG,
+          heroStats: [],
+          resources: [],
+          resourceDescription: "Permission Hub 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.",
+          mainPanels: [
+            {
+              icon: "error",
+              label: "Load Error",
+              title: "Permission Hub 데이터를 읽지 못했습니다.",
+              description: "권한 또는 API 응답 상태를 확인해 주세요.",
+              rows: [
+                { title: "API 호출 실패", meta: String(error && error.message || error || "Unknown error") }
+              ]
+            }
+          ],
+          sidebarPanels: [
+            {
+              icon: "pending_actions",
+              label: "Request List",
+              title: "현재 요청 목록",
+              description: "Request inbox를 불러오지 못했습니다.",
+              rows: [
+                {
+                  title: "상태 동기화 실패",
+                  meta: "permission requests",
+                  pill: { label: "Error", tone: "incident" }
+                }
+              ]
+            }
+          ]
+        });
+      };
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => {
+          loadPermissionHub().catch(handleLoadError);
+        }, { once: true });
+      } else {
+        loadPermissionHub().catch(handleLoadError);
+      }
+    })();
+  </script>
   <script src="concept_endpoint_overlay.js"></script>
 </body>
 </html>

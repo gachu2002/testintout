@@ -481,7 +481,7 @@
     }
     .section-kicker .material-icons-round {
       font-size:14px;
-      color:var(--brand);
+      color:var(--t3);
     }
     .section-title {
       font-size:26px;
@@ -623,19 +623,20 @@
       padding:18px;
       border-radius:18px;
       border:1px solid var(--border);
-      background:linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+      background:var(--surface);
     }
     .rail-kicker {
       display:inline-flex;
       align-items:center;
       gap:6px;
-      margin-bottom:10px;
-      font-size:10px;
-      font-weight:800;
-      letter-spacing:.12em;
+      margin-bottom:14px;
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:.08em;
       text-transform:uppercase;
-      color:var(--blue);
+      color:var(--t3);
     }
+    .rail-kicker .material-icons-round { font-size:14px; }
     .rail-title {
       font-size:18px;
       font-weight:800;
@@ -737,10 +738,11 @@
     .feature-card {
       padding:22px;
       border-radius:18px;
-      border:1px solid rgba(79,70,229,.12);
+      border:1px solid var(--border);
       background:
-        radial-gradient(circle at top right, rgba(34,211,238,.16), transparent 34%),
-        linear-gradient(145deg, #f6f9ff 0%, #ffffff 68%);
+        radial-gradient(circle at top right, rgba(79,140,255,.05), transparent 34%),
+        linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(248,250,252,.96) 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.92);
     }
     .feature-top {
       display:flex;
@@ -757,8 +759,7 @@
       align-items:center;
       justify-content:center;
       color:#fff;
-      background:linear-gradient(135deg, #4f8cff, #22d3ee);
-      box-shadow:0 12px 26px rgba(79,140,255,.22);
+      background:linear-gradient(135deg, #4f8cff, #2563eb);
     }
     .feature-icon .material-icons-round { font-size:23px; }
     .feature-badge {
@@ -767,8 +768,9 @@
       gap:5px;
       padding:6px 10px;
       border-radius:999px;
-      background:#e0edff;
-      color:#3157b7;
+      border:1px solid var(--border);
+      background:var(--bg);
+      color:var(--t2);
       font-size:10px;
       font-weight:800;
       white-space:nowrap;
@@ -778,14 +780,14 @@
       width:6px;
       height:6px;
       border-radius:50%;
-      background:#4f8cff;
+      background:var(--t3);
     }
     .feature-eyebrow {
       font-size:10px;
       font-weight:700;
       letter-spacing:.08em;
       text-transform:uppercase;
-      color:var(--indigo);
+      color:var(--t3);
       margin-bottom:8px;
     }
     .feature-title {
@@ -815,7 +817,7 @@
     }
     .point-item .material-icons-round {
       font-size:15px;
-      color:#4f8cff;
+      color:var(--t3);
       margin-top:1px;
       flex-shrink:0;
     }
@@ -830,15 +832,15 @@
       gap:5px;
       padding:6px 10px;
       border-radius:999px;
-      border:1px solid rgba(191,219,254,.95);
-      background:rgba(255,255,255,.9);
+      border:1px solid var(--border);
+      background:var(--bg);
       color:var(--t2);
       font-size:10px;
       font-weight:700;
     }
     .tag .material-icons-round {
       font-size:13px;
-      color:#4f8cff;
+      color:var(--t3);
     }
     .feature-side {
       display:grid;
@@ -848,7 +850,9 @@
       padding:16px;
       border-radius:16px;
       border:1px solid var(--border);
-      background:linear-gradient(180deg, #fbfcff 0%, #ffffff 100%);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(248,250,252,.95) 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
     }
     .metric-card {
       display:grid;
@@ -877,7 +881,7 @@
     }
     .metric-label .material-icons-round {
       font-size:15px;
-      color:var(--brand);
+      color:var(--t3);
     }
     .metric-title {
       font-size:16px;
@@ -899,9 +903,10 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      background:var(--brand-bg);
-      color:var(--brand);
-      font-size:22px;
+      border:1px solid var(--border);
+      background:var(--bg);
+      color:var(--t2);
+      font-size:18px;
       font-weight:800;
       flex-shrink:0;
     }
@@ -922,14 +927,14 @@
       gap:8px;
       padding:10px 12px;
       border-radius:12px;
-      background:#f6f8fb;
-      border:1px solid #edf0f4;
+      background:var(--bg);
+      border:1px solid var(--border);
       font-size:12px;
       color:var(--t2);
     }
     .metric-foot .material-icons-round {
       font-size:16px;
-      color:var(--brand);
+      color:var(--t3);
       flex-shrink:0;
     }
     .bundle-title {
@@ -1006,7 +1011,10 @@
       padding:18px;
       border-radius:18px;
       border:1px solid var(--border);
-      background:linear-gradient(180deg, #ffffff 0%, #fbfbfd 100%);
+      background:
+        radial-gradient(circle at top right, rgba(79,140,255,.04), transparent 32%),
+        linear-gradient(180deg, rgba(255,255,255,.99) 0%, rgba(249,250,252,.96) 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
       transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease;
     }
     .store-card:hover {
@@ -1106,8 +1114,9 @@
       border-radius:18px;
       border:1px solid var(--border);
       background:
-        radial-gradient(circle at top right, rgba(180,14,77,.08), transparent 36%),
-        linear-gradient(180deg, #ffffff 0%, #fcfbfd 100%);
+        radial-gradient(circle at top right, rgba(180,14,77,.04), transparent 36%),
+        linear-gradient(180deg, rgba(255,255,255,.99) 0%, rgba(249,250,252,.96) 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
     }
     .collection-head {
       display:flex;
@@ -1135,7 +1144,10 @@
       align-items:center;
       padding:11px 12px;
       border-radius:12px;
-      background:rgba(244,246,249,.8);
+      border:1px solid var(--border);
+      background:
+        linear-gradient(180deg, rgba(247,249,252,.96) 0%, rgba(243,246,249,.92) 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.82);
     }
     .stack-badge {
       width:30px;
@@ -1159,13 +1171,14 @@
     .stack-tag {
       font-size:10px;
       font-weight:800;
-      color:var(--brand);
+      color:var(--t2);
     }
 
     .side-card {
-      border-color:rgba(180,14,77,.16);
-      background:linear-gradient(180deg, #ffffff 0%, #fff9fb 100%);
-      box-shadow:0 16px 34px rgba(15,23,42,.06);
+      border-color:var(--border);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.99) 0%, rgba(248,250,252,.96) 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
     }
     .queue-list,
     .policy-list,
@@ -1191,7 +1204,7 @@
       font-size:11px;
       font-weight:800;
       text-align:center;
-      color:var(--brand);
+      color:var(--t3);
     }
     .side-name {
       font-size:12px;
@@ -1509,7 +1522,7 @@
               <section class="service-group">
                 <div class="service-group-title">Gallery</div>
                 <div class="service-links">
-                  <a class="service-link is-current" href="dej_app_gallery.html"><span class="material-icons-round service-link-icon">widgets</span><span class="service-link-copy"><span class="service-link-title">App Gallery</span><span class="service-link-desc">실행형 개발 앱과 워크스페이스 도구를 발견하고 살펴보기</span></span></a>
+                  <a class="service-link is-current" href="dej_app_gallery.html"><span class="material-icons-round service-link-icon">widgets</span><span class="service-link-copy"><span class="service-link-title">App Gallery</span><span class="service-link-desc">바로 써볼 앱과 도구를 둘러보기</span></span></a>
                   <a class="service-link" href="dej_ai_gallery.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">AI Gallery</span><span class="service-link-desc">챗봇과 MCP를 둘러보고 바로 활용 흐름으로 이어가기</span></span></a>
                 </div>
               </section>
@@ -1531,23 +1544,23 @@
                 <div class="service-group-title">Development</div>
                 <div class="service-links">
                   <a class="service-link" href="workspace_tools_hub.html"><span class="material-icons-round service-link-icon">web</span><span class="service-link-copy"><span class="service-link-title">Consoles</span><span class="service-link-desc">데이터베이스 웹 콘솔 모음</span></span></a>
-                  <a class="service-link" href="workspace_projects_hub.html"><span class="material-icons-round service-link-icon">public</span><span class="service-link-copy"><span class="service-link-title">Project/Publish</span><span class="service-link-desc">개발 프로젝트 관리(IDE 작업 공간)</span></span></a>
+                  <a class="service-link" href="workspace_projects_hub.html"><span class="material-icons-round service-link-icon">public</span><span class="service-link-copy"><span class="service-link-title">Project/Publish</span><span class="service-link-desc">프로젝트와 배포 흐름 살펴보기</span></span></a>
                   <a class="service-link" href="#"><span class="material-icons-round service-link-icon">science</span><span class="service-link-copy"><span class="service-link-title">Jupyter</span><span class="service-link-desc">노트북 실험 및 분석 환경</span></span></a>
                 </div>
               </section>
               <section class="service-group">
                 <div class="service-group-title">AI</div>
                 <div class="service-links">
-                  <a class="service-link" href="workspace_agent_hub.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">Workflow</span><span class="service-link-desc">Dify workflow와 승인형 자동화 런타임을 운영</span></span></a>
-                  <a class="service-link" href="workspace_chatbot_hub.html"><span class="material-icons-round service-link-icon">chat</span><span class="service-link-copy"><span class="service-link-title">Chatbot</span><span class="service-link-desc">API와 Frontend URL 기반 챗봇 엔드포인트를 관리</span></span></a>
-                  <a class="service-link" href="workspace_tool_inventory_hub.html"><span class="material-icons-round service-link-icon">inventory_2</span><span class="service-link-copy"><span class="service-link-title">Tool Inventory</span><span class="service-link-desc">에이전트가 사용하는 연결된 MCP 및 도구 자산을 관리</span></span></a>
+                  <a class="service-link" href="workspace_agent_hub.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">Workflow</span><span class="service-link-desc">AI 흐름과 자동화를 살펴보기</span></span></a>
+                  <a class="service-link" href="workspace_chatbot_hub.html"><span class="material-icons-round service-link-icon">chat</span><span class="service-link-copy"><span class="service-link-title">Chatbot</span><span class="service-link-desc">챗봇 화면과 연결 정보를 보기</span></span></a>
+                  <a class="service-link" href="workspace_tool_inventory_hub.html"><span class="material-icons-round service-link-icon">inventory_2</span><span class="service-link-copy"><span class="service-link-title">Tool Inventory</span><span class="service-link-desc">연결된 도구와 자산을 보기</span></span></a>
                   <a class="service-link" href="workspace_keycenter_hub.html"><span class="material-icons-round service-link-icon">vpn_key</span><span class="service-link-copy"><span class="service-link-title">Keycenter</span><span class="service-link-desc">발급된 LLM 키와 연결된 사용처를 관리</span></span></a>
                 </div>
               </section>
               <section class="service-group">
                 <div class="service-group-title">Support</div>
                 <div class="service-links">
-                  <a class="service-link" href="#"><span class="material-icons-round service-link-icon">description</span><span class="service-link-copy"><span class="service-link-title">다큐먼트</span><span class="service-link-desc">가이드와 운영 문서를 확인합니다</span></span></a>
+                  <a class="service-link" href="#"><span class="material-icons-round service-link-icon">description</span><span class="service-link-copy"><span class="service-link-title">다큐먼트</span><span class="service-link-desc">안내 문서를 보기</span></span></a>
                   <a class="service-link" href="about_dej.html"><span class="material-icons-round service-link-icon">timeline</span><span class="service-link-copy"><span class="service-link-title">About DEJ</span><span class="service-link-desc">DEJ의 역사와 CEJ·DEJ 흐름을 확인합니다</span></span></a>
                   <a class="service-link" href="dej_chatbot_trial.html"><span class="material-icons-round service-link-icon">chat_bubble_outline</span><span class="service-link-copy"><span class="service-link-title">챗봇</span><span class="service-link-desc">지원 챗봇으로 빠르게 문의합니다</span></span></a>
                   <a class="service-link" href="#"><span class="material-icons-round service-link-icon">campaign</span><span class="service-link-copy"><span class="service-link-title">요청하기</span><span class="service-link-desc">기능 요청이나 지원 요청을 등록합니다</span></span></a>
@@ -1580,7 +1593,7 @@
     <section class="page-head">
       <div class="sec-label"><span class="material-icons-round">storefront</span>DEJ App Gallery</div>
       <h1 class="page-title" data-page-title>App Gallery</h1>
-      <p class="page-desc" data-page-desc>프로젝트 시작, 운영 포털, 분석 대시보드까지 바로 이어지는 앱 템플릿을 큐레이션합니다.</p>
+      <p class="page-desc" data-page-desc>바로 써볼 수 있는 앱을 모아둔 공간입니다.</p>
       <div class="tag-row" data-page-tags></div>
     </section>
 
@@ -1589,14 +1602,14 @@
         <div class="hero-rail-card" data-hero-recent>
           <div class="rail-kicker"><span class="material-icons-round">bolt</span>실데이터 하이라이트</div>
           <div class="rail-title" data-hero-recent-title>빠르게 시작하는 앱</div>
-          <div class="rail-desc" data-hero-recent-desc>실제 카탈로그에서 바로 확인할 수 있는 앱을 기준으로 하이라이트를 보여줍니다.</div>
+          <div class="rail-desc" data-hero-recent-desc>지금 바로 둘러보기 좋은 앱을 먼저 보여줍니다.</div>
           <div class="mini-list" data-hero-recent-list></div>
         </div>
 
         <div class="hero-rail-card" data-hero-related>
           <div class="rail-kicker"><span class="material-icons-round">link</span>함께 보는 AI 큐레이션</div>
           <div class="rail-title" data-hero-related-title>AI Gallery 연결</div>
-          <div class="rail-desc" data-hero-related-desc>앱과 함께 보면 좋은 agent와 workflow pack을 실데이터로 바로 이어줍니다.</div>
+          <div class="rail-desc" data-hero-related-desc>앱과 함께 보면 좋은 AI 항목을 이어서 보여줍니다.</div>
           <div class="mini-list" data-hero-related-list></div>
         </div>
       </div>
@@ -1618,7 +1631,7 @@
           <div class="section-head">
             <div class="section-kicker"><span class="material-icons-round">inventory_2</span>Registered Apps</div>
             <h2 class="section-title" data-grid-title>실제 App Gallery 카탈로그를 확인해 보세요</h2>
-            <p class="section-subtitle" data-grid-subtitle>카테고리와 검색 조건에 맞는 앱을 실시간으로 조회합니다. 카드에서 상세를 열면 실제 `/api/v2/app-gallery/apps/:slug` 계약까지 이어집니다.</p>
+            <p class="section-subtitle" data-grid-subtitle>카테고리와 검색 조건에 맞는 앱을 골라 살펴보세요.</p>
           </div>
           <div class="card-grid" data-filter-group data-app-grid></div>
         </section>
@@ -1627,7 +1640,7 @@
           <div class="section-head">
             <div class="section-kicker"><span class="material-icons-round">view_carousel</span>Collections</div>
             <h2 class="section-title">목적에 따라 가볍게 모아본 앱 묶음</h2>
-            <p class="section-subtitle">Featured, 카테고리, 관련 AI 큐레이션을 바탕으로 실제 카탈로그를 다시 묶어 보여줍니다.</p>
+            <p class="section-subtitle">추천 흐름에 맞춰 앱을 다시 묶어 보여줍니다.</p>
           </div>
           <div class="collection-grid" data-collections></div>
         </section>
@@ -1651,9 +1664,9 @@
     <div class="detail-shell">
       <div class="detail-head">
         <div class="detail-head-copy">
-          <div class="detail-kicker"><span class="material-icons-round">api</span>App Detail Contract</div>
+          <div class="detail-kicker"><span class="material-icons-round">api</span>App Detail</div>
           <h2 class="detail-title" data-detail-title>App Detail</h2>
-          <p class="detail-subtitle" data-detail-subtitle>실제 `/api/v2/app-gallery/apps/:slug` 응답을 여기에 렌더링합니다.</p>
+          <p class="detail-subtitle" data-detail-subtitle>선택한 앱 정보를 보여줍니다.</p>
           <div class="detail-chips" data-detail-chips></div>
         </div>
         <button class="detail-close" type="button" data-detail-close aria-label="상세 닫기">
@@ -1667,7 +1680,7 @@
             <p data-detail-description></p>
           </section>
           <section class="detail-panel">
-            <h3>설치 계약</h3>
+            <h3>설치 정보</h3>
             <div class="detail-contract">
               <code data-detail-install></code>
               <p data-detail-install-note></p>
@@ -1875,7 +1888,7 @@
               ${stats.map((stat) => `<span class="card-stat"><span class="material-icons-round">sell</span>${escapeHtml(stat)}</span>`).join("")}
             </div>
             <div class="card-foot">
-              <span class="install-state">${item.capabilities?.canInstall ? "설치 API 연결 가능" : "조회 전용"}</span>
+              <span class="install-state">${item.capabilities?.canInstall ? "설치 가능" : "둘러보기"}</span>
               <button class="card-link" type="button" data-app-detail="${escapeHtml(item.slug)}">상세 보기 <span class="material-icons-round">chevron_right</span></button>
             </div>
           </article>
@@ -1903,10 +1916,10 @@
           <div class="tag-row">
             ${renderTag("category", item.categoryLabel)}
             ${renderTag("folder_open", item.installTargetLabel || "프로젝트")}
-            ${renderTag("api", "GET /apps/:slug")}
+            ${renderTag("api", "상세 정보")}
           </div>
           <div class="hero-actions">
-            <button class="hero-btn primary" type="button" data-app-detail="${escapeHtml(item.slug)}"><span class="material-icons-round">visibility</span>상세 계약 보기</button>
+            <button class="hero-btn primary" type="button" data-app-detail="${escapeHtml(item.slug)}"><span class="material-icons-round">visibility</span>상세 보기</button>
           </div>
         `;
       };
@@ -1938,11 +1951,11 @@
               <div class="collection-title">${escapeHtml(title)}</div>
               <div class="collection-desc">${escapeHtml(description)}</div>
             </div>
-            <span class="card-badge" style="background:#eef2ff;color:#4338ca">${escapeHtml(badgeLabel)}</span>
+            <span class="card-badge" style="background:var(--bg);color:var(--t2);border:1px solid var(--border)">${escapeHtml(badgeLabel)}</span>
           </div>
           <div class="collection-stack">
             ${items.map((item) => `
-              <button class="stack-item" type="button" data-app-detail="${escapeHtml(item.slug)}" style="border:none;text-align:left;cursor:pointer;">
+              <button class="stack-item" type="button" data-app-detail="${escapeHtml(item.slug)}" style="text-align:left;cursor:pointer;">
                 <div class="stack-badge" style="background:${escapeHtml(item.iconColor)}"><span class="material-icons-round">${escapeHtml(item.icon)}</span></div>
                 <div><div class="stack-name">${escapeHtml(item.title)}</div><div class="stack-meta">${escapeHtml(item.summary)}</div></div>
                 <div class="stack-tag">${escapeHtml(item.categoryLabel)}</div>
@@ -1991,13 +2004,13 @@
         }));
 
         elements.heroRecentTitle.textContent = "빠르게 둘러볼 앱";
-        elements.heroRecentDesc.textContent = "실제 `/api/v2/app-gallery/apps` 응답에서 먼저 추천할 카탈로그를 보여줍니다.";
+        elements.heroRecentDesc.textContent = "지금 바로 둘러보기 좋은 앱을 먼저 보여줍니다.";
         elements.heroRecentList.innerHTML = recentItems.length
           ? recentItems.map((item) => renderMiniRow(item, item.pill)).join("")
           : renderEmpty("표시할 앱이 없습니다.");
 
         elements.heroRelatedTitle.textContent = "AI Gallery와 함께 보기";
-        elements.heroRelatedDesc.textContent = "앱 상세와 연결되는 related AI 큐레이션도 같은 host의 v2 API에서 읽어옵니다.";
+        elements.heroRelatedDesc.textContent = "앱과 함께 보면 좋은 AI 항목을 이어서 보여줍니다.";
         elements.heroRelatedList.innerHTML = state.relatedAi.length
           ? state.relatedAi.slice(0, 3).map((item) => renderMiniRow({
             icon: "smart_toy",
@@ -2015,8 +2028,8 @@
       const renderFeatured = () => {
         elements.featuredMain.innerHTML = renderFeaturedMain(state.featured[0]);
         elements.featuredSide.innerHTML = [
-          renderFeaturedSideItem(state.featured[1], "운영 관점 추천", "O"),
-          renderFeaturedSideItem(state.featured[2], "문서/협업 관점 추천", "W"),
+          renderFeaturedSideItem(state.featured[1], "추가 추천", "A"),
+          renderFeaturedSideItem(state.featured[2], "함께 보기", "B"),
         ].join("") || renderEmpty("featured 앱이 없습니다.");
       };
 
@@ -2045,8 +2058,8 @@
         const searchSuffix = state.search ? ` · 검색어 "${state.search}"` : "";
         elements.gridTitle.textContent = `${titleBase}${searchSuffix}`;
         elements.gridSubtitle.textContent = state.page?.total
-          ? `${state.page.total}개 결과를 /api/v2/app-gallery/apps 에서 직접 조회해 렌더링합니다. 카드의 상세 보기에서는 /api/v2/app-gallery/apps/:slug 계약을 확인할 수 있습니다.`
-          : "조건에 맞는 앱을 /api/v2/app-gallery/apps 에서 직접 조회합니다.";
+          ? `${state.page.total}개 앱을 찾았습니다. 원하는 항목을 골라 자세히 살펴보세요.`
+          : "조건에 맞는 앱을 골라 살펴보세요.";
         renderPageTags();
       };
 
@@ -2072,7 +2085,7 @@
         elements.collections.innerHTML = [
           renderCollectionCard(
             "Featured App 묶음",
-            "백엔드의 `/api/v2/app-gallery/featured` 결과를 기준으로 지금 바로 살펴볼 앱을 모았습니다.",
+            "지금 바로 둘러보기 좋은 앱을 모았습니다.",
             featuredItems,
             `${featuredItems.length} Apps`
           ),
@@ -2136,13 +2149,13 @@
           elements.detailChips.innerHTML = [
             renderTag("category", detail.categoryLabel),
             renderTag("rocket_launch", detail.installTargetLabel),
-            renderTag("api", "GET /apps/:slug"),
+            renderTag("api", "상세 정보"),
           ].join("");
           elements.detailDescription.textContent = detail.description || detail.summary || "설명이 없습니다.";
           elements.detailInstall.textContent = `${detail.install?.method || "POST"} ${detail.install?.path || "-"}`;
           elements.detailInstallNote.textContent = detail.install?.requiredFields?.length
-            ? `필수 필드: ${detail.install.requiredFields.join(", ")} · target: ${detail.install.targetType || "-"}`
-            : "설치 계약 정보가 없습니다.";
+            ? `필수 항목: ${detail.install.requiredFields.join(", ")}`
+            : "설치 정보가 없습니다.";
           renderDetailList(elements.detailHighlights, detail.highlights, "정의된 highlight가 없습니다.");
           renderDetailList(elements.detailUsecases, detail.useCases, "정의된 use case가 없습니다.");
           renderDetailList(elements.detailPrerequisites, detail.prerequisites, "별도 prerequisite가 없습니다.");

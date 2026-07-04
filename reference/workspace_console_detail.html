@@ -9,6 +9,27 @@
   <link rel="stylesheet" href="workspace_detail_shared.css" />
   <link rel="stylesheet" href="ax_studio_topbar.css" />
   <style>
+    .material-icons-round {
+      font-family: "Material Icons Round";
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-feature-settings: "liga";
+      -webkit-font-feature-settings: "liga";
+      font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+      flex: 0 0 auto;
+    }
     .layout {
       grid-template-columns:minmax(0, 1fr);
     }
@@ -17,6 +38,15 @@
     }
     .hero-actions {
       align-items:center;
+    }
+    .section-kicker {
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      margin-bottom:6px;
+    }
+    .section-kicker .material-icons-round {
+      font-size:15px;
     }
     .console-hero-feedback {
       position:relative;
@@ -43,14 +73,14 @@
     .binding-head-actions {
       display:flex;
       align-items:center;
-      gap:10px;
+      gap:8px;
       flex-wrap:wrap;
     }
     .binding-summary {
       display:inline-flex;
       align-items:center;
-      gap:6px;
-      padding:7px 11px;
+      gap:4px;
+      padding:5px 10px;
       border-radius:999px;
       background:var(--brand-bg);
       color:var(--brand);
@@ -59,6 +89,37 @@
       white-space:nowrap;
     }
     .binding-summary .material-icons-round { font-size:15px; }
+    .binding-summary strong {
+      display:none;
+    }
+    .binding-status-pill {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:74px;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      line-height:1;
+      white-space:nowrap;
+    }
+    .binding-status-pill.tone-healthy {
+      background:var(--good-bg);
+      color:var(--good);
+    }
+    .binding-status-pill.tone-muted {
+      background:#eef2f7;
+      color:#667085;
+    }
+    .binding-status-pill.tone-incident {
+      background:#fee2e2;
+      color:#b91c1c;
+    }
+    .binding-status-pill.tone-pending {
+      background:#f5f3ff;
+      color:#7c3aed;
+    }
     .bind-feedback {
       min-height:18px;
       margin-top:12px;
@@ -68,6 +129,19 @@
     }
     .bind-feedback.is-success { color:var(--good); }
     .bind-feedback.is-warning { color:var(--warn); }
+    .empty-state {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:120px;
+      padding:20px;
+      border:1px dashed var(--border);
+      border-radius:18px;
+      background:var(--surface-soft);
+      color:var(--muted);
+      font-size:14px;
+      text-align:center;
+    }
     .bind-modal-backdrop {
       position:fixed;
       inset:0;
@@ -282,45 +356,121 @@
       `).join("");
     }
 
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function renderBindingStatus(status) {
+      const key = String(status || "").toLowerCase();
+      const tone = key === "running" ? "healthy" : key === "stopped" ? "muted" : key ? "incident" : "pending";
+      const label = key === "running"
+        ? "Healthy"
+        : key === "stopped"
+          ? "Stopped"
+          : key === "error"
+            ? "Issue"
+            : key === "starting"
+              ? "Starting"
+              : key === "stopping"
+                ? "Stopping"
+                : "Unknown";
+
+      return `<span class="binding-status-pill tone-${tone}">${label}</span>`;
+    }
+
+    function renderBindingTable(items) {
+      if (!Array.isArray(items) || !items.length) {
+        return `<div class="empty-state" data-binding-empty>현재 연결된 DB가 없습니다.</div>`;
+      }
+
+      return `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>DB</th>
+                <th>Engine</th>
+                <th>Health</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${items.map((item) => `
+                <tr>
+                  <td>${escapeHtml(item?.name || "-")}</td>
+                  <td>${escapeHtml(item?.engine || "-")}</td>
+                  <td>${renderBindingStatus(item?.status)}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
     function renderDbOptions(options) {
+      if (!Array.isArray(options) || !options.length) {
+        return `<div class="empty-state">바인딩 가능한 DB가 없습니다.</div>`;
+      }
+
       return options.map((option) => `
         <button
           class="bind-option"
           type="button"
           data-bind-option
-          data-db-name="${option.name}"
-          data-db-engine="${option.engine}"
-          data-db-access="${option.access}"
-          data-db-desc="${option.description}"
+          data-db-id="${escapeHtml(option.id)}"
+          data-db-name="${escapeHtml(option.name)}"
         >
           <div class="bind-option-top">
             <div>
-              <div class="bind-option-name">${option.name}</div>
-              <div class="bind-option-meta">${option.description}</div>
+              <div class="bind-option-name">${escapeHtml(option.name)}</div>
+              <div class="bind-option-meta">${escapeHtml(option.description || option.meta || "연결 가능한 데이터베이스")}</div>
             </div>
-            <span class="pill engine">${option.engine}</span>
+            <span class="pill engine">${escapeHtml(option.engine || "database")}</span>
           </div>
           <div class="bind-option-tags">
-            <span class="bind-option-tag"><span class="material-icons-round" style="font-size:14px;">lan</span>${option.access}</span>
-            <span class="bind-option-tag"><span class="material-icons-round" style="font-size:14px;">dns</span>${option.scope}</span>
+            <span class="bind-option-tag"><span class="material-icons-round" style="font-size:14px;">verified_user</span>${escapeHtml(option.statusLabel || "상태 확인 중")}</span>
           </div>
         </button>
       `).join("");
     }
 
-    function buildItem(item) {
+    function buildShellItem() {
       return {
-        ...item,
+        title: "Console Loading",
+        description: "실제 Console API 응답을 불러오는 중입니다.",
+        heroIcon: "web",
+        typeLabel: "Database Console",
+        statusLabel: "Loading",
+        statusTone: "review",
+        actions: [
+          { label: "Run", icon: "play_circle", variant: "primary", kind: "button", actionKey: "run", disabled: true },
+          { label: "Open", icon: "open_in_new", kind: "button", actionKey: "open", disabled: true },
+          { label: "Stop", icon: "stop_circle", kind: "button", actionKey: "stop", disabled: true }
+        ],
+        heroStats: [
+          { label: "CPU", value: "-", meta: "메트릭을 불러오는 중입니다." },
+          { label: "Memory", value: "-", meta: "메트릭을 불러오는 중입니다." },
+          { label: "Bound DB", value: "-", meta: "연결 정보를 불러오는 중입니다." }
+        ],
+        theme: { bg: "#e8f7f0", brand: "#15803d", brandH: "#166534", brandBg: "#d4f6df", brandSoft: "rgba(21,128,61,.18)", accent: "#34d399" },
         mainHtml: `
           <section class="panel section">
             <div class="section-head">
               <div>
-                <div class="section-kicker"><span class="material-icons-round">monitoring</span>Usage</div>
+                <div class="section-kicker"><span class="material-icons-round">bar_chart</span>Usage</div>
                 <h2 class="section-title">리소스 사용량</h2>
-                <p class="section-desc">콘솔별 CPU, Memory 사용량을 한눈에 볼 수 있습니다.</p>
+                <p class="section-desc">콘솔별 CPU, Memory 사용량을 실제 메트릭 기준으로 보여줍니다.</p>
               </div>
             </div>
-            <div class="stats-grid two" data-usage-cards>${renderProgress(item.usageCards)}</div>
+            <div class="stats-grid two" data-usage-cards>${renderProgress([
+              { title: "CPU", value: "-", percent: 0, meta: "메트릭을 불러오는 중입니다." },
+              { title: "Memory", value: "-", percent: 0, meta: "메트릭을 불러오는 중입니다." }
+            ])}</div>
           </section>
 
           <section class="panel section">
@@ -328,35 +478,36 @@
               <div>
                 <div class="section-kicker"><span class="material-icons-round">lan</span>Bound Databases</div>
                 <h2 class="section-title">Binding DB</h2>
-                <p class="section-desc">이 콘솔에 연결된 DB를 확인하고 새 DB를 바인딩할 수 있습니다.</p>
+                <p class="section-desc">이 콘솔에 실제로 연결된 DB 목록과 상태를 확인할 수 있습니다.</p>
               </div>
               <div class="binding-head-actions">
                 <div class="binding-summary" data-binding-summary>
-                  <span class="material-icons-round">database</span>
-                  <span data-binding-count>${item.bindingRows.length}</span>개의 DB가 연결되어 있습니다
+                  <span class="material-icons-round">storage</span>
+                  <strong data-binding-count>0</strong>
+                  <span data-binding-summary-text>연결 정보 로딩 중</span>
                 </div>
-                <button class="action-btn primary" type="button" data-bind-open>
-                  <span class="material-icons-round" style="font-size:18px;">add_link</span>
+                <button class="action-btn primary" type="button" data-bind-open disabled>
+                  <span class="material-icons-round" style="font-size:18px;">link</span>
                   DB 바인딩
                 </button>
               </div>
             </div>
-            <div data-binding-table>${renderTable(["DB", "Engine", "Access"], item.bindingRows)}</div>
+            <div data-binding-table>${renderBindingTable([])}</div>
             <div class="bind-feedback" data-bind-feedback aria-live="polite"></div>
             <div class="bind-modal-backdrop" data-bind-modal hidden>
               <div class="bind-modal-shell" role="dialog" aria-modal="true" aria-labelledby="bindDbModalTitle">
                 <div class="bind-modal-head">
                   <div class="bind-modal-copy">
-                    <div class="bind-modal-kicker"><span class="material-icons-round">add_link</span>DB Binding</div>
+                    <div class="bind-modal-kicker"><span class="material-icons-round">link</span>DB Binding</div>
                     <h2 id="bindDbModalTitle">바인딩할 DB를 선택할 수 있습니다</h2>
-                    <p>이 콘솔에서 바로 접근할 DB를 선택해 연결할 수 있습니다.</p>
+                    <p>현재 콘솔 타입과 호환되는 DB만 실제 API 기준으로 불러옵니다.</p>
                   </div>
                   <button class="bind-modal-close" type="button" aria-label="팝업 닫기" data-bind-close>
                     <span class="material-icons-round">close</span>
                   </button>
                 </div>
                 <div class="bind-modal-body">
-                  <div class="bind-option-list">${renderDbOptions(item.dbOptions)}</div>
+                  <div class="bind-option-list" data-bind-options>${renderDbOptions([])}</div>
                   <div class="bind-modal-actions">
                     <button class="action-btn ghost" type="button" data-bind-close>취소</button>
                     <button class="action-btn primary" type="button" data-bind-confirm disabled>선택한 DB 바인딩</button>
@@ -365,752 +516,689 @@
               </div>
             </div>
           </section>
-
         `,
         sidebarHtml: ``
       };
     }
 
-    const rawItems = [
-      {
-        key: "phpmyadmin",
-        title: "phpMyAdmin",
-        description: "MySQL/MariaDB 스키마 검증과 grants 확인에 쓰는 관계형 콘솔입니다. 운영자들이 단건 데이터 확인과 권한 점검에 가장 자주 여는 샘플 화면입니다.",
-        heroIcon: "table_view",
-        typeLabel: "Relational Console",
-        statusLabel: "Running",
-        statusTone: "healthy",
-        relatedHref: "workspace_database_hub.html",
-        actions: [
-          { label: "Run", icon: "play_circle", variant: "primary", kind: "button", actionKey: "run" },
-          { label: "Open", icon: "open_in_new", kind: "button", actionKey: "open" },
-          { label: "Stop", icon: "stop_circle", kind: "button", actionKey: "stop" }
-        ],
-        heroStats: [
-          { label: "CPU", value: "28%", meta: "request burst 기준" },
-          { label: "Memory", value: "46%", meta: "container working set" },
-          { label: "Binding DB", value: "2", meta: "payments-mysql · cms-mariadb" }
-        ],
-        theme: { bg: "#e8f7f0", brand: "#15803d", brandH: "#166534", brandBg: "#d4f6df", brandSoft: "rgba(21,128,61,.18)", accent: "#34d399" },
-        usageCards: [
-          { title: "CPU", value: "28%", percent: 28, meta: "최근 15분 평균 사용량" },
-          { title: "Memory", value: "46%", percent: 46, meta: "memory working set 기준" }
-        ],
-        runtimeProfiles: {
-          running: {
-            statusLabel: "Running",
-            statusTone: "healthy",
-            heroStats: {
-              cpu: { value: "28%", meta: "request burst 기준" },
-              memory: { value: "46%", meta: "container working set" }
-            },
-            usageCards: [
-              { title: "CPU", value: "28%", percent: 28, meta: "최근 15분 평균 사용량" },
-              { title: "Memory", value: "46%", percent: 46, meta: "memory working set 기준" }
-            ]
-          },
-          stopped: {
-            statusLabel: "Stopped",
-            statusTone: "muted",
-            heroStats: {
-              cpu: { value: "3%", meta: "idle baseline" },
-              memory: { value: "12%", meta: "standby footprint" }
-            },
-            usageCards: [
-              { title: "CPU", value: "3%", percent: 3, meta: "대기 상태 기준" },
-              { title: "Memory", value: "12%", percent: 12, meta: "standby footprint 기준" }
-            ]
-          }
-        },
-        bindingRows: [
-          ["payments-mysql", "MySQL 8", "internal service / TLS"],
-          ["cms-mariadb", "MariaDB 10.11", "bastion proxy"]
-        ],
-        dbOptions: [
-          { name: "ledger-mysql", engine: "MySQL 8", access: "private service / TLS", scope: "Finance Domain", description: "정산과 원장 조회용 운영 DB입니다." },
-          { name: "partner-mariadb", engine: "MariaDB 10.11", access: "ops bastion", scope: "Partner Domain", description: "파트너 포털 데이터 검증에 사용하는 DB입니다." },
-          { name: "qa-orders", engine: "MySQL 8", access: "qa route", scope: "QA Workspace", description: "테스트 주문 데이터 확인용 QA DB입니다." }
-        ],
-      },
-      {
-        key: "pg-admin",
-        title: "PG Admin",
-        description: "PostgreSQL role, schema, session 상태를 확인하고 OLTP와 replica를 함께 관리할 수 있습니다.",
-        heroIcon: "database",
-        typeLabel: "Admin Console",
-        statusLabel: "Running",
-        statusTone: "healthy",
-        relatedHref: "workspace_database_hub.html",
-        actions: [
-          { label: "Run", icon: "play_circle", variant: "primary", kind: "button", actionKey: "run" },
-          { label: "Open", icon: "open_in_new", kind: "button", actionKey: "open" },
-          { label: "Stop", icon: "stop_circle", kind: "button", actionKey: "stop" }
-        ],
-        heroStats: [
-          { label: "CPU", value: "36%", meta: "query burst 기준" },
-          { label: "Memory", value: "52%", meta: "container working set" },
-          { label: "Binding DB", value: "3", meta: "primary + replica + BI mirror" }
-        ],
-        theme: { bg: "#e8f7f0", brand: "#15803d", brandH: "#166534", brandBg: "#d4f6df", brandSoft: "rgba(21,128,61,.18)", accent: "#34d399" },
-        usageCards: [
-          { title: "CPU", value: "36%", percent: 36, meta: "최근 15분 평균 사용량" },
-          { title: "Memory", value: "52%", percent: 52, meta: "memory working set 기준" }
-        ],
-        runtimeProfiles: {
-          running: {
-            statusLabel: "Running",
-            statusTone: "healthy",
-            heroStats: {
-              cpu: { value: "36%", meta: "query burst 기준" },
-              memory: { value: "52%", meta: "container working set" }
-            },
-            usageCards: [
-              { title: "CPU", value: "36%", percent: 36, meta: "최근 15분 평균 사용량" },
-              { title: "Memory", value: "52%", percent: 52, meta: "memory working set 기준" }
-            ]
-          },
-          stopped: {
-            statusLabel: "Stopped",
-            statusTone: "muted",
-            heroStats: {
-              cpu: { value: "4%", meta: "idle baseline" },
-              memory: { value: "15%", meta: "standby footprint" }
-            },
-            usageCards: [
-              { title: "CPU", value: "4%", percent: 4, meta: "대기 상태 기준" },
-              { title: "Memory", value: "15%", percent: 15, meta: "standby footprint 기준" }
-            ]
-          }
-        },
-        bindingRows: [
-          ["hermes-main", "PostgreSQL", "private ingress / TLS"],
-          ["order-archive", "PostgreSQL", "readonly endpoint"],
-          ["analytics-readonly", "PostgreSQL", "report network"]
-        ],
-        dbOptions: [
-          { name: "catalog-primary", engine: "PostgreSQL", access: "private ingress / TLS", scope: "Commerce Domain", description: "상품 메타데이터 관리용 메인 PostgreSQL입니다." },
-          { name: "settlement-replica", engine: "PostgreSQL", access: "readonly endpoint", scope: "Finance Domain", description: "정산 데이터 조회용 replica 인스턴스입니다." },
-          { name: "growth-mart", engine: "PostgreSQL", access: "analyst network", scope: "Data Mart", description: "운영 지표 분석용 리포트 DB입니다." }
-        ],
-      },
-      {
-        key: "mongo-gui",
-        title: "Mongo GUI",
-        description: "MongoDB document/collection 탐색과 인덱스 점검에 쓰는 문서형 콘솔입니다. 상시 실행하지 않고 필요할 때만 올리는 온디맨드 샘플입니다.",
-        heroIcon: "account_tree",
-        typeLabel: "Document Console",
-        statusLabel: "Stopped",
-        statusTone: "muted",
-        relatedHref: "workspace_database_hub.html",
-        actions: [
-          { label: "Run", icon: "play_circle", variant: "primary", kind: "button", actionKey: "run" },
-          { label: "Open", icon: "open_in_new", kind: "button", actionKey: "open" },
-          { label: "Stop", icon: "stop_circle", kind: "button", actionKey: "stop" }
-        ],
-        heroStats: [
-          { label: "CPU", value: "4%", meta: "stopped baseline" },
-          { label: "Memory", value: "9%", meta: "idle footprint" },
-          { label: "Binding DB", value: "2", meta: "profile + event store" }
-        ],
-        theme: { bg: "#e8f7f0", brand: "#15803d", brandH: "#166534", brandBg: "#d4f6df", brandSoft: "rgba(21,128,61,.18)", accent: "#34d399" },
-        usageCards: [
-          { title: "CPU", value: "4%", percent: 4, meta: "stopped baseline usage" },
-          { title: "Memory", value: "9%", percent: 9, meta: "idle footprint 기준" }
-        ],
-        runtimeProfiles: {
-          running: {
-            statusLabel: "Running",
-            statusTone: "healthy",
-            heroStats: {
-              cpu: { value: "22%", meta: "scan task 기준" },
-              memory: { value: "33%", meta: "document cache 기준" }
-            },
-            usageCards: [
-              { title: "CPU", value: "22%", percent: 22, meta: "collection scan 기준" },
-              { title: "Memory", value: "33%", percent: 33, meta: "document cache 기준" }
-            ]
-          },
-          stopped: {
-            statusLabel: "Stopped",
-            statusTone: "muted",
-            heroStats: {
-              cpu: { value: "4%", meta: "stopped baseline" },
-              memory: { value: "9%", meta: "idle footprint" }
-            },
-            usageCards: [
-              { title: "CPU", value: "4%", percent: 4, meta: "stopped baseline usage" },
-              { title: "Memory", value: "9%", percent: 9, meta: "idle footprint 기준" }
-            ]
-          }
-        },
-        bindingRows: [
-          ["customer-profile", "MongoDB", "temporary ingress"],
-          ["user-event-cluster", "MongoDB", "ops bastion"]
-        ],
-        dbOptions: [
-          { name: "ml-feature-store", engine: "MongoDB", access: "internal route", scope: "AI Lab", description: "실험용 feature document를 조회하는 저장소입니다." },
-          { name: "review-feed", engine: "MongoDB", access: "readonly bastion", scope: "Review Domain", description: "리뷰 원문과 가공본을 확인하는 컬렉션 클러스터입니다." },
-          { name: "sandbox-docs", engine: "MongoDB", access: "sandbox route", scope: "Sandbox", description: "스키마 검증용 샌드박스 문서 DB입니다." }
-        ],
-      },
-      {
-        key: "redis-insight",
-        title: "Redis Insight",
-        description: "Redis 키스페이스, 메모리 편중, TTL, hot key를 점검하는 캐시 콘솔입니다. 세션 캐시와 랭킹 캐시를 빠르게 비교하는 화면으로 구성했습니다.",
-        heroIcon: "memory",
-        typeLabel: "Cache Console",
-        statusLabel: "Running",
-        statusTone: "healthy",
-        relatedHref: "workspace_database_hub.html",
-        actions: [
-          { label: "Run", icon: "play_circle", variant: "primary", kind: "button", actionKey: "run" },
-          { label: "Open", icon: "open_in_new", kind: "button", actionKey: "open" },
-          { label: "Stop", icon: "stop_circle", kind: "button", actionKey: "stop" }
-        ],
-        heroStats: [
-          { label: "CPU", value: "24%", meta: "최근 15분 평균" },
-          { label: "Memory", value: "61%", meta: "총 pool 대비" },
-          { label: "Binding DB", value: "3", meta: "session / ranking / preview" }
-        ],
-        theme: { bg: "#e8f7f0", brand: "#15803d", brandH: "#166534", brandBg: "#d4f6df", brandSoft: "rgba(21,128,61,.18)", accent: "#34d399" },
-        usageCards: [
-          { title: "CPU", value: "24%", percent: 24, meta: "최근 15분 평균 사용량" },
-          { title: "Memory", value: "61%", percent: 61, meta: "memory pool 사용률" }
-        ],
-        runtimeProfiles: {
-          running: {
-            statusLabel: "Running",
-            statusTone: "healthy",
-            heroStats: {
-              cpu: { value: "24%", meta: "최근 15분 평균" },
-              memory: { value: "61%", meta: "총 pool 대비" }
-            },
-            usageCards: [
-              { title: "CPU", value: "24%", percent: 24, meta: "최근 15분 평균 사용량" },
-              { title: "Memory", value: "61%", percent: 61, meta: "memory pool 사용률" }
-            ]
-          },
-          stopped: {
-            statusLabel: "Stopped",
-            statusTone: "muted",
-            heroStats: {
-              cpu: { value: "5%", meta: "idle baseline" },
-              memory: { value: "18%", meta: "standby pool 사용률" }
-            },
-            usageCards: [
-              { title: "CPU", value: "5%", percent: 5, meta: "대기 상태 기준" },
-              { title: "Memory", value: "18%", percent: 18, meta: "standby pool 사용률" }
-            ]
-          }
-        },
-        bindingRows: [
-          ["session-redis", "Redis", "internal service"],
-          ["ranking-cache", "Redis", "private route"],
-          ["preview-cache", "Redis", "staging route"]
-        ],
-        dbOptions: [
-          { name: "coupon-cache", engine: "Redis", access: "internal service", scope: "Promotion Domain", description: "쿠폰 발급 상태를 빠르게 조회하는 캐시입니다." },
-          { name: "recommend-cache", engine: "Redis", access: "private route", scope: "Recommendation", description: "추천 결과 미리보기 검증에 사용하는 캐시입니다." },
-          { name: "ops-throttle-cache", engine: "Redis", access: "ops route", scope: "Platform", description: "트래픽 제한 상태를 확인하는 운영 캐시입니다." }
-        ],
-      },
-      {
-        key: "kibana",
-        title: "Kibana",
-        description: "Elasticsearch index 탐색과 로그 검색에 쓰는 검색 콘솔입니다. 서비스 로그와 보안 audit 로그를 함께 보는 대표 샘플로 연결했습니다.",
-        heroIcon: "travel_explore",
-        typeLabel: "Search Console",
-        statusLabel: "Running",
-        statusTone: "healthy",
-        relatedHref: "workspace_project_detail.html?project=lgloganalyzer",
-        actions: [
-          { label: "Run", icon: "play_circle", variant: "primary", kind: "button", actionKey: "run" },
-          { label: "Open", icon: "open_in_new", kind: "button", actionKey: "open" },
-          { label: "Stop", icon: "stop_circle", kind: "button", actionKey: "stop" }
-        ],
-        heroStats: [
-          { label: "CPU", value: "31%", meta: "search burst 기준" },
-          { label: "Memory", value: "58%", meta: "container working set" },
-          { label: "Binding DB", value: "2", meta: "ops-search · audit-log-search" }
-        ],
-        theme: { bg: "#e8f7f0", brand: "#15803d", brandH: "#166534", brandBg: "#d4f6df", brandSoft: "rgba(21,128,61,.18)", accent: "#34d399" },
-        usageCards: [
-          { title: "CPU", value: "31%", percent: 31, meta: "최근 15분 평균 사용량" },
-          { title: "Memory", value: "58%", percent: 58, meta: "memory working set 기준" }
-        ],
-        runtimeProfiles: {
-          running: {
-            statusLabel: "Running",
-            statusTone: "healthy",
-            heroStats: {
-              cpu: { value: "31%", meta: "search burst 기준" },
-              memory: { value: "58%", meta: "container working set" }
-            },
-            usageCards: [
-              { title: "CPU", value: "31%", percent: 31, meta: "최근 15분 평균 사용량" },
-              { title: "Memory", value: "58%", percent: 58, meta: "memory working set 기준" }
-            ]
-          },
-          stopped: {
-            statusLabel: "Stopped",
-            statusTone: "muted",
-            heroStats: {
-              cpu: { value: "6%", meta: "idle baseline" },
-              memory: { value: "19%", meta: "standby footprint" }
-            },
-            usageCards: [
-              { title: "CPU", value: "6%", percent: 6, meta: "대기 상태 기준" },
-              { title: "Memory", value: "19%", percent: 19, meta: "standby footprint 기준" }
-            ]
-          }
-        },
-        bindingRows: [
-          ["ops-search", "Elasticsearch", "internal proxy"],
-          ["audit-log-search", "Elasticsearch", "security route"]
-        ],
-        dbOptions: [
-          { name: "commerce-search", engine: "Elasticsearch", access: "internal proxy", scope: "Commerce Search", description: "상품 검색 인덱스를 검증하는 검색 클러스터입니다." },
-          { name: "voice-log-search", engine: "Elasticsearch", access: "observability route", scope: "Voice Ops", description: "음성 로그 색인과 에러 패턴을 보는 클러스터입니다." },
-          { name: "trace-archive", engine: "Elasticsearch", access: "security route", scope: "Audit", description: "장기 보관 audit trace를 조회하는 아카이브입니다." }
-        ],
-      },
-      {
-        key: "attu",
-        title: "Attu",
-        description: "Milvus collection, partition, index, vector count를 확인하는 벡터 콘솔입니다. 상시 운용 대신 점검 시에만 사용하는 sample detail로 구성했습니다.",
-        heroIcon: "hub",
-        typeLabel: "Vector Console",
-        statusLabel: "Stopped",
-        statusTone: "muted",
-        relatedHref: "workspace_database_hub.html",
-        actions: [
-          { label: "Run", icon: "play_circle", variant: "primary", kind: "button", actionKey: "run" },
-          { label: "Open", icon: "open_in_new", kind: "button", actionKey: "open" },
-          { label: "Stop", icon: "stop_circle", kind: "button", actionKey: "stop" }
-        ],
-        heroStats: [
-          { label: "CPU", value: "6%", meta: "stopped baseline" },
-          { label: "Memory", value: "12%", meta: "idle footprint" },
-          { label: "Binding DB", value: "2", meta: "search-embedding · catalog-vector" }
-        ],
-        theme: { bg: "#e8f7f0", brand: "#15803d", brandH: "#166534", brandBg: "#d4f6df", brandSoft: "rgba(21,128,61,.18)", accent: "#34d399" },
-        usageCards: [
-          { title: "CPU", value: "6%", percent: 6, meta: "stopped baseline usage" },
-          { title: "Memory", value: "12%", percent: 12, meta: "idle footprint 기준" }
-        ],
-        runtimeProfiles: {
-          running: {
-            statusLabel: "Running",
-            statusTone: "healthy",
-            heroStats: {
-              cpu: { value: "19%", meta: "index scan 기준" },
-              memory: { value: "29%", meta: "vector cache 기준" }
-            },
-            usageCards: [
-              { title: "CPU", value: "19%", percent: 19, meta: "collection scan 기준" },
-              { title: "Memory", value: "29%", percent: 29, meta: "vector cache 기준" }
-            ]
-          },
-          stopped: {
-            statusLabel: "Stopped",
-            statusTone: "muted",
-            heroStats: {
-              cpu: { value: "6%", meta: "stopped baseline" },
-              memory: { value: "12%", meta: "idle footprint" }
-            },
-            usageCards: [
-              { title: "CPU", value: "6%", percent: 6, meta: "stopped baseline usage" },
-              { title: "Memory", value: "12%", percent: 12, meta: "idle footprint 기준" }
-            ]
-          }
-        },
-        bindingRows: [
-          ["search-embedding", "Milvus", "internal route"],
-          ["catalog-vector", "Milvus", "temporary ingress"]
-        ],
-        dbOptions: [
-          { name: "recsys-vector", engine: "Milvus", access: "internal route", scope: "Recommendation", description: "추천 임베딩 인덱스를 점검하는 벡터 저장소입니다." },
-          { name: "faq-embedding", engine: "Milvus", access: "private ingress", scope: "Chatbot", description: "FAQ 임베딩 검색 상태를 확인하는 컬렉션입니다." },
-          { name: "vision-prototype", engine: "Milvus", access: "sandbox route", scope: "Prototype", description: "이미지 검색 실험용 벡터 컬렉션입니다." }
-        ],
-      }
-    ];
-
     window.DETAIL_PAGE_CONFIG = {
-      paramName: "item",
+      paramName: "id",
       pageTitle: "Console Detail",
       hubLabel: "Consoles Hub",
       hubHref: "workspace_tools_hub.html",
       activeHubKey: "tools",
       eyebrow: "Development · Database Console",
       searchPlaceholder: "콘솔 이름, 연결 DB, 운영 메모를 검색하세요...",
-      items: Object.fromEntries(rawItems.map((item) => [item.key, buildItem(item)]))
+      items: {
+        loading: buildShellItem()
+      }
     };
   </script>
   <script src="workspace_detail_shared.js"></script>
   <script src="ax_studio_topbar.js"></script>
   <script>
     (function () {
-      const config = window.DETAIL_PAGE_CONFIG;
-      if (!config || !config.items || !Object.keys(config.items).length) return;
+      const API_BASE = "/api/v2";
+      const POLL_INTERVAL_MS = 4000;
+      const POLL_MAX_ATTEMPTS = 20;
+      const DETAIL_KEY_TO_TYPE = {
+        phpmyadmin: "phpmyadmin",
+        "pg-admin": "pgadmin",
+        "mongo-gui": "mongogui",
+        "redis-insight": "redisinsight",
+        kibana: "kibana",
+        attu: "attu"
+      };
+      const TYPE_META = {
+        phpmyadmin: {
+          icon: "table_view",
+          eyebrow: "Development · Relational Console",
+          label: "Relational Console",
+          theme: { bg: "#eef8f3", brand: "#15803d", brandH: "#166534", brandBg: "#dcfce7", brandSoft: "rgba(21,128,61,.15)", accent: "#4ade80" }
+        },
+        pgadmin: {
+          icon: "storage",
+          eyebrow: "Development · PostgreSQL Console",
+          label: "Admin Console",
+          theme: { bg: "#edf4ff", brand: "#2563eb", brandH: "#1d4ed8", brandBg: "#dbeafe", brandSoft: "rgba(37,99,235,.16)", accent: "#60a5fa" }
+        },
+        mongogui: {
+          icon: "account_tree",
+          eyebrow: "Development · MongoDB Console",
+          label: "Document Console",
+          theme: { bg: "#eefcf4", brand: "#15803d", brandH: "#166534", brandBg: "#dcfce7", brandSoft: "rgba(34,197,94,.14)", accent: "#86efac" }
+        },
+        redisinsight: {
+          icon: "memory",
+          eyebrow: "Development · Redis Console",
+          label: "Cache Console",
+          theme: { bg: "#fff7ed", brand: "#ea580c", brandH: "#c2410c", brandBg: "#ffedd5", brandSoft: "rgba(249,115,22,.16)", accent: "#fdba74" }
+        },
+        kibana: {
+          icon: "travel_explore",
+          eyebrow: "Development · Search Console",
+          label: "Search Console",
+          theme: { bg: "#f5f3ff", brand: "#7c3aed", brandH: "#6d28d9", brandBg: "#ede9fe", brandSoft: "rgba(124,58,237,.16)", accent: "#c4b5fd" }
+        },
+        attu: {
+          icon: "hub",
+          eyebrow: "Development · Vector Console",
+          label: "Vector Console",
+          theme: { bg: "#ecfeff", brand: "#0f766e", brandH: "#115e59", brandBg: "#ccfbf1", brandSoft: "rgba(20,184,166,.15)", accent: "#5eead4" }
+        }
+      };
+      const TYPE_DESCRIPTIONS = {
+        phpmyadmin: "MySQL/MariaDB 스키마 검증과 grants 확인에 쓰는 관계형 콘솔입니다. 운영자들이 단건 데이터 확인과 권한 점검에 가장 자주 여는 샘플 화면입니다.",
+        pgadmin: "PostgreSQL role, schema, session 상태를 확인하고 OLTP와 replica를 함께 관리할 수 있습니다.",
+        mongogui: "MongoDB document/collection 탐색과 인덱스 점검에 쓰는 문서형 콘솔입니다. 상시 실행하지 않고 필요할 때만 올리는 온디맨드 샘플입니다.",
+        redisinsight: "Redis 키스페이스, 메모리 편중, TTL, hot key를 점검하는 캐시 콘솔입니다. 세션 캐시와 랭킹 캐시를 빠르게 비교하는 화면으로 구성했습니다.",
+        kibana: "Elasticsearch index 탐색과 로그 검색에 쓰는 검색 콘솔입니다. 서비스 로그와 보안 audit 로그를 함께 보는 대표 샘플로 연결했습니다.",
+        attu: "Milvus collection, partition, index, vector count를 확인하는 벡터 콘솔입니다. 상시 운용 대신 점검 시에만 사용하는 sample detail로 구성했습니다."
+      };
+      const COMPATIBLE_ENGINES = {
+        phpmyadmin: "mysql",
+        pgadmin: "postgres",
+        mongogui: "mongo",
+        redisinsight: "redis",
+        kibana: "elastic",
+        attu: "milvus"
+      };
+      const STATUS_TONES = {
+        running: "healthy",
+        starting: "review",
+        stopped: "muted",
+        stopping: "warning",
+        error: "danger"
+      };
+      const STATUS_LABELS = {
+        running: "Running",
+        starting: "Starting",
+        stopped: "Stopped",
+        stopping: "Stopping",
+        error: "Needs attention"
+      };
 
-      const params = new URLSearchParams(window.location.search);
-      const itemParam = config.paramName || "item";
-      const requestedKey = params.get(itemParam);
-      const keys = Object.keys(config.items);
-      const currentKey = Object.prototype.hasOwnProperty.call(config.items, requestedKey) ? requestedKey : keys[0];
-      const item = config.items[currentKey];
-
-      const tableHost = document.querySelector("[data-binding-table]");
-      const modal = document.querySelector("[data-bind-modal]");
-      const openButton = document.querySelector("[data-bind-open]");
-      const closeButtons = Array.from(document.querySelectorAll("[data-bind-close]"));
-      const confirmButton = document.querySelector("[data-bind-confirm]");
-      const optionButtons = Array.from(document.querySelectorAll("[data-bind-option]"));
-      const countNode = document.querySelector("[data-binding-count]");
-      const feedbackNode = document.querySelector("[data-bind-feedback]");
-      const usageHost = document.querySelector("[data-usage-cards]");
-      const statusPill = document.querySelector("[data-status-pill]");
-      const heroSection = document.querySelector(".hero");
-      const runButton = document.querySelector('[data-action-key="run"]');
-      const openConsoleButton = document.querySelector('[data-action-key="open"]');
-      const stopButton = document.querySelector('[data-action-key="stop"]');
-
-      if (!tableHost || !modal || !openButton || !confirmButton || !optionButtons.length || !countNode || !feedbackNode) return;
-
-      const bindingRows = item.bindingRows.map((row) => row.slice());
-      const runtimeProfiles = item.runtimeProfiles || {};
-      let runtimeState = item.statusLabel === "Running" ? "running" : "stopped";
-      let selectedDbName = null;
+      const rootStyle = document.documentElement.style;
+      const dom = {
+        title: document.querySelector(".hero-title"),
+        description: document.querySelector(".hero-desc"),
+        eyebrow: document.querySelector(".eyebrow"),
+        statusPill: document.querySelector("[data-status-pill]"),
+        heroSection: document.querySelector(".hero"),
+        usageHost: document.querySelector("[data-usage-cards]"),
+        bindingTable: document.querySelector("[data-binding-table]"),
+        bindingCount: document.querySelector("[data-binding-count]"),
+        bindingSummaryText: document.querySelector("[data-binding-summary-text]"),
+        bindFeedback: document.querySelector("[data-bind-feedback]"),
+        bindModal: document.querySelector("[data-bind-modal]"),
+        bindOpenButton: document.querySelector("[data-bind-open]"),
+        bindOptionsHost: document.querySelector("[data-bind-options]"),
+        bindConfirmButton: document.querySelector("[data-bind-confirm]"),
+        bindCloseButtons: Array.from(document.querySelectorAll("[data-bind-close]")),
+        runButton: document.querySelector('[data-action-key="run"]'),
+        openButton: document.querySelector('[data-action-key="open"]'),
+        stopButton: document.querySelector('[data-action-key="stop"]')
+      };
+      const breadcrumbLabel = Array.from(document.querySelectorAll(".breadcrumbs span"))
+        .filter((node) => !node.classList.contains("material-icons-round"))
+        .at(-1);
       const heroFeedback = document.createElement("div");
       heroFeedback.className = "console-hero-feedback";
       heroFeedback.setAttribute("aria-live", "polite");
-      if (heroSection) heroSection.appendChild(heroFeedback);
-
-      function renderTable(headers, rows) {
-        return `
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>${headers.map((header) => `<th>${header}</th>`).join("")}</tr>
-              </thead>
-              <tbody>
-                ${rows.map((row) => `
-                  <tr>${row.map((cell) => `<td>${cell}</td>`).join("")}</tr>
-                `).join("")}
-              </tbody>
-            </table>
-          </div>
-        `;
+      heroFeedback.hidden = true;
+      if (dom.heroSection) {
+        dom.heroSection.appendChild(heroFeedback);
       }
 
-      function updateBoundState() {
-        const boundSet = new Set(bindingRows.map((row) => row[0]));
-        optionButtons.forEach((button) => {
-          const isBound = boundSet.has(button.dataset.dbName);
-          button.classList.toggle("is-bound", isBound);
+      let currentConsoleId = null;
+      let currentDetail = null;
+      let currentBindings = [];
+      let selectedDatabaseId = null;
+      let availableDatabases = [];
+      let actionInFlight = false;
+      let bindInFlight = false;
+
+      function buildQuery(params) {
+        const searchParams = new URLSearchParams();
+        Object.entries(params || {}).forEach(([key, value]) => {
+          if (value === undefined || value === null || value === "") {
+            return;
+          }
+          searchParams.set(key, String(value));
         });
+        const query = searchParams.toString();
+        return query ? `?${query}` : "";
       }
 
-      function updateBindingSummary() {
-        countNode.textContent = String(bindingRows.length);
-        const statCards = Array.from(document.querySelectorAll(".stat-card"));
-        statCards.forEach((card) => {
-          const label = card.querySelector(".stat-label");
-          if (!label || label.textContent.trim() !== "Binding DB") return;
-          const value = card.querySelector(".stat-value");
-          const meta = card.querySelector(".stat-meta");
-          if (value) value.textContent = String(bindingRows.length);
-          if (meta) meta.textContent = bindingRows.map((row) => row[0]).join(" · ");
+      async function requestJson(path, options) {
+        const response = await fetch(`${API_BASE}${path}`, {
+          credentials: "same-origin",
+          headers: {
+            Accept: "application/json",
+            ...(options && options.body ? { "Content-Type": "application/json" } : {})
+          },
+          ...(options || {})
         });
+
+        if (!response.ok) {
+          let message = `${response.status} ${response.statusText}`;
+          try {
+            const payload = await response.json();
+            message = payload?.error?.message || payload?.message || message;
+          } catch (error) {
+            // ignore parse failure
+          }
+          throw new Error(message);
+        }
+
+        return response.json();
       }
 
-      function setFeedback(message, tone) {
-        feedbackNode.textContent = message;
-        feedbackNode.classList.remove("is-success", "is-warning");
-        if (tone) feedbackNode.classList.add(tone);
+      function extractData(payload, fallback) {
+        if (payload && typeof payload === "object" && "data" in payload) {
+          return payload.data;
+        }
+        return payload ?? fallback;
+      }
+
+      function extractItems(payload) {
+        const data = extractData(payload, {});
+        if (Array.isArray(data?.items)) {
+          return data.items;
+        }
+        if (Array.isArray(payload?.items)) {
+          return payload.items;
+        }
+        return [];
+      }
+
+      async function fetchJson(path, params) {
+        return requestJson(`${path}${buildQuery(params)}`);
       }
 
       function setHeroFeedback(message, tone) {
-        heroFeedback.textContent = message;
+        heroFeedback.textContent = message || "";
         heroFeedback.classList.remove("is-success", "is-warning");
-        if (tone) heroFeedback.classList.add(tone);
+        heroFeedback.hidden = !message;
+        if (tone) {
+          heroFeedback.classList.add(tone);
+        }
       }
 
-      function syncTable() {
-        tableHost.innerHTML = renderTable(["DB", "Engine", "Access"], bindingRows);
-        updateBindingSummary();
-        updateBoundState();
+      function setBindFeedback(message, tone) {
+        if (!dom.bindFeedback) {
+          return;
+        }
+        dom.bindFeedback.textContent = message || "";
+        dom.bindFeedback.classList.remove("is-success", "is-warning");
+        if (tone) {
+          dom.bindFeedback.classList.add(tone);
+        }
       }
 
-      function openConsolePreviewWindow() {
-        const preview = window.open("about:blank", "_blank");
-        if (!preview) return false;
+      function updateTheme(type) {
+        const theme = TYPE_META[type]?.theme || TYPE_META.phpmyadmin.theme;
+        rootStyle.setProperty("--bg", theme.bg);
+        rootStyle.setProperty("--brand", theme.brand);
+        rootStyle.setProperty("--brand-h", theme.brandH || theme.brand);
+        rootStyle.setProperty("--brand-bg", theme.brandBg);
+        rootStyle.setProperty("--brand-soft", theme.brandSoft);
+        rootStyle.setProperty("--accent", theme.accent || theme.brand);
+      }
 
-        const rowsHtml = bindingRows.map((row) => `
-          <tr>
-            <td style="padding:12px 14px;border-bottom:1px solid #e5e7eb;">${row[0]}</td>
-            <td style="padding:12px 14px;border-bottom:1px solid #e5e7eb;">${row[1]}</td>
-            <td style="padding:12px 14px;border-bottom:1px solid #e5e7eb;">${row[2]}</td>
-          </tr>
-        `).join("");
+      function formatPercent(value) {
+        return Number.isFinite(value) ? `${Number(value).toFixed(1)}%` : "측정값 없음";
+      }
 
-        preview.document.write(`
-          <!doctype html>
-          <html lang="ko">
-          <head>
-            <meta charset="UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <title>${item.title} Console</title>
-            <style>
-              body {
-                margin:0;
-                font-family:Inter, -apple-system, BlinkMacSystemFont, sans-serif;
-                background:linear-gradient(180deg, #f8fbff 0%, #eef4fb 100%);
-                color:#1f2937;
-              }
-              .shell {
-                max-width:1180px;
-                margin:0 auto;
-                padding:28px;
-              }
-              .hero {
-                padding:24px;
-                border-radius:24px;
-                background:#ffffff;
-                border:1px solid #e5e7eb;
-                box-shadow:0 18px 36px rgba(15,23,42,.08);
-                margin-bottom:18px;
-              }
-              .badge {
-                display:inline-flex;
-                align-items:center;
-                gap:6px;
-                padding:6px 10px;
-                border-radius:999px;
-                background:${runtimeState === "running" ? item.theme.brandBg : "#f3f4f6"};
-                color:${runtimeState === "running" ? item.theme.brand : "#6b7280"};
-                font-size:12px;
-                font-weight:700;
-                margin-bottom:12px;
-              }
-              h1 {
-                margin:0 0 10px;
-                font-size:32px;
-                letter-spacing:-.04em;
-              }
-              p {
-                margin:0;
-                color:#667085;
-                line-height:1.6;
-              }
-              .stats {
-                display:grid;
-                grid-template-columns:repeat(3, minmax(0, 1fr));
-                gap:14px;
-                margin:18px 0;
-              }
-              .stat {
-                padding:16px;
-                border-radius:18px;
-                background:#f8fafc;
-                border:1px solid #e5e7eb;
-              }
-              .label {
-                font-size:12px;
-                color:#667085;
-                font-weight:700;
-                margin-bottom:8px;
-              }
-              .value {
-                font-size:28px;
-                font-weight:800;
-                letter-spacing:-.04em;
-                margin-bottom:4px;
-              }
-              .meta {
-                font-size:12px;
-                color:#667085;
-              }
-              table {
-                width:100%;
-                border-collapse:collapse;
-                background:#ffffff;
-                border:1px solid #e5e7eb;
-                border-radius:18px;
-                overflow:hidden;
-              }
-              th {
-                text-align:left;
-                padding:12px 14px;
-                background:#f8fafc;
-                color:#667085;
-                font-size:12px;
-              }
-              .caption {
-                margin:0 0 12px;
-                font-size:14px;
-                color:#667085;
-              }
-            </style>
-          </head>
-          <body>
-            <main class="shell">
-              <section class="hero">
-                <div class="badge">${runtimeState === "running" ? "Running" : "Stopped"}</div>
-                <h1>${item.title}</h1>
-                <p>${item.description}</p>
-                <div class="stats">
-                  <div class="stat">
-                    <div class="label">CPU</div>
-                    <div class="value">${document.querySelector('[data-stat-card="CPU"] .stat-value')?.textContent || ""}</div>
-                    <div class="meta">${document.querySelector('[data-stat-card="CPU"] .stat-meta')?.textContent || ""}</div>
-                  </div>
-                  <div class="stat">
-                    <div class="label">Memory</div>
-                    <div class="value">${document.querySelector('[data-stat-card="Memory"] .stat-value')?.textContent || ""}</div>
-                    <div class="meta">${document.querySelector('[data-stat-card="Memory"] .stat-meta')?.textContent || ""}</div>
-                  </div>
-                  <div class="stat">
-                    <div class="label">Binding DB</div>
-                    <div class="value">${bindingRows.length}</div>
-                    <div class="meta">연결된 DB를 바로 확인할 수 있습니다.</div>
-                  </div>
-                </div>
-                <p class="caption">이 창은 콘솔을 여는 샘플 UI입니다.</p>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>DB</th>
-                      <th>Engine</th>
-                      <th>Access</th>
-                    </tr>
-                  </thead>
-                  <tbody>${rowsHtml}</tbody>
-                </table>
-              </section>
-            </main>
-          </body>
-          </html>
-        `);
-        preview.document.close();
-        return true;
+      function getUsageDisplayValue(card) {
+        if (Number.isFinite(card?.percent)) {
+          return `${card.percent.toFixed(1)}%`;
+        }
+
+        if (Number(card?.usedValue) === 0) {
+          return "0.0%";
+        }
+
+        return "측정값 없음";
+      }
+
+      function buildUsageMeta(card) {
+        const parts = [];
+        if (card?.limitLabel) {
+          parts.push(`${card.limitLabel} quota`);
+        }
+        if (card?.requestLabel) {
+          parts.push(`request ${card.requestLabel}`);
+        }
+        if (Number.isFinite(card?.percent)) {
+          parts.push(`${card.percent.toFixed(1)}% 사용`);
+        }
+        return parts.join(" · ") || "메트릭을 수집하는 중입니다.";
+      }
+
+      function toUsageProgress(detail) {
+        const usage = detail?.usage || {};
+        return [
+          {
+            title: "CPU",
+            value: getUsageDisplayValue(usage?.cpu),
+            percent: Number.isFinite(usage?.cpu?.percent) ? usage.cpu.percent : 0,
+            meta: buildUsageMeta(usage?.cpu)
+          },
+          {
+            title: "Memory",
+            value: getUsageDisplayValue(usage?.memory),
+            percent: Number.isFinite(usage?.memory?.percent) ? usage.memory.percent : 0,
+            meta: buildUsageMeta(usage?.memory)
+          }
+        ];
       }
 
       function updateHeroStat(labelName, nextValue, nextMeta) {
         const card = document.querySelector(`[data-stat-card="${labelName}"]`);
-        if (!card) return;
+        if (!card) {
+          return;
+        }
         const valueNode = card.querySelector(".stat-value");
         const metaNode = card.querySelector(".stat-meta");
-        if (valueNode) valueNode.textContent = nextValue;
-        if (metaNode) metaNode.textContent = nextMeta;
-      }
-
-      function syncConsoleButtons() {
-        if (runButton) runButton.disabled = runtimeState === "running";
-        if (openConsoleButton) openConsoleButton.disabled = runtimeState !== "running";
-        if (stopButton) stopButton.disabled = runtimeState === "stopped";
-      }
-
-      function applyRuntimeState(nextState, message, tone) {
-        const profile = runtimeProfiles[nextState];
-        if (!profile) return;
-
-        runtimeState = nextState;
-        if (statusPill) {
-          statusPill.textContent = profile.statusLabel;
-          statusPill.className = `pill tone-${profile.statusTone}`;
-          statusPill.setAttribute("data-status-pill", "");
+        if (valueNode) {
+          valueNode.textContent = nextValue;
         }
-        if (usageHost) usageHost.innerHTML = renderProgress(profile.usageCards);
-        updateHeroStat("CPU", profile.heroStats.cpu.value, profile.heroStats.cpu.meta);
-        updateHeroStat("Memory", profile.heroStats.memory.value, profile.heroStats.memory.meta);
-        syncConsoleButtons();
-        if (message) setHeroFeedback(message, tone);
+        if (metaNode) {
+          metaNode.textContent = nextMeta;
+        }
       }
 
-      function closeModal() {
-        modal.hidden = true;
-        selectedDbName = null;
-        optionButtons.forEach((button) => button.classList.remove("is-selected"));
-        confirmButton.disabled = true;
+      function updateHero(detail, bindings) {
+        const typeMeta = TYPE_META[detail?.type] || {};
+        document.title = `${detail?.name || "Console Detail"} · Console Detail`;
+        if (dom.title) {
+          dom.title.textContent = detail?.name || "Console Detail";
+        }
+        if (dom.description) {
+          dom.description.textContent = TYPE_DESCRIPTIONS[detail?.type] || detail?.summary || "";
+        }
+        if (dom.eyebrow) {
+          dom.eyebrow.innerHTML = `<span class="material-icons-round" style="font-size:16px;">${typeMeta.icon || detail?.icon || "web"}</span>${typeMeta.eyebrow || "Development · Database Console"}`;
+        }
+        if (dom.statusPill) {
+          const tone = STATUS_TONES[detail?.status] || "review";
+          dom.statusPill.textContent = detail?.statusLabel || STATUS_LABELS[detail?.status] || "Unknown";
+          dom.statusPill.className = `pill tone-${tone}`;
+          dom.statusPill.setAttribute("data-status-pill", "");
+        }
+        if (breadcrumbLabel) {
+          breadcrumbLabel.textContent = detail?.name || "Console Detail";
+        }
+
+        const cpuPercent = getUsageDisplayValue(detail?.usage?.cpu);
+        const memoryPercent = getUsageDisplayValue(detail?.usage?.memory);
+        updateHeroStat("CPU", cpuPercent, `${detail?.usage?.cpu?.usedLabel || "-"} / ${detail?.usage?.cpu?.limitLabel || "-"}`);
+        updateHeroStat("Memory", memoryPercent, `${detail?.usage?.memory?.usedLabel || "-"} / ${detail?.usage?.memory?.limitLabel || "-"}`);
+        updateHeroStat(
+          "Bound DB",
+          String(bindings.length),
+          bindings.length ? bindings.map((binding) => binding.name).slice(0, 3).join(" · ") : "연결된 DB 없음"
+        );
       }
 
-      function openModal() {
-        modal.hidden = false;
-        updateBoundState();
+      function updateUsage(detail) {
+        if (!dom.usageHost) {
+          return;
+        }
+        dom.usageHost.innerHTML = renderProgress(toUsageProgress(detail));
       }
 
-      openButton.addEventListener("click", openModal);
-      closeButtons.forEach((button) => button.addEventListener("click", closeModal));
+      function renderBindings(bindings) {
+        currentBindings = Array.isArray(bindings) ? bindings : [];
+        if (dom.bindingTable) {
+          dom.bindingTable.innerHTML = renderBindingTable(currentBindings);
+        }
+        if (dom.bindingCount) {
+          dom.bindingCount.textContent = String(currentBindings.length);
+        }
+        if (dom.bindingSummaryText) {
+          dom.bindingSummaryText.textContent = currentBindings.length ? `${currentBindings.length}개 연결됨` : "연결된 DB 없음";
+        }
+      }
 
-      modal.addEventListener("click", (event) => {
-        if (event.target === modal) closeModal();
-      });
+      function syncActionButtons(detail) {
+        const canStart = Boolean(detail?.capabilities?.canStart);
+        const canOpen = Boolean(detail?.capabilities?.canOpen);
+        const canStop = Boolean(detail?.capabilities?.canStop);
+        const canManageBindings = Boolean(detail?.capabilities?.canManageBindings);
 
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && !modal.hidden) closeModal();
-      });
+        if (dom.runButton) {
+          dom.runButton.disabled = actionInFlight || !canStart;
+        }
+        if (dom.openButton) {
+          dom.openButton.disabled = actionInFlight || !canOpen;
+        }
+        if (dom.stopButton) {
+          dom.stopButton.disabled = actionInFlight || !canStop;
+        }
+        if (dom.bindOpenButton) {
+          dom.bindOpenButton.disabled = bindInFlight || !canManageBindings;
+        }
+      }
 
-      optionButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          selectedDbName = button.dataset.dbName;
-          optionButtons.forEach((candidate) => candidate.classList.toggle("is-selected", candidate === button));
-          confirmButton.disabled = false;
+      async function fetchDetail(consoleId) {
+        const [detailPayload, bindingsPayload] = await Promise.all([
+          fetchJson(`/consoles/${encodeURIComponent(consoleId)}`),
+          fetchJson(`/consoles/${encodeURIComponent(consoleId)}/bindings`)
+        ]);
+        return {
+          detail: extractData(detailPayload, {}),
+          bindings: extractItems(bindingsPayload)
+        };
+      }
+
+      async function fetchAllDatabases() {
+        const items = [];
+        let cursor = null;
+        let hasNext = true;
+
+        while (hasNext) {
+          const payload = await fetchJson("/databases", {
+            limit: 100,
+            sort: "name",
+            ...(cursor ? { cursor } : {})
+          });
+          const pageItems = extractItems(payload);
+          const page = extractData(payload, {})?.page || payload?.page || {};
+
+          items.push(...pageItems);
+          cursor = typeof page?.nextCursor === "string" ? page.nextCursor : null;
+          hasNext = Boolean(cursor) && pageItems.length > 0;
+        }
+
+        return items;
+      }
+
+      function toBindableOptions(databases, detail, bindings) {
+        const compatibleEngine = COMPATIBLE_ENGINES[detail?.type];
+        const boundIds = new Set((bindings || []).map((item) => String(item?.id || "")));
+
+        return (Array.isArray(databases) ? databases : [])
+          .filter((item) => !compatibleEngine || item?.engine === compatibleEngine)
+          .filter((item) => !boundIds.has(String(item?.id || "")))
+          .map((item) => ({
+            id: item?.id,
+            name: item?.name || "Database",
+            engine: item?.engine || "database",
+            statusLabel: item?.health?.label || item?.status || "unknown",
+            description: item?.summary || item?.endpoint || "연결 가능한 데이터베이스"
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name));
+      }
+
+      function attachBindOptionEvents() {
+        const buttons = Array.from(document.querySelectorAll("[data-bind-option]"));
+        buttons.forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedDatabaseId = button.dataset.dbId || null;
+            buttons.forEach((candidate) => candidate.classList.toggle("is-selected", candidate === button));
+            if (dom.bindConfirmButton) {
+              dom.bindConfirmButton.disabled = !selectedDatabaseId || bindInFlight;
+            }
+          });
         });
-      });
+      }
 
-      confirmButton.addEventListener("click", () => {
-        const selectedButton = optionButtons.find((button) => button.dataset.dbName === selectedDbName);
-        if (!selectedButton) return;
-
-        const nextRow = [
-          selectedButton.dataset.dbName,
-          selectedButton.dataset.dbEngine,
-          selectedButton.dataset.dbAccess
-        ];
-
-        if (bindingRows.some((row) => row[0] === nextRow[0])) {
-          setFeedback("이미 바인딩된 DB입니다. 다른 DB를 선택할 수 있습니다.", "is-warning");
-          closeModal();
+      async function refreshBindOptions() {
+        if (!dom.bindOptionsHost || !currentDetail) {
           return;
         }
 
-        bindingRows.push(nextRow);
-        syncTable();
-        setFeedback(`${nextRow[0]} DB를 이 콘솔에 바인딩했습니다.`, "is-success");
-        closeModal();
+        if (!availableDatabases.length) {
+          availableDatabases = await fetchAllDatabases();
+        }
+
+        const options = toBindableOptions(availableDatabases, currentDetail, currentBindings);
+        dom.bindOptionsHost.innerHTML = renderDbOptions(options);
+        selectedDatabaseId = null;
+        if (dom.bindConfirmButton) {
+          dom.bindConfirmButton.disabled = true;
+        }
+        attachBindOptionEvents();
+      }
+
+      function closeBindModal() {
+        if (dom.bindModal) {
+          dom.bindModal.hidden = true;
+        }
+        selectedDatabaseId = null;
+        if (dom.bindConfirmButton) {
+          dom.bindConfirmButton.disabled = true;
+        }
+      }
+
+      async function openBindModal() {
+        if (!dom.bindModal || !currentDetail?.capabilities?.canManageBindings) {
+          return;
+        }
+
+        dom.bindModal.hidden = false;
+        if (dom.bindOptionsHost) {
+          dom.bindOptionsHost.innerHTML = `<div class="empty-state">바인딩 가능한 DB를 확인하는 중입니다.</div>`;
+        }
+
+        try {
+          await refreshBindOptions();
+        } catch (error) {
+          if (dom.bindOptionsHost) {
+            dom.bindOptionsHost.innerHTML = `<div class="empty-state">DB 목록을 불러오지 못했습니다.</div>`;
+          }
+          setBindFeedback(error.message || "DB 목록을 불러오지 못했습니다.", "is-warning");
+        }
+      }
+
+      async function applyDetail(consoleId, feedbackMessage, feedbackTone) {
+        const { detail, bindings } = await fetchDetail(consoleId);
+        currentConsoleId = consoleId;
+        currentDetail = detail;
+        updateTheme(detail?.type);
+        updateHero(detail, bindings);
+        updateUsage(detail);
+        renderBindings(bindings);
+        syncActionButtons(detail);
+        if (feedbackMessage) {
+          setHeroFeedback(feedbackMessage, feedbackTone);
+        } else {
+          setHeroFeedback("");
+        }
+      }
+
+      async function pollUntilStable(consoleId, expectedStates, pendingMessage, successMessage, successTone) {
+        setHeroFeedback(pendingMessage);
+
+        for (let index = 0; index < POLL_MAX_ATTEMPTS; index += 1) {
+          await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
+          const { detail, bindings } = await fetchDetail(consoleId);
+          currentDetail = detail;
+          updateTheme(detail?.type);
+          updateHero(detail, bindings);
+          updateUsage(detail);
+          renderBindings(bindings);
+          syncActionButtons(detail);
+
+          if (expectedStates.includes(detail?.status)) {
+            setHeroFeedback(successMessage, successTone);
+            return;
+          }
+        }
+
+        setHeroFeedback("상태 반영을 기다리는 중입니다. 잠시 후 다시 확인해 주세요.", "is-warning");
+      }
+
+      async function handleLifecycleAction(action) {
+        if (!currentConsoleId || actionInFlight) {
+          return;
+        }
+
+        actionInFlight = true;
+        syncActionButtons(currentDetail);
+        setHeroFeedback("요청을 처리하는 중입니다.");
+
+        try {
+          await requestJson(`/consoles/${encodeURIComponent(currentConsoleId)}/${action}`, {
+            method: "POST"
+          });
+
+          if (action === "start") {
+            await pollUntilStable(
+              currentConsoleId,
+              ["running"],
+              "콘솔 시작 작업을 요청했습니다. 실제 상태를 확인하는 중입니다.",
+              `${currentDetail?.name || "Console"} 콘솔이 실행되었습니다.`,
+              "is-success"
+            );
+          } else if (action === "stop") {
+            await pollUntilStable(
+              currentConsoleId,
+              ["stopped"],
+              "콘솔 중지 작업을 요청했습니다. 실제 상태를 확인하는 중입니다.",
+              `${currentDetail?.name || "Console"} 콘솔이 중지되었습니다.`,
+              "is-warning"
+            );
+          }
+        } catch (error) {
+          setHeroFeedback(error.message || "요청을 처리하지 못했습니다.", "is-warning");
+        } finally {
+          actionInFlight = false;
+          syncActionButtons(currentDetail);
+        }
+      }
+
+      async function handleOpenConsole() {
+        if (!currentConsoleId || actionInFlight) {
+          return;
+        }
+
+        actionInFlight = true;
+        syncActionButtons(currentDetail);
+        setHeroFeedback("콘솔 접속 URL을 준비하는 중입니다.");
+
+        try {
+          const payload = await requestJson(`/consoles/${encodeURIComponent(currentConsoleId)}/open`, {
+            method: "POST"
+          });
+          const data = extractData(payload, {});
+          const opened = data?.url ? window.open(data.url, "_blank", "noopener") : null;
+          if (!opened) {
+            throw new Error("새 탭을 열지 못했습니다. 브라우저 팝업 설정을 확인해 주세요.");
+          }
+          setHeroFeedback(`${currentDetail?.name || "Console"} 콘솔을 새 탭에서 열었습니다.`, "is-success");
+        } catch (error) {
+          setHeroFeedback(error.message || "콘솔을 열지 못했습니다.", "is-warning");
+        } finally {
+          actionInFlight = false;
+          syncActionButtons(currentDetail);
+        }
+      }
+
+      async function handleBindConfirm() {
+        if (!currentConsoleId || !selectedDatabaseId || bindInFlight) {
+          return;
+        }
+
+        bindInFlight = true;
+        syncActionButtons(currentDetail);
+        if (dom.bindConfirmButton) {
+          dom.bindConfirmButton.disabled = true;
+        }
+
+        try {
+          await requestJson(`/consoles/${encodeURIComponent(currentConsoleId)}/bindings`, {
+            method: "POST",
+            body: JSON.stringify({ databaseId: selectedDatabaseId })
+          });
+          availableDatabases = [];
+          closeBindModal();
+          await applyDetail(currentConsoleId);
+          setBindFeedback("선택한 DB를 실제 콘솔 바인딩에 추가했습니다.", "is-success");
+        } catch (error) {
+          setBindFeedback(error.message || "DB 바인딩에 실패했습니다.", "is-warning");
+        } finally {
+          bindInFlight = false;
+          syncActionButtons(currentDetail);
+        }
+      }
+
+      async function resolveConsoleId() {
+        const params = new URLSearchParams(window.location.search);
+        const directId = String(params.get("id") || "").trim();
+        if (directId) {
+          return directId;
+        }
+
+        const legacyKey = String(params.get("item") || "").trim();
+        const legacyType = DETAIL_KEY_TO_TYPE[legacyKey];
+        if (!legacyType) {
+          return null;
+        }
+
+        const payload = await fetchJson("/consoles", {
+          limit: 1,
+          sort: "-updatedAt",
+          "filter[type]": legacyType
+        });
+        const items = extractItems(payload);
+        return items[0]?.id || null;
+      }
+
+      dom.bindCloseButtons.forEach((button) => {
+        button.addEventListener("click", closeBindModal);
       });
 
-      syncTable();
-      syncConsoleButtons();
-      setHeroFeedback("이 페이지에서 콘솔을 실행하거나 열고 중지할 수 있습니다.");
-
-      if (runButton) {
-        runButton.addEventListener("click", () => {
-          applyRuntimeState("running", `${item.title} 콘솔을 실행했습니다.`, "is-success");
+      if (dom.bindModal) {
+        dom.bindModal.addEventListener("click", (event) => {
+          if (event.target === dom.bindModal) {
+            closeBindModal();
+          }
         });
       }
 
-      if (openConsoleButton) {
-          openConsoleButton.addEventListener("click", () => {
-            if (runtimeState !== "running") {
-              setHeroFeedback("콘솔을 먼저 실행한 뒤 열 수 있습니다.", "is-warning");
-              return;
-            }
-          const opened = openConsolePreviewWindow();
-          setHeroFeedback(
-            opened ? `${item.title} 콘솔을 새 탭에서 열었습니다.` : "브라우저 설정을 확인한 뒤 다시 열 수 있습니다.",
-            opened ? "is-success" : "is-warning"
-          );
-        });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && dom.bindModal && !dom.bindModal.hidden) {
+          closeBindModal();
+        }
+      });
+
+      if (dom.bindOpenButton) {
+        dom.bindOpenButton.addEventListener("click", openBindModal);
+      }
+      if (dom.bindConfirmButton) {
+        dom.bindConfirmButton.addEventListener("click", handleBindConfirm);
+      }
+      if (dom.runButton) {
+        dom.runButton.addEventListener("click", () => handleLifecycleAction("start"));
+      }
+      if (dom.stopButton) {
+        dom.stopButton.addEventListener("click", () => handleLifecycleAction("stop"));
+      }
+      if (dom.openButton) {
+        dom.openButton.addEventListener("click", handleOpenConsole);
       }
 
-      if (stopButton) {
-        stopButton.addEventListener("click", () => {
-          applyRuntimeState("stopped", `${item.title} 콘솔을 중지했습니다.`, "is-warning");
-        });
-      }
+      (async () => {
+        try {
+          const consoleId = await resolveConsoleId();
+          if (!consoleId) {
+            throw new Error("콘솔 ID를 확인하지 못했습니다.");
+          }
+
+          await applyDetail(consoleId);
+        } catch (error) {
+          setHeroFeedback(error.message || "콘솔 상세 정보를 불러오지 못했습니다.", "is-warning");
+          if (dom.description) {
+            dom.description.textContent = "Console 상세 데이터를 불러오지 못했습니다.";
+          }
+          if (dom.bindingTable) {
+            dom.bindingTable.innerHTML = `<div class="empty-state">상세 데이터를 불러오지 못했습니다.</div>`;
+          }
+        }
+      })();
     })();
   </script>
 </body>

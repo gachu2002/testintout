@@ -15,6 +15,11 @@
     window.HUB_CONFIG = {
       documentTitle: "Database Hub",
       activeKey: "database",
+      connectionsType: "project",
+      secondaryConnectionsType: "tool",
+      searchSource: "databases",
+      searchSourceLabel: "Database Hub",
+      searchDefaultType: "hub",
       theme: {
         bg: "#f4f8ff",
         brand: "#2563eb",
@@ -23,6 +28,7 @@
         brandSoft: "rgba(37,99,235,.14)",
         accent2: "#06b6d4"
       },
+      panelVariant: "briefing",
       searchPlaceholder: "DB 이름, 엔진, 연결 프로젝트를 검색하세요...",
       eyebrow: "Storage · Data Plane",
       title: "Database Hub",
@@ -30,235 +36,1108 @@
       primaryAction: { href: "workspace_project_detail.html?project=hermes-be", icon: "add_circle", label: "새 데이터베이스 생성" },
       secondaryAction: { href: "workspace_tools_hub.html", icon: "web", label: "Consoles Hub 보기" },
       heroStats: [
-        { icon: "storage", value: "6", label: "등록 리소스", note: "Running 5 · Stopped 1", color: "linear-gradient(135deg,#2563eb,#3b82f6)" },
-        { icon: "link", value: "13", label: "연결된 프로젝트", note: "프로젝트/서비스 기준", color: "linear-gradient(135deg,#3b82f6,#38bdf8)" },
-        { icon: "dataset", value: "5", label: "Healthy 리소스", note: "현재 실행 중 기준", color: "linear-gradient(135deg,#1d4ed8,#60a5fa)" },
-        { icon: "visibility", value: "82", label: "주간 리소스 열람", note: "최근 7일 조회 기준", color: "linear-gradient(135deg,#0ea5e9,#67e8f9)" }
+        { icon: "storage", value: "-", label: "등록 리소스", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#2563eb,#3b82f6)" },
+        { icon: "link", value: "-", label: "연결 바인딩", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#3b82f6,#38bdf8)" },
+        { icon: "health_and_safety", value: "-", label: "Healthy 리소스", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#1d4ed8,#60a5fa)" },
+        { icon: "visibility", value: "-", label: "주간 리소스 열람", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#0ea5e9,#67e8f9)" }
       ],
       filters: [
-        { id: "all", icon: "apps", label: "전체" },
-        { id: "relational", icon: "table_chart", label: "관계형" },
-        { id: "document", icon: "account_tree", label: "문서형" },
-        { id: "cache", icon: "bolt", label: "캐시" },
-        { id: "search", icon: "travel_explore", label: "검색" },
-        { id: "vector", icon: "hub", label: "벡터" }
+        { id: "all", icon: "apps", label: "전체" }
       ],
       resourceSectionIcon: "storage",
       resourceSectionLabel: "Database Fleet",
       resourceTitle: "Databases",
-      resourceDescription: "워크스페이스에서 운영 중인 데이터베이스 리소스를 한곳에 모았습니다. 리소스 종류, 연결된 프로젝트, 현재 런타임 상태를 보고 필요 시 Restart를 판단할 수 있습니다.",
+      resourceDescription: "실제 Database Hub API 응답을 불러오는 중입니다.",
       resourceHeaderLink: { href: "workspace_projects_hub.html", label: "프로젝트 연결 보기" },
-      resources: [
-        {
-          categories: ["all", "relational"],
-          status: { label: "Running", tone: "healthy" },
-          engine: "Relational DB · MySQL / MariaDB",
-          icon: "table_view",
-          name: "payments-mysql",
-          meta: "결제/정산 서비스가 공통으로 사용하는 MySQL 운영 리소스",
-          color: "linear-gradient(135deg,#0891b2,#22d3ee)",
-          connectionsLabel: "Connected Projects",
-          connectionsEqualWidth: true,
-          connectionsMaxItems: 4,
-          connectionsLayoutClass: "is-fixed-projects",
-          connections: [
-            { abbr: "PA", name: "payment-api", meta: "billing write", color: "linear-gradient(135deg,#0891b2,#22d3ee)" },
-            { abbr: "BA", name: "billing-admin", meta: "ops console", color: "linear-gradient(135deg,#0f766e,#2dd4bf)" }
-          ],
-          secondaryConnectionsLabel: "Connected Consoles",
-          secondaryConnectionsMaxItems: 1,
-          secondaryConnectionsLayoutClass: "is-fixed-consoles",
-          secondaryConnections: [
-            { abbr: "PM", name: "phpMyAdmin", meta: "MySQL admin", color: "linear-gradient(135deg,#0891b2,#22d3ee)" }
-          ],
-          actions: [
-            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_database_detail.html?db=payments-mysql" },
-            { label: "Restart", icon: "restart_alt", kind: "restart" }
-          ]
-        },
-        {
-          categories: ["all", "relational"],
-          status: { label: "Running", tone: "healthy" },
-          engine: "Relational DB · PostgreSQL",
-          icon: "database",
-          name: "hermes-main-postgres",
-          meta: "주요 트랜잭션과 운영 백오피스가 붙는 PostgreSQL 메인 리소스",
-          color: "linear-gradient(135deg,#2563eb,#60a5fa)",
-          connectionsLabel: "Connected Projects",
-          connectionsEqualWidth: true,
-          connectionsMaxItems: 4,
-          connectionsLayoutClass: "is-fixed-projects",
-          connections: [
-            { abbr: "HB", name: "hermes-be", meta: "primary app", color: "linear-gradient(135deg,#2563eb,#60a5fa)" },
-            { abbr: "OW", name: "ops-worker", meta: "batch / cron", color: "linear-gradient(135deg,#1d4ed8,#38bdf8)" },
-            { abbr: "OA", name: "ops-admin", meta: "readonly admin", color: "linear-gradient(135deg,#0ea5e9,#67e8f9)" }
-          ],
-          secondaryConnectionsLabel: "Connected Consoles",
-          secondaryConnectionsMaxItems: 1,
-          secondaryConnectionsLayoutClass: "is-fixed-consoles",
-          secondaryConnections: [
-            { abbr: "PG", name: "PG Admin", meta: "Postgres admin", color: "linear-gradient(135deg,#2563eb,#60a5fa)" }
-          ],
-          actions: [
-            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_database_detail.html?db=hermes-main-postgres" },
-            { label: "Restart", icon: "restart_alt", kind: "restart" }
-          ]
-        },
-        {
-          categories: ["all", "document"],
-          status: { label: "Running", tone: "healthy" },
-          engine: "Document DB · MongoDB",
-          icon: "account_tree",
-          name: "customer-profile-mongo",
-          meta: "프로필 문서와 이벤트 샘플이 쌓이는 MongoDB 리소스",
-          color: "linear-gradient(135deg,#16a34a,#4ade80)",
-          connectionsLabel: "Connected Projects",
-          connectionsEqualWidth: true,
-          connectionsMaxItems: 4,
-          connectionsLayoutClass: "is-fixed-projects",
-          connections: [
-            { abbr: "CP", name: "profile-api", meta: "customer profile", color: "linear-gradient(135deg,#16a34a,#4ade80)" },
-            { abbr: "RS", name: "restaurant", meta: "feature consume", color: "linear-gradient(135deg,#15803d,#86efac)" }
-          ],
-          secondaryConnectionsLabel: "Connected Consoles",
-          secondaryConnectionsMaxItems: 1,
-          secondaryConnectionsLayoutClass: "is-fixed-consoles",
-          secondaryConnections: [
-            { abbr: "MG", name: "Mongo GUI", meta: "Mongo explorer", color: "linear-gradient(135deg,#16a34a,#4ade80)" }
-          ],
-          actions: [
-            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_database_detail.html?db=customer-profile-mongo" },
-            { label: "Restart", icon: "restart_alt", kind: "restart" }
-          ]
-        },
-        {
-          categories: ["all", "cache"],
-          status: { label: "Running", tone: "healthy" },
-          engine: "Cache DB · Redis",
-          icon: "memory",
-          name: "workspace-session-redis",
-          meta: "세션, 웹소켓, 랭킹 캐시가 함께 붙는 공용 Redis 리소스",
-          color: "linear-gradient(135deg,#f97316,#fb923c)",
-          connectionsLabel: "Connected Projects",
-          connectionsEqualWidth: true,
-          connectionsMaxItems: 4,
-          connectionsLayoutClass: "is-fixed-projects",
-          connections: [
-            { abbr: "WW", name: "workspace-web", meta: "session", color: "linear-gradient(135deg,#f97316,#fb923c)" },
-            { abbr: "RG", name: "realtime-gateway", meta: "fanout", color: "linear-gradient(135deg,#ea580c,#fdba74)" },
-            { abbr: "RS", name: "restaurant", meta: "ranking cache", color: "linear-gradient(135deg,#fb923c,#fed7aa)" }
-          ],
-          secondaryConnectionsLabel: "Connected Consoles",
-          secondaryConnectionsMaxItems: 1,
-          secondaryConnectionsLayoutClass: "is-fixed-consoles",
-          secondaryConnections: [
-            { abbr: "RD", name: "Redis Insight", meta: "Redis console", color: "linear-gradient(135deg,#f97316,#fb923c)" }
-          ],
-          actions: [
-            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_database_detail.html?db=workspace-session-redis" },
-            { label: "Restart", icon: "restart_alt", kind: "restart" }
-          ]
-        },
-        {
-          categories: ["all", "search"],
-          status: { label: "Running", tone: "healthy" },
-          engine: "Search DB · Elasticsearch",
-          icon: "travel_explore",
-          name: "ops-search",
-          meta: "운영 로그와 감사 검색이 붙는 Elasticsearch 리소스",
-          color: "linear-gradient(135deg,#7c3aed,#a78bfa)",
-          connectionsLabel: "Connected Projects",
-          connectionsEqualWidth: true,
-          connectionsMaxItems: 4,
-          connectionsLayoutClass: "is-fixed-projects",
-          connections: [
-            { abbr: "LG", name: "lgloganalyzer", meta: "service logs", color: "linear-gradient(135deg,#7c3aed,#a78bfa)" },
-            { abbr: "OD", name: "ops-dashboard", meta: "saved search", color: "linear-gradient(135deg,#6d28d9,#c4b5fd)" }
-          ],
-          secondaryConnectionsLabel: "Connected Consoles",
-          secondaryConnectionsMaxItems: 1,
-          secondaryConnectionsLayoutClass: "is-fixed-consoles",
-          secondaryConnections: [
-            { abbr: "KB", name: "Kibana", meta: "Elastic console", color: "linear-gradient(135deg,#7c3aed,#a78bfa)" }
-          ],
-          actions: [
-            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_database_detail.html?db=ops-search" },
-            { label: "Restart", icon: "restart_alt", kind: "restart" }
-          ]
-        },
-        {
-          categories: ["all", "vector"],
-          status: { label: "Stopped", tone: "muted" },
-          engine: "Vector DB · Milvus",
-          icon: "hub",
-          name: "search-embedding",
-          meta: "검색 임베딩과 카탈로그 벡터가 쌓이는 Milvus 리소스",
-          color: "linear-gradient(135deg,#0f766e,#5eead4)",
-          connectionsLabel: "Connected Projects",
-          connectionsEqualWidth: true,
-          connectionsMaxItems: 4,
-          connectionsLayoutClass: "is-fixed-projects",
-          connections: [
-            { abbr: "CA", name: "coverity-ai", meta: "embedding retrieval", color: "linear-gradient(135deg,#0f766e,#5eead4)" },
-            { abbr: "CI", name: "catalog-ai", meta: "semantic catalog", color: "linear-gradient(135deg,#0d9488,#99f6e4)" }
-          ],
-          secondaryConnectionsLabel: "Connected Consoles",
-          secondaryConnectionsMaxItems: 1,
-          secondaryConnectionsLayoutClass: "is-fixed-consoles",
-          secondaryConnections: [
-            { abbr: "AT", name: "Attu", meta: "Milvus console", color: "linear-gradient(135deg,#0f766e,#5eead4)" }
-          ],
-          actions: [
-            { label: "Detail", icon: "open_in_new", kind: "open", href: "workspace_database_detail.html?db=search-embedding" },
-            { label: "Restart", icon: "restart_alt", kind: "restart", disabled: true }
-          ]
-        }
-      ],
+      resources: [],
       mainPanels: [
         {
           icon: "tips_and_updates",
           label: "Tips",
           title: "데이터 리소스 운영 팁",
-          description: "리소스 카드에서는 제어에 필요한 정보만 남기고, 참고할 내용은 아래 패널에서 짧게 확인하는 구조로 맞췄습니다.",
-          rows: [
-            { title: "Running 리소스는 Restart 판단만 보면 됩니다", meta: "현재 떠 있는 리소스는 연결 프로젝트를 먼저 보고 재기동 영향 범위를 빠르게 판단합니다." },
-            { title: "Stopped 리소스는 별도 운영 흐름으로 접근합니다", meta: "Milvus 같은 비상시/실험성 리소스는 허브 카드에서 직접 기동하지 않는 전제를 둡니다." },
-            { title: "연결된 프로젝트로 영향 범위를 먼저 확인합니다", meta: "리소스 변경 전 프로젝트 연결 관계를 카드 안에서 바로 확인합니다." }
-          ],
-          footerLink: { href: "workspace_projects_hub.html", label: "연결 프로젝트 보기" }
+          description: "운영 팁을 불러오는 중입니다.",
+          rows: []
         },
         {
           icon: "menu_book",
           label: "Guide Links",
           title: "가이드 링크",
-          description: "운영 문서와 콘솔 진입점 링크를 별도 패널에 둡니다.",
-          rows: [
-            { title: "Consoles Hub", meta: "각 DB 리소스에 연결된 운영 콘솔을 열고 제어합니다.", href: "workspace_tools_hub.html" },
-            { title: "권한/접근 정책 가이드", meta: "운영 DB 접근 방식과 read-only 기준을 확인합니다.", href: "workspace_permission_hub.html" },
-            { title: "프로젝트 허브", meta: "리소스가 어떤 프로젝트에 붙어 있는지 프로젝트 단위로 다시 확인합니다.", href: "workspace_projects_hub.html" }
-          ],
-          footerLink: { href: "portal_launchpad.html", label: "런치패드로 돌아가기" }
+          description: "가이드 링크를 불러오는 중입니다.",
+          rows: []
         }
       ],
+      summary: null,
       sidebarPanels: [
         {
           icon: "health_and_safety",
           label: "Running Health",
           title: "현재 Running 리소스 Healthy",
           description: "세부 이상 감지는 K8s/infra 이벤트 기준으로 확인합니다. 우측 레일은 지금 실행 중인 데이터 리소스의 헬시 상태만 보여줍니다.",
-          rows: [
-            { title: "payments-mysql", meta: "payment-api · billing-admin", pill: { label: "Healthy", tone: "healthy" } },
-            { title: "hermes-main-postgres", meta: "hermes-be · ops-worker · ops-admin", pill: { label: "Healthy", tone: "healthy" } },
-            { title: "customer-profile-mongo", meta: "profile-api · restaurant", pill: { label: "Healthy", tone: "healthy" } },
-            { title: "workspace-session-redis", meta: "workspace-web · realtime-gateway · restaurant", pill: { label: "Healthy", tone: "healthy" } },
-            { title: "ops-search", meta: "lgloganalyzer · ops-dashboard", pill: { label: "Healthy", tone: "healthy" } }
-          ]
+          rows: []
         }
       ]
     };
   </script>
   <script src="workspace_resource_hub_shared.js"></script>
   <script src="ax_studio_topbar.js"></script>
+  <script>
+    (() => {
+      const API_BASE = "/api/v2";
+      const DEFAULT_RESOURCE_LIMIT = 4;
+      const RESTART_POLL_INTERVAL_MS = 5000;
+      const RESTART_POLL_MAX_ATTEMPTS = 24;
+      const FALLBACK_CONFIG = window.HUB_CONFIG;
+      const pendingRestarts = new Map();
+      const pagingState = {
+        currentPage: 1,
+        totalItems: 0
+      };
+      const ENGINE_META = {
+        mysql: {
+          category: "relational",
+          icon: "table_chart",
+          label: "Relational DB · MariaDB / MySQL",
+          color: "linear-gradient(135deg,#0891b2,#22d3ee)"
+        },
+        postgres: {
+          category: "relational",
+          icon: "database",
+          label: "Relational DB · PostgreSQL",
+          color: "linear-gradient(135deg,#2563eb,#60a5fa)"
+        },
+        mongo: {
+          category: "document",
+          icon: "account_tree",
+          label: "Document DB · MongoDB",
+          color: "linear-gradient(135deg,#16a34a,#4ade80)"
+        },
+        redis: {
+          category: "cache",
+          icon: "memory",
+          label: "Cache DB · Redis",
+          color: "linear-gradient(135deg,#f97316,#fb923c)"
+        },
+        elastic: {
+          category: "search",
+          icon: "travel_explore",
+          label: "Search DB · Elasticsearch",
+          color: "linear-gradient(135deg,#7c3aed,#a78bfa)"
+        },
+        milvus: {
+          category: "vector",
+          icon: "hub",
+          label: "Vector DB · Milvus",
+          color: "linear-gradient(135deg,#0f766e,#5eead4)"
+        }
+      };
+      const FILTER_META = {
+        relational: { icon: "table_chart", label: "관계형" },
+        document: { icon: "account_tree", label: "문서형" },
+        cache: { icon: "bolt", label: "캐시" },
+        search: { icon: "travel_explore", label: "검색" },
+        vector: { icon: "hub", label: "벡터" },
+        unknown: { icon: "storage", label: "기타" }
+      };
+      const STATUS_META = {
+        running: { label: "Running", tone: "healthy" },
+        stopped: { label: "Stopped", tone: "muted" },
+        restarting: { label: "Restarting", tone: "review" },
+        error: { label: "Needs attention", tone: "incident" },
+        unknown: { label: "Unknown", tone: "info" }
+      };
+      const HEALTH_TONE = {
+        healthy: "healthy",
+        degraded: "incident",
+        unknown: "info"
+      };
+      const BACKUP_LABEL = {
+        none: "없음",
+        daily: "Daily",
+        weekly: "Weekly",
+        monthly: "Monthly"
+      };
+
+      function buildQuery(params) {
+        const searchParams = new URLSearchParams();
+        Object.entries(params || {}).forEach(([key, value]) => {
+          if (value === undefined || value === null || value === "") {
+            return;
+          }
+          searchParams.set(key, String(value));
+        });
+        const query = searchParams.toString();
+        return query ? `?${query}` : "";
+      }
+
+      async function requestJson(path, options) {
+        const response = await fetch(`${API_BASE}${path}`, {
+          credentials: "same-origin",
+          headers: {
+            Accept: "application/json"
+          },
+          ...(options || {})
+        });
+
+        if (!response.ok) {
+          throw new Error(`${response.status} ${response.statusText}`);
+        }
+
+        return response.json();
+      }
+
+      async function fetchJson(path, params) {
+        return requestJson(`${path}${buildQuery(params)}`);
+      }
+
+      function extractData(payload, fallback) {
+        if (payload && typeof payload === "object" && "data" in payload) {
+          return payload.data;
+        }
+        return payload ?? fallback;
+      }
+
+      function extractItems(payload) {
+        const direct = payload && Array.isArray(payload.items) ? payload.items : null;
+        if (direct) {
+          return direct;
+        }
+        const nested = payload && payload.data && Array.isArray(payload.data.items) ? payload.data.items : null;
+        return nested || [];
+      }
+
+      function extractPageTotal(payload, fallback) {
+        if (payload && payload.page && Number.isFinite(payload.page.total)) {
+          return payload.page.total;
+        }
+        if (payload && payload.data && payload.data.page && Number.isFinite(payload.data.page.total)) {
+          return payload.data.page.total;
+        }
+        return fallback;
+      }
+
+      function encodeCursorOffset(offset) {
+        if (!Number.isFinite(offset) || offset <= 0) {
+          return null;
+        }
+
+        return btoa(JSON.stringify({ offset }))
+          .replace(/\+/g, "-")
+          .replace(/\//g, "_")
+          .replace(/=+$/g, "");
+      }
+
+      function formatNumber(value) {
+        const amount = Number(value);
+        if (!Number.isFinite(amount)) {
+          return "-";
+        }
+        return new Intl.NumberFormat("ko-KR").format(amount);
+      }
+
+      function formatBytes(value) {
+        const amount = Number(value);
+        if (!Number.isFinite(amount) || amount <= 0) {
+          return "0B";
+        }
+        const units = ["B", "KB", "MB", "GB", "TB"];
+        let displayValue = amount;
+        let unitIndex = 0;
+
+        while (displayValue >= 1024 && unitIndex < units.length - 1) {
+          displayValue /= 1024;
+          unitIndex += 1;
+        }
+
+        const digits = displayValue >= 10 || unitIndex === 0 ? 0 : 1;
+        return `${displayValue.toFixed(digits)}${units[unitIndex]}`;
+      }
+
+      function formatDate(value) {
+        if (!value) {
+          return "N/A";
+        }
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return "N/A";
+        }
+        return new Intl.DateTimeFormat("ko-KR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit"
+        }).format(date);
+      }
+
+      function formatDateTime(value) {
+        if (!value) {
+          return "최근 수정 정보 없음";
+        }
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return "최근 수정 정보 없음";
+        }
+        return `Updated ${new Intl.DateTimeFormat("ko-KR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit"
+        }).format(date)}`;
+      }
+
+      function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      function toInitials(value) {
+        const source = String(value || "").trim();
+        if (!source) {
+          return "DB";
+        }
+
+        const parts = source
+          .replace(/[@._-]+/g, " ")
+          .split(/\s+/)
+          .filter(Boolean);
+
+        if (parts.length === 1) {
+          return parts[0].slice(0, 2).toUpperCase();
+        }
+
+        return parts
+          .slice(0, 2)
+          .map(part => part.charAt(0).toUpperCase())
+          .join("");
+      }
+
+      function getOwnerName(owner) {
+        return owner?.displayName || owner?.userId || owner?.email || "Workspace Owner";
+      }
+
+      function getPrincipalName(principal) {
+        if (typeof principal === "string") {
+          return principal;
+        }
+        return principal?.displayName || principal?.userId || principal?.email || "";
+      }
+
+      function normalizeKey(value) {
+        return String(value || "").trim().toLowerCase();
+      }
+
+      function normalizeStatus(value) {
+        const normalized = normalizeKey(value);
+        if (!normalized) {
+          return "unknown";
+        }
+
+        if (["run", "running", "ready", "active", "healthy"].includes(normalized)) {
+          return "running";
+        }
+
+        if (["stop", "stopped", "inactive", "disabled"].includes(normalized)) {
+          return "stopped";
+        }
+
+        if (["restart", "restarting", "starting", "pending"].includes(normalized)) {
+          return "restarting";
+        }
+
+        if (["error", "failed", "failure", "critical", "incident"].includes(normalized)) {
+          return "error";
+        }
+
+        return normalized;
+      }
+
+      function normalizeSeverity(value, status) {
+        const normalized = normalizeKey(value);
+        if (["healthy", "ok", "success", "normal"].includes(normalized)) {
+          return "healthy";
+        }
+
+        if (["degraded", "warning", "warn"].includes(normalized)) {
+          return "degraded";
+        }
+
+        if (["critical", "incident", "error", "failed"].includes(normalized)) {
+          return "critical";
+        }
+
+        if (normalized === "unknown") {
+          return "unknown";
+        }
+
+        const normalizedStatus = normalizeStatus(status);
+        if (normalizedStatus === "running") {
+          return "healthy";
+        }
+        if (normalizedStatus === "error") {
+          return "critical";
+        }
+        if (normalizedStatus === "stopped") {
+          return "unknown";
+        }
+
+        return normalized || "unknown";
+      }
+
+      function buildHealthLabel(health, status) {
+        const severity = normalizeSeverity(health?.severity, status);
+        if (health?.label) {
+          return health.label;
+        }
+        if (severity === "healthy") {
+          return "Healthy";
+        }
+        if (severity === "degraded") {
+          return "Degraded";
+        }
+        if (severity === "critical") {
+          return "Needs attention";
+        }
+        return "Unknown";
+      }
+
+      function isSamePrincipal(left, right) {
+        if (!left || !right) {
+          return false;
+        }
+
+        if (typeof left === "string" || typeof right === "string") {
+          const leftValue = normalizeKey(getPrincipalName(left));
+          const rightValue = normalizeKey(getPrincipalName(right));
+          return Boolean(leftValue && rightValue && leftValue === rightValue);
+        }
+
+        return ["sub", "email", "userId", "displayName"].some(key => {
+          const leftValue = normalizeKey(left[key]);
+          const rightValue = normalizeKey(right[key]);
+          return leftValue && rightValue && leftValue === rightValue;
+        });
+      }
+
+      function getResourceAuthors(resource) {
+        const rawAuthors = Array.isArray(resource?.author)
+          ? resource.author
+          : Array.isArray(resource?.authors)
+            ? resource.authors
+            : Array.isArray(resource?.collaborators)
+              ? resource.collaborators
+              : [];
+
+        const authors = rawAuthors.length > 0 && isSamePrincipal(rawAuthors[0], resource?.owner)
+          ? rawAuthors.slice(1)
+          : rawAuthors;
+
+        return authors.filter(author => !isSamePrincipal(author, resource?.owner));
+      }
+
+      function getResolvedStatusValue(resource) {
+        return resource?.status
+          || resource?.runtime?.status
+          || resource?.runtimeStatus
+          || resource?.state
+          || resource?.phase
+          || resource?.health?.status
+          || "";
+      }
+
+      function getResolvedHealth(resource) {
+        const baseHealth = resource?.health && typeof resource.health === "object"
+          ? resource.health
+          : {};
+
+        return {
+          ...baseHealth,
+          severity: baseHealth.severity || resource?.severity || resource?.healthSeverity || "",
+          label: baseHealth.label || resource?.healthLabel || ""
+        };
+      }
+
+      function deriveHealthSummary(panel) {
+        const items = Array.isArray(panel?.items) ? panel.items : [];
+        const summary = items.reduce((acc, item) => {
+          const severity = normalizeSeverity(item?.health?.severity, item?.status);
+          if (severity === "healthy") {
+            acc.healthy += 1;
+          } else if (severity === "degraded" || severity === "critical") {
+            acc.degraded += 1;
+          } else {
+            acc.unknown += 1;
+          }
+          return acc;
+        }, { healthy: 0, degraded: 0, unknown: 0 });
+
+        return {
+          healthy: summary.healthy,
+          degraded: summary.degraded,
+          unknown: summary.unknown,
+          total: items.length
+        };
+      }
+
+      function resolveHealthSummary(panel) {
+        const derivedSummary = deriveHealthSummary(panel);
+        const apiSummary = panel?.summary;
+        const apiHealthy = Number(apiSummary?.healthy ?? 0);
+        const apiDegraded = Number(apiSummary?.degraded ?? 0);
+        const apiUnknown = Number(apiSummary?.unknown ?? 0);
+        const apiTotal = Number(apiSummary?.total ?? 0);
+        const apiHasValues = apiTotal > 0 || apiHealthy > 0 || apiDegraded > 0 || apiUnknown > 0;
+
+        if (apiHasValues) {
+          return {
+            healthy: apiHealthy,
+            degraded: apiDegraded,
+            unknown: apiUnknown,
+            total: apiTotal || apiHealthy + apiDegraded + apiUnknown
+          };
+        }
+
+        return derivedSummary;
+      }
+
+      function getHealthIssueItems(panel) {
+        const items = Array.isArray(panel?.items) ? panel.items : [];
+
+        return items.filter(item => {
+          const severity = normalizeSeverity(item?.health?.severity, item?.status);
+          return severity === "degraded" || severity === "critical" || severity === "unknown";
+        });
+      }
+
+      function toHealthPanelItem(resource) {
+        return {
+          id: resource?.id,
+          name: resource?.name,
+          engine: resource?.engine,
+          status: getResolvedStatusValue(resource),
+          bindingCount: Number(resource?.bindingCount ?? 0),
+          updatedAt: resource?.updatedAt,
+          health: getResolvedHealth(resource)
+        };
+      }
+
+      function buildStatsHealthSummary(stats, fallbackTotal) {
+        const total = Number(stats?.totalDatabases ?? fallbackTotal ?? 0);
+        const healthy = Number(stats?.runningCount ?? 0);
+        const degraded = Number(stats?.issueCount ?? 0);
+        const unknown = Math.max(0, total - healthy - degraded);
+
+        return { healthy, degraded, unknown, total };
+      }
+
+      function mergeHealthPanel(panel, resources, stats) {
+        const items = Array.isArray(panel?.items) ? panel.items : [];
+        const resourceItems = Array.isArray(resources) ? resources : [];
+        const resourceMap = new Map();
+
+        resourceItems.forEach(resource => {
+          if (resource?.id) {
+            resourceMap.set(`id:${resource.id}`, resource);
+          }
+          if (resource?.name) {
+            resourceMap.set(`name:${normalizeKey(resource.name)}`, resource);
+          }
+        });
+
+        const baseItems = items.length ? items : resourceItems.map(toHealthPanelItem);
+        const mergedItems = baseItems.map(item => {
+          const matchedResource = resourceMap.get(`id:${item?.id}`) || resourceMap.get(`name:${normalizeKey(item?.name)}`);
+          const currentHealth = getResolvedHealth(item);
+          const resourceHealth = getResolvedHealth(matchedResource);
+          const currentStatus = getResolvedStatusValue(item);
+          const resourceStatus = getResolvedStatusValue(matchedResource);
+          const currentSeverity = normalizeSeverity(currentHealth?.severity, currentStatus);
+          const resourceSeverity = normalizeSeverity(resourceHealth?.severity, resourceStatus);
+          const shouldUseResourceHealth = currentSeverity === "unknown" && resourceSeverity !== "unknown";
+
+          return {
+            id: item?.id || matchedResource?.id,
+            name: item?.name || matchedResource?.name,
+            engine: item?.engine || matchedResource?.engine,
+            status: shouldUseResourceHealth ? resourceStatus : (currentStatus || resourceStatus),
+            bindingCount: Number(item?.bindingCount ?? matchedResource?.bindingCount ?? 0),
+            updatedAt: item?.updatedAt || matchedResource?.updatedAt,
+            health: shouldUseResourceHealth
+              ? (resourceHealth || currentHealth)
+              : (currentHealth || resourceHealth || { label: "", severity: "" })
+          };
+        });
+
+        const mergedDerivedSummary = deriveHealthSummary({ items: mergedItems });
+        const resourceDerivedSummary = deriveHealthSummary({ items: resourceItems.map(toHealthPanelItem) });
+        const apiSummary = resolveHealthSummary({ items: mergedItems, summary: panel?.summary });
+        const statsSummary = buildStatsHealthSummary(stats, resourceItems.length);
+        const apiAllUnknown = apiSummary.total > 0 && apiSummary.healthy === 0 && apiSummary.degraded === 0 && apiSummary.unknown === apiSummary.total;
+        const mergedHasSignal = mergedDerivedSummary.healthy > 0 || mergedDerivedSummary.degraded > 0;
+        const resourceHasSignal = resourceDerivedSummary.healthy > 0 || resourceDerivedSummary.degraded > 0;
+        const statsHasSignal = statsSummary.healthy > 0 || statsSummary.degraded > 0;
+        const summary = apiAllUnknown && (mergedHasSignal || resourceHasSignal || statsHasSignal)
+          ? (mergedHasSignal ? mergedDerivedSummary : (resourceHasSignal ? resourceDerivedSummary : statsSummary))
+          : apiSummary;
+
+        return {
+          items: mergedItems,
+          summary
+        };
+      }
+
+      function getEngineMeta(engine) {
+        return ENGINE_META[engine] || {
+          category: "unknown",
+          icon: "storage",
+          label: engine ? `Database · ${engine}` : "Database",
+          color: "linear-gradient(135deg,#475569,#94a3b8)"
+        };
+      }
+
+      function getStatusMeta(resource) {
+        const normalizedStatus = normalizeStatus(resource?.status);
+        const normalizedSeverity = normalizeSeverity(resource?.health?.severity, normalizedStatus);
+
+        if (HEALTH_TONE[normalizedSeverity]) {
+          const tone = HEALTH_TONE[normalizedSeverity];
+          const label = buildHealthLabel(resource?.health, normalizedStatus) || STATUS_META[normalizedStatus]?.label || "Unknown";
+          return { label, tone };
+        }
+
+        return STATUS_META[normalizedStatus] || STATUS_META.unknown;
+      }
+
+      function getBackupLabel(backup) {
+        return BACKUP_LABEL[backup] || backup || "없음";
+      }
+
+      function abbreviateName(value) {
+        const normalized = String(value || "").trim();
+        if (!normalized) {
+          return "DB";
+        }
+        const segments = normalized
+          .split(/[^a-zA-Z0-9]+/)
+          .filter(Boolean);
+        if (segments.length >= 2) {
+          return segments
+            .slice(0, 2)
+            .map(segment => segment.charAt(0).toUpperCase())
+            .join("");
+        }
+        return normalized.slice(0, 2).toUpperCase();
+      }
+
+      function buildEngineFilters(filterData) {
+        const engines = Array.isArray(filterData?.engines) ? filterData.engines : [];
+        const grouped = engines.reduce((acc, item) => {
+          const meta = getEngineMeta(item.value);
+          const category = meta.category || "unknown";
+          acc[category] = (acc[category] || 0) + Number(item.count || 0);
+          return acc;
+        }, {});
+
+        return [
+          { id: "all", icon: "apps", label: "전체" },
+          ...Object.entries(grouped).map(([category, count]) => {
+            const filterMeta = FILTER_META[category] || FILTER_META.unknown;
+            return {
+              id: category,
+              icon: filterMeta.icon,
+              label: `${filterMeta.label} (${count})`
+            };
+          })
+        ];
+      }
+
+      function buildResourceDescription(resourceTotal) {
+        if (!Number.isFinite(resourceTotal) || resourceTotal <= 0) {
+          return "조회 가능한 데이터베이스 리소스가 없습니다. 권한이나 연결 상태를 확인해 주세요.";
+        }
+
+        return `${formatNumber(resourceTotal)}개의 데이터베이스 리소스를 API 기준으로 렌더링합니다. 각 카드는 사용량, 백업 정책, 최근 수정 시각, bindings, restart 액션을 실제 응답으로 연결합니다.`;
+      }
+
+      function buildHeroStats(stats, healthPanel) {
+        const resolvedSummary = healthPanel?.summary || resolveHealthSummary(healthPanel);
+        const healthyCount = resolvedSummary.healthy;
+        const degradedCount = resolvedSummary.degraded;
+        const unknownCount = resolvedSummary.unknown;
+        const healthNote = `Degraded ${formatNumber(degradedCount)} · Unknown ${formatNumber(unknownCount)}`;
+        const weeklyViews = Number(
+          stats?.weeklyResourceViews
+          ?? stats?.weeklyViews
+          ?? stats?.weeklyViewCount
+          ?? 0
+        );
+
+        return [
+          {
+            icon: "storage",
+            value: formatNumber(stats?.totalDatabases ?? 0),
+            label: "등록 리소스",
+            note: `Running ${formatNumber(stats?.runningCount ?? 0)} · Issues ${formatNumber(stats?.issueCount ?? 0)}`,
+            color: "linear-gradient(135deg,#2563eb,#3b82f6)"
+          },
+          {
+            icon: "link",
+            value: formatNumber(stats?.bindingCount ?? 0),
+            label: "연결 바인딩",
+            note: "project / console bindings",
+            color: "linear-gradient(135deg,#3b82f6,#38bdf8)"
+          },
+          {
+            icon: "health_and_safety",
+            value: formatNumber(healthyCount),
+            label: "Healthy 리소스",
+            note: healthNote,
+            color: "linear-gradient(135deg,#1d4ed8,#60a5fa)"
+          },
+          {
+            icon: "visibility",
+            value: formatNumber(weeklyViews),
+            label: "주간 리소스 열람",
+            note: "최근 7일 조회 기준",
+            color: "linear-gradient(135deg,#0ea5e9,#67e8f9)"
+          }
+        ];
+      }
+
+      function buildTipsPanel(panel) {
+        if (!panel) {
+          return FALLBACK_CONFIG.mainPanels[0];
+        }
+        return {
+          icon: panel.icon || "tips_and_updates",
+          label: panel.label || "Tips",
+          title: panel.title || "데이터 리소스 운영 팁",
+          description: panel.description || "",
+          rows: panel.rows || [],
+          footerLink: panel.footerLink
+        };
+      }
+
+      function buildGuidePanel(panel) {
+        if (!panel) {
+          return FALLBACK_CONFIG.mainPanels[1];
+        }
+        return {
+          icon: panel.icon || "menu_book",
+          label: panel.label || "Guide Links",
+          title: panel.title || "가이드 링크",
+          description: panel.description || "",
+          rows: panel.rows || [],
+          footerLink: panel.footerLink
+        };
+      }
+
+      function buildHealthPanel(panel) {
+        if (!panel) {
+          return FALLBACK_CONFIG.sidebarPanels[0];
+        }
+        const resolvedSummary = panel?.summary || resolveHealthSummary(panel);
+        const rowsSource = panel.items || [];
+
+        return {
+          icon: "health_and_safety",
+          label: "Running Health",
+          title: "현재 Running 리소스 Healthy",
+          description: "세부 이상 감지는 K8s/infra 이벤트 기준으로 확인합니다. 우측 레일은 지금 실행 중인 데이터 리소스의 헬시 상태만 보여줍니다.",
+          rows: rowsSource.map(item => ({
+            title: item.name,
+            meta: item?.health?.message || `${item.engine} · bindings ${formatNumber(item.bindingCount)}`,
+            pill: {
+              label: buildHealthLabel(item.health, item.status),
+              tone: HEALTH_TONE[normalizeSeverity(item.health?.severity, item.status)] || "info"
+            }
+          })),
+          summary: resolvedSummary
+        };
+      }
+
+      function toConnection(binding, engineMeta) {
+        return {
+          abbr: abbreviateName(binding.targetName),
+          name: binding.targetName,
+          meta: binding.targetType === "project" ? "project binding" : "console binding",
+          color: engineMeta.color
+        };
+      }
+
+      function toResource(resource, bindings) {
+        const engineMeta = getEngineMeta(resource.engine);
+        const statusMeta = getStatusMeta(resource);
+        const projects = bindings.filter(item => item.targetType === "project").map(item => toConnection(item, engineMeta));
+        const consoles = bindings.filter(item => item.targetType === "console").map(item => toConnection(item, engineMeta));
+        const ownerName = getOwnerName(resource.owner);
+        const collaborators = getResourceAuthors(resource);
+
+        return {
+          id: resource.id,
+          categories: ["all", engineMeta.category].filter(Boolean),
+          status: statusMeta,
+          engine: resource.version ? `${engineMeta.label} · v${resource.version}` : engineMeta.label,
+          icon: engineMeta.icon,
+          name: resource.name,
+          meta: resource.summary || "Database resource",
+          color: engineMeta.color,
+          owner: {
+            initials: toInitials(ownerName),
+            name: ownerName,
+            meta: resource.owner?.email || "No email",
+            color: engineMeta.color
+          },
+          sharing: {
+            collaborators: collaborators.map(collaborator => ({
+              initials: toInitials(getOwnerName(collaborator)),
+              color: "linear-gradient(135deg,#6366f1,#818cf8)"
+            }))
+          },
+          details: [
+            { icon: "link", text: `Bindings ${formatNumber(resource.bindingCount)}` },
+            { icon: "backup", text: `Backup ${getBackupLabel(resource.backup)}` }
+          ].filter(Boolean),
+          usage: {
+            label: "Storage",
+            value: Number.isFinite(resource.usage?.usagePercent) ? resource.usage.usagePercent : 0,
+            meta: resource.usage?.storageLabel || "usage unavailable",
+            color: engineMeta.color
+          },
+          connectionsLabel: "Connected Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: projects,
+          secondaryConnectionsLabel: "Connected Consoles",
+          secondaryConnectionsMaxItems: 2,
+          secondaryConnectionsLayoutClass: "is-fixed-consoles",
+          secondaryConnections: consoles,
+          footer: formatDateTime(resource.updatedAt),
+          actions: [
+            {
+              label: "Detail",
+              icon: "open_in_new",
+              kind: "open",
+              href: `workspace_database_detail.html?db=${encodeURIComponent(resource.name)}`
+            },
+            {
+              label: resource.capabilities?.canRestart ? "Restart" : "No Access",
+              icon: "restart_alt",
+              kind: "restart",
+              disabled: !resource.capabilities?.canRestart || resource.status === "stopped",
+              attributes: {
+                "data-restart-id": resource.id,
+                "data-restart-name": resource.name
+              }
+            }
+          ]
+        };
+      }
+
+      async function fetchBindingsMap(resources) {
+        const entries = await Promise.all((resources || []).map(async item => {
+          try {
+            const payload = await fetchJson(`/databases/${encodeURIComponent(item.id)}/bindings`);
+            return [item.id, extractItems(payload)];
+          } catch (error) {
+            return [item.id, []];
+          }
+        }));
+
+        return Object.fromEntries(entries);
+      }
+
+      function getVisiblePages(currentPage, totalPages) {
+        if (totalPages <= 7) {
+          return Array.from({ length: totalPages }, (_, index) => index + 1);
+        }
+
+        const pages = new Set([1, totalPages, currentPage - 1, currentPage, currentPage + 1]);
+        return Array.from(pages)
+          .filter(page => page >= 1 && page <= totalPages)
+          .sort((left, right) => left - right);
+      }
+
+      function renderDatabasePagination() {
+        const pagination = document.getElementById("resourcePagination");
+        if (!pagination) {
+          return;
+        }
+
+        const totalItems = Number(pagingState.totalItems || 0);
+        const totalPages = Math.max(1, Math.ceil(totalItems / DEFAULT_RESOURCE_LIMIT));
+        const currentPage = Math.min(Math.max(1, pagingState.currentPage || 1), totalPages);
+
+        if (totalPages <= 1) {
+          pagination.innerHTML = "";
+          pagination.hidden = true;
+          return;
+        }
+
+        const startItem = ((currentPage - 1) * DEFAULT_RESOURCE_LIMIT) + 1;
+        const endItem = Math.min(currentPage * DEFAULT_RESOURCE_LIMIT, totalItems);
+        const visiblePages = getVisiblePages(currentPage, totalPages);
+        const buttons = [];
+
+        visiblePages.forEach((page, index) => {
+          const previousPage = visiblePages[index - 1];
+          if (index > 0 && page - previousPage > 1) {
+            buttons.push(`<span class="resource-pagination-ellipsis" aria-hidden="true">...</span>`);
+          }
+
+          buttons.push(`
+            <button
+              class="resource-pagination-btn${page === currentPage ? " is-active" : ""}"
+              type="button"
+              data-database-page="${page}"
+              aria-label="페이지 ${page}"
+              aria-current="${page === currentPage ? "page" : "false"}"
+            >
+              ${page}
+            </button>
+          `);
+        });
+
+        pagination.hidden = false;
+        pagination.innerHTML = `
+          <div class="resource-pagination-summary">총 ${totalItems}개 중 ${startItem}-${endItem}</div>
+          <div class="resource-pagination-controls">
+            <button
+              class="resource-pagination-btn is-nav"
+              type="button"
+              data-database-page-nav="prev"
+              aria-label="이전 페이지"
+              ${currentPage === 1 ? "disabled" : ""}
+            >
+              <span class="material-icons-round">chevron_left</span>
+            </button>
+            ${buttons.join("")}
+            <button
+              class="resource-pagination-btn is-nav"
+              type="button"
+              data-database-page-nav="next"
+              aria-label="다음 페이지"
+              ${currentPage === totalPages ? "disabled" : ""}
+            >
+              <span class="material-icons-round">chevron_right</span>
+            </button>
+          </div>
+        `;
+
+        pagination.querySelectorAll("[data-database-page]").forEach(button => {
+          button.addEventListener("click", () => {
+            const nextPage = Number(button.getAttribute("data-database-page"));
+            if (!Number.isFinite(nextPage) || nextPage === pagingState.currentPage) {
+              return;
+            }
+
+            loadDatabaseHub({ page: nextPage });
+          });
+        });
+
+        pagination.querySelectorAll("[data-database-page-nav]").forEach(button => {
+          button.addEventListener("click", () => {
+            const direction = button.getAttribute("data-database-page-nav");
+            if (direction === "prev" && currentPage > 1) {
+              loadDatabaseHub({ page: currentPage - 1 });
+              return;
+            }
+
+            if (direction === "next" && currentPage < totalPages) {
+              loadDatabaseHub({ page: currentPage + 1 });
+            }
+          });
+        });
+      }
+
+      function getRestartButtonById(restartId) {
+        return Array.from(document.querySelectorAll("[data-restart-id]"))
+          .find(button => button.getAttribute("data-restart-id") === String(restartId));
+      }
+
+      function markCardAsPreparing(restartId) {
+        const button = getRestartButtonById(restartId);
+        const card = button?.closest("[data-resource-card]");
+        const statusPill = card?.querySelector(".status-pill");
+
+        if (card) {
+          card.style.opacity = "0.58";
+          card.style.filter = "saturate(0.72)";
+        }
+
+        if (statusPill) {
+          statusPill.className = "status-pill tone-review";
+          statusPill.textContent = "Preparing";
+        }
+
+        if (button) {
+          button.disabled = true;
+          button.classList.add("is-disabled");
+          button.style.display = "none";
+        }
+      }
+
+      function syncPendingRestartCards() {
+        pendingRestarts.forEach((_, restartId) => {
+          markCardAsPreparing(restartId);
+        });
+      }
+
+      async function waitForRestartCompletion(restartId) {
+        await sleep(3000);
+
+        for (let attempt = 0; attempt < RESTART_POLL_MAX_ATTEMPTS; attempt += 1) {
+          try {
+            const response = await fetchJson(`/databases/${encodeURIComponent(restartId)}`);
+            const database = extractData(response, null);
+            const normalizedStatus = normalizeStatus(getResolvedStatusValue(database));
+            const normalizedSeverity = normalizeSeverity(database?.health?.severity, getResolvedStatusValue(database));
+
+            if (normalizedStatus !== "restarting" && (normalizedStatus === "running" || normalizedSeverity === "healthy")) {
+              return true;
+            }
+          } catch (error) {
+            console.warn("[database_hub] restart poll failed", error);
+          }
+
+          await sleep(RESTART_POLL_INTERVAL_MS);
+        }
+
+        return false;
+      }
+
+      function attachRestartHandlers() {
+        document.querySelectorAll("[data-restart-id]").forEach(button => {
+          if (button.dataset.restartBound === "true") {
+            return;
+          }
+
+          button.dataset.restartBound = "true";
+          button.addEventListener("click", async event => {
+            event.preventDefault();
+
+            const restartId = button.getAttribute("data-restart-id");
+            const restartName = button.getAttribute("data-restart-name") || "database";
+
+            if (!restartId || button.classList.contains("is-disabled") || button.disabled) {
+              return;
+            }
+
+            button.disabled = true;
+            button.classList.add("is-disabled");
+
+            try {
+              pendingRestarts.set(restartId, {
+                name: restartName,
+                startedAt: Date.now()
+              });
+              markCardAsPreparing(restartId);
+
+              await requestJson(`/databases/${encodeURIComponent(restartId)}/restart`, {
+                method: "POST"
+              });
+            } catch (error) {
+              console.error("[database_hub] restart failed", error);
+              pendingRestarts.delete(restartId);
+              await loadDatabaseHub();
+              return;
+            }
+
+            const completed = await waitForRestartCompletion(restartId);
+            pendingRestarts.delete(restartId);
+
+            if (completed) {
+              await loadDatabaseHub();
+              return;
+            }
+
+            await loadDatabaseHub();
+          });
+        });
+      }
+
+      function renderConfig(config) {
+        window.HUB_CONFIG = config;
+        if (typeof window.renderWorkspaceResourceHub === "function") {
+          window.renderWorkspaceResourceHub(config);
+          syncPendingRestartCards();
+          attachRestartHandlers();
+          if (typeof window.refreshConceptEndpointOverlay === "function") {
+            requestAnimationFrame(() => {
+              window.refreshConceptEndpointOverlay();
+            });
+          }
+        }
+      }
+
+      async function loadDatabaseHub({ page = pagingState.currentPage } = {}) {
+        const safePage = Number.isFinite(page) && page > 0 ? Math.floor(page) : 1;
+        const cursor = encodeCursorOffset((safePage - 1) * DEFAULT_RESOURCE_LIMIT);
+        const results = await Promise.allSettled([
+          fetchJson("/databases", {
+            limit: DEFAULT_RESOURCE_LIMIT,
+            ...(cursor ? { cursor } : {})
+          }),
+          fetchJson("/databases/stats"),
+          fetchJson("/databases/filters"),
+          fetchJson("/panels/tips", { surface: "databases" }),
+          fetchJson("/panels/guide-links", { surface: "databases" }),
+          fetchJson("/databases/panels/health")
+        ]);
+
+        const [
+          databasesResult,
+          statsResult,
+          filtersResult,
+          tipsResult,
+          guideResult,
+          healthResult
+        ] = results;
+
+        const databasesPayload = databasesResult.status === "fulfilled" ? databasesResult.value : null;
+        const statsPayload = statsResult.status === "fulfilled" ? extractData(statsResult.value, null) : null;
+        const filtersPayload = filtersResult.status === "fulfilled" ? extractData(filtersResult.value, null) : null;
+        const tipsPayload = tipsResult.status === "fulfilled" ? extractData(tipsResult.value, null) : null;
+        const guidePayload = guideResult.status === "fulfilled" ? extractData(guideResult.value, null) : null;
+        const healthPayload = healthResult.status === "fulfilled" ? extractData(healthResult.value, null) : null;
+
+        const databaseItems = extractItems(databasesPayload);
+        const sortedDatabaseItems = databaseItems.slice().sort((left, right) => {
+          const leftTime = new Date(left?.updatedAt || left?.createdAt || 0).getTime();
+          const rightTime = new Date(right?.updatedAt || right?.createdAt || 0).getTime();
+          return rightTime - leftTime;
+        });
+        const mergedHealthPayload = mergeHealthPanel(healthPayload, sortedDatabaseItems, statsPayload);
+        const bindingsMap = await fetchBindingsMap(sortedDatabaseItems);
+        const resourceTotal = extractPageTotal(databasesPayload, sortedDatabaseItems.length);
+        pagingState.currentPage = safePage;
+        pagingState.totalItems = resourceTotal;
+        const config = {
+          ...FALLBACK_CONFIG,
+          resourcePageSize: DEFAULT_RESOURCE_LIMIT,
+          heroStats: buildHeroStats(statsPayload, mergedHealthPayload),
+          filters: buildEngineFilters(filtersPayload),
+          resourceDescription: buildResourceDescription(resourceTotal),
+          resources: sortedDatabaseItems.map(item => toResource(item, bindingsMap[item.id] || [])),
+          summary: null,
+          mainPanels: [
+            buildTipsPanel(tipsPayload),
+            buildGuidePanel(guidePayload)
+          ],
+          sidebarPanels: [
+            buildHealthPanel(mergedHealthPayload)
+          ]
+        };
+
+        renderConfig(config);
+        renderDatabasePagination();
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", loadDatabaseHub, { once: true });
+      } else {
+        loadDatabaseHub();
+      }
+    })();
+  </script>
   <script src="concept_endpoint_overlay.js"></script>
 </body>
 </html>

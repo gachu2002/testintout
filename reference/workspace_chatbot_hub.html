@@ -8,6 +8,384 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
   <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
   <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <style>
+    .hub-invite-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 430;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(15, 23, 42, .52);
+      backdrop-filter: blur(10px);
+    }
+    .hub-invite-backdrop[hidden] {
+      display: none !important;
+    }
+    .hub-invite-shell {
+      width: min(980px, calc(100vw - 32px));
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 28px;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at top right, rgba(34, 211, 238, .12), transparent 24%),
+        linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid rgba(214, 216, 219, .88);
+      box-shadow: 0 32px 80px rgba(15, 23, 42, .22);
+    }
+    .hub-invite-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .hub-invite-copy {
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+    }
+    .hub-invite-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--brand);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .hub-invite-kicker .material-icons-round {
+      font-size: 14px;
+    }
+    .hub-invite-head h2 {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -.04em;
+      line-height: 1.06;
+    }
+    .hub-invite-subtitle {
+      color: var(--t2);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .hub-invite-close {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #eef2f7;
+      color: var(--t2);
+      transition: background .15s ease, color .15s ease;
+    }
+    .hub-invite-close:hover {
+      background: #e5eaf1;
+      color: var(--t1);
+    }
+    .hub-invite-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .hub-invite-panel {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      gap: 14px;
+      padding: 20px;
+      border-radius: 22px;
+      border: 1px solid rgba(214, 216, 219, .82);
+      background: rgba(255, 255, 255, .92);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .72);
+    }
+    .hub-invite-section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .hub-invite-section-head h3 {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.15;
+    }
+    .hub-invite-section-meta {
+      color: var(--t3);
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: right;
+    }
+    .hub-invite-list {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      max-height: 360px;
+      overflow: auto;
+    }
+    .hub-invite-list::-webkit-scrollbar,
+    .hub-invite-search-results::-webkit-scrollbar {
+      width: 8px;
+    }
+    .hub-invite-list::-webkit-scrollbar-thumb,
+    .hub-invite-search-results::-webkit-scrollbar-thumb {
+      background: rgba(146, 152, 160, .4);
+      border-radius: 999px;
+    }
+    .hub-invite-person {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(214, 216, 219, .78);
+      background: #fbfcfe;
+    }
+    .hub-invite-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, .08);
+      flex-shrink: 0;
+    }
+    .hub-invite-person-copy {
+      min-width: 0;
+      display: grid;
+      gap: 4px;
+    }
+    .hub-invite-person-name {
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+    .hub-invite-person-meta {
+      color: var(--t2);
+      font-size: 12px;
+      line-height: 1.45;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .hub-invite-remove-btn,
+    .hub-invite-add-btn {
+      height: 34px;
+      padding: 0 12px;
+      border: none;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 800;
+      transition: all .15s ease;
+      white-space: nowrap;
+    }
+    .hub-invite-remove-btn {
+      background: var(--brand-soft);
+      color: var(--brand);
+    }
+    .hub-invite-remove-btn:hover {
+      background: rgba(8, 145, 178, .22);
+    }
+    .hub-invite-add-btn {
+      background: rgba(34, 211, 238, .14);
+      color: #0f766e;
+    }
+    .hub-invite-add-btn:hover {
+      background: rgba(34, 211, 238, .22);
+    }
+    .hub-invite-search {
+      display: grid;
+      gap: 12px;
+    }
+    .hub-invite-search-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 14px;
+      border: 1px solid rgba(214, 216, 219, .94);
+      border-radius: 14px;
+      background: #fff;
+      color: var(--t1);
+      font: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border .15s ease, box-shadow .15s ease;
+    }
+    .hub-invite-search-input:focus {
+      border-color: rgba(8, 145, 178, .32);
+      box-shadow: 0 0 0 4px rgba(8, 145, 178, .08);
+    }
+    .hub-invite-search-results {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      max-height: 304px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+    .hub-invite-empty {
+      padding: 18px;
+      border-radius: 16px;
+      border: 1px dashed rgba(214, 216, 219, .9);
+      background: #fbfcfe;
+      color: var(--t3);
+      font-size: 13px;
+      line-height: 1.55;
+      text-align: center;
+    }
+    .hub-invite-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(214, 216, 219, .74);
+    }
+    .hub-invite-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 44px;
+      padding: 0 18px;
+      border: none;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 800;
+      transition: all .15s ease;
+    }
+    .hub-invite-action.ghost {
+      background: #fff;
+      color: var(--t2);
+      border: 1px solid rgba(214, 216, 219, .94);
+    }
+    .hub-invite-action.primary {
+      background: var(--brand);
+      color: #fff;
+      box-shadow: 0 12px 24px rgba(8, 145, 178, .18);
+    }
+    .hub-invite-action.primary:hover {
+      background: var(--brand-h);
+    }
+    .resource-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(214, 216, 219, .74);
+    }
+    .resource-pagination[hidden] {
+      display: none !important;
+    }
+    .resource-pagination-summary {
+      color: var(--t2);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .resource-pagination-controls {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .resource-pagination-btn {
+      min-width: 38px;
+      height: 38px;
+      padding: 0 12px;
+      border: 1px solid rgba(214, 216, 219, .94);
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #fff;
+      color: var(--t2);
+      font-size: 12px;
+      font-weight: 800;
+      transition: all .15s ease;
+    }
+    .resource-pagination-btn:hover:not(:disabled) {
+      border-color: rgba(8, 145, 178, .28);
+      color: var(--brand);
+      background: rgba(8, 145, 178, .06);
+    }
+    .resource-pagination-btn.is-active {
+      border-color: rgba(8, 145, 178, .24);
+      background: var(--brand-soft);
+      color: var(--brand);
+    }
+    .resource-pagination-btn:disabled {
+      opacity: .42;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 980px) {
+      .hub-invite-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 800px) {
+      .hub-invite-shell {
+        padding: 22px;
+        border-radius: 24px;
+      }
+      .hub-invite-head {
+        flex-direction: column;
+      }
+      .hub-invite-head h2 {
+        font-size: 28px;
+      }
+      .hub-invite-section-head {
+        flex-direction: column;
+      }
+    }
+    @media (max-width: 640px) {
+      .hub-invite-backdrop {
+        padding: 16px;
+      }
+      .hub-invite-shell {
+        width: min(100%, calc(100vw - 16px));
+        max-height: calc(100vh - 24px);
+        padding: 18px;
+        border-radius: 22px;
+      }
+      .hub-invite-head h2 {
+        font-size: 24px;
+      }
+      .hub-invite-person {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+      .hub-invite-remove-btn,
+      .hub-invite-add-btn {
+        grid-column: 1 / -1;
+        width: 100%;
+      }
+      .hub-invite-actions {
+        flex-direction: column-reverse;
+      }
+      .hub-invite-action {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
   <div id="app"></div>
@@ -15,6 +393,8 @@
     window.HUB_CONFIG = {
       documentTitle: "Chatbot Hub",
       activeKey: "chatbot-hub",
+      panelVariant: "briefing",
+      connectionsType: "domain",
       theme: {
         bg: "#f2fbff",
         brand: "#0891b2",
@@ -23,22 +403,22 @@
         brandSoft: "rgba(8,145,178,.14)",
         accent2: "#22d3ee"
       },
-      searchPlaceholder: "챗봇 이름, Bot API, Bot Web을 검색하세요...",
+      searchPlaceholder: "챗봇 이름, API, WEB을 검색하세요...",
       eyebrow: "AI · Chat Endpoints",
       title: "Chatbot Hub",
       description: "사용자가 실제로 접속하는 챗봇 endpoint와 채널을 모았습니다. Bot API와 Bot Web 두 방식으로 나누어 보고, API는 OpenAI-compatible 표준을 우선하며 Web은 실제 접속 URL을 중심으로 관리합니다.",
-      primaryAction: { href: "workspace_project_detail.html?project=coverity-ai", icon: "add_circle", label: "새 Chatbot 등록" },
-      secondaryAction: { href: "workspace_keycenter_hub.html", icon: "vpn_key", label: "Keycenter 보기" },
+      primaryAction: { href: "workspace_chatbot_register.html", icon: "add_circle", label: "새 Chatbot 등록" },
+      secondaryAction: { href: "workspace_agent_hub.html", icon: "smart_toy", label: "Agent Hub 보기" },
       heroStats: [
         { icon: "chat", value: "6", label: "등록 Chatbot", note: "Live 4 · Review 2", color: "linear-gradient(135deg,#0891b2,#22d3ee)" },
-        { icon: "api", value: "3", label: "Bot API", note: "OpenAI-compatible 우선", color: "linear-gradient(135deg,#0e7490,#38bdf8)" },
-        { icon: "language", value: "2", label: "Bot Web", note: "portal / hosted page", color: "linear-gradient(135deg,#06b6d4,#67e8f9)" },
+        { icon: "api", value: "3", label: "API", note: "OpenAI-compatible 우선", color: "linear-gradient(135deg,#0e7490,#38bdf8)" },
+        { icon: "language", value: "2", label: "WEB", note: "portal / hosted page", color: "linear-gradient(135deg,#06b6d4,#67e8f9)" },
         { icon: "hub", value: "9", label: "Active Channels", note: "web · portal · slack", color: "linear-gradient(135deg,#155e75,#22d3ee)" }
       ],
       filters: [
         { id: "all", icon: "apps", label: "전체" },
-        { id: "api", icon: "api", label: "Bot API" },
-        { id: "web", icon: "language", label: "Bot Web" }
+        { id: "api", icon: "api", label: "API" },
+        { id: "web", icon: "language", label: "WEB" }
       ],
       resourceSectionIcon: "chat",
       resourceSectionLabel: "Chatbot Fleet",
@@ -53,12 +433,30 @@
           name: "support-assistant-api",
           meta: "고객 문의 응답용 OpenAI-compatible chatbot API",
           color: "linear-gradient(135deg,#2563eb,#06b6d4)",
+          owner: { initials: "TN", name: "Taehun Nam", meta: "taehun@example.com", color: "linear-gradient(135deg,#2563eb,#06b6d4)" },
+          sharing: {
+            collaborators: [
+              { initials: "JK", color: "linear-gradient(135deg,#6366f1,#818cf8)" },
+              { initials: "SY", color: "linear-gradient(135deg,#ec4899,#f9a8d4)" }
+            ]
+          },
           connectionsLabel: "Current URL",
           connections: [
-            { abbr: "API", name: "https://chat-api.dej.ai/support-assistant", meta: "API Endpoint" }
+            { abbr: "API", name: "https://chat-api.dej.ai/support-assistant", meta: "API Endpoint", color: "linear-gradient(135deg,#2563eb,#38bdf8)" }
           ],
           actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_chatbot_detail.html?item=support-assistant-api" }
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_chatbot_detail.html?item=support-assistant-api" },
+            {
+              label: "초대",
+              icon: "person_add",
+              attributes: {
+                "data-invite-trigger": true,
+                "data-chatbot-key": "support-assistant-api",
+                "data-chatbot-name": "support-assistant-api",
+                "data-invite-members": "Taehun Nam|Ara Kim",
+                "data-invite-context": "Bot API · Support channel"
+              }
+            }
           ]
         },
         {
@@ -69,12 +467,24 @@
           name: "docs-guide-widget",
           meta: "문서 탐색용 hosted chatbot 화면을 직접 연결한 frontend bot",
           color: "linear-gradient(135deg,#0f766e,#34d399)",
+          owner: { initials: "SY", name: "Sooyeon Park", meta: "sooyeon@example.com", color: "linear-gradient(135deg,#0f766e,#34d399)" },
           connectionsLabel: "Current URL",
           connections: [
-            { abbr: "WEB", name: "https://docs.dej.ai/chatbot/guide-widget", meta: "Bot Web URL" }
+            { abbr: "WEB", name: "https://docs.dej.ai/chatbot/guide-widget", meta: "Bot Web URL", color: "linear-gradient(135deg,#0f766e,#34d399)" }
           ],
           actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_chatbot_detail.html?item=docs-guide-widget" }
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_chatbot_detail.html?item=docs-guide-widget" },
+            {
+              label: "초대",
+              icon: "person_add",
+              attributes: {
+                "data-invite-trigger": true,
+                "data-chatbot-key": "docs-guide-widget",
+                "data-chatbot-name": "docs-guide-widget",
+                "data-invite-members": "Sora Park|Jieun Lee",
+                "data-invite-context": "Bot Web · Documentation widget"
+              }
+            }
           ]
         },
         {
@@ -85,12 +495,30 @@
           name: "ops-briefing-bot",
           meta: "API와 Slack 채널을 함께 운영하는 운영 브리핑 chatbot",
           color: "linear-gradient(135deg,#7c3aed,#22d3ee)",
+          owner: { initials: "MH", name: "Minhyuk Lee", meta: "minhyuk@example.com", color: "linear-gradient(135deg,#7c3aed,#22d3ee)" },
+          sharing: {
+            collaborators: [
+              { initials: "TN", color: "linear-gradient(135deg,#6366f1,#818cf8)" },
+              { initials: "YJ", color: "linear-gradient(135deg,#10b981,#6ee7b7)" }
+            ]
+          },
           connectionsLabel: "Current URL",
           connections: [
-            { abbr: "URL", name: "https://ops.dej.ai/bots/briefing", meta: "Primary Landing URL" }
+            { abbr: "WEB", name: "https://ops.dej.ai/bots/briefing", meta: "Primary Landing URL", color: "linear-gradient(135deg,#0f766e,#34d399)" }
           ],
           actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_chatbot_detail.html?item=ops-briefing-bot" }
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_chatbot_detail.html?item=ops-briefing-bot" },
+            {
+              label: "초대",
+              icon: "person_add",
+              attributes: {
+                "data-invite-trigger": true,
+                "data-chatbot-key": "ops-briefing-bot",
+                "data-chatbot-name": "ops-briefing-bot",
+                "data-invite-members": "Daniel Choi|Minsu Seo",
+                "data-invite-context": "Bot Web · Ops briefing"
+              }
+            }
           ]
         },
         {
@@ -101,33 +529,45 @@
           name: "pricing-advisor-bot",
           meta: "외부 파트너용 상담 봇으로 custom response mapping 검토 중",
           color: "linear-gradient(135deg,#f59e0b,#f97316)",
+          owner: { initials: "JK", name: "Jungkyu Kim", meta: "jungkyu@example.com", color: "linear-gradient(135deg,#f59e0b,#f97316)" },
           connectionsLabel: "Current URL",
           connections: [
-            { abbr: "API", name: "https://partner-api.dej.ai/pricing-advisor", meta: "Custom API Endpoint" }
+            { abbr: "API", name: "https://partner-api.dej.ai/pricing-advisor", meta: "Custom API Endpoint", color: "linear-gradient(135deg,#2563eb,#38bdf8)" }
           ],
           actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_chatbot_detail.html?item=pricing-advisor-bot" }
+            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_chatbot_detail.html?item=pricing-advisor-bot" },
+            {
+              label: "초대",
+              icon: "person_add",
+              attributes: {
+                "data-invite-trigger": true,
+                "data-chatbot-key": "pricing-advisor-bot",
+                "data-chatbot-name": "pricing-advisor-bot",
+                "data-invite-members": "Nari Han|Ara Kim",
+                "data-invite-context": "Bot API · Partner advisory"
+              }
+            }
           ]
         }
       ],
       mainPanels: [
         {
           icon: "tips_and_updates",
-          label: "Registration",
-          title: "등록 모델",
-          description: "챗봇은 Bot API 방식과 Bot Web 방식을 함께 받아야 합니다. API는 OpenAI-compatible를 기본 표준으로 두고, Web은 실제 접속 URL을 기준으로 관리합니다.",
+          label: "Tips",
+          title: "운영 팁",
+          description: "챗봇 카드에서는 접속과 공개 상태 판단에 필요한 정보만 남기고, 운영 기준은 아래 패널에서 짧게 확인하는 구조로 맞췄습니다.",
           rows: [
-            { title: "Bot API는 OpenAI-compatible를 우선합니다", meta: "gateway, logging, playground, evaluator를 공통화하기 쉽습니다." },
-            { title: "Bot Web은 접속 URL을 기준으로 봅니다", meta: "호출 표준보다 SSO, iframe 허용, 공개 범위, landing 품질이 중요합니다." },
-            { title: "한 챗봇이 여러 channel을 가질 수 있습니다", meta: "web, portal, Slack, API를 같은 봇 자산 아래에서 관리하는 모델이 적합합니다." }
+            { title: "Bot API는 OpenAI-compatible 우선으로 정리합니다", meta: "gateway, logging, evaluator 같은 공통 운영 흐름을 재사용하기 쉬워집니다." },
+            { title: "Bot Web은 실제 접속 URL 기준으로 관리합니다", meta: "호출 규격보다 SSO, iframe 허용, 공개 범위, landing 품질을 먼저 확인합니다." },
+            { title: "채널은 한 봇 자산 아래에서 함께 봅니다", meta: "web, portal, Slack, API를 분리 등록하기보다 같은 챗봇 단위로 묶어 운영합니다." },
           ],
           footerLink: { href: "workspace_tool_inventory_hub.html", label: "Tool Inventory 보기" }
         },
         {
           icon: "menu_book",
           label: "Guide Links",
-          title: "연결 허브",
-          description: "챗봇은 대화형 surface이지만, 뒤에서는 agent runtime, tool inventory, key pool을 함께 참조합니다.",
+          title: "가이드 링크",
+          description: "연관 허브와 운영 기준 링크를 별도 패널에 둡니다.",
           rows: [
             { title: "Agent Hub", meta: "챗봇 뒤에서 orchestration을 담당하는 runtime을 확인합니다.", href: "workspace_agent_hub.html" },
             { title: "Tool Inventory", meta: "챗봇이 호출하는 connected tool asset을 확인합니다.", href: "workspace_tool_inventory_hub.html" },
@@ -138,22 +578,1097 @@
       ],
       sidebarPanels: [
         {
-          icon: "publish",
-          label: "Publish Queue",
-          title: "현재 등록 상태",
-          description: "신규 챗봇 등록과 검토 중인 endpoint를 우측에서 빠르게 확인합니다.",
+          icon: "monitor_heart",
+          label: "Service Health",
+          title: "현재 서비스 상태",
+          description: "운영 중인 chatbot service의 health 상태를 우측에서 짧게 확인합니다.",
           rows: [
-            { title: "support-assistant-api", meta: "Bot API", pill: { label: "Live", tone: "healthy" } },
-            { title: "docs-guide-widget", meta: "Bot Web", pill: { label: "Live", tone: "healthy" } },
-            { title: "ops-briefing-bot", meta: "Bot Web", pill: { label: "Live", tone: "healthy" } },
-            { title: "pricing-advisor-bot", meta: "Bot API", pill: { label: "Review", tone: "review" } }
+            { title: "support-assistant-api", meta: "API", pill: { label: "Live", tone: "healthy" } },
+            { title: "docs-guide-widget", meta: "WEB", pill: { label: "Live", tone: "healthy" } },
+            { title: "ops-briefing-bot", meta: "WEB", pill: { label: "Live", tone: "healthy" } },
+            { title: "pricing-advisor-bot", meta: "API", pill: { label: "Review", tone: "review" } }
           ]
         }
       ]
     };
   </script>
+  <script>
+    (() => {
+      const STORAGE_KEY = "workspace.chatbotHub.customResources";
+      const baseConfig = window.HUB_CONFIG || {};
+      const parseStoredChatbots = () => {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          console.warn("Failed to parse stored chatbots", error);
+          return [];
+        }
+      };
+
+      const buildCustomResource = (item) => {
+        const type = String(item.type || "WEB").toUpperCase() === "API" ? "API" : "WEB";
+        const isApi = type === "API";
+        return {
+          categories: ["all", isApi ? "api" : "web"],
+          status: { label: "Live", tone: "healthy" },
+          engine: type,
+          icon: isApi ? "api" : "language",
+          name: item.name,
+          meta: isApi ? "사용자 등록 OpenAI-compatible chatbot API" : "사용자 등록 chatbot web endpoint",
+          color: isApi ? "linear-gradient(135deg,#2563eb,#06b6d4)" : "linear-gradient(135deg,#0f766e,#34d399)",
+          connectionsLabel: "Current URL",
+          connections: [
+            {
+              abbr: type,
+              name: item.currentUrl,
+              meta: isApi ? "API Endpoint" : "Bot Web URL",
+              color: isApi ? "linear-gradient(135deg,#2563eb,#38bdf8)" : "linear-gradient(135deg,#0f766e,#34d399)"
+            }
+          ],
+          actions: [
+            {
+              label: "Open",
+              icon: "open_in_new",
+              kind: "open",
+              href: item.currentUrl,
+              attributes: {
+                target: "_blank",
+                rel: "noopener noreferrer"
+              }
+            },
+            {
+              label: "초대",
+              icon: "person_add",
+              attributes: {
+                "data-invite-trigger": true,
+                "data-chatbot-key": item.key || item.name,
+                "data-chatbot-name": item.name,
+                "data-invite-members": "",
+                "data-invite-context": `${type} · User registered chatbot`
+              }
+            }
+          ]
+        };
+      };
+
+      baseConfig.primaryAction = {
+        ...(baseConfig.primaryAction || {}),
+        href: "workspace_chatbot_register.html",
+        icon: "add_circle",
+        label: "새 Chatbot 등록"
+      };
+
+      const existingNames = new Set((baseConfig.resources || []).map((resource) => String(resource.name || "").toLowerCase()));
+      const customResources = parseStoredChatbots()
+        .filter((item) => item && item.name && item.currentUrl)
+        .filter((item) => !existingNames.has(String(item.name || "").toLowerCase()))
+        .sort((left, right) => String(right.createdAt || "").localeCompare(String(left.createdAt || "")))
+        .map(buildCustomResource);
+
+      if (!customResources.length) return;
+
+      const mergedResources = [...customResources, ...(baseConfig.resources || [])];
+      baseConfig.resources = mergedResources;
+
+      const totalCount = mergedResources.length;
+      const apiCount = mergedResources.filter((resource) => (resource.categories || []).includes("api")).length;
+      const webCount = mergedResources.filter((resource) => (resource.categories || []).includes("web")).length;
+      const liveCount = mergedResources.filter((resource) => resource.status?.tone === "healthy").length;
+      const reviewCount = mergedResources.filter((resource) => resource.status?.tone === "review").length;
+      const channelCount = mergedResources.reduce((count, resource) => count + ((resource.connections || []).length || 0), 0);
+
+      if (Array.isArray(baseConfig.heroStats) && baseConfig.heroStats.length >= 4) {
+        baseConfig.heroStats[0] = {
+          ...baseConfig.heroStats[0],
+          value: String(totalCount),
+          note: `Live ${liveCount} · Review ${reviewCount}`
+        };
+        baseConfig.heroStats[1] = {
+          ...baseConfig.heroStats[1],
+          value: String(apiCount)
+        };
+        baseConfig.heroStats[2] = {
+          ...baseConfig.heroStats[2],
+          value: String(webCount)
+        };
+        baseConfig.heroStats[3] = {
+          ...baseConfig.heroStats[3],
+          value: String(channelCount)
+        };
+      }
+
+      if (Array.isArray(baseConfig.sidebarPanels) && baseConfig.sidebarPanels.length) {
+        baseConfig.sidebarPanels[0] = {
+          ...baseConfig.sidebarPanels[0],
+          rows: mergedResources.slice(0, 6).map((resource) => ({
+            title: resource.name,
+            meta: (resource.categories || []).includes("api") ? "API" : "WEB",
+            pill: {
+              label: resource.status?.label || "Live",
+              tone: resource.status?.tone || "healthy"
+            }
+          }))
+        };
+      }
+    })();
+  </script>
+  <script>
+    (() => {
+      const STORAGE_KEY = "workspace.chatbotHub.customResources";
+      const API_BASE = "/api/v2/chatbots";
+      const fallbackConfig = window.HUB_CONFIG || {};
+      const API_GRADIENT = "linear-gradient(135deg,#2563eb,#38bdf8)";
+      const WEB_GRADIENT = "linear-gradient(135deg,#0f766e,#34d399)";
+      const HYBRID_GRADIENT = "linear-gradient(135deg,#0f766e,#2563eb)";
+
+      const toArray = (value) => Array.isArray(value) ? value : [];
+      const normalizeKey = (value) => String(value || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "") || "chatbot";
+
+      const getInitials = (value) => String(value || "")
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((part) => part[0] || "")
+        .join("")
+        .slice(0, 2)
+        .toUpperCase() || "CB";
+
+      const parseStoredChatbots = () => {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          console.warn("Failed to parse stored chatbots", error);
+          return [];
+        }
+      };
+
+      const buildCustomResource = (item) => {
+        const type = String(item.type || "WEB").toUpperCase() === "API" ? "API" : "WEB";
+        const isApi = type === "API";
+        return {
+          categories: ["all", isApi ? "api" : "web"],
+          status: { label: "Live", tone: "healthy" },
+          engine: type,
+          icon: isApi ? "api" : "language",
+          name: item.name,
+          meta: isApi ? "사용자 등록 OpenAI-compatible chatbot API" : "사용자 등록 chatbot web endpoint",
+          color: isApi ? API_GRADIENT : WEB_GRADIENT,
+          details: [
+            { icon: "lan", text: "1 endpoint" },
+            { icon: isApi ? "api" : "language", text: type }
+          ],
+          connectionsLabel: "Current URL",
+          connections: [
+            {
+              abbr: type,
+              name: item.currentUrl,
+              meta: isApi ? "API Endpoint" : "Bot Web URL",
+              color: isApi ? API_GRADIENT : WEB_GRADIENT
+            }
+          ],
+          actions: [
+            {
+              label: "Open",
+              icon: "open_in_new",
+              kind: "open",
+              href: item.currentUrl,
+              attributes: {
+                target: "_blank",
+                rel: "noopener noreferrer"
+              }
+            },
+            {
+              label: "초대",
+              icon: "person_add",
+              attributes: {
+                "data-invite-trigger": true,
+                "data-chatbot-key": item.key || normalizeKey(item.name),
+                "data-chatbot-name": item.name,
+                "data-invite-members": "",
+                "data-invite-context": `${type} · User registered chatbot`
+              }
+            }
+          ]
+        };
+      };
+
+      const getPayloadData = (payload) => {
+        if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+          return {};
+        }
+        return payload.data && typeof payload.data === "object" ? payload.data : payload;
+      };
+
+      const findCard = (statsData, id) => toArray(statsData.cards).find((item) => item.id === id) || null;
+      const findFilterCount = (filterItems, id) => Number(toArray(filterItems).find((item) => item.id === id)?.count || 0);
+      const hasApiConnection = (item) => toArray(item?.endpoints).some((endpoint) => endpoint?.baseUrl) || item?.type === "api" || item?.type === "hybrid";
+      const hasWebConnection = (item) => toArray(item?.endpoints).some((endpoint) => endpoint?.frontendUrl) || item?.type === "frontendUrl" || item?.type === "hybrid";
+
+      const buildConnections = (item) => {
+        const connectionMap = new Map();
+        const appendConnection = (abbr, name, meta, color) => {
+          const trimmedName = String(name || "").trim();
+          if (!trimmedName) return;
+          const key = `${abbr}:${trimmedName}`;
+          if (connectionMap.has(key)) return;
+          connectionMap.set(key, { abbr, name: trimmedName, meta, color });
+        };
+
+        toArray(item.endpoints).forEach((endpoint, index) => {
+          const endpointLabel = endpoint?.label || `Endpoint ${index + 1}`;
+          if (endpoint?.baseUrl) {
+            appendConnection("API", endpoint.baseUrl, `${endpointLabel} · API Endpoint`, API_GRADIENT);
+          }
+          if (endpoint?.frontendUrl) {
+            appendConnection("WEB", endpoint.frontendUrl, `${endpointLabel} · Bot Web URL`, WEB_GRADIENT);
+          }
+        });
+
+        if (!connectionMap.size && item?.openUrl) {
+          appendConnection(hasWebConnection(item) ? "WEB" : "API", item.openUrl, "Primary URL", hasWebConnection(item) ? WEB_GRADIENT : API_GRADIENT);
+        }
+
+        return Array.from(connectionMap.values()).slice(0, 6);
+      };
+
+      const buildTags = (item) => {
+        const tags = [];
+        if (item?.api?.openAiCompatible) {
+          tags.push({ icon: "tune", text: "OpenAI-compatible" });
+        }
+        if (item?.api?.streaming) {
+          tags.push({ icon: "stream", text: "Streaming" });
+        }
+        if (toArray(item?.linkedAgentRefs).length) {
+          tags.push({ icon: "smart_toy", text: `Agents ${toArray(item.linkedAgentRefs).length}` });
+        }
+        if (toArray(item?.toolInventoryRefs).length) {
+          tags.push({ icon: "inventory_2", text: `Tools ${toArray(item.toolInventoryRefs).length}` });
+        }
+        return tags.slice(0, 4);
+      };
+
+      const buildOwner = (item) => {
+        if (!item?.owner?.name) return null;
+        return {
+          label: "Owner",
+          name: item.owner.name,
+          initials: getInitials(item.owner.name),
+          meta: toArray(item.authors).length ? `Authors ${toArray(item.authors).length}` : item.authMode || "workspace",
+          color: HYBRID_GRADIENT
+        };
+      };
+
+      const buildResource = (item) => {
+        const hasApi = hasApiConnection(item);
+        const hasWeb = hasWebConnection(item);
+        const categories = ["all"];
+        if (hasApi) categories.push("api");
+        if (hasWeb) categories.push("web");
+
+        const inviteMembers = toArray(item.authors)
+          .map((author) => author?.name)
+          .filter(Boolean)
+          .join("|");
+
+        const detailHref = `workspace_chatbot_detail.html?item=${encodeURIComponent(item?.slug || item?.id || "chatbot")}`;
+        const openHref = item?.openUrl || detailHref;
+        const openAttributes = item?.openUrl
+          ? { target: "_blank", rel: "noopener noreferrer" }
+          : {};
+
+        return {
+          categories,
+          status: {
+            label: item?.statusLabel || (item?.status === "live" ? "Live" : "Review"),
+            tone: item?.status === "live" ? "healthy" : "review"
+          },
+          engine: hasApi && hasWeb ? "API / WEB" : (hasApi ? "API" : "WEB"),
+          icon: hasApi && hasWeb ? "device_hub" : (hasApi ? "api" : "language"),
+          name: item?.name || item?.slug || "chatbot",
+          meta: item?.summary || "등록된 chatbot endpoint와 채널 정보를 확인합니다.",
+          color: hasApi && hasWeb ? HYBRID_GRADIENT : (hasApi ? API_GRADIENT : WEB_GRADIENT),
+          details: [
+            { icon: "lan", text: `${Number(item?.endpointCount || 0)} endpoints` },
+            { icon: "hub", text: `${toArray(item?.channelTypes).length} channels` }
+          ],
+          owner: buildOwner(item),
+          connectionsLabel: "Current URL",
+          connections: buildConnections(item),
+          tagsLabel: "Capabilities",
+          tags: buildTags(item),
+          actions: [
+            {
+              label: "Detail",
+              icon: "arrow_outward",
+              kind: "open",
+              href: detailHref
+            },
+            {
+              label: "Open",
+              icon: "open_in_new",
+              kind: "open",
+              href: openHref,
+              attributes: openAttributes
+            },
+            {
+              label: "초대",
+              icon: "person_add",
+              attributes: {
+                "data-invite-trigger": true,
+                "data-chatbot-key": item?.id || item?.slug || normalizeKey(item?.name),
+                "data-chatbot-name": item?.name || item?.slug || "Chatbot",
+                "data-invite-members": inviteMembers,
+                "data-invite-context": `${hasApi && hasWeb ? "API / WEB" : (hasApi ? "API" : "WEB")} · ${item?.summary || item?.typeLabel || "Connected chatbot"}`
+              }
+            }
+          ]
+        };
+      };
+
+      const mergeCustomResources = (config) => {
+        const existingKeys = new Set((config.resources || []).flatMap((resource) => [resource.name, resource.actions?.[1]?.attributes?.["data-chatbot-key"]])
+          .filter(Boolean)
+          .map((value) => String(value).toLowerCase()));
+
+        const customResources = parseStoredChatbots()
+          .filter((item) => item && item.name && item.currentUrl)
+          .filter((item) => {
+            const key = String(item.key || item.name || "").toLowerCase();
+            const name = String(item.name || "").toLowerCase();
+            return !existingKeys.has(key) && !existingKeys.has(name);
+          })
+          .sort((left, right) => String(right.createdAt || "").localeCompare(String(left.createdAt || "")))
+          .map(buildCustomResource);
+
+        if (!customResources.length) {
+          return {
+            ...config,
+            resources: [...(config.resources || [])]
+          };
+        }
+
+        return {
+          ...config,
+          resources: [...customResources, ...(config.resources || [])]
+        };
+      };
+
+      const buildHeroStats = (resources, options = {}) => {
+        const totalCount = resources.length;
+        const apiCount = resources.filter((resource) => toArray(resource.categories).includes("api")).length;
+        const webCount = resources.filter((resource) => toArray(resource.categories).includes("web")).length;
+        const liveCount = resources.filter((resource) => resource.status?.tone === "healthy").length;
+        const reviewCount = resources.filter((resource) => resource.status?.tone === "review").length;
+
+        return [
+          { icon: "chat", value: String(totalCount), label: "등록 Chatbot", note: `Live ${liveCount} · Review ${reviewCount}`, color: "linear-gradient(135deg,#0891b2,#22d3ee)" },
+          { icon: "api", value: String(apiCount), label: "API", note: options.apiNote || "backend-first exposure", color: API_GRADIENT },
+          { icon: "language", value: String(webCount), label: "WEB", note: options.webNote || "frontend exposure", color: WEB_GRADIENT },
+          { icon: "inventory_2", value: String(Number(options.linkedToolsValue || 0)), label: "Linked Tools", note: options.linkedToolsNote || "tool inventory refs", color: HYBRID_GRADIENT }
+        ];
+      };
+
+      const buildFilters = (items) => {
+        const hasApi = items.some((item) => hasApiConnection(item));
+        const hasWeb = items.some((item) => hasWebConnection(item));
+        return [
+          { id: "all", icon: "apps", label: "전체" },
+          ...(hasApi || !items.length ? [{ id: "api", icon: "api", label: "API" }] : []),
+          ...(hasWeb || !items.length ? [{ id: "web", icon: "language", label: "WEB" }] : [])
+        ];
+      };
+
+      const mapSidebarPanelRows = (rows, { includeDescription = false } = {}) => toArray(rows).map((row) => ({
+        title: row?.title || row?.id || "chatbot",
+        meta: [row?.meta, includeDescription ? row?.description : ""].filter(Boolean).join(" · "),
+        pill: row?.pill ? {
+          label: row.pill.label,
+          tone: row.pill.tone
+        } : undefined
+      }));
+
+      const buildSidebarPanels = (runtimePanel, registrationPanel) => {
+        const panels = [];
+
+        if (toArray(runtimePanel?.rows).length) {
+          panels.push({
+            icon: runtimePanel.icon || "monitor_heart",
+            label: runtimePanel.label || "Service Health",
+            title: runtimePanel.title || "현재 서비스 상태",
+            description: runtimePanel.description || "운영 중인 chatbot service의 health 상태를 우측에서 짧게 확인합니다.",
+            rows: mapSidebarPanelRows(runtimePanel.rows, { includeDescription: true })
+          });
+        }
+
+        if (toArray(registrationPanel?.rows).length) {
+          const summary = registrationPanel.summary || {};
+          panels.push({
+            icon: "how_to_reg",
+            label: registrationPanel.label || "Registration",
+            title: registrationPanel.title || "등록 구성 요약",
+            description: registrationPanel.description || "채널, endpoint, 노출 타입을 함께 보여줘 chatbot 등록 completeness를 확인합니다.",
+            rows: mapSidebarPanelRows(registrationPanel.rows, { includeDescription: true }),
+            footerLink: {
+              href: "workspace_chatbot_register.html",
+              label: `새 Chatbot 등록${summary.total ? ` · ${summary.total} total` : ""}`
+            }
+          });
+        }
+
+        return panels;
+      };
+
+      const buildMainPanels = (tipsPanel, guideLinksPanel) => {
+        const panels = [];
+
+        if (toArray(tipsPanel?.rows).length) {
+          panels.push({
+            icon: tipsPanel.icon || "tips_and_updates",
+            label: tipsPanel.label || "Tips",
+            title: Object.prototype.hasOwnProperty.call(tipsPanel, "title") ? (tipsPanel.title || "") : "Chatbot 운영 팁",
+            description: tipsPanel.description || "Chatbot Hub는 채널 노출과 배포 상태를 빠르게 읽는 화면으로 유지합니다.",
+            rows: toArray(tipsPanel.rows).map((row) => ({
+              title: row?.title || "",
+              meta: row?.meta || "",
+              href: row?.href
+            })),
+            footerLink: tipsPanel.footerLink || undefined
+          });
+        }
+
+        if (toArray(guideLinksPanel?.rows).length) {
+          panels.push({
+            icon: guideLinksPanel.icon || "menu_book",
+            label: guideLinksPanel.label || "Guide Links",
+            title: Object.prototype.hasOwnProperty.call(guideLinksPanel, "title") ? (guideLinksPanel.title || "") : "Chatbot 연계 허브",
+            description: guideLinksPanel.description || "배포, 연결 agent, 정책 허브를 빠르게 오갈 수 있게 구성합니다.",
+            rows: toArray(guideLinksPanel.rows).map((row) => ({
+              title: row?.title || "",
+              meta: row?.meta || "",
+              href: row?.href
+            })),
+            footerLink: guideLinksPanel.footerLink || undefined
+          });
+        }
+
+        return panels;
+      };
+
+      const fetchJson = async (url) => {
+        const response = await fetch(url, {
+          method: "GET",
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: {
+            Accept: "application/json"
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Request failed: ${response.status} ${response.statusText}`);
+        }
+
+        return response.json();
+      };
+
+      const renderConfig = (config, retry = 30) => {
+        window.HUB_CONFIG = config;
+        if (typeof window.renderWorkspaceResourceHub === "function") {
+          window.renderWorkspaceResourceHub(config);
+          return;
+        }
+        if (retry > 0) {
+          window.setTimeout(() => renderConfig(config, retry - 1), 100);
+        }
+      };
+
+      const bootstrap = async () => {
+        const [listResult, filtersResult, statsResult, runtimeResult, registrationResult, tipsResult, guideLinksResult] = await Promise.allSettled([
+          fetchJson(API_BASE),
+          fetchJson(`${API_BASE}/filters`),
+          fetchJson(`${API_BASE}/stats`),
+          fetchJson(`${API_BASE}/panels/runtime-status`),
+          fetchJson(`${API_BASE}/panels/registration`),
+          fetchJson(`/api/v2/panels/tips?surface=chatbots`),
+          fetchJson(`/api/v2/panels/guide-links?surface=chatbots`)
+        ]);
+
+        if (listResult.status !== "fulfilled") {
+          throw listResult.reason;
+        }
+
+        const listPayload = getPayloadData(listResult.value);
+        const filterPayload = filtersResult.status === "fulfilled" ? getPayloadData(filtersResult.value) : {};
+        const statsPayload = statsResult.status === "fulfilled" ? getPayloadData(statsResult.value) : {};
+        const runtimePayload = runtimeResult.status === "fulfilled" ? getPayloadData(runtimeResult.value) : {};
+        const registrationPayload = registrationResult.status === "fulfilled" ? getPayloadData(registrationResult.value) : {};
+        const tipsPayload = tipsResult.status === "fulfilled" ? getPayloadData(tipsResult.value) : {};
+        const guideLinksPayload = guideLinksResult.status === "fulfilled" ? getPayloadData(guideLinksResult.value) : {};
+
+        const items = toArray(listPayload.items);
+        const filterItems = toArray(filterPayload.items);
+        const linkedToolsCard = findCard(statsPayload, "linkedTools");
+        const nextConfig = mergeCustomResources({
+          ...fallbackConfig,
+          primaryAction: {
+            ...(fallbackConfig.primaryAction || {}),
+            href: "workspace_chatbot_register.html",
+            icon: "add_circle",
+            label: "새 Chatbot 등록"
+          },
+          filters: buildFilters(items),
+          resources: items.map(buildResource),
+          mainPanels: (() => {
+            const panels = buildMainPanels(tipsPayload, guideLinksPayload);
+            return panels.length ? panels : (fallbackConfig.mainPanels || []);
+          })(),
+          sidebarPanels: (() => {
+            const panels = buildSidebarPanels(runtimePayload, registrationPayload);
+            return panels.length ? panels : (fallbackConfig.sidebarPanels || []);
+          })()
+        });
+
+        nextConfig.heroStats = buildHeroStats(nextConfig.resources, {
+          apiNote: `${findFilterCount(filterItems, "api")} API · ${findFilterCount(filterItems, "hybrid")} Hybrid`,
+          webNote: `${findFilterCount(filterItems, "frontendUrl")} Frontend URL · ${findFilterCount(filterItems, "hybrid")} Hybrid`,
+          linkedToolsValue: linkedToolsCard?.value,
+          linkedToolsNote: linkedToolsCard?.note
+        });
+
+        renderConfig(nextConfig);
+      };
+
+      bootstrap().catch((error) => {
+        console.warn("Failed to load /api/v2/chatbots hub data", error);
+        renderConfig({
+          ...fallbackConfig,
+          heroStats: [],
+          resources: [],
+          resourceDescription: "Chatbot 정보를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.",
+          mainPanels: [{
+            icon: "error",
+            label: "Load Error",
+            title: "Chatbot Hub 데이터를 읽지 못했습니다.",
+            description: "권한 또는 API 응답 상태를 확인해 주세요.",
+            rows: [{ title: "API 호출 실패", meta: String(error?.message || error || "Unknown error") }]
+          }],
+          sidebarPanels: [{
+            icon: "monitor_heart",
+            label: "Service Health",
+            title: "현재 서비스 상태",
+            description: "Chatbot 상태를 불러오지 못했습니다.",
+            rows: [{ title: "상태 동기화 실패", meta: "chatbot status", pill: { label: "Error", tone: "incident" } }]
+          }]
+        });
+      });
+    })();
+  </script>
+  <div class="hub-invite-backdrop" id="hubInviteModal" hidden>
+    <div class="hub-invite-shell" role="dialog" aria-modal="true" aria-labelledby="hubInviteTitle">
+      <div class="hub-invite-head">
+        <div class="hub-invite-copy">
+          <div class="hub-invite-kicker"><span class="material-icons-round">group_add</span>Chatbot Invite</div>
+          <h2 id="hubInviteTitle">운영 멤버 초대</h2>
+          <p class="hub-invite-subtitle" id="hubInviteSubtitle">현재 연결된 운영 멤버를 관리하고, 사람을 검색하거나 직접 추가할 수 있습니다.</p>
+        </div>
+        <button class="hub-invite-close" type="button" id="hubInviteClose" aria-label="초대 모달 닫기">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+
+      <div class="hub-invite-layout">
+        <section class="hub-invite-panel">
+          <div class="hub-invite-section-head">
+            <div>
+              <h3>현재 초대된 사람</h3>
+            </div>
+            <div class="hub-invite-section-meta" id="hubInviteCount"></div>
+          </div>
+          <div class="hub-invite-list" id="hubInviteList"></div>
+        </section>
+
+        <section class="hub-invite-panel">
+          <div class="hub-invite-section-head">
+            <div>
+              <h3>사람 검색</h3>
+            </div>
+            <div class="hub-invite-section-meta">이름, 팀, 메일 또는 신규 추가</div>
+          </div>
+          <div class="hub-invite-search">
+            <input class="hub-invite-search-input" id="hubInviteSearchInput" type="text" placeholder="사람 검색" aria-label="사람 검색" />
+            <div class="hub-invite-search-results" id="hubInviteSearchResults"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="hub-invite-actions">
+        <button class="hub-invite-action ghost" type="button" id="hubInviteDone">닫기</button>
+        <button class="hub-invite-action primary" type="button" id="hubInviteConfirm">
+          <span class="material-icons-round">done</span>완료
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="workspace_resource_hub_shared.js"></script>
   <script src="ax_studio_topbar.js"></script>
   <script src="concept_endpoint_overlay.js"></script>
+  <script>
+    (() => {
+      const PAGE_SIZE = 6;
+      const state = {
+        currentPage: 1,
+        activeFilter: "all"
+      };
+
+      const getPanel = () => document.getElementById("resource-panel");
+      const getGrid = () => document.getElementById("resourceGrid");
+      const getEmptyState = () => document.getElementById("resourceEmptyState");
+      const getCards = () => Array.from(document.querySelectorAll("[data-resource-card]"));
+      const getActiveFilter = () => document.querySelector("[data-resource-filter].is-active")?.dataset.resourceFilter || "all";
+      const getCardTags = (card) => String(card?.dataset?.resourceTags || "").split(/\s+/).filter(Boolean);
+
+      const ensurePagination = () => {
+        const panel = getPanel();
+        const emptyState = getEmptyState();
+        const defaultPagination = document.getElementById("resourcePagination");
+        if (!panel || !emptyState) return null;
+        if (defaultPagination) {
+          defaultPagination.hidden = true;
+        }
+
+        let pagination = document.getElementById("chatbotFleetPagination");
+        if (pagination) return pagination;
+
+        pagination = document.createElement("nav");
+        pagination.id = "chatbotFleetPagination";
+        pagination.className = "resource-pagination";
+        pagination.setAttribute("aria-label", "Chatbot Fleet pagination");
+        pagination.innerHTML = `
+          <div class="resource-pagination-summary" id="chatbotFleetPaginationSummary"></div>
+          <div class="resource-pagination-controls" id="chatbotFleetPaginationControls"></div>
+        `;
+        emptyState.insertAdjacentElement("afterend", pagination);
+        return pagination;
+      };
+
+      const renderPaginationControls = (totalItems, totalPages) => {
+        const pagination = ensurePagination();
+        if (!pagination) return;
+
+        const summary = document.getElementById("chatbotFleetPaginationSummary");
+        const controls = document.getElementById("chatbotFleetPaginationControls");
+        if (!summary || !controls) return;
+
+        if (totalItems <= PAGE_SIZE) {
+          pagination.hidden = true;
+          controls.innerHTML = "";
+          summary.textContent = totalItems ? `총 ${totalItems}개` : "";
+          return;
+        }
+
+        pagination.hidden = false;
+        const startItem = (state.currentPage - 1) * PAGE_SIZE + 1;
+        const endItem = Math.min(totalItems, state.currentPage * PAGE_SIZE);
+        summary.textContent = `${startItem}-${endItem} / 총 ${totalItems}개`;
+
+        const pageButtons = Array.from({ length: totalPages }, (_, index) => {
+          const page = index + 1;
+          return `
+            <button
+              class="resource-pagination-btn${page == state.currentPage ? " is-active" : ""}"
+              type="button"
+              data-resource-page="${page}"
+              aria-label="${page}페이지"
+              aria-current="${page == state.currentPage ? "page" : "false"}"
+            >${page}</button>
+          `;
+        }).join("");
+
+        controls.innerHTML = `
+          <button
+            class="resource-pagination-btn"
+            type="button"
+            data-resource-page-nav="prev"
+            ${state.currentPage === 1 ? "disabled" : ""}
+            aria-label="이전 페이지"
+          >
+            <span class="material-icons-round">chevron_left</span>
+          </button>
+          ${pageButtons}
+          <button
+            class="resource-pagination-btn"
+            type="button"
+            data-resource-page-nav="next"
+            ${state.currentPage === totalPages ? "disabled" : ""}
+            aria-label="다음 페이지"
+          >
+            <span class="material-icons-round">chevron_right</span>
+          </button>
+        `;
+      };
+
+      const applyPagination = ({ resetPage = false } = {}) => {
+        const grid = getGrid();
+        if (!grid) return;
+
+        const cards = getCards();
+        const activeFilter = getActiveFilter();
+        if (resetPage || state.activeFilter !== activeFilter) {
+          state.currentPage = 1;
+          state.activeFilter = activeFilter;
+        }
+
+        const filteredCards = cards.filter((card) => {
+          const tags = getCardTags(card);
+          return activeFilter === "all" || tags.includes(activeFilter);
+        });
+        const totalItems = filteredCards.length;
+        const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+        state.currentPage = Math.min(state.currentPage, totalPages);
+
+        const startIndex = (state.currentPage - 1) * PAGE_SIZE;
+        const endIndex = startIndex + PAGE_SIZE;
+        const visibleCards = new Set(filteredCards.slice(startIndex, endIndex));
+
+        cards.forEach((card) => {
+          card.hidden = !visibleCards.has(card);
+        });
+
+        const emptyState = getEmptyState();
+        if (emptyState) {
+          emptyState.classList.toggle("is-visible", totalItems === 0);
+        }
+
+        renderPaginationControls(totalItems, totalPages);
+      };
+
+      const bindPagination = () => {
+        if (window.__chatbotFleetPaginationBound) return;
+        window.__chatbotFleetPaginationBound = true;
+
+        document.addEventListener("click", (event) => {
+          const filterButton = event.target.closest("[data-resource-filter]");
+          if (filterButton) {
+            window.setTimeout(() => applyPagination({ resetPage: true }), 0);
+            return;
+          }
+
+          const pageButton = event.target.closest("[data-resource-page]");
+          if (pageButton) {
+            const nextPage = Number(pageButton.dataset.resourcePage || 1);
+            if (Number.isFinite(nextPage) && nextPage > 0) {
+              state.currentPage = nextPage;
+              applyPagination();
+            }
+            return;
+          }
+
+          const navButton = event.target.closest("[data-resource-page-nav]");
+          if (!navButton) return;
+
+          const direction = navButton.dataset.resourcePageNav;
+          if (direction === "prev" && state.currentPage > 1) {
+            state.currentPage -= 1;
+          }
+          if (direction === "next") {
+            state.currentPage += 1;
+          }
+          applyPagination();
+        });
+      };
+
+      const hookRenderer = () => {
+        if (window.__chatbotFleetPaginationHooked) return;
+        if (typeof window.renderWorkspaceResourceHub !== "function") {
+          window.setTimeout(hookRenderer, 100);
+          return;
+        }
+
+        window.__chatbotFleetPaginationHooked = true;
+        const originalRender = window.renderWorkspaceResourceHub;
+        window.renderWorkspaceResourceHub = (config) => {
+          const result = originalRender(config);
+          window.setTimeout(() => {
+            applyPagination({ resetPage: true });
+            if (typeof window.refreshConceptEndpointOverlay === "function") {
+              window.refreshConceptEndpointOverlay();
+            }
+          }, 0);
+          return result;
+        };
+
+        applyPagination({ resetPage: true });
+        if (typeof window.refreshConceptEndpointOverlay === "function") {
+          window.refreshConceptEndpointOverlay();
+        }
+      };
+
+      bindPagination();
+      hookRenderer();
+    })();
+  </script>
+  <script>
+    (() => {
+      const inviteModal = document.getElementById("hubInviteModal");
+      const inviteClose = document.getElementById("hubInviteClose");
+      const inviteDone = document.getElementById("hubInviteDone");
+      const inviteConfirm = document.getElementById("hubInviteConfirm");
+      const inviteTitle = document.getElementById("hubInviteTitle");
+      const inviteSubtitle = document.getElementById("hubInviteSubtitle");
+      const inviteCount = document.getElementById("hubInviteCount");
+      const inviteList = document.getElementById("hubInviteList");
+      const inviteSearchInput = document.getElementById("hubInviteSearchInput");
+      const inviteSearchResults = document.getElementById("hubInviteSearchResults");
+      if (!inviteModal || !inviteClose || !inviteDone || !inviteConfirm || !inviteTitle || !inviteSubtitle || !inviteCount || !inviteList || !inviteSearchInput || !inviteSearchResults) return;
+
+      const directory = [
+        { name: "Taehun Nam", role: "Chatbot Owner", team: "Workspace AI", email: "taehun.nam@lge.com", initials: "TN", color: "linear-gradient(135deg,#f472b6,#b40e4d)" },
+        { name: "Ara Kim", role: "Conversation Designer", team: "AI Governance", email: "ara.kim@lge.com", initials: "AK", color: "linear-gradient(135deg,#a78bfa,#7c5fcf)" },
+        { name: "Jieun Lee", role: "Backend Engineer", team: "Platform API", email: "jieun.lee@lge.com", initials: "JL", color: "linear-gradient(135deg,#34d399,#0d9488)" },
+        { name: "Sora Park", role: "Frontend Engineer", team: "Design Systems", email: "sora.park@lge.com", initials: "SP", color: "linear-gradient(135deg,#4f8cff,#3b6fcf)" },
+        { name: "Daniel Choi", role: "Channel Operator", team: "Infra Operations", email: "daniel.choi@lge.com", initials: "DC", color: "linear-gradient(135deg,#0ea5e9,#2563eb)" },
+        { name: "Nari Han", role: "Partner Success", team: "AI Platform", email: "nari.han@lge.com", initials: "NH", color: "linear-gradient(135deg,#f59e0b,#d97706)" },
+        { name: "Minsu Seo", role: "Release Manager", team: "DevOps", email: "minsu.seo@lge.com", initials: "MS", color: "linear-gradient(135deg,#22d3ee,#0086cc)" },
+        { name: "QA Engineer", role: "QA Engineer", team: "Quality", email: "qa.engineer@lge.com", initials: "QA", color: "linear-gradient(135deg,#6b7280,#374151)" }
+      ];
+
+      const inviteStore = {};
+      let activeInviteTrigger = null;
+      let activeInviteChatbot = null;
+
+      const escapeHtml = (value) => String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+
+      const getInitials = (value) => {
+        const trimmed = String(value || "").trim();
+        if (!trimmed) return "NM";
+        if (/\s/.test(trimmed)) {
+          return trimmed
+            .split(/\s+/)
+            .map((part) => part[0] || "")
+            .join("")
+            .slice(0, 2)
+            .toUpperCase();
+        }
+        return trimmed.slice(0, 2).toUpperCase();
+      };
+
+      const normalizeNameFromEmail = (value) => {
+        const localPart = String(value || "").split("@")[0] || "";
+        const normalized = localPart.replace(/[._-]+/g, " ").trim();
+        if (!normalized) return "New Member";
+        if (/^[a-z0-9 ]+$/i.test(normalized)) {
+          return normalized.replace(/\b[a-z]/g, (match) => match.toUpperCase());
+        }
+        return normalized;
+      };
+
+      const createManualMember = (query) => {
+        const trimmed = String(query || "").trim();
+        const email = trimmed.includes("@")
+          ? trimmed.toLowerCase()
+          : `${trimmed.toLowerCase().replace(/[^a-z0-9]+/g, ".").replace(/(^\.|\.$)/g, "") || "new.member"}@invite.local`;
+        const name = trimmed.includes("@") ? normalizeNameFromEmail(trimmed) : trimmed;
+        return {
+          name,
+          role: "Pending Invite",
+          team: "Chatbot Collaborator",
+          email,
+          initials: getInitials(name),
+          color: "linear-gradient(135deg,#6b7280,#374151)",
+          isManual: true
+        };
+      };
+
+      const getDirectoryMember = (name) => {
+        return directory.find((member) => member.name.toLowerCase() === String(name || "").toLowerCase()) || {
+          name,
+          role: "Chatbot Collaborator",
+          team: "Workspace AI",
+          email: `${String(name || "member").toLowerCase().replace(/\s+/g, ".")}@lge.com`,
+          initials: getInitials(name),
+          color: "linear-gradient(135deg,#6b7280,#374151)"
+        };
+      };
+
+      const getInviteChatbotData = (trigger) => {
+        const currentNames = String(trigger.dataset.inviteMembers || "")
+          .split("|")
+          .map((name) => name.trim())
+          .filter(Boolean);
+        return {
+          key: trigger.dataset.chatbotKey || trigger.dataset.chatbotName || "chatbot",
+          name: trigger.dataset.chatbotName || trigger.dataset.chatbotKey || "Chatbot",
+          context: trigger.dataset.inviteContext || "연결된 운영 멤버를 관리합니다.",
+          currentNames
+        };
+      };
+
+      const ensureInviteState = (chatbotState) => {
+        if (!chatbotState) return [];
+        if (!inviteStore[chatbotState.key]) {
+          const uniqueNames = Array.from(new Set(chatbotState.currentNames));
+          inviteStore[chatbotState.key] = uniqueNames.map((name) => ({ ...getDirectoryMember(name) }));
+        }
+        return inviteStore[chatbotState.key];
+      };
+
+      const getFilteredCandidates = () => {
+        if (!activeInviteChatbot) return [];
+        const invitedNames = new Set(ensureInviteState(activeInviteChatbot).map((member) => member.name));
+        const query = inviteSearchInput.value.trim().toLowerCase();
+        const filteredMembers = directory.filter((member) => {
+          if (invitedNames.has(member.name)) return false;
+          if (!query) return true;
+          return [member.name, member.team, member.role, member.email].some((field) => field.toLowerCase().includes(query));
+        });
+
+        const hasExactMatch = [...directory, ...ensureInviteState(activeInviteChatbot)].some((member) =>
+          [member.name, member.email].some((field) => String(field || "").toLowerCase() === query)
+        );
+
+        if (query && !hasExactMatch) {
+          filteredMembers.push(createManualMember(inviteSearchInput.value));
+        }
+
+        return filteredMembers;
+      };
+
+      const renderInviteList = () => {
+        const invitedMembers = ensureInviteState(activeInviteChatbot);
+        inviteCount.textContent = `${invitedMembers.length}명`;
+        if (!invitedMembers.length) {
+          inviteList.innerHTML = '<div class="hub-invite-empty">초대된 사람이 없습니다.</div>';
+          return;
+        }
+
+        inviteList.innerHTML = invitedMembers.map((member) => `
+          <div class="hub-invite-person">
+            <div class="hub-invite-avatar" style="background:${member.color}">${escapeHtml(member.initials)}</div>
+            <div class="hub-invite-person-copy">
+              <div class="hub-invite-person-name">${escapeHtml(member.name)}</div>
+              <div class="hub-invite-person-meta">${escapeHtml(member.role)} · ${escapeHtml(member.team)} · ${escapeHtml(member.email)}</div>
+            </div>
+            <button class="hub-invite-remove-btn" type="button" data-invite-remove="${encodeURIComponent(member.name)}">
+              <span class="material-icons-round">delete</span>삭제
+            </button>
+          </div>
+        `).join("");
+      };
+
+      const renderInviteSearchResults = () => {
+        const candidates = getFilteredCandidates();
+        if (!candidates.length) {
+          inviteSearchResults.innerHTML = '<div class="hub-invite-empty">검색 결과가 없습니다. 다른 이름이나 팀으로 찾아보세요.</div>';
+          return;
+        }
+
+        inviteSearchResults.innerHTML = candidates.map((member) => `
+          <div class="hub-invite-person">
+            <div class="hub-invite-avatar" style="background:${member.color}">${escapeHtml(member.initials)}</div>
+            <div class="hub-invite-person-copy">
+              <div class="hub-invite-person-name">${escapeHtml(member.name)}</div>
+              <div class="hub-invite-person-meta">${member.isManual ? `직접 입력 · ${escapeHtml(member.email)}` : `${escapeHtml(member.role)} · ${escapeHtml(member.team)} · ${escapeHtml(member.email)}`}</div>
+            </div>
+            <button class="hub-invite-add-btn" type="button" data-invite-add="${encodeURIComponent(member.name)}">
+              <span class="material-icons-round">${member.isManual ? "add_circle" : "person_add"}</span>${member.isManual ? "신규 추가" : "추가"}
+            </button>
+          </div>
+        `).join("");
+      };
+
+      const renderInviteModal = () => {
+        if (!activeInviteChatbot) return;
+        inviteTitle.textContent = `${activeInviteChatbot.name} 운영 멤버 초대`;
+        inviteSubtitle.textContent = `${activeInviteChatbot.context} 사람을 검색하거나 직접 새 멤버를 추가할 수 있습니다.`;
+        renderInviteList();
+        renderInviteSearchResults();
+      };
+
+      const setInviteOpen = (isOpen) => {
+        inviteModal.hidden = !isOpen;
+        inviteModal.setAttribute("aria-hidden", String(!isOpen));
+        document.body.style.overflow = isOpen ? "hidden" : "";
+        if (isOpen) {
+          renderInviteModal();
+          inviteSearchInput.focus();
+        }
+      };
+
+      const openInviteForTrigger = (trigger) => {
+        activeInviteTrigger = trigger;
+        activeInviteChatbot = getInviteChatbotData(trigger);
+        if (!activeInviteChatbot) return;
+        ensureInviteState(activeInviteChatbot);
+        inviteSearchInput.value = "";
+        setInviteOpen(true);
+      };
+
+      const closeInviteModal = () => {
+        setInviteOpen(false);
+        activeInviteTrigger?.focus();
+      };
+
+      document.addEventListener("click", (event) => {
+        const trigger = event.target.closest("[data-invite-trigger]");
+        if (!trigger) return;
+        event.preventDefault();
+        event.stopPropagation();
+        openInviteForTrigger(trigger);
+      });
+
+      [inviteClose, inviteDone, inviteConfirm].forEach((button) => {
+        button.addEventListener("click", closeInviteModal);
+      });
+
+      inviteModal.addEventListener("click", (event) => {
+        if (event.target === inviteModal) {
+          closeInviteModal();
+        }
+      });
+
+      inviteSearchInput.addEventListener("input", () => {
+        renderInviteSearchResults();
+      });
+
+      inviteList.addEventListener("click", (event) => {
+        const removeButton = event.target.closest("[data-invite-remove]");
+        if (!removeButton || !activeInviteChatbot) return;
+        const memberName = decodeURIComponent(removeButton.dataset.inviteRemove || "");
+        inviteStore[activeInviteChatbot.key] = ensureInviteState(activeInviteChatbot).filter((member) => member.name !== memberName);
+        renderInviteList();
+        renderInviteSearchResults();
+      });
+
+      inviteSearchResults.addEventListener("click", (event) => {
+        const addButton = event.target.closest("[data-invite-add]");
+        if (!addButton || !activeInviteChatbot) return;
+        const memberName = decodeURIComponent(addButton.dataset.inviteAdd || "");
+        const directoryMember = directory.find((member) => member.name.toLowerCase() === memberName.toLowerCase());
+        const nextMember = directoryMember ? { ...directoryMember } : createManualMember(memberName);
+        inviteStore[activeInviteChatbot.key] = [...ensureInviteState(activeInviteChatbot), { ...nextMember }];
+        renderInviteList();
+        renderInviteSearchResults();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !inviteModal.hidden) {
+          closeInviteModal();
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

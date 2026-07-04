@@ -1,39 +1,14 @@
-import BoltRoundedIcon from '@mui/icons-material/BoltRounded';
 import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
-import HubRoundedIcon from '@mui/icons-material/HubRounded';
-import RouteRoundedIcon from '@mui/icons-material/RouteRounded';
 import VerifiedUserRoundedIcon from '@mui/icons-material/VerifiedUserRounded';
 import { Box, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 
+import { WorkspaceIcon } from '@/components/WorkspaceIcon';
 import type { LaunchpadHero } from '@/features/launchpad/types';
+import type { ReferenceBannerSlide } from '@/features/launchpad/utils/bannerSlides';
 
-export function DejSnapshot({
-  hero,
-  serviceGroupCount,
-  serviceLinkCount,
-}: {
-  hero?: LaunchpadHero;
-  serviceGroupCount: number;
-  serviceLinkCount: number;
-}) {
-  const rows = [
-    {
-      description: `${serviceGroupCount} service groups connect customer experience data to development tools`,
-      icon: <HubRoundedIcon sx={{ fontSize: 18 }} />,
-      name: 'Connectivity',
-    },
-    {
-      description: `${serviceLinkCount} shortcuts help teams build and deploy at the right moment`,
-      icon: <BoltRoundedIcon sx={{ fontSize: 18 }} />,
-      name: 'Just-in-Time Dev',
-    },
-    {
-      description: hero?.workspaceName ?? 'Pipeline from customer journey to development journey',
-      icon: <RouteRoundedIcon sx={{ fontSize: 18 }} />,
-      name: 'CEJ → DEJ',
-    },
-  ];
+export function DejSnapshot({ hero }: { hero?: LaunchpadHero }) {
+  const rows = (hero?.heroStats ?? []).slice(0, 3);
 
   return (
     <Box
@@ -50,11 +25,11 @@ export function DejSnapshot({
       }}
     >
       <Typography color="rgba(255,255,255,.72)" fontSize={11} fontWeight={800}>
-        DEJ Core Snapshot
+        {hero?.workspaceName ?? 'DEJ Workspace'}
       </Typography>
       {rows.map((row) => (
         <Box
-          key={row.name}
+          key={row.key}
           sx={{
             alignItems: 'center',
             bgcolor: 'rgba(255,255,255,.92)',
@@ -78,14 +53,14 @@ export function DejSnapshot({
               width: 34,
             }}
           >
-            {row.icon}
+            <WorkspaceIcon name={row.icon} sx={{ fontSize: 18 }} />
           </Box>
           <Box minWidth={0}>
             <Typography color="text.primary" fontSize={13} fontWeight={800} letterSpacing="-.03em">
-              {row.name}
+              {row.label}
             </Typography>
             <Typography color="text.secondary" fontSize={11} lineHeight={1.4} sx={{ mt: 0.25 }}>
-              {row.description}
+              {row.note ? `${row.value} · ${row.note}` : row.value}
             </Typography>
           </Box>
         </Box>
@@ -161,11 +136,8 @@ export function DejPipelineBackground() {
   );
 }
 
-export function BannerVisualCard({ variant }: { variant: 'event' | 'security' }) {
-  const isEvent = variant === 'event';
-  const chips = isEvent
-    ? ['App Gallery', 'AI Gallery', 'MCP']
-    : ['API Key', 'MCP', 'Permission Review'];
+export function BannerVisualCard({ slide }: { slide: ReferenceBannerSlide }) {
+  const isSecurity = slide.variant === 'security';
 
   return (
     <Box
@@ -193,10 +165,10 @@ export function BannerVisualCard({ variant }: { variant: 'event' | 'security' })
             width: 38,
           }}
         >
-          {isEvent ? (
-            <GroupsRoundedIcon sx={{ fontSize: 20 }} />
-          ) : (
+          {isSecurity ? (
             <VerifiedUserRoundedIcon sx={{ fontSize: 20 }} />
+          ) : (
+            <GroupsRoundedIcon sx={{ fontSize: 20 }} />
           )}
         </Box>
         <Typography
@@ -206,7 +178,7 @@ export function BannerVisualCard({ variant }: { variant: 'event' | 'security' })
           letterSpacing=".08em"
           textTransform="uppercase"
         >
-          {isEvent ? 'Conference' : 'Security'}
+          {slide.type.toUpperCase()}
         </Typography>
       </Stack>
       <Typography
@@ -216,15 +188,13 @@ export function BannerVisualCard({ variant }: { variant: 'event' | 'security' })
         letterSpacing="-.04em"
         sx={{ mt: 1.75 }}
       >
-        {isEvent ? 'AX Studio Day' : 'Access Guard'}
+        {slide.visualTitle}
       </Typography>
       <Typography color="rgba(236,249,255,.78)" fontSize={12} lineHeight={1.5} sx={{ mt: 1 }}>
-        {isEvent
-          ? 'Live Demo · Best Practice · Roadmap Talk'
-          : 'Key Rotation · Permission Review · MCP Policy'}
+        {slide.visualMeta}
       </Typography>
       <Stack direction="row" flexWrap="wrap" gap={0.875} sx={{ mt: 1.75 }}>
-        {chips.map((chip) => (
+        {slide.chips.map((chip) => (
           <Box
             key={chip}
             sx={{

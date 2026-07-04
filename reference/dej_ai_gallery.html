@@ -473,19 +473,20 @@
       padding:18px;
       border-radius:18px;
       border:1px solid var(--border);
-      background:linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+      background:var(--surface);
     }
     .rail-kicker {
       display:inline-flex;
       align-items:center;
       gap:6px;
-      margin-bottom:10px;
-      font-size:10px;
-      font-weight:800;
-      letter-spacing:.12em;
+      margin-bottom:14px;
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:.08em;
       text-transform:uppercase;
-      color:var(--brand);
+      color:var(--t3);
     }
+    .rail-kicker .material-icons-round { font-size:14px; }
     .rail-title {
       font-size:18px;
       font-weight:800;
@@ -572,7 +573,7 @@
     }
     .section-kicker .material-icons-round {
       font-size:14px;
-      color:var(--brand);
+      color:var(--t3);
     }
     .section-title {
       font-size:26px;
@@ -590,11 +591,11 @@
     .spotlight-card {
       padding:22px;
       border-radius:18px;
-      border:1px solid rgba(180,14,77,.12);
+      border:1px solid var(--border);
       background:
-        radial-gradient(circle at top right, rgba(124,95,207,.16), transparent 36%),
-        linear-gradient(145deg, #fff8fb 0%, #ffffff 68%);
-      box-shadow:0 12px 30px rgba(15,23,42,.06);
+        radial-gradient(circle at top right, rgba(180,14,77,.05), transparent 34%),
+        linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(248,250,252,.96) 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.92);
     }
     .spotlight-top {
       display:flex;
@@ -621,8 +622,9 @@
       gap:5px;
       padding:6px 10px;
       border-radius:999px;
-      background:var(--brand-bg);
-      color:var(--brand);
+      border:1px solid var(--border);
+      background:var(--bg);
+      color:var(--t2);
       font-size:10px;
       font-weight:800;
       white-space:nowrap;
@@ -632,14 +634,14 @@
       width:6px;
       height:6px;
       border-radius:50%;
-      background:var(--brand);
+      background:var(--t3);
     }
     .spotlight-eyebrow {
       font-size:10px;
       font-weight:700;
       letter-spacing:.08em;
       text-transform:uppercase;
-      color:var(--purple);
+      color:var(--t3);
       margin-bottom:8px;
     }
     .spotlight-title {
@@ -669,7 +671,7 @@
     }
     .point-item .material-icons-round {
       font-size:15px;
-      color:var(--brand);
+      color:var(--t3);
       margin-top:1px;
       flex-shrink:0;
     }
@@ -702,7 +704,9 @@
       padding:16px;
       border-radius:16px;
       border:1px solid var(--border);
-      background:linear-gradient(180deg, #fbfbff 0%, #ffffff 100%);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(248,250,252,.95) 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
     }
     .stack-title {
       font-size:14px;
@@ -734,10 +738,11 @@
       min-height:248px;
       padding:18px;
       border-radius:18px;
-      border:1px solid rgba(214,216,219,.95);
+      border:1px solid var(--border);
       background:
-        radial-gradient(circle at top right, rgba(255,255,255,.95), transparent 35%),
-        linear-gradient(180deg, #ffffff 0%, #fbfbfd 100%);
+        radial-gradient(circle at top right, rgba(124,95,207,.04), transparent 32%),
+        linear-gradient(180deg, rgba(255,255,255,.99) 0%, rgba(249,250,252,.96) 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
       transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease;
     }
     .agent-card:hover {
@@ -747,13 +752,13 @@
     }
     .agent-card.chatbot-card {
       background:
-        radial-gradient(circle at top right, rgba(79,140,255,.12), transparent 34%),
-        linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+        radial-gradient(circle at top right, rgba(79,140,255,.05), transparent 32%),
+        linear-gradient(180deg, rgba(255,255,255,.99) 0%, rgba(249,251,255,.96) 100%);
     }
     .agent-card.mcp-card {
       background:
-        radial-gradient(circle at top right, rgba(167,139,250,.12), transparent 34%),
-        linear-gradient(180deg, #ffffff 0%, #fcfbff 100%);
+        radial-gradient(circle at top right, rgba(124,95,207,.05), transparent 32%),
+        linear-gradient(180deg, rgba(255,255,255,.99) 0%, rgba(250,249,255,.96) 100%);
     }
     .card-top {
       display:flex;
@@ -779,7 +784,7 @@
       font-size:10px;
       font-weight:800;
       white-space:nowrap;
-      box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);
+      box-shadow:none;
     }
     .card-name {
       font-size:17px;
@@ -789,7 +794,7 @@
     }
     .card-meta {
       font-size:11px;
-      color:#6f7680;
+      color:var(--t3);
       margin-bottom:12px;
       font-weight:700;
     }
@@ -866,7 +871,7 @@
     .scope-note {
       font-size:11px;
       font-weight:700;
-      color:var(--green);
+      color:var(--t2);
       letter-spacing:-.01em;
       flex:1 1 220px;
       min-width:0;
@@ -891,8 +896,9 @@
       border-radius:18px;
       border:1px solid var(--border);
       background:
-        radial-gradient(circle at top right, rgba(180,14,77,.08), transparent 36%),
-        linear-gradient(180deg, #ffffff 0%, #fcfbfd 100%);
+        radial-gradient(circle at top right, rgba(180,14,77,.04), transparent 36%),
+        linear-gradient(180deg, rgba(255,255,255,.99) 0%, rgba(249,250,252,.96) 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
     }
     .workflow-title {
       font-size:18px;
@@ -914,7 +920,10 @@
       align-items:center;
       padding:11px 12px;
       border-radius:12px;
-      background:rgba(244,246,249,.8);
+      border:1px solid var(--border);
+      background:
+        linear-gradient(180deg, rgba(247,249,252,.96) 0%, rgba(243,246,249,.92) 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.82);
     }
     .chain-icon {
       width:30px;
@@ -938,7 +947,7 @@
     .chain-tag {
       font-size:10px;
       font-weight:800;
-      color:var(--brand);
+      color:var(--t2);
     }
 
     .filter-tag {
@@ -957,9 +966,10 @@
     }
 
     .side-card {
-      border-color:rgba(180,14,77,.16);
-      background:linear-gradient(180deg, #ffffff 0%, #fff9fb 100%);
-      box-shadow:0 16px 34px rgba(15,23,42,.06);
+      border-color:var(--border);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.99) 0%, rgba(248,250,252,.96) 100%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
     }
     .approval-list,
     .mcp-list,
@@ -1277,7 +1287,7 @@
   <div
     data-ax-topbar
     data-active-key="ai-gallery"
-    data-search-placeholder="챗봇, MCP, 활용 사례를 찾아보세요..."
+    data-search-placeholder="챗봇, MCP, Skill, 활용 사례를 찾아보세요..."
     data-search-source="ai-gallery"
     data-search-source-label="AI Gallery"
     data-search-default-type="assistant"
@@ -1301,8 +1311,8 @@
               <section class="service-group">
                 <div class="service-group-title">Gallery</div>
                 <div class="service-links">
-                  <a class="service-link" href="dej_app_gallery.html"><span class="material-icons-round service-link-icon">widgets</span><span class="service-link-copy"><span class="service-link-title">App Gallery</span><span class="service-link-desc">실행형 개발 앱과 워크스페이스 도구를 발견하고 살펴보기</span></span></a>
-                  <a class="service-link is-current" href="dej_ai_gallery.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">AI Gallery</span><span class="service-link-desc">챗봇과 tool 자산을 전시하고 재사용 흐름으로 연결</span></span></a>
+                  <a class="service-link" href="dej_app_gallery.html"><span class="material-icons-round service-link-icon">widgets</span><span class="service-link-copy"><span class="service-link-title">App Gallery</span><span class="service-link-desc">바로 써볼 앱과 도구를 둘러보기</span></span></a>
+                  <a class="service-link is-current" href="dej_ai_gallery.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">AI Gallery</span><span class="service-link-desc">챗봇과 AI 자산을 한곳에서 둘러보기</span></span></a>
                 </div>
               </section>
               <section class="service-group">
@@ -1323,23 +1333,23 @@
                 <div class="service-group-title">Development</div>
                 <div class="service-links">
                   <a class="service-link" href="workspace_tools_hub.html"><span class="material-icons-round service-link-icon">web</span><span class="service-link-copy"><span class="service-link-title">Consoles</span><span class="service-link-desc">데이터베이스 웹 콘솔 모음</span></span></a>
-                  <a class="service-link" href="workspace_projects_hub.html"><span class="material-icons-round service-link-icon">public</span><span class="service-link-copy"><span class="service-link-title">Project/Publish</span><span class="service-link-desc">개발 프로젝트 관리(IDE 작업 공간)</span></span></a>
+                  <a class="service-link" href="workspace_projects_hub.html"><span class="material-icons-round service-link-icon">public</span><span class="service-link-copy"><span class="service-link-title">Project/Publish</span><span class="service-link-desc">프로젝트와 배포 흐름 살펴보기</span></span></a>
                   <a class="service-link" href="#"><span class="material-icons-round service-link-icon">science</span><span class="service-link-copy"><span class="service-link-title">Jupyter</span><span class="service-link-desc">노트북 실험 및 분석 환경</span></span></a>
                 </div>
               </section>
               <section class="service-group">
                 <div class="service-group-title">AI</div>
                 <div class="service-links">
-                  <a class="service-link" href="workspace_agent_hub.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">Workflow</span><span class="service-link-desc">Dify workflow와 승인형 자동화 런타임을 운영</span></span></a>
-                  <a class="service-link" href="workspace_chatbot_hub.html"><span class="material-icons-round service-link-icon">chat</span><span class="service-link-copy"><span class="service-link-title">Chatbot</span><span class="service-link-desc">API와 Frontend URL 기반 챗봇 엔드포인트를 관리</span></span></a>
-                  <a class="service-link" href="workspace_tool_inventory_hub.html"><span class="material-icons-round service-link-icon">inventory_2</span><span class="service-link-copy"><span class="service-link-title">Tool Inventory</span><span class="service-link-desc">에이전트가 사용하는 연결된 MCP 및 도구 자산을 관리</span></span></a>
+                  <a class="service-link" href="workspace_agent_hub.html"><span class="material-icons-round service-link-icon">smart_toy</span><span class="service-link-copy"><span class="service-link-title">Workflow</span><span class="service-link-desc">AI 흐름과 자동화를 살펴보기</span></span></a>
+                  <a class="service-link" href="workspace_chatbot_hub.html"><span class="material-icons-round service-link-icon">chat</span><span class="service-link-copy"><span class="service-link-title">Chatbot</span><span class="service-link-desc">챗봇 화면과 연결 정보를 보기</span></span></a>
+                  <a class="service-link" href="workspace_tool_inventory_hub.html"><span class="material-icons-round service-link-icon">inventory_2</span><span class="service-link-copy"><span class="service-link-title">Tool Inventory</span><span class="service-link-desc">연결된 도구와 자산을 보기</span></span></a>
                   <a class="service-link" href="workspace_keycenter_hub.html"><span class="material-icons-round service-link-icon">vpn_key</span><span class="service-link-copy"><span class="service-link-title">Keycenter</span><span class="service-link-desc">발급된 LLM 키와 연결된 사용처를 관리</span></span></a>
                 </div>
               </section>
               <section class="service-group">
                 <div class="service-group-title">Support</div>
                 <div class="service-links">
-                  <a class="service-link" href="#"><span class="material-icons-round service-link-icon">description</span><span class="service-link-copy"><span class="service-link-title">다큐먼트</span><span class="service-link-desc">가이드와 운영 문서를 확인합니다</span></span></a>
+                  <a class="service-link" href="#"><span class="material-icons-round service-link-icon">description</span><span class="service-link-copy"><span class="service-link-title">다큐먼트</span><span class="service-link-desc">안내 문서를 보기</span></span></a>
                   <a class="service-link" href="about_dej.html"><span class="material-icons-round service-link-icon">timeline</span><span class="service-link-copy"><span class="service-link-title">About DEJ</span><span class="service-link-desc">DEJ의 역사와 CEJ·DEJ 흐름을 확인합니다</span></span></a>
                   <a class="service-link" href="dej_chatbot_trial.html"><span class="material-icons-round service-link-icon">chat_bubble_outline</span><span class="service-link-copy"><span class="service-link-title">챗봇</span><span class="service-link-desc">지원 챗봇으로 빠르게 문의합니다</span></span></a>
                   <a class="service-link" href="#"><span class="material-icons-round service-link-icon">campaign</span><span class="service-link-copy"><span class="service-link-title">요청하기</span><span class="service-link-desc">기능 요청이나 지원 요청을 등록합니다</span></span></a>
@@ -1359,7 +1369,7 @@
       </div>
       <div class="search-wrap">
         <span class="material-icons-round ico">search</span>
-        <input class="search-input" data-ai-search placeholder="챗봇, MCP, 활용 사례를 찾아보세요..." />
+        <input class="search-input" data-ai-search placeholder="챗봇, MCP, Skill, 활용 사례를 찾아보세요..." />
         <div class="search-ai"><span class="material-icons-round">auto_awesome</span>AI</div>
       </div>
       <div class="tb-spacer"></div>
@@ -1372,7 +1382,7 @@
     <section class="page-head">
       <div class="sec-label"><span class="material-icons-round">auto_awesome</span>DEJ AI Gallery</div>
       <h1 class="page-title" data-page-title>AI Gallery</h1>
-      <p class="page-desc" data-page-desc>팀에서 만든 챗봇과 MCP를 한곳에서 만나볼 수 있는 공간입니다. 눈에 띄는 항목부터 가볍게 둘러보고, 마음에 드는 결과물은 바로 살펴보거나 다음 작업에 이어서 활용해 보세요.</p>
+      <p class="page-desc" data-page-desc>챗봇과 AI 자산을 모아둔 공간입니다.</p>
       <div class="tag-row" data-page-tags></div>
     </section>
 
@@ -1380,14 +1390,14 @@
       <div class="hero-rail-card">
         <div class="rail-kicker"><span class="material-icons-round">play_circle</span>지금 바로써보기</div>
         <div class="rail-title" data-hero-left-title>바로 대화를 시작할 수 있는 챗봇</div>
-        <div class="rail-desc" data-hero-left-desc>Bot API로 등록된 챗봇은 이곳에서 바로 열어보고, 나에게 맞는지 가볍게 확인할 수 있습니다. 마음에 들면 앱의 챗봇 화면으로 이어서 사용해 보세요.</div>
+        <div class="rail-desc" data-hero-left-desc>지금 바로 열어보고 나에게 맞는 챗봇인지 살펴보세요.</div>
         <div class="mini-list" data-hero-left-list></div>
       </div>
 
       <div class="hero-rail-card">
         <div class="rail-kicker"><span class="material-icons-round">link</span>함께 보기</div>
-        <div class="rail-title" data-hero-right-title>챗봇 다음은 MCP</div>
-        <div class="rail-desc" data-hero-right-desc>챗봇이 어떤 정보를 읽고 어떤 일을 도와주는지 궁금하다면 MCP를 함께 살펴보세요. 챗봇과 연결 도구를 한 흐름으로 이해하기 좋습니다.</div>
+        <div class="rail-title" data-hero-right-title>챗봇 다음은 Skills</div>
+        <div class="rail-desc" data-hero-right-desc>함께 보면 좋은 MCP와 Skill을 모아 보여줍니다.</div>
         <div class="mini-list" data-hero-right-list></div>
       </div>
     </section>
@@ -1406,7 +1416,7 @@
           <div class="section-head">
             <div class="section-kicker"><span class="material-icons-round">chat</span>Chatbots</div>
             <h2 class="section-title">지금 바로 살펴보고 써볼 수 있는 챗봇 모음</h2>
-            <p class="section-subtitle">API 챗봇은 AX Studio 챗봇으로 모델을 바로 시험해 볼 수 있고, 웹페이지 챗봇은 실제 통합 화면을 곧바로 열 수 있습니다. 필요한 방식에 맞춰 가볍게 비교해 보세요.</p>
+            <p class="section-subtitle">지금 열어볼 수 있는 챗봇을 한곳에 모았습니다.</p>
           </div>
           <div class="agent-grid" data-agent-grid></div>
         </section>
@@ -1418,6 +1428,15 @@
             <p class="section-subtitle">MCP라는 이름이 낯설더라도 어렵게 볼 필요는 없습니다. 챗봇이 필요한 정보를 가져오고 일을 돕게 만드는 도구라고 생각하고, 용도가 분명한 항목부터 가볍게 살펴보세요.</p>
           </div>
           <div class="agent-grid" data-mcp-grid></div>
+        </section>
+
+        <section class="panel">
+          <div class="section-head">
+            <div class="section-kicker"><span class="material-icons-round">extension</span>Skills</div>
+            <h2 class="section-title">내 AI Assistant에 붙여 쓸 수 있는 Skills</h2>
+            <p class="section-subtitle">함께 쓰기 좋은 Skill을 모아 빠르게 살펴볼 수 있습니다.</p>
+          </div>
+          <div class="agent-grid" data-skill-grid></div>
         </section>
 
         <section class="panel">
@@ -1453,9 +1472,9 @@
     <div class="detail-shell">
       <div class="detail-head">
         <div class="detail-head-copy">
-          <div class="detail-kicker"><span class="material-icons-round">api</span>AI Gallery API</div>
-          <h2 class="detail-title" data-detail-title>API Contract</h2>
-          <p class="detail-subtitle" data-detail-subtitle>선택한 항목의 API 계약을 표시합니다.</p>
+          <div class="detail-kicker"><span class="material-icons-round">api</span>AI Detail</div>
+          <h2 class="detail-title" data-detail-title>상세 정보</h2>
+          <p class="detail-subtitle" data-detail-subtitle>선택한 항목 정보를 보여줍니다.</p>
           <div class="detail-chips" data-detail-chips></div>
         </div>
         <button class="detail-close" type="button" data-detail-close aria-label="상세 닫기">
@@ -1469,7 +1488,7 @@
             <p data-detail-description></p>
           </section>
           <section class="detail-panel">
-            <h3>API 계약</h3>
+            <h3>연결 정보</h3>
             <div class="detail-contract">
               <code data-detail-contract></code>
               <p data-detail-note></p>
@@ -1482,7 +1501,7 @@
             <ul class="detail-list" data-detail-points></ul>
           </section>
           <section class="detail-panel">
-            <h3>추가 메타데이터</h3>
+            <h3>추가 정보</h3>
             <ul class="detail-list" data-detail-meta></ul>
           </section>
         </div>
@@ -1548,7 +1567,7 @@
         },
         {
           title: "Tool Inventory",
-          meta: "linked MCP와 consumer 연결 현황 관리",
+          meta: "linked MCP와 Skill 연결 현황 관리",
           href: "workspace_tool_inventory_hub.html",
           value: "Hub",
           color: "#0d9488",
@@ -1559,6 +1578,27 @@
           href: "workspace_keycenter_hub.html",
           value: "Hub",
           color: "#7c5fcf",
+        },
+      ];
+
+      const toolInventorySkills = [
+        {
+          kind: "skill",
+          title: "release-briefing-skill",
+          meta: "Skill · 배포 요약과 변경 포인트 정리에 바로 붙여 쓰는 assistant skill",
+          description: "배포 이력, 주요 변경, 위험 포인트를 한 번에 정리해 주는 재사용 Skill입니다.",
+          pill: { label: "Skill", tone: "connected" },
+          tags: ["Release", "Summary", "Assistant"],
+          itemType: "Skill",
+        },
+        {
+          kind: "skill",
+          title: "incident-handoff-skill",
+          meta: "Skill · 장애 요약과 다음 조치를 assistant 답변 흐름으로 묶는 skill",
+          description: "장애 상황을 짧게 정리하고 다음 확인 항목까지 이어서 제안하는 Skill입니다.",
+          pill: { label: "Skill", tone: "healthy" },
+          tags: ["Incident", "Ops", "Assistant"],
+          itemType: "Skill",
         },
       ];
 
@@ -1576,6 +1616,7 @@
         spotlightSide: document.querySelector("[data-spotlight-side]"),
         agentGrid: document.querySelector("[data-agent-grid]"),
         mcpGrid: document.querySelector("[data-mcp-grid]"),
+        skillGrid: document.querySelector("[data-skill-grid]"),
         tipGrid: document.querySelector("[data-tip-grid]"),
         pageScope: document.querySelector("[data-page-scope]"),
         onboarding: document.querySelector("[data-onboarding]"),
@@ -1603,6 +1644,7 @@
         agents: "chat",
         packs: "dashboard_customize",
         approvals: "approval",
+        skill: "extension",
       };
 
       const toneMap = {
@@ -1725,6 +1767,20 @@
         return item ? item.count : 0;
       }
 
+      function getCombinedSkillRows() {
+        const mcpRows = ((state.linkedMcp && state.linkedMcp.rows) || []).map((row) => ({
+          kind: "mcp",
+          title: row.title,
+          meta: row.meta || "Tool Inventory MCP",
+          description: row.description || "내 AI Assistant에 연결할 수 있는 MCP 자산입니다.",
+          pill: row.pill || { label: "MCP", tone: "connected" },
+          tags: ["MCP", "Tool Inventory"],
+          itemType: "MCP",
+        }));
+
+        return mcpRows.concat(toolInventorySkills);
+      }
+
       function getPrimaryLinkedChatbot(item) {
         if (!item || !Array.isArray(item.linkedChatbots) || !item.linkedChatbots.length) {
           return null;
@@ -1787,15 +1843,15 @@
 
       function getChatbotDescription(item) {
         if (canTryNow(item) && canOpenWeb(item)) {
-          return "AX Studio 챗봇으로 먼저 모델을 시험해 보고, 실제 웹 화면도 바로 열 수 있는 챗봇";
+          return "먼저 써보고 이어서 살펴볼 수 있는 챗봇";
         }
 
         if (canTryNow(item)) {
-          return "AX Studio 챗봇으로 모델을 먼저 가볍게 시험해 볼 수 있는 챗봇";
+          return "가볍게 먼저 써볼 수 있는 챗봇";
         }
 
         if (canOpenWeb(item)) {
-          return "실제 통합 웹 화면을 바로 열어 흐름을 확인할 수 있는 챗봇";
+          return "바로 열어 흐름을 살펴볼 수 있는 챗봇";
         }
 
         return item.summary || item.subtitle || "연결 정보가 정리 중인 챗봇";
@@ -1854,6 +1910,20 @@
         });
       }
 
+      function getFilteredSkillRows() {
+        return getCombinedSkillRows().filter((row) => {
+          const haystack = getSearchHaystack([
+            row.title,
+            row.meta,
+            row.description,
+            row.pill && row.pill.label,
+            row.itemType,
+            row.tags || [],
+          ]);
+          return !state.search || haystack.includes(state.search);
+        });
+      }
+
       function getOnboardingCards() {
         const spotlightAgent = state.spotlight || getFilteredAgents()[0] || null;
         const fallbackAgentRows = getFilteredAgents().slice(0, 3);
@@ -1875,38 +1945,44 @@
               .concat(fallbackAgentRows.slice(0, 1).map((item) => ({
                 icon: canTryNow(item) ? "chat" : "public",
                 title: "사용 방법이 쉬운 것부터",
-                meta: canTryNow(item) ? "AX Studio 챗봇에서 먼저 써볼 수 있는 " + item.title + "부터 보기" : "실제 웹 화면을 바로 열 수 있는 " + item.title + "부터 보기",
+                meta: canTryNow(item) ? item.title + "부터 가볍게 살펴보기" : item.title + "부터 바로 열어보기",
                 tag: "2",
               })))
               .concat(fallbackAgentRows.slice(1, 2).map((item) => ({
                 icon: "content_copy",
                 title: "마음에 들면 이어서 보기",
-                meta: item.title + "처럼 마음에 드는 항목은 모델 시험과 웹 화면을 이어서 보기",
+                meta: item.title + "처럼 마음에 드는 항목은 이어서 살펴보기",
                 tag: "3",
               })))
               .slice(0, 3),
           },
           {
-            title: "MCP는 연결 도구라고 이해하기",
-            description: "챗봇이 필요한 정보를 읽고 일을 돕도록 붙이는 연결 자산이라는 관점으로 보면 훨씬 이해하기 쉽습니다.",
+            title: "MCP와 Skill 함께 보기",
+            description: "함께 보면 어떤 일을 도와주는지 더 쉽게 파악할 수 있습니다.",
             items: []
               .concat(mcpRows.slice(0, 1).map((item) => ({
                 icon: "search",
                 title: "정보를 가져오게 해 줌",
-                meta: item.title + "처럼 문서, 코드, 운영 정보를 읽어 올 수 있음",
+                meta: item.title + "처럼 필요한 정보를 불러와 함께 쓸 수 있음",
                 tag: "A",
               })))
-              .concat(workflowPack ? [{
+              .concat(toolInventorySkills.slice(0, 1).map((item) => ({
                 icon: "extension",
-                title: "챗봇의 손발이 됨",
-                meta: workflowPack.title + "처럼 실제 운영 pack과 연결되며 일을 도와주는 기반",
+                title: "답변 흐름을 바로 붙일 수 있음",
+                meta: item.title + "처럼 자주 쓰는 답변 방식과 tool 조합을 assistant에 바로 붙여 쓸 수 있음",
                 tag: "B",
+              })))
+              .concat(workflowPack ? [{
+                icon: "dashboard_customize",
+                title: "챗봇의 손발이 됨",
+                meta: workflowPack.title + "처럼 여러 작업 흐름과 이어서 쓸 수 있음",
+                tag: "C",
               }] : [])
               .concat(trustRow ? [{
                 icon: "visibility",
                 title: "용도부터 보기",
                 meta: trustRow.label + "처럼 기술 설명보다 무엇에 쓰는지 먼저 살펴보기",
-                tag: "C",
+                tag: "D",
               }] : [])
               .slice(0, 3),
           },
@@ -1915,11 +1991,12 @@
 
       function renderPageHead() {
         elements.pageTitle.textContent = (state.hero && state.hero.title) || "AI Gallery";
-        elements.pageDesc.textContent = "팀에서 만든 챗봇과 MCP를 한곳에서 만나볼 수 있는 공간입니다. 눈에 띄는 항목부터 가볍게 둘러보고, 마음에 드는 결과물은 바로 살펴보거나 다음 작업에 이어서 활용해 보세요.";
+        elements.pageDesc.textContent = "챗봇과 AI 자산을 모아둔 공간입니다.";
 
         const tags = []
           .concat(((state.hero && state.hero.stats) || []).map((stat) => renderTag(getCategoryIcon(stat.id), stat.label + " " + stat.value)))
-          .concat(state.categories.filter((item) => item.id !== "all").slice(0, 4).map((item) => renderTag(getCategoryIcon(item.id), item.label + " " + item.count)));
+          .concat(state.categories.filter((item) => item.id !== "all").slice(0, 4).map((item) => renderTag(getCategoryIcon(item.id), item.label + " " + item.count)))
+          .concat([renderTag("extension", "Skills " + getCombinedSkillRows().length)]);
 
         elements.pageTags.innerHTML = tags.join("");
       }
@@ -1932,26 +2009,30 @@
           value: getChatbotTypeLabel(item),
           valueStyle: getChatbotValueStyle(item),
         }));
-        const mcpItems = getFilteredMcpRows().slice(0, 2).map((item, index) => ({
-          icon: "lan",
+        const mcpItems = getFilteredSkillRows().slice(0, 2).map((item, index) => ({
+          icon: item.kind === "skill" ? "extension" : "lan",
           title: item.title,
-          description: item.description || item.meta || "연결된 consumer가 있는 도구입니다.",
-          value: item.pill && item.pill.label ? item.pill.label : "MCP",
+          description: item.description || item.meta || "내 Assistant에 연결할 수 있는 자산입니다.",
+          value: item.itemType || (item.pill && item.pill.label ? item.pill.label : "Skill"),
           href: index === 0 ? "workspace_tool_inventory_hub.html" : "",
-          valueStyle: index === 0 ? "background:var(--purple-bg);color:var(--purple)" : "background:var(--green-bg);color:var(--green)",
+          valueStyle: item.kind === "skill"
+            ? "background:#fff1e7;color:#c2410c"
+            : index === 0
+              ? "background:var(--purple-bg);color:var(--purple)"
+              : "background:var(--green-bg);color:var(--green)",
         }));
 
         elements.heroLeftTitle.textContent = "바로 시험하거나 웹으로 열 수 있는 챗봇";
-        elements.heroLeftDesc.textContent = "API 챗봇은 AX Studio 챗봇으로 모델을 먼저 시험해 볼 수 있고, 웹페이지 챗봇은 실제 통합 화면을 바로 열 수 있습니다.";
+        elements.heroLeftDesc.textContent = "지금 바로 열어보고 나에게 맞는 챗봇인지 살펴보세요.";
         elements.heroLeftList.innerHTML = chatbotItems.length
           ? chatbotItems.map((item, index) => renderMiniRow(item, index % 2 ? "#34d399,#0d9488" : "#4f8cff,#0086cc")).join("")
           : renderEmpty("지금 바로 시험하거나 열어볼 수 있는 챗봇이 없습니다.");
 
-        elements.heroRightTitle.textContent = "챗봇 다음은 MCP";
-        elements.heroRightDesc.textContent = "챗봇이 어떤 정보를 읽고 어떤 일을 도와주는지 궁금하다면 MCP를 함께 살펴보세요. 챗봇과 연결 도구를 한 흐름으로 이해하기 좋습니다.";
+        elements.heroRightTitle.textContent = "챗봇 다음은 Skills";
+        elements.heroRightDesc.textContent = "함께 보면 좋은 MCP와 Skill을 모아 보여줍니다.";
         elements.heroRightList.innerHTML = mcpItems.length
-          ? mcpItems.map((item, index) => renderMiniRow(item, index % 2 ? "#a855f7,#7c3aed" : "#0ea5e9,#2563eb")).join("")
-          : renderEmpty("함께 볼 MCP가 아직 없습니다.");
+          ? mcpItems.map((item, index) => renderMiniRow(item, item.icon === "extension" ? "#f59e0b,#ea580c" : index % 2 ? "#a855f7,#7c3aed" : "#0ea5e9,#2563eb")).join("")
+          : renderEmpty("함께 볼 Skill이 아직 없습니다.");
       }
 
       function renderSpotlight() {
@@ -1974,17 +2055,18 @@
           '<div class="spotlight-eyebrow">Start Here</div>',
           '<h2 class="spotlight-title">가볍게 둘러보고, 하나 골라 바로 써보세요</h2>',
           '<p class="spotlight-desc">',
-          escapeHtml(item.title + "부터 살펴보면 AI Gallery 흐름을 가장 부담 없이 이해할 수 있습니다. API 챗봇이라면 AX Studio 챗봇에서 먼저 모델을 시험해 보고, 웹페이지 챗봇이라면 실제 화면을 열어본 뒤 연결된 MCP까지 이어서 살펴보세요."),
+          escapeHtml(item.title + "부터 살펴보면 어떤 흐름으로 이어지는지 자연스럽게 파악할 수 있습니다. 챗봇을 먼저 보고, 마음에 드는 항목은 MCP와 Skill까지 이어서 살펴보세요."),
           "</p>",
           '<div class="point-list">',
           '<div class="point-item"><span class="material-icons-round">chat</span><span>먼저 챗봇을 보면서 어떤 일을 도와주는지 가볍게 확인해 보세요.</span></div>',
-          '<div class="point-item"><span class="material-icons-round">play_circle</span><span>API 챗봇은 AX Studio 챗봇에서 모델만 먼저 시험해 볼 수 있습니다.</span></div>',
-          '<div class="point-item"><span class="material-icons-round">build</span><span>그다음 MCP를 보면서 어떤 정보와 연결되는지 함께 살펴보세요.</span></div>',
+          '<div class="point-item"><span class="material-icons-round">play_circle</span><span>바로 써볼 수 있는 챗봇부터 시작하면 더 쉽게 볼 수 있습니다.</span></div>',
+          '<div class="point-item"><span class="material-icons-round">build</span><span>그다음 MCP와 Skill을 보면서 어떤 정보와 답변 흐름이 연결되는지 함께 살펴보세요.</span></div>',
           '<div class="point-item"><span class="material-icons-round">open_in_new</span><span>마음에 들면 실제 통합 웹 화면을 열어 같은 흐름을 이어서 확인해 보세요.</span></div>',
           "</div>",
           '<div class="tag-row">',
           renderTag("chat", "Chatbots " + getCategoryCount("agent")),
           renderTag("lan", "MCP " + getCategoryCount("mcp")),
+          renderTag("extension", "Skills " + getCombinedSkillRows().length),
           renderTag("lightbulb", "Tips " + getOnboardingCards().length),
           renderTag("explore", "Easy Start"),
           "</div>",
@@ -1999,7 +2081,7 @@
           '<div class="stack-card"><div class="sec-label"><span class="material-icons-round">chat</span>추천 챗봇</div><div class="stack-title">',
           escapeHtml(item.title),
           '</div><div class="stack-desc">',
-          escapeHtml(item.summary || item.subtitle || "AX Studio 챗봇에서 가볍게 시험해 보거나, 실제 통합 웹 화면으로 바로 넘어가 보세요."),
+          escapeHtml(item.summary || item.subtitle || "가볍게 먼저 둘러보고 바로 이어서 살펴보세요."),
           '</div><div class="capsule-list">',
           '<span class="capsule" style="background:var(--brand-bg);color:var(--brand)">' + escapeHtml(getChatbotTypeLabel(item)) + "</span>",
           '<span class="capsule" style="background:var(--purple-bg);color:var(--purple)">' + escapeHtml(canTryNow(item) ? "바로써보기 가능" : "웹열기 가능") + "</span>",
@@ -2013,7 +2095,7 @@
           firstMcp
             ? '<span class="capsule" style="background:#ecfdf5;color:#0d9488">' + escapeHtml(firstMcp.pill && firstMcp.pill.label ? firstMcp.pill.label : "Connected") + '</span><span class="capsule" style="background:#f1e7ff;color:#7c5fcf">' + escapeHtml(firstMcp.meta || "MCP") + "</span>"
             : '<span class="capsule" style="background:#e2f3ff;color:#0369a1">MCP</span>',
-          '</div><a class="card-link" href="workspace_tool_inventory_hub.html">Tool Inventory 보기 <span class="material-icons-round">arrow_forward</span></a></div>',
+          '</div><a class="card-link" href="workspace_tool_inventory_hub.html">연결 도구 보기 <span class="material-icons-round">arrow_forward</span></a></div>',
         ].join("");
       }
 
@@ -2054,7 +2136,7 @@
           '</div><div class="card-stats">',
           stats.map((stat) => '<span class="card-stat"><span class="material-icons-round">' + escapeHtml(stat.icon) + "</span>" + escapeHtml(stat.label) + "</span>").join(""),
           '</div><div class="card-foot"><span class="scope-note">',
-          escapeHtml(canTryNow(item) ? "AX Studio 챗봇에서 먼저 시험해 보고 실제 웹까지 이어서 보기 좋은 챗봇" : "실제 통합 웹 화면을 바로 열어보기 좋은 챗봇"),
+          escapeHtml(canTryNow(item) ? "먼저 둘러보기 좋은 챗봇" : "바로 열어보기 좋은 챗봇"),
           '</span><div class="card-actions">',
           renderChatbotActions(item, "secondary"),
           "</div></div></article>",
@@ -2083,7 +2165,45 @@
           '<span class="card-stat"><span class="material-icons-round">insights</span>챗봇과 함께 이해</span>',
           '</div><div class="card-foot"><span class="scope-note">챗봇이 어떤 정보를 읽는지 함께 이해하기 좋은 연결 도구</span><div class="card-actions">',
           '<a class="action-link" href="workspace_tool_inventory_hub.html">살펴보기 <span class="material-icons-round">chevron_right</span></a>',
-          '<button class="action-link secondary" type="button" data-open-contract data-item-slug="' + escapeHtml(slug) + '" data-item-kind="mcp">API 계약 <span class="material-icons-round">receipt_long</span></button>',
+          '<button class="action-link secondary" type="button" data-open-contract data-item-slug="' + escapeHtml(slug) + '" data-item-kind="mcp">상세 정보 <span class="material-icons-round">receipt_long</span></button>',
+          "</div></div></article>",
+        ].join("");
+      }
+
+      function buildSkillCard(row) {
+        const slug = slugify(row.title);
+        const isSkill = row.kind === "skill";
+
+        return [
+          '<article class="agent-card mcp-card">',
+          '<div class="card-top"><div class="card-icon" style="background:linear-gradient(135deg,',
+          isSkill ? "#f59e0b,#ea580c" : "#7c5fcf,#4f46e5",
+          ')"><span class="material-icons-round">',
+          isSkill ? "extension" : "lan",
+          '</span></div><span class="card-badge" style="',
+          getToneStyle(row.pill && row.pill.tone),
+          '">',
+          escapeHtml(row.pill && row.pill.label ? row.pill.label : row.itemType || "Skill"),
+          "</span></div>",
+          '<div class="card-name">',
+          escapeHtml(row.title),
+          '</div><div class="card-meta">',
+          escapeHtml(row.meta || (isSkill ? "Assistant Skill" : "Tool Inventory MCP")),
+          '</div><div class="card-desc">',
+          escapeHtml(row.description || "내 AI Assistant에 붙여 쓸 수 있는 연결 자산입니다."),
+          '</div><div class="card-stats">',
+          '<span class="card-stat"><span class="material-icons-round">',
+          isSkill ? "assistant" : "hub",
+          "</span>",
+          escapeHtml(isSkill ? "Assistant Skill" : "Linked MCP"),
+          "</span>",
+          '<span class="card-stat"><span class="material-icons-round">inventory_2</span>Tool Inventory</span>',
+          '<span class="card-stat"><span class="material-icons-round">link</span>Assistant Attach</span>',
+          '</div><div class="card-foot"><span class="scope-note">',
+          escapeHtml(isSkill ? "내 Assistant에 바로 붙여 답변 흐름을 재사용하기 좋은 Skill" : "내 Assistant가 필요한 정보를 읽고 일하도록 붙이는 MCP 자산"),
+          '</span><div class="card-actions">',
+          '<a class="action-link" href="workspace_tool_inventory_hub.html">살펴보기 <span class="material-icons-round">chevron_right</span></a>',
+          '<button class="action-link secondary" type="button" data-open-contract data-item-slug="' + escapeHtml(slug) + '" data-item-kind="' + escapeHtml(row.kind) + '">바인딩 정보 <span class="material-icons-round">receipt_long</span></button>',
           "</div></div></article>",
         ].join("");
       }
@@ -2100,6 +2220,13 @@
         elements.mcpGrid.innerHTML = rows.length
           ? rows.map((row) => buildMcpCard(row)).join("")
           : renderEmpty("현재 검색 조건에 맞는 MCP가 없습니다.");
+      }
+
+      function renderSkills() {
+        const rows = getFilteredSkillRows();
+        elements.skillGrid.innerHTML = rows.length
+          ? rows.map((row) => buildSkillCard(row)).join("")
+          : renderEmpty("현재 검색 조건에 맞는 Skill이 없습니다.");
       }
 
       function renderTips() {
@@ -2144,6 +2271,12 @@
             value: String(getCategoryCount("mcp")),
           },
           {
+            icon: "extension",
+            title: "Skills",
+            meta: "내 AI Assistant에 붙여 쓸 수 있는 MCP와 Skill 자산 " + getCombinedSkillRows().length + "개",
+            value: String(getCombinedSkillRows().length),
+          },
+          {
             icon: "lightbulb",
             title: "Tips",
             meta: "처음 둘러볼 때 도움이 되는 짧은 안내와 추천 흐름",
@@ -2153,7 +2286,7 @@
 
         elements.pageScope.innerHTML = rows.map((row, index) => [
           '<div class="mcp-item"><div class="mcp-icon" style="background:linear-gradient(135deg,',
-          index === 1 ? "#7c5fcf,#4f46e5" : index === 2 ? "#f59e0b,#ea580c" : "#4f8cff,#0086cc",
+          index === 1 ? "#7c5fcf,#4f46e5" : index === 2 ? "#f59e0b,#ea580c" : index === 3 ? "#b45309,#f59e0b" : "#4f8cff,#0086cc",
           ')"><span class="material-icons-round">',
           escapeHtml(row.icon),
           '</span></div><div><div class="side-name">',
@@ -2179,16 +2312,16 @@
           },
           {
             icon: "lan",
-            title: "그다음 MCP 보기",
-            meta: "챗봇 뒤에 붙는 연결 도구를 함께 보면 전체 흐름이 훨씬 쉽게 보입니다.",
+            title: "그다음 Skills 보기",
+            meta: "MCP와 Skill을 함께 보면 어떤 도구가 필요한지 더 쉽게 보입니다.",
             value: "Step 2",
           },
           {
             icon: "approval",
             title: "실제 화면까지 확인",
             meta: approvals[0]
-              ? approvals[0].title + " 같은 운영 맥락도 함께 보면 실제 사용 흐름까지 이어서 이해할 수 있습니다."
-              : "마지막으로 실제 웹 화면과 연결 도구를 함께 보면 사용 맥락이 더 선명해집니다.",
+              ? approvals[0].title + "처럼 함께 이어 볼 항목도 확인해 보세요."
+              : "마지막으로 함께 이어 볼 항목까지 확인해 보세요.",
             value: "Step 3",
           },
         ];
@@ -2238,6 +2371,10 @@
         return rows.find((item) => slugify(item.title) === slug);
       }
 
+      function findSkillBySlug(slug) {
+        return getCombinedSkillRows().find((item) => slugify(item.title) === slug);
+      }
+
       function openDetail(slug, kind) {
         let item = null;
         let category = kind || "agent";
@@ -2245,6 +2382,9 @@
         if (kind === "mcp") {
           item = findMcpBySlug(slug);
           category = "mcp";
+        } else if (kind === "skill") {
+          item = findSkillBySlug(slug);
+          category = "skill";
         } else if (kind === "workflow-pack") {
           item = findWorkflowPackBySlug(slug);
           category = "workflow-pack";
@@ -2257,6 +2397,10 @@
           return;
         }
 
+        const endpoint = category === "agent"
+          ? "/api/v2/ai-gallery/items/" + slug + "/install"
+          : "/api/v2/ai-gallery/assistants/<assistant-id>/skills/" + slug + "/attach";
+        const method = category === "agent" ? "POST" : "PUT";
         const description = item.summary || item.description || item.subtitle || "설명 정보가 없습니다.";
         const points = []
           .concat([description])
@@ -2276,7 +2420,7 @@
         ].filter(Boolean);
 
         elements.detailTitle.textContent = item.title;
-        elements.detailSubtitle.textContent = "POST /api/v2/ai-gallery/items/" + slug + "/install API 계약과 현재 카드 메타데이터를 함께 표시합니다.";
+        elements.detailSubtitle.textContent = "선택한 항목의 연결 정보를 함께 보여줍니다.";
         elements.detailDescription.textContent = description;
         elements.detailChips.innerHTML = []
           .concat(['<span class="detail-chip"><span class="material-icons-round">' + escapeHtml(getCategoryIcon(category)) + "</span>" + escapeHtml(category) + "</span>"])
@@ -2284,13 +2428,16 @@
           .concat(item.pill && item.pill.label ? ['<span class="detail-chip"><span class="material-icons-round">verified</span>' + escapeHtml(item.pill.label) + "</span>"] : [])
           .join("");
         elements.detailContract.textContent = JSON.stringify({
-          method: "POST",
-          endpoint: "/api/v2/ai-gallery/items/" + slug + "/install",
+          method,
+          endpoint,
           bodyExample: {
+            assistantId: "<target-assistant-id>",
             projectId: "<target-project-id>",
           },
         }, null, 2);
-        elements.detailNote.textContent = "이 페이지에서는 부작용이 생기는 실제 POST 호출은 하지 않고, 현재 v2 install API 계약만 노출합니다.";
+        elements.detailNote.textContent = category === "agent"
+          ? "참고용 정보만 보여주며 이 화면에서 바로 실행되지는 않습니다."
+          : "연결에 참고할 정보만 보여줍니다.";
         elements.detailPoints.innerHTML = points.length
           ? points.map((point) => "<li>" + escapeHtml(point) + "</li>").join("")
           : "<li>추가 포인트가 없습니다.</li>";
@@ -2304,6 +2451,7 @@
         renderSpotlight();
         renderAgents();
         renderMcp();
+        renderSkills();
         renderTips();
         renderPageScope();
         renderOnboarding();
@@ -2358,6 +2506,7 @@
             elements.spotlightSide,
             elements.agentGrid,
             elements.mcpGrid,
+            elements.skillGrid,
             elements.tipGrid,
             elements.pageScope,
             elements.onboarding,
@@ -2386,6 +2535,7 @@
           renderHero();
           renderAgents();
           renderMcp();
+          renderSkills();
           renderTips();
         });
       }

@@ -15,6 +15,8 @@
     window.HUB_CONFIG = {
       documentTitle: "Consoles Hub",
       activeKey: "tools",
+      panelVariant: "briefing",
+      connectionsType: "db",
       theme: {
         bg: "#f2fbf7",
         brand: "#15803d",
@@ -30,12 +32,13 @@
       primaryAction: { href: "dej_app_gallery.html", icon: "add_circle", label: "새 콘솔 생성" },
       secondaryAction: { href: "workspace_database_hub.html", icon: "storage", label: "Database Hub 보기" },
       heroStats: [
-        { icon: "web", value: "6", label: "등록 콘솔", note: "Running 4 · Stopped 2", color: "linear-gradient(135deg,#15803d,#22c55e)" },
-        { icon: "database", value: "14", label: "연결 엔드포인트", note: "MySQL · PostgreSQL · Redis · MongoDB · Elastic · Milvus", color: "linear-gradient(135deg,#166534,#4ade80)" },
-        { icon: "link", value: "26", label: "워크스페이스 연결", note: "프로젝트/운영 계정 기준", color: "linear-gradient(135deg,#16a34a,#86efac)" },
-        { icon: "visibility", value: "108", label: "주간 콘솔 진입", note: "최근 7일 Open 기준", color: "linear-gradient(135deg,#22c55e,#bbf7d0)" }
+        { icon: "web", value: "-", label: "등록 콘솔", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#15803d,#22c55e)" },
+        { icon: "database", value: "-", label: "연결 엔드포인트", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#166534,#4ade80)" },
+        { icon: "link", value: "-", label: "워크스페이스 연결", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#16a34a,#86efac)" },
+        { icon: "visibility", value: "-", label: "주간 콘솔 진입", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#22c55e,#bbf7d0)" }
       ],
       filters: [
+        { id: "basic", icon: "dashboard_customize", label: "기본" },
         { id: "all", icon: "apps", label: "전체" },
         { id: "relational", icon: "table_chart", label: "관계형" },
         { id: "document", icon: "account_tree", label: "문서형" },
@@ -46,149 +49,35 @@
       resourceSectionIcon: "web",
       resourceSectionLabel: "Console Fleet",
       resourceTitle: "Consoles",
-      resourceDescription: "워크스페이스에서 운영 중인 데이터 콘솔을 한곳에 모았습니다. 콘솔 종류, 바인딩된 DB/타깃, 현재 런타임 상태를 보고 Start / Stop / Open으로 바로 제어할 수 있습니다.",
+      resourceDescription: "실제 Console Hub API 응답을 불러오는 중입니다.",
       resourceHeaderLink: { href: "workspace_database_hub.html", label: "연결 리소스 같이 보기" },
-      resources: [
-        {
-          categories: ["all", "relational"],
-          status: { label: "Running", tone: "healthy" },
-          engine: "Relational Console · MySQL / MariaDB",
-          icon: "table_view",
-          name: "phpMyAdmin",
-          meta: "MySQL/MariaDB 스키마 조회, grants 확인, 단건 데이터 검증에 쓰는 관계형 콘솔",
-          color: "linear-gradient(135deg,#0891b2,#22d3ee)",
-          connectionsLabel: "Bound DB",
-          connections: [
-            { abbr: "MY", name: "payments-mysql", meta: "MySQL 8", color: "linear-gradient(135deg,#0891b2,#22d3ee)" },
-            { abbr: "MB", name: "cms-mariadb", meta: "MariaDB 10.11", color: "linear-gradient(135deg,#0f766e,#2dd4bf)" }
-          ],
-          actions: [
-            { label: "Start", icon: "play_circle", kind: "start", disabled: true },
-            { label: "Stop", icon: "stop_circle", kind: "stop" },
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_console_detail.html?item=phpmyadmin" }
-          ]
-        },
-        {
-          categories: ["all", "relational"],
-          status: { label: "Running", tone: "healthy" },
-          engine: "Admin Console · PostgreSQL",
-          icon: "database",
-          name: "PG Admin",
-          meta: "PostgreSQL role, schema, session 상태를 확인하는 메인 운영 콘솔",
-          color: "linear-gradient(135deg,#2563eb,#60a5fa)",
-          connectionsLabel: "Bound DB",
-          connections: [
-            { abbr: "PG", name: "hermes-main", meta: "Primary OLTP", color: "linear-gradient(135deg,#2563eb,#60a5fa)" },
-            { abbr: "PG", name: "order-archive", meta: "Read replica", color: "linear-gradient(135deg,#1d4ed8,#38bdf8)" },
-            { abbr: "PG", name: "analytics-readonly", meta: "BI mirror", color: "linear-gradient(135deg,#0ea5e9,#67e8f9)" }
-          ],
-          actions: [
-            { label: "Start", icon: "play_circle", kind: "start", disabled: true },
-            { label: "Stop", icon: "stop_circle", kind: "stop" },
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_console_detail.html?item=pg-admin" }
-          ]
-        },
-        {
-          categories: ["all", "document"],
-          status: { label: "Stopped", tone: "muted" },
-          engine: "Document Console · MongoDB",
-          icon: "account_tree",
-          name: "Mongo GUI",
-          meta: "MongoDB document/collection 탐색과 인덱스 점검에 쓰는 문서형 콘솔",
-          color: "linear-gradient(135deg,#16a34a,#4ade80)",
-          connectionsLabel: "Bound DB",
-          connections: [
-            { abbr: "MG", name: "customer-profile", meta: "PII masked", color: "linear-gradient(135deg,#16a34a,#4ade80)" },
-            { abbr: "MG", name: "user-event-cluster", meta: "Event store", color: "linear-gradient(135deg,#15803d,#86efac)" }
-          ],
-          actions: [
-            { label: "Start", icon: "play_circle", kind: "start" },
-            { label: "Stop", icon: "stop_circle", kind: "stop", disabled: true },
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_console_detail.html?item=mongo-gui" }
-          ]
-        },
-        {
-          categories: ["all", "cache"],
-          status: { label: "Running", tone: "healthy" },
-          engine: "Cache Console · Redis",
-          icon: "memory",
-          name: "Redis Insight",
-          meta: "Redis 키스페이스, 메모리 편중, TTL, hot key를 점검하는 캐시 콘솔",
-          color: "linear-gradient(135deg,#f97316,#fb923c)",
-          connectionsLabel: "Bound DB",
-          connections: [
-            { abbr: "RD", name: "session-redis", meta: "Shared session", color: "linear-gradient(135deg,#f97316,#fb923c)" },
-            { abbr: "RD", name: "ranking-cache", meta: "Restaurant API", color: "linear-gradient(135deg,#ea580c,#fdba74)" },
-            { abbr: "RD", name: "preview-cache", meta: "Staging", color: "linear-gradient(135deg,#fb923c,#fed7aa)" }
-          ],
-          actions: [
-            { label: "Start", icon: "play_circle", kind: "start", disabled: true },
-            { label: "Stop", icon: "stop_circle", kind: "stop" },
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_console_detail.html?item=redis-insight" }
-          ]
-        },
-        {
-          categories: ["all", "search"],
-          status: { label: "Running", tone: "healthy" },
-          engine: "Search Console · Elasticsearch",
-          icon: "travel_explore",
-          name: "Kibana",
-          meta: "Elasticsearch index 탐색, 로그 검색, DSL 확인에 쓰는 검색 콘솔",
-          color: "linear-gradient(135deg,#7c3aed,#a78bfa)",
-          connectionsLabel: "Bound DB",
-          connections: [
-            { abbr: "ES", name: "ops-search", meta: "Service logs", color: "linear-gradient(135deg,#7c3aed,#a78bfa)" },
-            { abbr: "ES", name: "audit-log-search", meta: "Security audit", color: "linear-gradient(135deg,#6d28d9,#c4b5fd)" }
-          ],
-          actions: [
-            { label: "Start", icon: "play_circle", kind: "start", disabled: true },
-            { label: "Stop", icon: "stop_circle", kind: "stop" },
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_console_detail.html?item=kibana" }
-          ]
-        },
-        {
-          categories: ["all", "vector"],
-          status: { label: "Stopped", tone: "muted" },
-          engine: "Vector Console · Milvus",
-          icon: "hub",
-          name: "Attu",
-          meta: "Milvus collection, partition, index, vector count를 확인하는 벡터 콘솔",
-          color: "linear-gradient(135deg,#0f766e,#5eead4)",
-          connectionsLabel: "Bound DB",
-          connections: [
-            { abbr: "MV", name: "search-embedding", meta: "ANN retrieval", color: "linear-gradient(135deg,#0f766e,#5eead4)" },
-            { abbr: "MV", name: "catalog-vector", meta: "Semantic catalog", color: "linear-gradient(135deg,#0d9488,#99f6e4)" }
-          ],
-          actions: [
-            { label: "Start", icon: "play_circle", kind: "start" },
-            { label: "Stop", icon: "stop_circle", kind: "stop", disabled: true },
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_console_detail.html?item=attu" }
-          ]
-        }
-      ],
+      resources: Array.from({ length: 6 }, (_, index) => ({
+        categories: ["all", "basic"],
+        status: { label: "Loading", tone: "pending" },
+        engine: "Console Runtime",
+        icon: "web",
+        name: `콘솔 정보를 불러오는 중 ${index + 1}`,
+        meta: "실제 API 응답으로 카드 내용을 갱신합니다.",
+        color: "linear-gradient(135deg,#15803d,#22c55e)",
+        connectionsLabel: "Bound DB",
+        connections: [],
+        footer: "Updated loading..."
+      })),
       mainPanels: [
         {
           icon: "tips_and_updates",
           label: "Tips",
           title: "콘솔 운영 팁",
-          description: "카드에서는 꼭 필요한 제어만 남기고, 운용 팁은 아래에서 짧게 확인하는 흐름으로 정리했습니다.",
-          rows: [
-            { title: "Running 상태면 Open / Stop만 보면 됩니다", meta: "phpMyAdmin, PG Admin, Redis Insight, Kibana는 이미 떠 있는 콘솔 기준입니다." },
-            { title: "Stopped 상태면 Start 후 Open 순서로 접근합니다", meta: "Mongo GUI, Attu처럼 상시 기동이 필요 없는 콘솔은 필요 시에만 올립니다." },
-            { title: "카드의 Bound DB만 보고 진입해도 충분합니다", meta: "연결된 DB를 카드 안에 바로 노출해 별도 설명 칩 없이도 판단 가능하게 했습니다." }
-          ],
+          description: "운영 팁을 불러오는 중입니다.",
+          rows: [],
           footerLink: { href: "workspace_database_hub.html", label: "연결 DB 보기" }
         },
         {
           icon: "menu_book",
           label: "Guide Links",
           title: "가이드 링크",
-          description: "운영 문서나 연결 기준은 카드 안이 아니라 링크 패널에서 여는 구조로 분리했습니다.",
-          rows: [
-            { title: "Database Hub 연결 맵", meta: "콘솔에 바인딩된 실제 DB 리소스와 프로젝트 연결을 같이 확인합니다.", href: "workspace_database_hub.html" },
-            { title: "권한/접근 정책 가이드", meta: "운영 콘솔 접근 방식과 read-only 기준을 확인합니다.", href: "workspace_permission_hub.html" },
-            { title: "프로젝트 상세 운영 가이드", meta: "Kibana, Redis Insight 같은 콘솔이 연결된 프로젝트 맥락을 봅니다.", href: "workspace_project_detail.html?project=lgloganalyzer" }
-          ],
+          description: "가이드 링크를 불러오는 중입니다.",
+          rows: [],
           footerLink: { href: "portal_launchpad.html", label: "런치패드로 돌아가기" }
         }
       ],
@@ -197,19 +86,707 @@
           icon: "health_and_safety",
           label: "Running Health",
           title: "현재 Running 콘솔 Healthy",
-          description: "이상 감지는 여기서 다루지 않고 K8s 이벤트 기준으로 확인합니다. 우측 레일은 지금 떠 있는 콘솔의 헬시 상태만 보여줍니다.",
-          rows: [
-            { title: "phpMyAdmin", meta: "payments-mysql · cms-mariadb", pill: { label: "Healthy", tone: "healthy" } },
-            { title: "PG Admin", meta: "hermes-main · order-archive · analytics-readonly", pill: { label: "Healthy", tone: "healthy" } },
-            { title: "Redis Insight", meta: "session-redis · ranking-cache · preview-cache", pill: { label: "Healthy", tone: "healthy" } },
-            { title: "Kibana", meta: "ops-search · audit-log-search", pill: { label: "Healthy", tone: "healthy" } }
-          ]
+          description: "세부 이상 감지는 K8s 이벤트 기준으로 확인합니다. 우측 레일은 현재 runtime 상태를 불러오는 중입니다.",
+          rows: []
         }
       ]
     };
   </script>
   <script src="workspace_resource_hub_shared.js"></script>
   <script src="ax_studio_topbar.js"></script>
+  <script>
+    (() => {
+      const API_BASE = "/api/v2";
+      const FETCH_LIMIT = 100;
+      const ACTION_POLL_INTERVAL_MS = 4000;
+      const ACTION_POLL_MAX_ATTEMPTS = 20;
+      const FALLBACK_CONFIG = window.HUB_CONFIG;
+      const pendingLifecycleActions = new Map();
+      const pendingOpenActions = new Set();
+      const TYPE_META = {
+        phpmyadmin: {
+          category: "relational",
+          icon: "table_view",
+          engineLabel: "Relational Console · MySQL / MariaDB",
+          color: "linear-gradient(135deg,#0891b2,#22d3ee)",
+          detailKey: "phpmyadmin"
+        },
+        pgadmin: {
+          category: "relational",
+          icon: "database",
+          engineLabel: "Admin Console · PostgreSQL",
+          color: "linear-gradient(135deg,#2563eb,#60a5fa)",
+          detailKey: "pg-admin"
+        },
+        mongogui: {
+          category: "document",
+          icon: "account_tree",
+          engineLabel: "Document Console · MongoDB",
+          color: "linear-gradient(135deg,#16a34a,#4ade80)",
+          detailKey: "mongo-gui"
+        },
+        redisinsight: {
+          category: "cache",
+          icon: "memory",
+          engineLabel: "Cache Console · Redis",
+          color: "linear-gradient(135deg,#f97316,#fb923c)",
+          detailKey: "redis-insight"
+        },
+        kibana: {
+          category: "search",
+          icon: "travel_explore",
+          engineLabel: "Search Console · Elasticsearch",
+          color: "linear-gradient(135deg,#7c3aed,#a78bfa)",
+          detailKey: "kibana"
+        },
+        attu: {
+          category: "vector",
+          icon: "hub",
+          engineLabel: "Vector Console · Milvus",
+          color: "linear-gradient(135deg,#0f766e,#5eead4)",
+          detailKey: "attu"
+        }
+      };
+      const STATUS_META = {
+        running: { label: "Running", tone: "healthy" },
+        starting: { label: "Starting", tone: "review" },
+        stopped: { label: "Stopped", tone: "muted" },
+        stopping: { label: "Stopping", tone: "warn" },
+        error: { label: "Error", tone: "incident" }
+      };
+
+      function buildQuery(params) {
+        const searchParams = new URLSearchParams();
+        Object.entries(params || {}).forEach(([key, value]) => {
+          if (value === undefined || value === null || value === "") {
+            return;
+          }
+          searchParams.set(key, String(value));
+        });
+        const query = searchParams.toString();
+        return query ? `?${query}` : "";
+      }
+
+      async function requestJson(path, options) {
+        const response = await fetch(`${API_BASE}${path}`, {
+          credentials: "same-origin",
+          headers: {
+            Accept: "application/json"
+          },
+          ...(options || {})
+        });
+
+        if (!response.ok) {
+          throw new Error(`${response.status} ${response.statusText}`);
+        }
+
+        return response.json();
+      }
+
+      async function fetchJson(path, params) {
+        return requestJson(`${path}${buildQuery(params)}`);
+      }
+
+      function extractData(payload, fallback) {
+        if (payload && typeof payload === "object" && "data" in payload) {
+          return payload.data;
+        }
+        return payload ?? fallback;
+      }
+
+      function extractItems(payload) {
+        if (payload && Array.isArray(payload.items)) {
+          return payload.items;
+        }
+        if (payload && payload.data && Array.isArray(payload.data.items)) {
+          return payload.data.items;
+        }
+        return [];
+      }
+
+      function extractPageTotal(payload, fallback) {
+        if (payload && payload.page && Number.isFinite(payload.page.total)) {
+          return payload.page.total;
+        }
+        if (payload && payload.data && payload.data.page && Number.isFinite(payload.data.page.total)) {
+          return payload.data.page.total;
+        }
+        return fallback;
+      }
+
+      function extractNextCursor(payload) {
+        if (payload && payload.page && typeof payload.page.nextCursor === "string") {
+          return payload.page.nextCursor;
+        }
+        if (payload && payload.data && payload.data.page && typeof payload.data.page.nextCursor === "string") {
+          return payload.data.page.nextCursor;
+        }
+        return null;
+      }
+
+      async function fetchAllConsoles(limit = FETCH_LIMIT) {
+        const items = [];
+        let cursor = null;
+        let total = 0;
+        let hasNext = true;
+
+        while (hasNext) {
+          const payload = await fetchJson("/consoles", {
+            limit,
+            sort: "-updatedAt",
+            ...(cursor ? { cursor } : {})
+          });
+          const pageItems = extractItems(payload);
+          const nextCursor = extractNextCursor(payload);
+          const pageTotal = extractPageTotal(payload, total || pageItems.length);
+
+          items.push(...pageItems);
+          total = pageTotal;
+          cursor = nextCursor;
+          hasNext = Boolean(nextCursor);
+
+          if (!pageItems.length || items.length >= pageTotal) {
+            hasNext = false;
+          }
+        }
+
+        return {
+          items,
+          page: {
+            total: total || items.length
+          }
+        };
+      }
+
+      function formatNumber(value) {
+        const amount = Number(value);
+        if (!Number.isFinite(amount)) {
+          return "-";
+        }
+        return new Intl.NumberFormat("ko-KR").format(amount);
+      }
+
+      function formatDateTime(value) {
+        if (!value) {
+          return "Updated N/A";
+        }
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return "Updated N/A";
+        }
+        return `Updated ${new Intl.DateTimeFormat("ko-KR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit"
+        }).format(date)}`;
+      }
+
+      function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      function normalizeKey(value) {
+        return String(value || "").trim().toLowerCase();
+      }
+
+      function normalizeStatus(value) {
+        const normalized = normalizeKey(value);
+        if (!normalized) {
+          return "stopped";
+        }
+        if (["run", "running", "ready", "active", "healthy"].includes(normalized)) {
+          return "running";
+        }
+        if (["start", "starting", "pending", "preparing"].includes(normalized)) {
+          return "starting";
+        }
+        if (["stop", "stopped", "inactive", "disabled"].includes(normalized)) {
+          return "stopped";
+        }
+        if (["stopping", "terminating"].includes(normalized)) {
+          return "stopping";
+        }
+        if (["error", "failed", "failure", "degraded", "critical"].includes(normalized)) {
+          return "error";
+        }
+        return normalized;
+      }
+
+      function getPrincipalName(principal) {
+        if (typeof principal === "string") {
+          return principal;
+        }
+        return principal?.displayName || principal?.userId || principal?.email || principal?.sub || "";
+      }
+
+      function isSamePrincipal(left, right) {
+        if (!left || !right) {
+          return false;
+        }
+
+        if (typeof left === "string" || typeof right === "string") {
+          return normalizeKey(getPrincipalName(left)) === normalizeKey(getPrincipalName(right));
+        }
+
+        return ["sub", "email", "userId", "displayName"].some(key => {
+          const leftValue = normalizeKey(left[key]);
+          const rightValue = normalizeKey(right[key]);
+          return leftValue && rightValue && leftValue === rightValue;
+        });
+      }
+
+      function getOwnerName(owner) {
+        return owner?.displayName || owner?.userId || owner?.email || "Workspace Owner";
+      }
+
+      function getCollaborators(item) {
+        const raw = Array.isArray(item?.collaborators) ? item.collaborators : [];
+        const withoutLeadingOwner = raw.length > 0 && isSamePrincipal(raw[0], item?.owner)
+          ? raw.slice(1)
+          : raw;
+
+        return withoutLeadingOwner.filter(collaborator => !isSamePrincipal(collaborator, item?.owner));
+      }
+
+      function toInitials(value) {
+        const source = String(value || "").trim();
+        if (!source) {
+          return "CN";
+        }
+
+        const parts = source
+          .replace(/[@._-]+/g, " ")
+          .split(/\s+/)
+          .filter(Boolean);
+
+        if (parts.length === 1) {
+          return parts[0].slice(0, 2).toUpperCase();
+        }
+
+        return parts
+          .slice(0, 2)
+          .map(part => part.charAt(0).toUpperCase())
+          .join("");
+      }
+
+      function abbreviateName(value) {
+        const source = String(value || "").trim();
+        if (!source) {
+          return "DB";
+        }
+        const segments = source.split(/[^a-zA-Z0-9]+/).filter(Boolean);
+        if (segments.length >= 2) {
+          return segments
+            .slice(0, 2)
+            .map(segment => segment.charAt(0).toUpperCase())
+            .join("");
+        }
+        return source.slice(0, 2).toUpperCase();
+      }
+
+      function getTypeMeta(type) {
+        return TYPE_META[type] || {
+          category: "all",
+          icon: "web",
+          engineLabel: "Database Console",
+          color: "linear-gradient(135deg,#15803d,#22c55e)",
+          detailKey: "phpmyadmin"
+        };
+      }
+
+      function getStatusMeta(status) {
+        return STATUS_META[normalizeStatus(status)] || { label: status || "Unknown", tone: "info" };
+      }
+
+      function buildEngineNote(items) {
+        const engines = Array.from(
+          new Set(
+            (items || [])
+              .flatMap(item => Array.isArray(item?.bindings) ? item.bindings.map(binding => binding?.engine) : [])
+              .map(engine => String(engine || "").trim())
+              .filter(Boolean)
+          )
+        );
+
+        if (!engines.length) {
+          return "연결된 DB 없음";
+        }
+
+        return engines
+          .slice(0, 6)
+          .map(engine => {
+            if (engine === "mysql") return "MySQL";
+            if (engine === "postgres") return "PostgreSQL";
+            if (engine === "mongo") return "MongoDB";
+            if (engine === "redis") return "Redis";
+            if (engine === "elastic") return "Elastic";
+            if (engine === "milvus") return "Milvus";
+            return engine;
+          })
+          .join(" · ");
+      }
+
+      function getParticipantCount(items) {
+        const keys = new Set();
+        (items || []).forEach(item => {
+          [item?.owner, ...getCollaborators(item)].forEach(principal => {
+            const key = normalizeKey(principal?.sub || principal?.email || principal?.userId || principal?.displayName);
+            if (key) {
+              keys.add(key);
+            }
+          });
+        });
+        return keys.size;
+      }
+
+      function buildHeroStats(stats, items) {
+        const runningCount = Number(stats?.runningCount ?? 0);
+        const stoppedCount = Number(stats?.stoppedCount ?? 0);
+        const startingCount = Number(stats?.startingCount ?? 0);
+        const stoppingCount = Number(stats?.stoppingCount ?? 0);
+        const weeklyOpenCount = [
+          stats?.weeklyOpenCount,
+          stats?.weeklyConsoleOpenCount,
+          stats?.weeklyConsoleOpens,
+          stats?.weeklyViews
+        ].find(value => Number.isFinite(Number(value)));
+
+        return [
+          {
+            icon: "web",
+            value: formatNumber(stats?.totalConsoles ?? items.length),
+            label: "등록 콘솔",
+            note: `Running ${formatNumber(runningCount)} · Stopped ${formatNumber(stoppedCount)}`,
+            color: "linear-gradient(135deg,#15803d,#22c55e)"
+          },
+          {
+            icon: "database",
+            value: formatNumber(stats?.bindingCount ?? 0),
+            label: "연결 엔드포인트",
+            note: buildEngineNote(items),
+            color: "linear-gradient(135deg,#166534,#4ade80)"
+          },
+          {
+            icon: "link",
+            value: formatNumber(getParticipantCount(items)),
+            label: "워크스페이스 연결",
+            note: "프로젝트/운영 계정 기준",
+            color: "linear-gradient(135deg,#16a34a,#86efac)"
+          },
+          {
+            icon: "visibility",
+            value: weeklyOpenCount == null ? "-" : formatNumber(weeklyOpenCount),
+            label: "주간 콘솔 진입",
+            note: weeklyOpenCount == null ? "현재 집계 API 미지원" : "최근 7일 Open 기준",
+            color: "linear-gradient(135deg,#22c55e,#bbf7d0)"
+          }
+        ];
+      }
+
+      function buildConsoleFilters(items) {
+        const counts = (items || []).reduce((acc, item) => {
+          const category = getTypeMeta(item?.type).category;
+          if (category) {
+            acc[category] = (acc[category] || 0) + 1;
+          }
+          return acc;
+        }, {});
+        const defaultCount = Math.min((items || []).length, 6);
+
+        return [
+          { id: "basic", icon: "dashboard_customize", label: defaultCount > 0 ? `기본 (${defaultCount})` : "기본" },
+          { id: "all", icon: "apps", label: (items || []).length > 0 ? `전체 (${formatNumber((items || []).length)})` : "전체" },
+          { id: "relational", icon: "table_chart", label: counts.relational ? `관계형 (${counts.relational})` : "관계형" },
+          { id: "document", icon: "account_tree", label: counts.document ? `문서형 (${counts.document})` : "문서형" },
+          { id: "cache", icon: "bolt", label: counts.cache ? `캐시 (${counts.cache})` : "캐시" },
+          { id: "search", icon: "travel_explore", label: counts.search ? `검색 (${counts.search})` : "검색" },
+          { id: "vector", icon: "hub", label: counts.vector ? `벡터 (${counts.vector})` : "벡터" }
+        ];
+      }
+
+      function buildConnections(bindings, color) {
+        return (Array.isArray(bindings) ? bindings : []).map(binding => ({
+          abbr: abbreviateName(binding?.name),
+          name: binding?.name || "Bound DB",
+          meta: [binding?.engine, binding?.status].filter(Boolean).join(" · ") || "bound db",
+          color
+        }));
+      }
+
+      function toResource(item, isDefaultResource) {
+        const typeMeta = getTypeMeta(item?.type);
+        const ownerName = getOwnerName(item?.owner);
+        const collaborators = getCollaborators(item);
+        const statusValue = pendingLifecycleActions.get(item?.id) || item?.status;
+        const statusMeta = getStatusMeta(statusValue);
+
+        return {
+          categories: ["all", typeMeta.category, isDefaultResource ? "basic" : ""].filter(Boolean),
+          status: statusMeta,
+          engine: typeMeta.engineLabel || item?.typeLabel || "Database Console",
+          icon: item?.icon || typeMeta.icon,
+          name: item?.name || "Console",
+          meta: item?.summary || `${item?.typeLabel || "Console"} console`,
+          color: typeMeta.color,
+          owner: {
+            initials: toInitials(ownerName),
+            name: ownerName,
+            meta: item?.owner?.email || "No email",
+            color: typeMeta.color
+          },
+          sharing: {
+            collaborators: collaborators.map(collaborator => ({
+              initials: toInitials(getOwnerName(collaborator)),
+              color: "linear-gradient(135deg,#6366f1,#818cf8)"
+            }))
+          },
+          connectionsLabel: "Bound DB",
+          connections: buildConnections(item?.bindings, typeMeta.color),
+          footer: formatDateTime(item?.updatedAt),
+          action: {
+            href: `workspace_console_detail.html?id=${encodeURIComponent(item?.id || "")}`
+          },
+          actions: [
+            {
+              label: "Start",
+              icon: "play_circle",
+              kind: "start",
+              disabled: !item?.capabilities?.canStart || pendingLifecycleActions.has(item?.id),
+              attributes: {
+                "data-console-id": item?.id,
+                "data-console-action": "start"
+              }
+            },
+            {
+              label: "Stop",
+              icon: "stop_circle",
+              kind: "stop",
+              disabled: !item?.capabilities?.canStop || pendingLifecycleActions.has(item?.id),
+              attributes: {
+                "data-console-id": item?.id,
+                "data-console-action": "stop"
+              }
+            },
+            {
+              label: "Open",
+              icon: "open_in_new",
+              kind: "open",
+              disabled: !item?.capabilities?.canOpen || pendingOpenActions.has(item?.id),
+              attributes: {
+                "data-console-id": item?.id,
+                "data-console-action": "open"
+              }
+            }
+          ]
+        };
+      }
+
+      function buildTipsPanel(panel) {
+        return {
+          ...FALLBACK_CONFIG.mainPanels[0],
+          rows: Array.isArray(panel?.rows) ? panel.rows : FALLBACK_CONFIG.mainPanels[0].rows,
+          footerLink: panel?.footerLink || FALLBACK_CONFIG.mainPanels[0].footerLink
+        };
+      }
+
+      function buildGuidePanel(panel) {
+        return {
+          ...FALLBACK_CONFIG.mainPanels[1],
+          rows: Array.isArray(panel?.rows) ? panel.rows : FALLBACK_CONFIG.mainPanels[1].rows,
+          footerLink: panel?.footerLink || FALLBACK_CONFIG.mainPanels[1].footerLink
+        };
+      }
+
+      function buildHealthPanel(panel) {
+        const rows = Array.isArray(panel?.rows)
+          ? panel.rows.map(row => ({
+              ...row,
+              pill: row?.pill
+                ? {
+                    ...row.pill,
+                    tone: row.pill.tone === "critical"
+                      ? "incident"
+                      : row.pill.tone === "warning"
+                        ? "warn"
+                        : row.pill.tone
+                  }
+                : row?.pill
+            }))
+          : FALLBACK_CONFIG.sidebarPanels[0].rows;
+
+        return {
+          ...FALLBACK_CONFIG.sidebarPanels[0],
+          rows
+        };
+      }
+
+      function renderConfig(config) {
+        window.HUB_CONFIG = config;
+        if (typeof window.renderWorkspaceResourceHub === "function") {
+          window.renderWorkspaceResourceHub(config);
+          attachActionHandlers();
+          if (typeof window.refreshConceptEndpointOverlay === "function") {
+            requestAnimationFrame(() => {
+              window.refreshConceptEndpointOverlay();
+            });
+          }
+        }
+      }
+
+      async function loadConsoleHub() {
+        const results = await Promise.allSettled([
+          fetchAllConsoles(),
+          fetchJson("/consoles/stats"),
+          fetchJson("/consoles/filters"),
+          fetchJson("/consoles/panels/tips"),
+          fetchJson("/consoles/panels/guide-links"),
+          fetchJson("/consoles/panels/health")
+        ]);
+
+        const consolesPayload = results[0].status === "fulfilled" ? results[0].value : null;
+        const statsPayload = results[1].status === "fulfilled" ? extractData(results[1].value, null) : null;
+        const filtersPayload = results[2].status === "fulfilled" ? extractData(results[2].value, null) : null;
+        const tipsPayload = results[3].status === "fulfilled" ? extractData(results[3].value, null) : null;
+        const guidePayload = results[4].status === "fulfilled" ? extractData(results[4].value, null) : null;
+        const healthPayload = results[5].status === "fulfilled" ? extractData(results[5].value, null) : null;
+
+        const items = extractItems(consolesPayload).slice().sort((left, right) => {
+          const leftTime = new Date(left?.updatedAt || left?.createdAt || 0).getTime();
+          const rightTime = new Date(right?.updatedAt || right?.createdAt || 0).getTime();
+          return rightTime - leftTime;
+        });
+        const total = extractPageTotal(consolesPayload, items.length);
+        const defaultConsoleIds = new Set(
+          items
+            .slice(0, 6)
+            .map(item => item?.id)
+            .filter(Boolean)
+        );
+
+        const config = {
+          ...FALLBACK_CONFIG,
+          searchSource: "consoles",
+          searchSourceLabel: "Consoles Hub",
+          searchDefaultType: "hub",
+          resourcePageSize: 6,
+          heroStats: buildHeroStats(statsPayload || {}, items),
+          filters: buildConsoleFilters(items),
+          resourceDescription: total > 0
+            ? `${formatNumber(total)}개의 console 리소스를 실제 API 응답으로 렌더링합니다. 카드에서는 바인딩된 DB와 runtime 액션을 바로 확인할 수 있습니다.`
+            : "조회 가능한 console 리소스가 없습니다. 권한 또는 바인딩 상태를 확인해 주세요.",
+          resources: items.map(item => toResource(item, defaultConsoleIds.has(item?.id))),
+          mainPanels: [
+            buildTipsPanel(tipsPayload),
+            buildGuidePanel(guidePayload)
+          ],
+          sidebarPanels: [
+            buildHealthPanel(healthPayload)
+          ]
+        };
+
+        if (filtersPayload && !config.resources.length) {
+          config.filters = Array.isArray(FALLBACK_CONFIG.filters) ? FALLBACK_CONFIG.filters : [];
+        }
+
+        renderConfig(config);
+      }
+
+      async function waitForConsoleState(consoleId, action) {
+        const targetStatus = action === "start" ? "running" : "stopped";
+
+        await sleep(2000);
+
+        for (let attempt = 0; attempt < ACTION_POLL_MAX_ATTEMPTS; attempt += 1) {
+          try {
+            const payload = await fetchJson(`/consoles/${encodeURIComponent(consoleId)}`);
+            const item = extractData(payload, null);
+            const currentStatus = normalizeStatus(item?.status);
+            if (currentStatus === targetStatus) {
+              return true;
+            }
+            if (currentStatus === "error") {
+              return false;
+            }
+          } catch (error) {
+            return false;
+          }
+
+          await sleep(ACTION_POLL_INTERVAL_MS);
+        }
+
+        return false;
+      }
+
+      function attachActionHandlers() {
+        document.querySelectorAll("[data-console-id][data-console-action]").forEach(button => {
+          if (button.dataset.consoleActionBound === "true") {
+            return;
+          }
+
+          button.dataset.consoleActionBound = "true";
+          button.addEventListener("click", async event => {
+            event.preventDefault();
+
+            const consoleId = button.getAttribute("data-console-id");
+            const action = button.getAttribute("data-console-action");
+
+            if (!consoleId || !action || button.disabled || button.classList.contains("is-disabled")) {
+              return;
+            }
+
+            button.disabled = true;
+            button.classList.add("is-disabled");
+
+            try {
+              if (action === "open") {
+                pendingOpenActions.add(consoleId);
+                const payload = await requestJson(`/consoles/${encodeURIComponent(consoleId)}/open`, {
+                  method: "POST"
+                });
+                const data = extractData(payload, null);
+                const url = data?.url;
+                pendingOpenActions.delete(consoleId);
+
+                if (url) {
+                  window.open(url, "_blank", "noopener,noreferrer");
+                }
+
+                await loadConsoleHub();
+                return;
+              }
+
+              if (action === "start" || action === "stop") {
+                pendingLifecycleActions.set(consoleId, action === "start" ? "starting" : "stopping");
+                await requestJson(`/consoles/${encodeURIComponent(consoleId)}/${action}`, {
+                  method: "POST"
+                });
+                await loadConsoleHub();
+                await waitForConsoleState(consoleId, action);
+                pendingLifecycleActions.delete(consoleId);
+                await loadConsoleHub();
+                return;
+              }
+            } catch (error) {
+              pendingLifecycleActions.delete(consoleId);
+              pendingOpenActions.delete(consoleId);
+              console.error("[workspace_tools_hub] console action failed", error);
+              window.alert(`Console ${action} 동작에 실패했습니다.`);
+            }
+
+            await loadConsoleHub();
+          });
+        });
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", loadConsoleHub, { once: true });
+      } else {
+        loadConsoleHub();
+      }
+    })();
+  </script>
   <script src="concept_endpoint_overlay.js"></script>
 </body>
 </html>
