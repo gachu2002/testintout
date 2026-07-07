@@ -1,0 +1,1726 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>메시지 허브</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <style>
+    .notify-page {
+      padding-top:28px;
+    }
+    .breadcrumbs {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:18px;
+      font-size:12px;
+      color:var(--t3);
+    }
+    .breadcrumbs a {
+      color:var(--t2);
+      font-weight:700;
+    }
+    .breadcrumbs .material-icons-round {
+      font-size:15px;
+      color:#bcc6d4;
+    }
+    .notify-panel-head {
+      display:grid;
+      gap:14px;
+      margin-bottom:18px;
+    }
+    .notify-head-row {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    .notify-head-copy {
+      min-width:0;
+      display:grid;
+      gap:6px;
+    }
+    .notify-current-title {
+      font-size:24px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      line-height:1.15;
+    }
+    .notify-current-summary {
+      font-size:13px;
+      color:var(--t3);
+      line-height:1.55;
+    }
+    .notify-tabs-bar {
+      grid-area:tabs;
+      margin-bottom:0;
+    }
+    .main-col {
+      grid-area:main;
+      gap:0;
+    }
+    .side-col {
+      grid-area:side;
+    }
+    .notify-layout {
+      grid-template-areas:
+        "tabs tabs"
+        "main side";
+      row-gap:14px;
+    }
+    .search-shell {
+      position:relative;
+      width:100%;
+      max-width:380px;
+    }
+    .search-shell .material-icons-round {
+      position:absolute;
+      left:12px;
+      top:50%;
+      transform:translateY(-50%);
+      color:var(--t3);
+      font-size:18px;
+      pointer-events:none;
+    }
+    .search-input,
+    .input,
+    .select,
+    .textarea {
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:var(--surface-soft);
+      color:var(--t1);
+      outline:none;
+      transition:border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .search-input,
+    .input,
+    .select { height:42px; }
+    .search-input { padding:0 14px 0 40px; }
+    .input,
+    .select { padding:0 13px; }
+    .textarea {
+      min-height:116px;
+      padding:12px 13px;
+      resize:vertical;
+      line-height:1.6;
+    }
+    .search-input:focus,
+    .input:focus,
+    .select:focus,
+    .textarea:focus {
+      background:#fff;
+      border-color:color-mix(in srgb, var(--brand) 28%, transparent);
+      box-shadow:0 0 0 4px color-mix(in srgb, var(--brand) 12%, transparent);
+    }
+    .notify-summary,
+    .notify-tabs,
+    .notify-filters,
+    .card-actions,
+    .card-meta {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .notify-summary .metric-chip,
+    .rail-summary .metric-chip {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      min-height:30px;
+      padding:6px 11px;
+      border-radius:999px;
+      background:rgba(248,249,252,.95);
+      color:var(--t2);
+      border:1px solid rgba(224,227,232,.95);
+    }
+    .notify-summary .metric-chip .material-icons-round,
+    .rail-summary .metric-chip .material-icons-round {
+      color:var(--t3);
+      font-size:11px;
+    }
+    .notify-tab-btn {
+      height:40px;
+    }
+    .control-bar {
+      display:flex;
+      flex-wrap:wrap;
+      gap:16px;
+      align-items:start;
+      margin-bottom:12px;
+    }
+    .search-shell {
+      flex:1 1 320px;
+      min-width:0;
+    }
+    .notify-summary {
+      flex:1 1 320px;
+      justify-content:flex-end;
+      align-content:flex-start;
+      min-width:0;
+    }
+    .notify-summary[hidden] {
+      display:none;
+    }
+    .notify-tab-btn .material-icons-round,
+    .notify-filters .filter-chip .material-icons-round {
+      font-size:16px;
+    }
+    .card-line .ops-pill,
+    .persistent-notice-line .ops-pill {
+      flex-shrink:0;
+    }
+
+    .section-stack {
+      display:grid;
+      gap:0;
+    }
+    .persistent-notice-panel {
+      padding:0;
+      gap:0;
+      overflow:hidden;
+    }
+    .persistent-notice-head {
+      padding:20px 22px 14px;
+      border-bottom:1px solid rgba(148,163,184,.16);
+      background:#fbfcfe;
+    }
+    .persistent-notice-head .hub-briefing-kicker {
+      margin-bottom:12px;
+    }
+    .persistent-notice-head .hub-briefing-title {
+      font-size:18px;
+      white-space:normal;
+    }
+    .persistent-notice-body {
+      display:grid;
+      gap:12px;
+      padding:14px 22px 20px;
+      align-content:start;
+    }
+    .rail-summary {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .persistent-notice-list {
+      display:grid;
+      gap:12px;
+    }
+    .persistent-notice-item {
+      display:grid;
+      gap:12px;
+      padding:16px;
+      border-radius:14px;
+      background:#f8fafc;
+      border:1px solid rgba(148,163,184,.18);
+      box-shadow:none;
+    }
+    .persistent-notice-item.is-critical {
+      border-color:color-mix(in srgb, var(--red) 18%, rgba(148,163,184,.18));
+      background:linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(250,244,244,.96) 100%);
+    }
+    .persistent-notice-copy {
+      min-width:0;
+      display:grid;
+      gap:6px;
+    }
+    .persistent-notice-line {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .persistent-notice-line strong {
+      font-size:14px;
+      line-height:1.45;
+      letter-spacing:-.02em;
+    }
+    .persistent-notice-text {
+      font-size:13px;
+      line-height:1.55;
+      color:var(--t2);
+    }
+    .persistent-notice-item .card-meta {
+      gap:10px;
+    }
+    .persistent-notice-item .card-actions {
+      margin-top:2px;
+    }
+    .tab-panel.is-hidden {
+      display:none;
+    }
+    .section-panel {
+      padding:0;
+    }
+    .section-head {
+      display:flex;
+      align-items:flex-start;
+      justify-content:flex-end;
+      gap:14px;
+      margin-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .card-list {
+      display:grid;
+      gap:10px;
+    }
+    .content-card {
+      padding:16px 18px;
+      border-radius:16px;
+      border:1px solid rgba(214,216,219,.94);
+      background:#fff;
+      box-shadow:
+        0 14px 28px rgba(15,23,42,.05),
+        0 2px 0 rgba(255,255,255,.88) inset;
+    }
+    .content-card.is-unread {
+      border-color:color-mix(in srgb, var(--brand) 18%, rgba(214,216,219,.94));
+      background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--brand) 12%, white), transparent 42%),
+        linear-gradient(180deg, #ffffff 0%, #f5f9ff 100%);
+      box-shadow:
+        0 18px 30px rgba(15,23,42,.06),
+        0 0 0 1px color-mix(in srgb, var(--brand) 10%, transparent) inset,
+        0 14px 28px rgba(15,23,42,.05),
+        0 2px 0 rgba(255,255,255,.88) inset;
+    }
+    .content-card.is-critical {
+      border-color:rgba(239,68,68,.22);
+    }
+    .content-card.notice-card {
+      border-color:rgba(79,140,255,.18);
+    }
+    .card-main {
+      min-width:0;
+      display:grid;
+      gap:8px;
+    }
+    .card-header {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .card-header-side {
+      display:grid;
+      justify-items:end;
+      gap:4px;
+      flex:0 0 auto;
+    }
+    .card-date-facts,
+    .card-chip-row,
+    .detail-modal-primary-meta {
+      display:flex;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:6px 10px;
+    }
+    .card-chip-row .ops-pill {
+      padding:4px 8px;
+      font-size:9px;
+      letter-spacing:.01em;
+    }
+    .card-date-facts {
+      justify-content:flex-end;
+    }
+    .card-sender {
+      font-size:12px;
+      line-height:1.4;
+      color:var(--t3);
+      text-align:right;
+    }
+    .card-sender strong {
+      color:var(--t2);
+      font-weight:700;
+    }
+    .primary-fact {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      min-height:22px;
+      font-size:12px;
+      line-height:1.4;
+    }
+    .primary-fact-label {
+      color:var(--t3);
+      font-weight:700;
+    }
+    .primary-fact-value {
+      color:var(--t1);
+      font-weight:800;
+      letter-spacing:-.01em;
+    }
+    .primary-fact.is-emphasis .primary-fact-value {
+      color:var(--brand);
+    }
+    .card-title {
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.02em;
+      line-height:1.4;
+      flex:1 1 280px;
+      min-width:0;
+    }
+    .card-meta {
+      font-size:12px;
+      color:var(--t3);
+    }
+    .card-excerpt {
+      font-size:13px;
+      line-height:1.6;
+      color:var(--t2);
+      display:-webkit-box;
+      overflow:hidden;
+      -webkit-box-orient:vertical;
+      -webkit-line-clamp:2;
+    }
+    .card-actions {
+      margin-top:2px;
+    }
+    .mini-btn {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      height:36px;
+      padding:0 12px;
+      border:none;
+      border-radius:12px;
+      background:#fff;
+      color:var(--t2);
+      box-shadow:inset 0 0 0 1px rgba(214,216,219,.92);
+      font-size:12px;
+      font-weight:700;
+      transition:all .15s ease;
+    }
+    .mini-btn:hover {
+      color:var(--brand);
+      background:var(--brand-bg);
+      box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--brand) 18%, transparent);
+    }
+
+    .field,
+    .notice-form {
+      display:grid;
+      gap:12px;
+    }
+    .field-label {
+      font-size:12px;
+      font-weight:800;
+      color:var(--t2);
+    }
+    .field-help {
+      font-size:12px;
+      line-height:1.55;
+      color:var(--t3);
+    }
+    .toggle-grid {
+      display:grid;
+      gap:8px;
+    }
+    .toggle-item {
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      padding:12px;
+      border-radius:16px;
+      background:var(--surface-soft);
+      box-shadow:inset 0 0 0 1px var(--border);
+    }
+    .toggle-item input {
+      margin-top:2px;
+      accent-color:var(--brand);
+    }
+    .toggle-copy strong {
+      display:block;
+      font-size:12px;
+      margin-bottom:0;
+    }
+    .toggle-copy span { display:none; }
+
+    .feedback {
+      display:none;
+      padding:12px 14px;
+      border-radius:14px;
+      font-size:12px;
+      font-weight:700;
+      line-height:1.55;
+    }
+    .feedback.is-visible { display:block; }
+    .feedback.info {
+      color:var(--blue);
+      background:var(--blue-bg);
+    }
+    .feedback.success {
+      color:#0f766e;
+      background:rgba(13,148,136,.12);
+    }
+
+    .modal-backdrop {
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background:rgba(15,23,42,.42);
+      z-index:320;
+    }
+    .modal-backdrop.is-open {
+      display:flex;
+    }
+    .modal {
+      width:min(640px, 100%);
+      max-height:min(88vh, 860px);
+      overflow:auto;
+      border:1px solid var(--border);
+      border-radius:24px;
+      background:#fff;
+      box-shadow:0 28px 60px rgba(15,23,42,.22);
+    }
+    .modal-head {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      padding:22px 24px 16px;
+      border-bottom:1px solid var(--border);
+    }
+    .detail-modal-head {
+      justify-content:flex-end;
+      padding:16px 16px 0;
+      border-bottom:none;
+    }
+    .modal-title {
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:-.04em;
+      margin-bottom:0;
+    }
+    .modal-close {
+      width:38px;
+      height:38px;
+      border-radius:12px;
+      color:var(--t2);
+      background:var(--surface-soft);
+      box-shadow:inset 0 0 0 1px var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+    .modal-body {
+      padding:20px 24px 24px;
+    }
+    .detail-modal-layout {
+      display:grid;
+      gap:12px;
+      padding-top:0;
+    }
+    .detail-modal-meta {
+      min-width:0;
+    }
+    .detail-modal-header {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .detail-modal-header .modal-title {
+      flex:1 1 280px;
+      min-width:0;
+      font-size:22px;
+      line-height:1.35;
+    }
+    .detail-modal-primary-meta {
+      justify-content:flex-end;
+      flex:0 0 auto;
+    }
+    .detail-modal-sender {
+      display:flex;
+      justify-content:flex-end;
+      font-size:12px;
+      line-height:1.4;
+      color:var(--t3);
+      text-align:right;
+    }
+    .detail-modal-sender strong {
+      color:var(--t2);
+      font-weight:700;
+    }
+    .detail-modal-body {
+      display:grid;
+      gap:10px;
+      margin-top:8px;
+      padding-top:18px;
+      border-top:1px solid var(--border);
+      color:var(--t2);
+      font-size:14px;
+      line-height:1.7;
+    }
+    .detail-modal-body p {
+      margin:0;
+    }
+    .detail-modal-body ul,
+    .detail-modal-body ol {
+      margin:0;
+      padding-left:18px;
+    }
+    .detail-modal-body li + li {
+      margin-top:4px;
+    }
+    .detail-modal-body strong {
+      color:var(--t1);
+      font-weight:800;
+    }
+    .detail-modal-body a {
+      color:var(--brand);
+      font-weight:700;
+      text-decoration:none;
+    }
+    .detail-modal-body a:hover {
+      text-decoration:underline;
+    }
+    .detail-modal-body code {
+      padding:2px 6px;
+      border-radius:8px;
+      background:var(--surface-soft);
+      color:var(--t1);
+      font-size:12px;
+      font-family:ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .modal-actions {
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      margin-top:8px;
+    }
+    .empty {
+      padding:26px 18px;
+      border-radius:16px;
+      background:var(--surface-soft);
+      color:var(--t3);
+      text-align:center;
+      box-shadow:inset 0 0 0 1px var(--border);
+    }
+
+    @media (max-width: 1080px) {
+      .notify-layout {
+        grid-template-areas:
+          "tabs"
+          "main"
+          "side";
+        row-gap:14px;
+      }
+      .side-col {
+        position:static;
+      }
+    }
+
+    @media (max-width: 880px) {
+      .notify-head-row,
+      .section-head,
+      .card-header {
+        flex-direction:column;
+        align-items:stretch;
+      }
+      .control-bar {
+        grid-template-columns:1fr;
+        gap:10px;
+      }
+      .notify-summary {
+        justify-content:flex-start;
+      }
+      .search-shell {
+        max-width:none;
+      }
+      .card-date-facts {
+        justify-content:flex-start;
+      }
+      .card-header-side {
+        justify-items:start;
+      }
+      .card-sender {
+        text-align:left;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .card-actions,
+      .modal-actions {
+        display:grid;
+      }
+      .modal-backdrop {
+        padding:16px;
+      }
+      .modal-head,
+      .modal-body {
+        padding-inline:18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div
+    data-ax-topbar
+    data-active-key="messages"
+    data-search-placeholder="공지, 알림, 승인 요청을 검색하세요"
+    data-search-source="workspace-message-hub"
+    data-search-source-label="메시지 허브"
+    data-search-default-type="message"
+  ></div>
+
+  <main class="page page-variant-briefing notify-page">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <a href="portal_launchpad.html">Launchpad</a>
+      <span class="material-icons-round" aria-hidden="true">chevron_right</span>
+      <span>Messages</span>
+    </nav>
+
+    <div class="layout notify-layout">
+      <div class="filter-row notify-tabs notify-tabs-bar" id="mainTabs"></div>
+      <div class="main-col">
+        <article class="panel resource-panel">
+          <div class="notify-panel-head">
+            <div class="notify-head-row">
+              <div class="notify-head-copy">
+                <div class="notify-current-title" id="currentPanelTitle">공지</div>
+                <div class="notify-current-summary" id="currentPanelSummary">긴급 0건 · 전체 0건</div>
+              </div>
+              <button class="create-btn" type="button" data-notice-focus>
+                <span class="material-icons-round">campaign</span>공지 작성
+              </button>
+            </div>
+            <div class="control-bar">
+              <div class="search-shell">
+                <span class="material-icons-round">search</span>
+                <input id="messageSearch" class="search-input" type="search" placeholder="검색" />
+              </div>
+              <div class="notify-summary" id="boardSummary"></div>
+            </div>
+          </div>
+
+          <div class="feedback info" id="listFeedback"></div>
+
+          <div class="section-stack">
+            <section class="section-panel notice-section tab-panel" data-tab-panel="notice">
+              <div class="card-list" id="noticeList"></div>
+            </section>
+
+            <section class="section-panel tab-panel" data-tab-panel="notification">
+              <div class="card-list" id="notificationList"></div>
+            </section>
+
+            <section class="section-panel tab-panel" data-tab-panel="approval">
+              <div class="card-list" id="approvalList"></div>
+            </section>
+          </div>
+        </article>
+      </div>
+
+      <aside class="side-col">
+        <section class="hub-briefing-rail persistent-notice-panel">
+          <div class="hub-briefing-head persistent-notice-head">
+            <div class="hub-briefing-kicker">
+              <span class="material-icons-round">campaign</span>
+              관리자 공지
+            </div>
+            <div class="hub-briefing-title">공지 목록</div>
+          </div>
+          <div class="hub-briefing-rail-body persistent-notice-body">
+            <div class="rail-summary" id="persistentNoticeSummary"></div>
+            <div class="persistent-notice-list" id="persistentNoticeList"></div>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <div class="modal-backdrop" id="noticeModal" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="noticeModalTitle">
+      <div class="modal-head">
+        <div>
+          <div class="modal-title" id="noticeModalTitle">공지 등록</div>
+        </div>
+        <button class="modal-close" type="button" id="noticeModalClose" aria-label="공지 등록 닫기">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="notice-form" id="noticeForm">
+          <div class="field">
+            <label class="field-label" for="noticeAudience">대상</label>
+            <select id="noticeAudience" class="select">
+              <option value="전체 사용자">전체 사용자</option>
+              <option value="workspace.fe 사용자">workspace.fe 사용자</option>
+              <option value="운영자">운영자</option>
+              <option value="보안 담당자">보안 담당자</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label" for="noticeTitle">공지 제목</label>
+            <input id="noticeTitle" class="input" type="text" placeholder="제목을 입력하세요" />
+          </div>
+          <div class="field">
+            <label class="field-label" for="noticeBody">공지 내용</label>
+            <textarea id="noticeBody" class="textarea" placeholder="예: **중요** 공지 내용&#10;- 점검 시간&#10;- 영향 범위&#10;`명령어` 또는 링크 설명"></textarea>
+            <div class="field-help">Markdown 문법을 지원합니다. `**굵게**`, `` `code` ``, 목록(`- 항목`)을 사용할 수 있습니다.</div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="noticeExpiresAt">게시 종료</label>
+            <input id="noticeExpiresAt" class="input" type="datetime-local" />
+          </div>
+          <div class="toggle-grid">
+            <label class="toggle-item">
+              <input id="noticePinned" type="checkbox" checked />
+              <span class="toggle-copy">
+                <strong>고정 표시</strong>
+                <span></span>
+              </span>
+            </label>
+            <label class="toggle-item">
+              <input id="noticeCritical" type="checkbox" />
+              <span class="toggle-copy">
+                <strong>긴급 공지</strong>
+                <span></span>
+              </span>
+            </label>
+          </div>
+          <div class="feedback success" id="noticeFeedback"></div>
+          <div class="modal-actions">
+            <button class="mini-btn" type="button" id="noticeModalCancel">취소</button>
+            <button class="create-btn" type="submit">
+              <span class="material-icons-round">publish</span>공지 등록
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="detailModal" aria-hidden="true">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
+      <div class="modal-head detail-modal-head">
+        <button class="modal-close" type="button" id="detailModalClose" aria-label="메시지 상세 닫기">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="modal-body detail-modal-layout">
+        <div class="detail-modal-meta" id="detailModalMeta"></div>
+        <div class="detail-modal-header">
+          <div class="modal-title" id="detailModalTitle">상세</div>
+          <div class="detail-modal-primary-meta" id="detailModalPrimaryMeta"></div>
+        </div>
+        <div class="detail-modal-sender" id="detailModalSender"></div>
+        <div class="detail-modal-body" id="detailModalBody"></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="ax_studio_topbar.js"></script>
+  <script>
+    (() => {
+      const storageKey = "workspaceNotifyAdminNotices";
+      const mainTabs = ["notice", "notification", "approval"];
+      const notificationFilters = ["all", "critical", "normal"];
+      const approvalFilters = ["all", "permission", "project"];
+
+      const escapeHtml = (value) => String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+
+      const notificationFilterLabels = {
+        all: { label: "전체", icon: "notifications" },
+        critical: { label: "긴급 알림", icon: "priority_high" },
+        normal: { label: "일반 알림", icon: "notifications_none" }
+      };
+
+      const approvalFilterLabels = {
+        all: { label: "전체", icon: "fact_check" },
+        permission: { label: "Permission 요청", icon: "verified_user" },
+        project: { label: "Project 생성 요청", icon: "folder_open" }
+      };
+
+      const mainTabLabels = {
+        notice: { label: "공지", icon: "campaign" },
+        notification: { label: "알림", icon: "notifications_active" },
+        approval: { label: "승인", icon: "fact_check" }
+      };
+
+      const streamSummaryConfig = {
+        notice: { label: "공지", icon: "campaign" },
+        notification: { label: "알림", icon: "notifications_active" },
+        approval: { label: "승인", icon: "fact_check" }
+      };
+
+      const baseItems = [
+        {
+          id: "admin-maintenance",
+          stream: "notice",
+          title: "금주 금요일 19:00 launchpad 점검 공지",
+          excerpt: "launchpad navigation과 notify 집계 로직 점검으로 약 10분간 샘플 데이터 갱신이 지연될 수 있습니다.",
+          sender: "시스템",
+          audience: "전체 사용자",
+          service: "AX Studio",
+          time: "오늘 08:40",
+          expiresAt: "7월 5일 19:00",
+          pinned: true,
+          priority: "normal",
+          status: "live"
+        },
+        {
+          id: "admin-security-guide",
+          stream: "notice",
+          title: "보안 알림 확인 정책이 변경되었습니다",
+          excerpt: "critical 보안 알림은 24시간 이내 읽음 확인이 필요하며, 미확인 시 재알림이 발생합니다.",
+          sender: "보안 운영팀",
+          audience: "보안 담당자",
+          service: "Security Policy",
+          time: "어제 17:20",
+          expiresAt: "7월 3일 18:00",
+          pinned: true,
+          priority: "critical",
+          status: "live"
+        },
+        {
+          id: "admin-md-sample-playbook",
+          stream: "notice",
+          title: "운영 공지 Markdown 렌더링 예시",
+          excerpt: "긴 본문, 목록, 강조, 코드, 링크가 함께 포함된 공지 예시입니다. 상세를 열면 Markdown 렌더링 결과를 확인할 수 있습니다.",
+          sender: "플랫폼 운영팀",
+          audience: "전체 사용자",
+          service: "workspace.message",
+          time: "오늘 13:35",
+          expiresAt: "7월 9일 18:00",
+          pinned: false,
+          priority: "normal",
+          status: "live",
+          detailBody: [
+            "# 7월 운영 변경 안내",
+            "**메시지 허브 공지 작성 예시**를 확인할 수 있도록 조금 긴 본문을 넣었습니다. 아래 항목은 실제 운영 공지를 작성할 때 자주 들어가는 구성입니다.",
+            "## 주요 변경 사항\n- 공지 상세는 별도 페이지 없이 모달에서 바로 확인합니다.\n- 긴 본문은 문단과 목록 형태로 정리해 가독성을 높입니다.\n- 중요 일정은 본문 안에서도 다시 한 번 강조합니다.",
+            "## 작업 일정\n1. 7월 2일 18:30: 사전 점검 시작\n2. 7월 2일 19:00: 설정 반영 및 검증\n3. 7월 2일 19:30: 사용자 공지 상태 최종 확인",
+            "## 확인이 필요한 항목\n- 배포 전 `workspace notify preview` 명령으로 미리보기를 점검해 주세요.\n- 운영 문서 링크는 [Message Hub Runbook](https://example.com/runbooks/message-hub) 형태로 첨부할 수 있습니다.\n- 긴급 공지는 제목뿐 아니라 본문에도 **영향 범위**와 **복구 방법**을 남겨 주세요.",
+            "## 참고\n문의가 필요한 경우 운영 채널에 메시지를 남기면 순차적으로 확인하겠습니다."
+          ]
+        },
+        {
+          id: "notify-release-window",
+          stream: "notification",
+          title: "staging publish window가 18:00에 열립니다",
+          excerpt: "workspace.fe 배포 윈도우가 예정되어 있어 smoke test 링크와 rollback 문서를 확인해 주세요.",
+          sender: "배포 시스템",
+          audience: "workspace.fe 사용자",
+          service: "workspace.fe",
+          time: "오늘 11:18",
+          unread: true,
+          priority: "critical",
+          kind: "critical"
+        },
+        {
+          id: "notify-docs-ready",
+          stream: "notification",
+          title: "message center 샘플 문서가 갱신되었습니다",
+          excerpt: "notify 기반 구조와 관리자 공지 흐름이 반영된 샘플 문서가 업데이트되었습니다.",
+          sender: "이서현",
+          audience: "운영자",
+          service: "docs/sample",
+          time: "오늘 09:12",
+          unread: false,
+          priority: "normal",
+          kind: "normal"
+        },
+        {
+          id: "notify-quota-guide",
+          stream: "notification",
+          title: "sandbox quota 안내가 도착했습니다",
+          excerpt: "이번 주 샘플 리소스 사용량이 증가해 quota 안내 알림이 발송되었습니다.",
+          sender: "Ops Bot",
+          audience: "운영자",
+          service: "notify.ops",
+          time: "어제 15:25",
+          unread: true,
+          priority: "normal",
+          kind: "normal"
+        },
+        {
+          id: "approval-permission-analytics",
+          stream: "approval",
+          title: "analytics-prod 임시 권한 요청",
+          excerpt: "data-export 배치 검증을 위해 write 권한을 2시간 동안 요청했습니다.",
+          sender: "김민재",
+          audience: "보안 담당자",
+          service: "analytics-prod",
+          time: "오늘 10:05",
+          unread: true,
+          approvalType: "permission",
+          approvalStatus: "pending"
+        },
+        {
+          id: "approval-project-portal",
+          stream: "approval",
+          title: "Project 생성 요청",
+          excerpt: "sample portal 운영 분리를 위해 신규 프로젝트 생성 승인이 필요합니다.",
+          sender: "박서윤",
+          audience: "관리자",
+          service: "workspace.admin",
+          time: "오늘 09:40",
+          unread: true,
+          approvalType: "project",
+          approvalStatus: "pending",
+          adminOnly: true
+        },
+        {
+          id: "approval-permission-billing",
+          stream: "approval",
+          title: "billing-read Permission 요청",
+          excerpt: "정산 로그 검증을 위해 read 권한 추가 승인을 요청했습니다.",
+          sender: "최지훈",
+          audience: "운영자",
+          service: "billing-prod",
+          time: "어제 16:10",
+          unread: false,
+          approvalType: "permission",
+          approvalStatus: "approved"
+        }
+      ];
+
+      function loadStoredNotices() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(storageKey) || "[]");
+          return Array.isArray(parsed)
+            ? parsed.map((item) => item.stream === "notice" && !item.expiresAt
+              ? { ...item, expiresAt: formatDateTimeLabel(buildDefaultNoticeExpiryValue()) }
+              : item)
+            : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function saveStoredNotices(items) {
+        localStorage.setItem(storageKey, JSON.stringify(items));
+      }
+
+      const state = {
+        activeTab: "notice",
+        query: "",
+        notificationFilter: "all",
+        approvalFilter: "all",
+        items: [...loadStoredNotices(), ...baseItems]
+      };
+
+      const elements = {
+        boardSummary: document.getElementById("boardSummary"),
+        listFeedback: document.getElementById("listFeedback"),
+        messageSearch: document.getElementById("messageSearch"),
+        mainTabs: document.getElementById("mainTabs"),
+        currentPanelTitle: document.getElementById("currentPanelTitle"),
+        currentPanelSummary: document.getElementById("currentPanelSummary"),
+        persistentNoticeSummary: document.getElementById("persistentNoticeSummary"),
+        persistentNoticeList: document.getElementById("persistentNoticeList"),
+        noticeList: document.getElementById("noticeList"),
+        notificationList: document.getElementById("notificationList"),
+        approvalList: document.getElementById("approvalList"),
+        tabPanels: Array.from(document.querySelectorAll("[data-tab-panel]")),
+        noticeModal: document.getElementById("noticeModal"),
+        noticeModalClose: document.getElementById("noticeModalClose"),
+        noticeModalCancel: document.getElementById("noticeModalCancel"),
+        noticeForm: document.getElementById("noticeForm"),
+        noticeAudience: document.getElementById("noticeAudience"),
+        noticeTitle: document.getElementById("noticeTitle"),
+        noticeBody: document.getElementById("noticeBody"),
+        noticeExpiresAt: document.getElementById("noticeExpiresAt"),
+        noticePinned: document.getElementById("noticePinned"),
+        noticeCritical: document.getElementById("noticeCritical"),
+        noticeFeedback: document.getElementById("noticeFeedback"),
+        noticeFocus: document.querySelector("[data-notice-focus]"),
+        detailModal: document.getElementById("detailModal"),
+        detailModalClose: document.getElementById("detailModalClose"),
+        detailModalTitle: document.getElementById("detailModalTitle"),
+        detailModalPrimaryMeta: document.getElementById("detailModalPrimaryMeta"),
+        detailModalMeta: document.getElementById("detailModalMeta"),
+        detailModalSender: document.getElementById("detailModalSender"),
+        detailModalBody: document.getElementById("detailModalBody")
+      };
+      let detailModalTrigger = null;
+
+      function pad2(value) {
+        return String(value).padStart(2, "0");
+      }
+
+      function buildDefaultNoticeExpiryValue() {
+        const date = new Date();
+        date.setDate(date.getDate() + 7);
+        date.setHours(18, 0, 0, 0);
+        return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}T${pad2(date.getHours())}:${pad2(date.getMinutes())}`;
+      }
+
+      function formatDateTimeLabel(value) {
+        if (!value) return "";
+        if (typeof value === "string" && !value.includes("T")) return value;
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return String(value);
+        return `${date.getMonth() + 1}월 ${date.getDate()}일 ${pad2(date.getHours())}:${pad2(date.getMinutes())}`;
+      }
+
+      function setDefaultNoticeExpiry() {
+        elements.noticeExpiresAt.value = buildDefaultNoticeExpiryValue();
+      }
+
+      function applyEntryStateFromQuery() {
+        const params = new URLSearchParams(window.location.search || "");
+        const box = params.get("box");
+        const entryTabMap = {
+          notices: "notice",
+          inbox: "notification",
+          notifications: "notification",
+          requests: "approval",
+          approvals: "approval"
+        };
+        const requestedTab = entryTabMap[box];
+        if (requestedTab && mainTabs.includes(requestedTab)) {
+          state.activeTab = requestedTab;
+        }
+      }
+
+      function openNoticeModal() {
+        if (!elements.noticeExpiresAt.value) {
+          setDefaultNoticeExpiry();
+        }
+        elements.noticeModal.classList.add("is-open");
+        elements.noticeModal.setAttribute("aria-hidden", "false");
+        requestAnimationFrame(() => elements.noticeTitle.focus());
+      }
+
+      function closeNoticeModal() {
+        elements.noticeModal.classList.remove("is-open");
+        elements.noticeModal.setAttribute("aria-hidden", "true");
+        elements.noticeFocus.focus();
+      }
+
+      function plainTextFromMarkdown(text) {
+        return String(text || "")
+          .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1")
+          .replace(/`([^`]+)`/g, "$1")
+          .replace(/\*\*([^*]+)\*\*/g, "$1")
+          .replace(/\*([^*\n]+)\*/g, "$1")
+          .replace(/^[-*]\s+/gm, "")
+          .replace(/^#{1,6}\s+/gm, "")
+          .replace(/\n+/g, " ")
+          .trim();
+      }
+
+      function renderInlineMarkdown(text) {
+        return escapeHtml(text || "")
+          .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer">$1</a>')
+          .replace(/`([^`]+)`/g, "<code>$1</code>")
+          .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+      }
+
+      function renderMarkdown(text) {
+        const normalized = String(text || "").replace(/\r\n/g, "\n").trim();
+        if (!normalized) return "";
+
+        return normalized
+          .split(/\n{2,}/)
+          .map((block) => block.trim())
+          .filter(Boolean)
+          .map((block) => {
+            const lines = block.split("\n").map((line) => line.trim()).filter(Boolean);
+            if (!lines.length) return "";
+            if (lines.every((line) => /^[-*]\s+/.test(line))) {
+              return `<ul>${lines.map((line) => `<li>${renderInlineMarkdown(line.replace(/^[-*]\s+/, ""))}</li>`).join("")}</ul>`;
+            }
+            if (lines.length === 1 && /^#{1,6}\s+/.test(lines[0])) {
+              return `<p><strong>${renderInlineMarkdown(lines[0].replace(/^#{1,6}\s+/, ""))}</strong></p>`;
+            }
+            return `<p>${lines.map((line) => renderInlineMarkdown(line.replace(/^#{1,6}\s+/, ""))).join("<br />")}</p>`;
+          })
+          .join("");
+      }
+
+      function renderPrimaryFact(label, value, emphasis = false) {
+        if (!value) return "";
+        return `
+          <span class="primary-fact${emphasis ? " is-emphasis" : ""}">
+            <span class="primary-fact-label">${escapeHtml(label)}</span>
+            <span class="primary-fact-value">${escapeHtml(value)}</span>
+          </span>
+        `;
+      }
+
+      function cardToplineMarkup(item) {
+        const serviceMeta = [item.service, item.audience]
+          .filter(Boolean)
+          .map((value) => `<span>${escapeHtml(value)}</span>`)
+          .join("");
+        const timeLabel = item.stream === "approval" ? "요청" : item.stream === "notification" ? "수신" : "게시";
+        const facts = [
+          renderPrimaryFact(timeLabel, item.time || "방금 전"),
+          item.stream === "notice" ? renderPrimaryFact("만료", item.expiresAt || "기한 미정", true) : ""
+        ].join("");
+        return `
+          <div class="card-topline">
+            <div class="card-topline-meta">${serviceMeta}</div>
+            <div class="card-topline-facts">${facts}</div>
+          </div>
+        `;
+      }
+
+      function detailPrimaryFacts(item) {
+        const timeLabel = item.stream === "approval" ? "요청" : item.stream === "notification" ? "수신" : "게시";
+        return [
+          renderPrimaryFact(timeLabel, item.time || "방금 전"),
+          item.stream === "notice" ? renderPrimaryFact("만료", item.expiresAt || "기한 미정", true) : ""
+        ].join("");
+      }
+
+      function cardHeaderMarkup(item) {
+        return `
+          <div class="card-header">
+            <div class="card-title">${escapeHtml(item.title)}</div>
+            <div class="card-header-side">
+              <div class="card-date-facts">${detailPrimaryFacts(item)}</div>
+              <div class="card-sender">발신 <strong>${escapeHtml(item.sender || item.service || "시스템")}</strong></div>
+            </div>
+          </div>
+        `;
+      }
+
+      function cardChipRowMarkup(chips) {
+        const visibleChips = chips.filter(Boolean).join("");
+        return visibleChips ? `<div class="card-chip-row">${visibleChips}</div>` : "";
+      }
+
+      function messageChips(item) {
+        if (item.stream === "notice") {
+          return [
+            renderOpsPill(item.priority === "critical" ? "긴급 공지" : "일반 공지", item.priority === "critical" ? "tone-incident" : "tone-info"),
+            item.pinned ? renderOpsPill("고정", "tone-review") : "",
+            item.status === "archived" ? renderOpsPill("종료", "tone-muted") : renderOpsPill("게시중", "tone-healthy")
+          ];
+        }
+        if (item.stream === "notification") {
+          return [
+            renderOpsPill(item.priority === "critical" ? "긴급 알림" : "일반 알림", item.priority === "critical" ? "tone-incident" : "tone-muted"),
+            item.unread ? renderOpsPill("미확인", "tone-review") : ""
+          ];
+        }
+        return [
+          renderOpsPill(item.approvalType === "project" ? "Project 생성 요청" : "Permission 요청", item.approvalType === "project" ? "tone-warn" : "tone-info"),
+          item.adminOnly ? renderOpsPill("관리자 전용", "tone-incident") : "",
+          approvalStatusLabel(item)
+        ];
+      }
+
+      function detailBodyParagraphs(item) {
+        const markdownSource = Array.isArray(item.detailBody) && item.detailBody.length
+          ? item.detailBody.filter(Boolean).join("\n\n")
+          : item.excerpt || "";
+        return renderMarkdown(markdownSource);
+      }
+
+      function cardExcerptMarkup(item) {
+        return escapeHtml(plainTextFromMarkdown(item.excerpt || ""));
+      }
+
+      function openDetailModal(item, trigger) {
+        if (!item) return;
+        detailModalTrigger = trigger || null;
+        elements.detailModalTitle.textContent = item.title || "상세";
+        elements.detailModalPrimaryMeta.innerHTML = detailPrimaryFacts(item);
+        elements.detailModalMeta.innerHTML = cardChipRowMarkup(messageChips(item));
+        elements.detailModalSender.innerHTML = `발신 <strong>${escapeHtml(item.sender || item.service || "시스템")}</strong>`;
+        elements.detailModalBody.innerHTML = detailBodyParagraphs(item);
+        elements.detailModal.classList.add("is-open");
+        elements.detailModal.setAttribute("aria-hidden", "false");
+        requestAnimationFrame(() => elements.detailModalClose.focus());
+      }
+
+      function closeDetailModal() {
+        elements.detailModal.classList.remove("is-open");
+        elements.detailModal.setAttribute("aria-hidden", "true");
+        if (detailModalTrigger && typeof detailModalTrigger.focus === "function") {
+          detailModalTrigger.focus();
+        }
+        detailModalTrigger = null;
+      }
+
+      function setFeedback(target, tone, message) {
+        if (!target) return;
+        target.textContent = message || "";
+        target.className = message ? `feedback ${tone} is-visible` : `feedback ${tone}`;
+      }
+
+      function syncStoredNotices() {
+        const custom = state.items.filter((item) => item.stream === "notice" && item.isCustom);
+        saveStoredNotices(custom);
+      }
+
+      function renderMetricChip(icon, label) {
+        return `
+          <span class="metric-chip">
+            <span class="material-icons-round">${icon}</span>${label}
+          </span>
+        `;
+      }
+
+      function renderOpsPill(label, tone) {
+        return `<span class="ops-pill ${tone}">${label}</span>`;
+      }
+
+      function noticeItems() {
+        return state.items
+          .filter((item) => item.stream === "notice")
+          .sort((a, b) =>
+            Number(b.status === "live") - Number(a.status === "live")
+            || Number(b.priority === "critical") - Number(a.priority === "critical")
+            || Number(b.pinned) - Number(a.pinned)
+          );
+      }
+
+      function notificationItems() {
+        const query = state.query.trim().toLowerCase();
+        return state.items
+          .filter((item) => item.stream === "notification")
+          .filter((item) => state.notificationFilter === "all" ? true : item.kind === state.notificationFilter)
+          .filter((item) => {
+            if (!query) return true;
+            const haystack = [item.title, item.excerpt, item.audience, item.service, item.sender].join(" ").toLowerCase();
+            return haystack.includes(query);
+          })
+          .sort((a, b) => Number(b.unread) - Number(a.unread) || Number(b.priority === "critical") - Number(a.priority === "critical"));
+      }
+
+      function approvalItems() {
+        const query = state.query.trim().toLowerCase();
+        return state.items
+          .filter((item) => item.stream === "approval")
+          .filter((item) => state.approvalFilter === "all" ? true : item.approvalType === state.approvalFilter)
+          .filter((item) => {
+            if (!query) return true;
+            const haystack = [item.title, item.excerpt, item.audience, item.service, item.sender].join(" ").toLowerCase();
+            return haystack.includes(query);
+          })
+          .sort((a, b) => {
+            const statusRank = { pending: 2, approved: 1, rejected: 0 };
+            return (statusRank[b.approvalStatus] || 0) - (statusRank[a.approvalStatus] || 0) || Number(b.unread) - Number(a.unread);
+          });
+      }
+
+      function notificationFilterMarkup() {
+        return notificationFilters.map((filter) => {
+          const count = state.items.filter((item) => {
+            if (item.stream !== "notification") return false;
+            return filter === "all" ? true : item.kind === filter;
+          }).length;
+          const config = notificationFilterLabels[filter];
+          return `
+            <button
+              class="filter-chip${state.notificationFilter === filter ? " is-active" : ""}"
+              type="button"
+              data-notification-filter="${filter}"
+              aria-selected="${state.notificationFilter === filter ? "true" : "false"}"
+            >
+              <span class="material-icons-round">${config.icon}</span>${config.label} (${count})
+            </button>
+          `;
+        }).join("");
+      }
+
+      function approvalFilterMarkup() {
+        return approvalFilters.map((filter) => {
+          const count = state.items.filter((item) => {
+            if (item.stream !== "approval") return false;
+            return filter === "all" ? true : item.approvalType === filter;
+          }).length;
+          const config = approvalFilterLabels[filter];
+          return `
+            <button
+              class="filter-chip${state.approvalFilter === filter ? " is-active" : ""}"
+              type="button"
+              data-approval-filter="${filter}"
+              aria-selected="${state.approvalFilter === filter ? "true" : "false"}"
+            >
+              <span class="material-icons-round">${config.icon}</span>${config.label} (${count})
+            </button>
+          `;
+        }).join("");
+      }
+
+      function renderBoardSummary() {
+        const markup = state.activeTab === "notification"
+          ? notificationFilterMarkup()
+          : state.activeTab === "approval"
+            ? approvalFilterMarkup()
+            : "";
+        elements.boardSummary.innerHTML = markup;
+        elements.boardSummary.hidden = !markup;
+      }
+
+      function getCurrentPanelSummary() {
+        if (state.activeTab === "notification") {
+          const items = notificationItems();
+          const criticalCount = items.filter((item) => item.kind === "critical").length;
+          return `긴급 ${criticalCount}건 · 현재 ${items.length}건`;
+        }
+
+        if (state.activeTab === "approval") {
+          const items = approvalItems();
+          const pendingCount = items.filter((item) => item.approvalStatus === "pending").length;
+          return `대기 ${pendingCount}건 · 현재 ${items.length}건`;
+        }
+
+        const items = noticeItems();
+        const criticalCount = items.filter((item) => item.priority === "critical").length;
+        return `긴급 ${criticalCount}건 · 전체 ${items.length}건`;
+      }
+
+      function renderCurrentPanelHeader() {
+        const config = mainTabLabels[state.activeTab];
+        elements.currentPanelTitle.textContent = config.label;
+        elements.currentPanelSummary.textContent = getCurrentPanelSummary();
+        elements.noticeFocus.hidden = state.activeTab !== "notice";
+      }
+
+      function renderMainTabs() {
+        elements.mainTabs.innerHTML = mainTabs.map((tab) => {
+          const count = state.items.filter((item) => item.stream === tab).length;
+          const config = mainTabLabels[tab];
+          return `
+            <button
+              class="filter-chip notify-tab-btn${state.activeTab === tab ? " is-active" : ""}"
+              type="button"
+              data-main-tab="${tab}"
+              aria-selected="${state.activeTab === tab ? "true" : "false"}"
+            >
+              <span class="material-icons-round">${config.icon}</span>${config.label} (${count})
+            </button>
+          `;
+        }).join("");
+      }
+
+      function syncTabPanels() {
+        elements.tabPanels.forEach((panel) => {
+          const isActive = panel.dataset.tabPanel === state.activeTab;
+          panel.classList.toggle("is-hidden", !isActive);
+        });
+      }
+
+      function renderPersistentNotices() {
+        const items = noticeItems().filter((item) => item.status === "live");
+        const criticalCount = items.filter((item) => item.priority === "critical").length;
+        elements.persistentNoticeSummary.innerHTML = [
+          renderMetricChip("task_alt", `게시중 ${items.length}건`),
+          renderMetricChip("priority_high", `긴급 ${criticalCount}건`)
+        ].join("");
+
+        if (!items.length) {
+          elements.persistentNoticeList.innerHTML = '<div class="empty">등록된 관리자 공지가 없습니다.</div>';
+          return;
+        }
+
+        elements.persistentNoticeList.innerHTML = items.map((item) => `
+          <article class="persistent-notice-item${item.priority === "critical" ? " is-critical" : ""}">
+            <div class="persistent-notice-copy">
+              ${cardToplineMarkup(item)}
+              <div class="persistent-notice-line">
+                <strong>${escapeHtml(item.title)}</strong>
+                ${renderOpsPill(item.priority === "critical" ? "긴급 공지" : "일반 공지", item.priority === "critical" ? "tone-incident" : "tone-info")}
+                ${item.pinned ? renderOpsPill("고정", "tone-review") : ""}
+              </div>
+              <div class="persistent-notice-text">${escapeHtml(item.excerpt)}</div>
+            </div>
+            <div class="card-actions">
+              <button class="mini-btn" type="button" data-action="view" data-id="${item.id}">
+                <span class="material-icons-round">visibility</span>상세
+              </button>
+            </div>
+          </article>
+        `).join("");
+      }
+
+      function renderNoticeList() {
+        const items = noticeItems();
+
+        if (!items.length) {
+          elements.noticeList.innerHTML = '<div class="empty">공지 내역이 없습니다.</div>';
+          return;
+        }
+
+        elements.noticeList.innerHTML = items.map((item) => `
+          <article class="content-card notice-card${item.priority === "critical" ? " is-critical" : ""}">
+            <div class="card-main">
+              ${cardChipRowMarkup([
+                ...messageChips(item)
+              ])}
+              ${cardHeaderMarkup(item)}
+              <div class="card-excerpt">${cardExcerptMarkup(item)}</div>
+              <div class="card-actions">
+                <button class="mini-btn" type="button" data-action="view" data-id="${item.id}">
+                  <span class="material-icons-round">visibility</span>상세
+                </button>
+                <button class="mini-btn" type="button" data-action="${item.status === "live" ? "archive" : "restore"}" data-id="${item.id}">
+                  <span class="material-icons-round">${item.status === "live" ? "inventory_2" : "publish"}</span>${item.status === "live" ? "공지 종료" : "다시 게시"}
+                </button>
+              </div>
+            </div>
+          </article>
+        `).join("");
+      }
+
+      function renderNotificationList() {
+        const items = notificationItems();
+
+        if (!items.length) {
+          elements.notificationList.innerHTML = '<div class="empty">조건에 맞는 알림이 없습니다.</div>';
+          return;
+        }
+
+        elements.notificationList.innerHTML = items.map((item) => `
+          <article class="content-card${item.unread ? " is-unread" : ""}${item.priority === "critical" ? " is-critical" : ""}">
+            <div class="card-main">
+              ${cardChipRowMarkup([
+                ...messageChips(item)
+              ])}
+              ${cardHeaderMarkup(item)}
+              <div class="card-excerpt">${cardExcerptMarkup(item)}</div>
+              <div class="card-actions">
+                <button class="mini-btn" type="button" data-action="view" data-id="${item.id}">
+                  <span class="material-icons-round">visibility</span>상세
+                </button>
+                ${item.unread ? `
+                  <button class="mini-btn" type="button" data-action="read" data-id="${item.id}">
+                    <span class="material-icons-round">done</span>읽음 처리
+                  </button>
+                ` : ""}
+              </div>
+            </div>
+          </article>
+        `).join("");
+      }
+
+      function approvalStatusLabel(item) {
+        if (item.approvalStatus === "approved") return renderOpsPill("승인됨", "tone-healthy");
+        if (item.approvalStatus === "rejected") return renderOpsPill("반려됨", "tone-muted");
+        return renderOpsPill("대기중", "tone-pending");
+      }
+
+      function renderApprovalList() {
+        const items = approvalItems();
+
+        if (!items.length) {
+          elements.approvalList.innerHTML = '<div class="empty">조건에 맞는 승인 요청이 없습니다.</div>';
+          return;
+        }
+
+        elements.approvalList.innerHTML = items.map((item) => `
+          <article class="content-card${item.unread ? " is-unread" : ""}">
+            <div class="card-main">
+              ${cardChipRowMarkup([
+                ...messageChips(item)
+              ])}
+              ${cardHeaderMarkup(item)}
+              <div class="card-excerpt">${cardExcerptMarkup(item)}</div>
+              <div class="card-actions">
+                <button class="mini-btn" type="button" data-action="view" data-id="${item.id}">
+                  <span class="material-icons-round">visibility</span>상세
+                </button>
+                ${item.approvalStatus === "pending" ? `
+                  <button class="mini-btn" type="button" data-action="approve" data-id="${item.id}">
+                    <span class="material-icons-round">task_alt</span>승인
+                  </button>
+                  <button class="mini-btn" type="button" data-action="reject" data-id="${item.id}">
+                    <span class="material-icons-round">close</span>반려
+                  </button>
+                ` : `
+                  <button class="mini-btn" type="button" data-action="reset-approval" data-id="${item.id}">
+                    <span class="material-icons-round">history</span>대기로 변경
+                  </button>
+                `}
+              </div>
+            </div>
+          </article>
+        `).join("");
+      }
+
+      function rerender() {
+        renderBoardSummary();
+        renderCurrentPanelHeader();
+        renderPersistentNotices();
+        renderMainTabs();
+        renderNoticeList();
+        renderNotificationList();
+        renderApprovalList();
+        syncTabPanels();
+        syncStoredNotices();
+      }
+
+      function findItem(id) {
+        return state.items.find((item) => item.id === id);
+      }
+
+      function handleAction(action, id, trigger) {
+        const item = findItem(id);
+        if (!item) return;
+
+        if (action === "view") {
+          openDetailModal(item, trigger);
+          return;
+        }
+
+        if (action === "read") {
+          item.unread = false;
+          setFeedback(elements.listFeedback, "info", `"${item.title}" 알림을 읽음 처리했습니다.`);
+        }
+
+        if (action === "archive") {
+          item.status = "archived";
+          setFeedback(elements.listFeedback, "info", `"${item.title}" 공지를 종료했습니다.`);
+        }
+
+        if (action === "restore") {
+          item.status = "live";
+          setFeedback(elements.listFeedback, "info", `"${item.title}" 공지를 다시 게시했습니다.`);
+        }
+
+        if (action === "approve") {
+          item.approvalStatus = "approved";
+          item.unread = false;
+          setFeedback(elements.listFeedback, "info", `"${item.title}" 요청을 승인했습니다.`);
+        }
+
+        if (action === "reject") {
+          item.approvalStatus = "rejected";
+          item.unread = false;
+          setFeedback(elements.listFeedback, "info", `"${item.title}" 요청을 반려했습니다.`);
+        }
+
+        if (action === "reset-approval") {
+          item.approvalStatus = "pending";
+          setFeedback(elements.listFeedback, "info", `"${item.title}" 요청을 다시 대기 상태로 변경했습니다.`);
+        }
+
+        rerender();
+      }
+
+      elements.messageSearch.addEventListener("input", (event) => {
+        state.query = event.target.value || "";
+        renderCurrentPanelHeader();
+        renderNotificationList();
+        renderApprovalList();
+      });
+
+      elements.mainTabs.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-main-tab]");
+        if (!button) return;
+        state.activeTab = button.dataset.mainTab;
+        rerender();
+      });
+
+      elements.boardSummary.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-notification-filter]");
+        if (button) {
+          state.notificationFilter = button.dataset.notificationFilter;
+          renderCurrentPanelHeader();
+          renderBoardSummary();
+          renderNotificationList();
+          return;
+        }
+        const approvalButton = event.target.closest("[data-approval-filter]");
+        if (!approvalButton) return;
+        state.approvalFilter = approvalButton.dataset.approvalFilter;
+        renderCurrentPanelHeader();
+        renderBoardSummary();
+        renderApprovalList();
+      });
+
+      document.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-action]");
+        if (!button) return;
+        handleAction(button.dataset.action, button.dataset.id, button);
+      });
+
+      elements.noticeForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const title = elements.noticeTitle.value.trim();
+        const body = elements.noticeBody.value.trim();
+        const audience = elements.noticeAudience.value;
+        const expiresAtValue = elements.noticeExpiresAt.value;
+        if (!title || !body || !expiresAtValue) {
+          setFeedback(elements.noticeFeedback, "success", "공지 제목, 내용, 게시 종료 시점을 모두 입력해 주세요.");
+          return;
+        }
+
+        const id = `admin-custom-${Date.now()}`;
+        state.items.unshift({
+          id,
+          stream: "notice",
+          title,
+          excerpt: body,
+          sender: "시스템",
+          audience,
+          service: "AX Studio",
+          time: "방금 전",
+          expiresAt: formatDateTimeLabel(expiresAtValue),
+          pinned: elements.noticePinned.checked,
+          priority: elements.noticeCritical.checked ? "critical" : "normal",
+          status: "live",
+          isCustom: true,
+          detailBody: [
+            body,
+            "이 공지는 메시지 허브에서 등록되었습니다."
+          ]
+        });
+
+        elements.noticeTitle.value = "";
+        elements.noticeBody.value = "";
+        setDefaultNoticeExpiry();
+        elements.noticePinned.checked = true;
+        elements.noticeCritical.checked = false;
+        setFeedback(elements.noticeFeedback, "success", `"${title}" 공지를 게시했습니다.`);
+        setFeedback(elements.listFeedback, "info", "");
+        rerender();
+        closeNoticeModal();
+      });
+
+      elements.noticeFocus.addEventListener("click", openNoticeModal);
+      elements.noticeModalClose.addEventListener("click", closeNoticeModal);
+      elements.noticeModalCancel.addEventListener("click", closeNoticeModal);
+      elements.noticeModal.addEventListener("click", (event) => {
+        if (event.target === elements.noticeModal) closeNoticeModal();
+      });
+      elements.detailModalClose.addEventListener("click", closeDetailModal);
+      elements.detailModal.addEventListener("click", (event) => {
+        if (event.target === elements.detailModal) closeDetailModal();
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && elements.detailModal.classList.contains("is-open")) {
+          closeDetailModal();
+          return;
+        }
+        if (event.key === "Escape" && elements.noticeModal.classList.contains("is-open")) {
+          closeNoticeModal();
+        }
+      });
+
+      applyEntryStateFromQuery();
+      setDefaultNoticeExpiry();
+      rerender();
+    })();
+  </script>
+</body>
+</html>

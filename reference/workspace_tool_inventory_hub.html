@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
   <link rel="stylesheet" href="ax_studio_topbar.css" />
 </head>
-<body>
+<body data-viewer-role="admin">
   <div id="app"></div>
   <script>
     window.HUB_CONFIG = {
@@ -30,11 +30,12 @@
         brandSoft: "rgba(59,92,204,.14)",
         accent2: "#38bdf8"
       },
-      searchPlaceholder: "inventory 이름, endpoint, function tool, skill, consumer를 검색하세요...",
+      searchPlaceholder: "inventory 이름, function tool, skill, consumer를 검색하세요...",
       eyebrow: "AI · Connected Tool Assets",
       title: "Tool Inventory Hub",
-      description: "에이전트와 챗봇, 그리고 내 AI Assistant에 붙는 Skill 자산까지 Tool Inventory를 한곳에서 확인합니다. 각 항목에서 타입, 포맷, 엔드포인트 또는 바인딩 정보, 대표 function tool 또는 skill 구성, 사용량을 바로 보고 상세 화면으로 이동할 수 있습니다.",
-      primaryAction: { href: "workspace_tool_inventory_register.html", icon: "add_circle", label: "새 Inventory 등록" },
+      description: "에이전트와 챗봇, 그리고 내 AI Assistant에 붙는 Skill 자산까지 Tool Inventory를 한곳에서 확인합니다. 각 항목에서 타입, 포맷, 연결 상태 또는 바인딩 정보, 대표 function tool 또는 skill 구성, 사용량을 바로 보고 상세 화면으로 이동할 수 있습니다.",
+      primaryAction: null,
+      createAction: { href: "workspace_tool_inventory_register.html", icon: "add_circle", label: "새 Inventory 등록" },
       heroStats: [
         { icon: "inventory_2", value: "15", label: "등록 Inventory", note: "Connected 11 · Review 4", color: "linear-gradient(135deg,#3b5ccc,#5b7cff)" },
         { icon: "hub", value: "5", label: "External MCP", note: "외부 제공 서버", color: "linear-gradient(135deg,#3154c8,#7aa2ff)" },
@@ -46,7 +47,7 @@
         { id: "all", icon: "apps", label: "전체" },
         { id: "external-mcp", icon: "public", label: "External MCP" },
         { id: "internal-mcp", icon: "apartment", label: "Internal MCP" },
-        { id: "direct-tool", icon: "terminal", label: "Direct" },
+        { id: "direct", icon: "terminal", label: "Direct" },
         { id: "skill", icon: "extension", label: "Skill" }
       ],
       resourceSectionIcon: "inventory_2",
@@ -65,7 +66,7 @@
           color: "linear-gradient(135deg,#2563eb,#60a5fa)",
           details: [
             { icon: "category", text: "Format · MCP" },
-            { icon: "lan", text: "api.vendor.com/mcp" },
+            { icon: "shield", text: "MCP URL 비공개" },
             { icon: "monitor_heart", text: "Health · Healthy" }
           ],
           usage: { value: 78, meta: "최근 24시간 호출량 14.2K · 성공률 97%" },
@@ -115,7 +116,7 @@
           color: "linear-gradient(135deg,#ec4899,#fb7185)",
           details: [
             { icon: "category", text: "Format · MCP" },
-            { icon: "lan", text: "docs-search.workspace/mcp" },
+            { icon: "shield", text: "MCP URL 비공개" },
             { icon: "monitor_heart", text: "Health · Stable" }
           ],
           usage: { value: 85, meta: "최근 24시간 호출량 21.8K · 성공률 99%" },
@@ -150,7 +151,7 @@
           ]
         },
         {
-          categories: ["all", "direct-tool"],
+          categories: ["all", "direct"],
           status: { label: "Review", tone: "review" },
           engine: "Direct Implementation",
           icon: "terminal",
@@ -208,7 +209,7 @@
           color: "linear-gradient(135deg,#7c3aed,#22d3ee)",
           details: [
             { icon: "category", text: "Format · MCP" },
-            { icon: "lan", text: "observability.workspace/mcp" },
+            { icon: "shield", text: "MCP URL 비공개" },
             { icon: "monitor_heart", text: "Health · Healthy" }
           ],
           usage: { value: 74, meta: "최근 24시간 호출량 18.7K · 성공률 98%" },
@@ -334,6 +335,661 @@
   </script>
   <script src="workspace_resource_hub_shared.js"></script>
   <script src="ax_studio_topbar.js"></script>
+  <script>
+    (() => {
+      const API_BASE = "/api/v2";
+      const INVENTORY_PAGE_LIMIT = 100;
+      const FALLBACK_CONFIG = window.HUB_CONFIG || {};
+      const pendingOpenActions = new Set();
+
+      const FILTER_ICON_MAP = {
+        all: "apps",
+        "external-mcp": "public",
+        "internal-mcp": "apartment",
+        direct: "terminal",
+        skill: "extension"
+      };
+
+      const FILTER_LABEL_MAP = {
+        all: "전체",
+        "external-mcp": "External MCP",
+        "internal-mcp": "Internal MCP",
+        direct: "Direct",
+        skill: "Skill"
+      };
+
+      const HERO_STYLE_MAP = {
+        total: { icon: "inventory_2", color: "linear-gradient(135deg,#3b5ccc,#5b7cff)" },
+        "external-mcp": { icon: "hub", color: "linear-gradient(135deg,#3154c8,#7aa2ff)" },
+        "internal-mcp": { icon: "apartment", color: "linear-gradient(135deg,#4f6fd8,#93c5fd)" },
+        direct: { icon: "terminal", color: "linear-gradient(135deg,#5b7cff,#38bdf8)" },
+        skill: { icon: "extension", color: "linear-gradient(135deg,#4f6fd8,#f59e0b)" }
+      };
+
+      const BUCKET_STYLE_MAP = {
+        "external-mcp": {
+          engine: "External MCP",
+          icon: "public",
+          color: "linear-gradient(135deg,#2563eb,#60a5fa)"
+        },
+        "internal-mcp": {
+          engine: "Internal MCP",
+          icon: "apartment",
+          color: "linear-gradient(135deg,#ec4899,#fb7185)"
+        },
+        direct: {
+          engine: "Direct Implementation",
+          icon: "terminal",
+          color: "linear-gradient(135deg,#f59e0b,#fbbf24)"
+        },
+        skill: {
+          engine: "Skill",
+          icon: "extension",
+          color: "linear-gradient(135deg,#f59e0b,#fb7185)"
+        }
+      };
+
+      const STATUS_TONE_MAP = {
+        connected: "healthy",
+        review: "review"
+      };
+
+      function safeText(value, fallback = "") {
+        const raw = value === undefined || value === null ? fallback : value;
+        return String(raw)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function formatNumber(value) {
+        const numeric = Number(value);
+        if (!Number.isFinite(numeric)) {
+          return "0";
+        }
+
+        return new Intl.NumberFormat("ko-KR").format(numeric);
+      }
+
+      function formatDate(value) {
+        if (!value) {
+          return "";
+        }
+
+        const date = new Date(value);
+        if (Number.isNaN(date.valueOf())) {
+          return "";
+        }
+
+        return new Intl.DateTimeFormat("ko-KR", {
+          year: "numeric",
+          month: "short",
+          day: "numeric"
+        }).format(date);
+      }
+
+      function resolveViewerRole() {
+        const searchParams = new URLSearchParams(window.location.search);
+        const roleFromQuery = searchParams.get("viewerRole") || searchParams.get("role");
+        const roleFromBody = document.body?.dataset?.viewerRole;
+        return String(roleFromQuery || roleFromBody || "user").trim().toLowerCase();
+      }
+
+      function isAdminViewer() {
+        return resolveViewerRole() === "admin";
+      }
+
+      function buildQuery(params) {
+        const searchParams = new URLSearchParams();
+        Object.entries(params || {}).forEach(([key, value]) => {
+          if (value === undefined || value === null || value === "") {
+            return;
+          }
+
+          searchParams.set(key, String(value));
+        });
+
+        const query = searchParams.toString();
+        return query ? `?${query}` : "";
+      }
+
+      async function requestJson(path, options) {
+        const response = await fetch(`${API_BASE}${path}`, {
+          credentials: "same-origin",
+          headers: {
+            Accept: "application/json"
+          },
+          ...(options || {})
+        });
+
+        if (!response.ok) {
+          throw new Error(`${response.status} ${response.statusText}`);
+        }
+
+        return response.json();
+      }
+
+      async function fetchJson(path, params) {
+        return requestJson(`${path}${buildQuery(params)}`);
+      }
+
+      function extractData(payload, fallback) {
+        if (payload && typeof payload === "object" && "data" in payload) {
+          return payload.data;
+        }
+
+        return payload ?? fallback;
+      }
+
+      function extractItems(payload) {
+        if (payload && Array.isArray(payload.items)) {
+          return payload.items;
+        }
+
+        if (payload && payload.data && Array.isArray(payload.data.items)) {
+          return payload.data.items;
+        }
+
+        return [];
+      }
+
+      function extractPageTotal(payload, fallback = 0) {
+        if (payload && payload.page && Number.isFinite(Number(payload.page.total))) {
+          return Number(payload.page.total);
+        }
+
+        if (payload && payload.data && payload.data.page && Number.isFinite(Number(payload.data.page.total))) {
+          return Number(payload.data.page.total);
+        }
+
+        return fallback;
+      }
+
+      function extractNextCursor(payload) {
+        if (payload && payload.page && typeof payload.page.nextCursor === "string") {
+          return payload.page.nextCursor;
+        }
+
+        if (payload && payload.data && payload.data.page && typeof payload.data.page.nextCursor === "string") {
+          return payload.data.page.nextCursor;
+        }
+
+        return null;
+      }
+
+      async function fetchAllInventories() {
+        const items = [];
+        let cursor = null;
+        let total = 0;
+        let hasNext = true;
+
+        while (hasNext) {
+          const payload = await fetchJson("/tool-inventory", {
+            limit: INVENTORY_PAGE_LIMIT,
+            sort: "-updatedAt",
+            ...(cursor ? { cursor } : {})
+          });
+
+          const pageItems = extractItems(payload);
+          const pageTotal = extractPageTotal(payload, total || pageItems.length);
+          const nextCursor = extractNextCursor(payload);
+
+          items.push(...pageItems);
+          total = pageTotal;
+          cursor = nextCursor;
+          hasNext = Boolean(nextCursor);
+
+          if (!pageItems.length || (pageTotal > 0 && items.length >= pageTotal)) {
+            hasNext = false;
+          }
+        }
+
+        return {
+          items,
+          page: {
+            total: total || items.length
+          }
+        };
+      }
+
+      function getBucketId(item) {
+        if (item?.filterBucket) {
+          return item.filterBucket;
+        }
+
+        if (item?.kind === "skill") {
+          return "skill";
+        }
+
+        if (item?.scopeType === "external") {
+          return "external-mcp";
+        }
+
+        if (item?.scopeType === "direct") {
+          return "direct";
+        }
+
+        return "internal-mcp";
+      }
+
+      function getFormatLabel(item) {
+        if (item?.kind === "skill") {
+          return "Skill";
+        }
+
+        if (item?.directType === "openapi") {
+          return "OpenAPI";
+        }
+
+        return "MCP";
+      }
+
+      function isMcpInventory(item) {
+        const bucketId = getBucketId(item);
+        return bucketId === "external-mcp" || bucketId === "internal-mcp";
+      }
+
+      function buildHeroStats(statsPayload, items) {
+        const countsByBucket = items.reduce((acc, item) => {
+          const bucketId = getBucketId(item);
+          acc[bucketId] = (acc[bucketId] || 0) + 1;
+          return acc;
+        }, {});
+        const connectedCount = items.filter(item => String(item?.status || "").toLowerCase() === "connected").length;
+        const reviewCount = items.filter(item => String(item?.status || "").toLowerCase() === "review").length;
+        const cardsById = new Map((statsPayload?.cards || []).map(card => [card.id, card]));
+
+        return ["total", "external-mcp", "internal-mcp", "direct", "skill"].map(id => {
+          const style = HERO_STYLE_MAP[id] || HERO_STYLE_MAP.total;
+          const fallbackValue = id === "total" ? items.length : countsByBucket[id] || 0;
+          const payloadCard = cardsById.get(id);
+
+          return {
+            icon: style.icon,
+            value: formatNumber(payloadCard?.value ?? fallbackValue),
+            label: safeText(payloadCard?.label || FILTER_LABEL_MAP[id] || "Inventory"),
+            note: safeText(payloadCard?.note || (id === "total" ? `Connected ${connectedCount} · Review ${reviewCount}` : "")),
+            color: style.color
+          };
+        });
+      }
+
+      function buildFilters(filtersPayload, items) {
+        const countsByBucket = items.reduce((acc, item) => {
+          const bucketId = getBucketId(item);
+          acc[bucketId] = (acc[bucketId] || 0) + 1;
+          return acc;
+        }, { all: items.length });
+        const payloadItems = Array.isArray(filtersPayload?.items) && filtersPayload.items.length
+          ? filtersPayload.items
+          : ["all", "external-mcp", "internal-mcp", "direct", "skill"].map(id => ({
+              id,
+              label: FILTER_LABEL_MAP[id],
+              count: countsByBucket[id] || 0
+            }));
+
+        return payloadItems.map(item => ({
+          id: item.id,
+          icon: FILTER_ICON_MAP[item.id] || "sell",
+          label: safeText(item.label || FILTER_LABEL_MAP[item.id] || item.id)
+        }));
+      }
+
+      function buildMeta(item) {
+        const summary = safeText(item?.summary || item?.description || "");
+        if (summary) {
+          return summary;
+        }
+
+        const toolCount = Number(item?.toolCount || item?.tooling?.itemCount || 0);
+        const consumerCount = Number(
+          item?.consumerCount
+          || item?.consumers?.refs?.length
+          || (item?.consumers?.summary?.agentCount || 0) + (item?.consumers?.summary?.chatbotCount || 0)
+        );
+        return safeText(`${formatNumber(toolCount)} tools · ${formatNumber(consumerCount)} consumers`);
+      }
+
+      function buildDetails(item) {
+        const mcpConnectionDetail = item?.transport
+          ? `Transport · ${safeText(item.transport)}`
+          : "MCP URL 비공개";
+        const endpointOrOrigin = item?.endpointUrl
+          || item?.openapiSpecUrl
+          || item?.origin?.workspace
+          || item?.origin?.vendor
+          || "endpoint 정보 없음";
+
+        return [
+          { icon: "category", text: `Format · ${safeText(getFormatLabel(item))}` },
+          isMcpInventory(item)
+            ? { icon: "shield", text: mcpConnectionDetail }
+            : { icon: item?.endpointUrl || item?.openapiSpecUrl ? "lan" : "hub", text: safeText(endpointOrOrigin) },
+          { icon: "monitor_heart", text: `Status · ${safeText(item?.statusLabel || item?.status || "Review")}` }
+        ];
+      }
+
+      function buildPrimaryConnections(item) {
+        const tools = Array.isArray(item?.tooling?.representativeItems) && item.tooling.representativeItems.length
+          ? item.tooling.representativeItems
+          : Array.isArray(item?.tools) ? item.tools : [];
+
+        return tools.map(tool => ({
+          abbr: item?.kind === "skill" ? "SK" : "FN",
+          name: safeText(tool?.label || tool?.name || tool?.id || "tool"),
+          meta: safeText(tool?.summary || (item?.kind === "skill" ? "Skill flow" : "Function tool"))
+        }));
+      }
+
+      function buildSecondaryConnections(item) {
+        const refs = Array.isArray(item?.consumers?.refs) && item.consumers.refs.length
+          ? item.consumers.refs
+          : [
+              ...(item?.consumerAgentRefs || []).map(ref => ({ kind: "agent", id: ref.id, label: ref.name })),
+              ...(item?.consumerChatbotRefs || []).map(ref => ({ kind: "chatbot", id: ref.id, label: ref.name }))
+            ];
+
+        return refs.map(ref => ({
+          abbr: ref?.kind === "chatbot" ? "CB" : ref?.kind === "assistant" ? "AS" : "AG",
+          name: safeText(ref?.label || ref?.name || ref?.id || "consumer"),
+          meta: safeText(ref?.kind === "chatbot" ? "Chatbot" : ref?.kind === "assistant" ? "Assistant" : "Agent")
+        }));
+      }
+
+      function buildTags(item) {
+        const tags = [];
+
+        if (item?.kind === "skill") {
+          tags.push({ icon: "extension", text: "Type · Skill" });
+        } else if (item?.scopeLabel) {
+          tags.push({ icon: "hub", text: `Type · ${safeText(item.scopeLabel)}` });
+        }
+
+        if (item?.authMode) {
+          tags.push({ icon: "lock", text: `Auth · ${safeText(item.authMode)}` });
+        }
+
+        if (item?.transport) {
+          tags.push({ icon: "route", text: `Transport · ${safeText(item.transport)}` });
+        }
+
+        const consumerCount = Number(
+          item?.consumerCount
+          || item?.consumers?.refs?.length
+          || (item?.consumers?.summary?.agentCount || 0) + (item?.consumers?.summary?.chatbotCount || 0)
+        );
+        tags.push({ icon: "link", text: `Consumers · ${formatNumber(consumerCount)}` });
+
+        return tags.slice(0, 4);
+      }
+
+      function buildResource(item) {
+        const bucketId = getBucketId(item);
+        const style = BUCKET_STYLE_MAP[bucketId] || BUCKET_STYLE_MAP["internal-mcp"];
+        const connections = buildPrimaryConnections(item);
+        const secondaryConnections = buildSecondaryConnections(item);
+
+        return {
+          categories: ["all", bucketId],
+          status: {
+            label: safeText(item?.statusLabel || item?.status || "Review"),
+            tone: STATUS_TONE_MAP[item?.status] || "review"
+          },
+          engine: style.engine,
+          icon: item?.icon || style.icon,
+          name: safeText(item?.name || item?.slug || item?.id || "tool-inventory"),
+          meta: buildMeta(item),
+          color: style.color,
+          details: buildDetails(item),
+          connectionsLabel: item?.kind === "skill" ? "Representative skill flow" : "Representative function tool",
+          connectionsMaxItems: 3,
+          connectionsMoreName: item?.kind === "skill" ? "추가 skill flow" : "추가 function tool",
+          connectionsMoreMeta: item?.kind === "skill" ? "대표 흐름 외 나머지 구성" : "대표 기능 외 나머지 tool",
+          connections,
+          secondaryConnectionsLabel: "Connected Consumers",
+          secondaryConnectionsMaxItems: 3,
+          secondaryConnectionsMoreName: "추가 Consumers",
+          secondaryConnectionsMoreMeta: "나머지 연결 대상",
+          secondaryConnections,
+          tagsLabel: "Core Fields",
+          tags: buildTags(item),
+          footer: item?.updatedAt ? `Updated ${safeText(formatDate(item.updatedAt))}` : "",
+          actions: [
+            {
+              label: "Detail",
+              icon: "arrow_outward",
+              kind: "open",
+              href: `workspace_tool_inventory_detail.html?item=${encodeURIComponent(item?.slug || item?.id || "")}`
+            }
+          ]
+        };
+      }
+
+      function buildConnectionPulsePanel(panelPayload, items) {
+        const rows = Array.isArray(panelPayload?.rows) && panelPayload.rows.length
+          ? panelPayload.rows.map(row => ({
+              title: safeText(row?.title || row?.name || "inventory"),
+              meta: safeText(row?.meta || ""),
+              pill: row?.pill
+                ? {
+                    label: safeText(row.pill.label || "Review"),
+                    tone: row.pill.tone === "healthy" ? "healthy" : "review"
+                  }
+                : { label: "Review", tone: "review" }
+            }))
+          : items.slice(0, 5).map(item => ({
+              title: safeText(item?.name || item?.slug || item?.id || "inventory"),
+              meta: safeText(item?.typeLabel || item?.kindLabel || "Tool Inventory"),
+              pill: {
+                label: safeText(item?.statusLabel || item?.status || "Review"),
+                tone: STATUS_TONE_MAP[item?.status] || "review"
+              }
+            }));
+
+        return {
+          ...FALLBACK_CONFIG.sidebarPanels[0],
+          description: safeText(panelPayload?.description || "등록된 inventory 가운데 바로 사용 가능한 항목과 검토 중인 항목을 빠르게 훑어봅니다."),
+          rows
+        };
+      }
+
+      function buildRegistrationRequestPanel(items) {
+        const requestItems = (items || [])
+          .filter(item => String(item?.status || "").toLowerCase() === "review")
+          .sort((left, right) => {
+            const leftTime = new Date(left?.updatedAt || left?.createdAt || 0).getTime();
+            const rightTime = new Date(right?.updatedAt || right?.createdAt || 0).getTime();
+            return rightTime - leftTime;
+          });
+
+        const rows = requestItems.slice(0, 5).map(item => {
+          const bucketId = getBucketId(item);
+          const engine = BUCKET_STYLE_MAP[bucketId]?.engine || item?.scopeLabel || "Tool Inventory";
+          const ownerName = item?.requestedBy?.name || item?.requester?.name || item?.owner?.name || "요청자 미확인";
+          const requestedAt = formatDate(item?.requestedAt || item?.createdAt || item?.updatedAt);
+          const metaParts = [engine, ownerName];
+
+          if (requestedAt) {
+            metaParts.push(`요청 ${requestedAt}`);
+          }
+
+          return {
+            title: safeText(item?.name || item?.slug || item?.id || "tool-inventory"),
+            meta: safeText(metaParts.join(" · ")),
+            href: `workspace_tool_inventory_detail.html?item=${encodeURIComponent(item?.slug || item?.id || "")}`,
+            pill: {
+              label: "Review",
+              tone: "review"
+            }
+          };
+        });
+
+        return {
+          icon: "approval",
+          label: "Request Queue",
+          title: "Tool 등록 요청",
+          description: requestItems.length
+            ? `${formatNumber(requestItems.length)}개의 등록 요청이 admin 검토를 기다리고 있습니다.`
+            : "현재 admin이 확인할 tool 등록 요청은 없습니다.",
+          rows: rows.length ? rows : [
+            {
+              title: "표시할 등록 요청이 없습니다.",
+              meta: "Review 상태의 tool inventory 요청이 들어오면 이 패널에 표시됩니다."
+            }
+          ],
+          footerLink: {
+            href: "workspace_tool_inventory_register.html",
+            label: "등록 화면 보기"
+          }
+        };
+      }
+
+      function renderConfig(config) {
+        window.HUB_CONFIG = config;
+        if (typeof window.renderWorkspaceResourceHub === "function") {
+          window.renderWorkspaceResourceHub(config);
+          attachActionHandlers();
+          if (typeof window.refreshConceptEndpointOverlay === "function") {
+            requestAnimationFrame(() => {
+              window.refreshConceptEndpointOverlay();
+            });
+          }
+        }
+      }
+
+      async function loadToolInventoryHub() {
+        const [inventoriesResult, statsResult, filtersResult, pulseResult] = await Promise.allSettled([
+          fetchAllInventories(),
+          fetchJson("/tool-inventory/stats"),
+          fetchJson("/tool-inventory/filters"),
+          fetchJson("/tool-inventory/panels/connection-pulse")
+        ]);
+
+        if (inventoriesResult.status !== "fulfilled") {
+          throw inventoriesResult.reason;
+        }
+
+        const inventoriesPayload = inventoriesResult.value;
+        const items = extractItems(inventoriesPayload).slice().sort((left, right) => {
+          const leftTime = new Date(left?.updatedAt || left?.createdAt || 0).getTime();
+          const rightTime = new Date(right?.updatedAt || right?.createdAt || 0).getTime();
+          return rightTime - leftTime;
+        });
+        const total = extractPageTotal(inventoriesPayload, items.length);
+        const statsPayload = statsResult.status === "fulfilled" ? extractData(statsResult.value, null) : null;
+        const filtersPayload = filtersResult.status === "fulfilled" ? extractData(filtersResult.value, null) : null;
+        const pulsePayload = pulseResult.status === "fulfilled" ? extractData(pulseResult.value, null) : null;
+
+        renderConfig({
+          ...FALLBACK_CONFIG,
+          searchSource: "tool-inventory",
+          searchSourceLabel: "Tool Inventory Hub",
+          searchDefaultType: "hub",
+          resourcePageSize: 6,
+          heroStats: buildHeroStats(statsPayload, items),
+          filters: buildFilters(filtersPayload, items),
+          resourceDescription: total > 0
+            ? `${formatNumber(total)}개의 inventory를 실제 API 응답으로 렌더링합니다. 카드에서는 타입, endpoint, tool 구성, consumer 연결 상태를 바로 확인할 수 있습니다.`
+            : "조회 가능한 tool inventory가 없습니다. 권한 또는 등록 상태를 확인해 주세요.",
+          resources: items.map(buildResource),
+          sidebarPanels: [
+            buildConnectionPulsePanel(pulsePayload, items),
+            ...(isAdminViewer() ? [buildRegistrationRequestPanel(items)] : [])
+          ]
+        });
+      }
+
+      function handleLoadError(error) {
+        console.warn("[workspace_tool_inventory_hub] failed to load tool inventory data", error);
+
+        renderConfig({
+          ...FALLBACK_CONFIG,
+          heroStats: [],
+          resources: [],
+          resourceDescription: "Tool Inventory Hub 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.",
+          mainPanels: [
+            {
+              icon: "error",
+              label: "Load Error",
+              title: "Tool Inventory 데이터를 읽지 못했습니다.",
+              description: "tool-inventory API 응답 상태 또는 권한을 확인해 주세요.",
+              rows: [
+                {
+                  title: "API 호출 실패",
+                  meta: safeText(error?.message || error || "Unknown error")
+                }
+              ]
+            },
+            FALLBACK_CONFIG.mainPanels[1]
+          ],
+          sidebarPanels: [
+            {
+              ...FALLBACK_CONFIG.sidebarPanels[0],
+              description: "Connection Pulse 를 불러오지 못했습니다.",
+              rows: [
+                {
+                  title: "상태 동기화 실패",
+                  meta: "tool inventory connection pulse",
+                  pill: { label: "Error", tone: "incident" }
+                }
+              ]
+            }
+          ]
+        });
+      }
+
+      function attachActionHandlers() {
+        document.querySelectorAll("[data-inventory-id][data-inventory-action]").forEach(button => {
+          if (button.dataset.inventoryActionBound === "true") {
+            return;
+          }
+
+          button.dataset.inventoryActionBound = "true";
+          button.addEventListener("click", async event => {
+            event.preventDefault();
+
+            const inventoryId = button.getAttribute("data-inventory-id");
+            const action = button.getAttribute("data-inventory-action");
+
+            if (!inventoryId || action !== "open" || button.disabled || button.classList.contains("is-disabled")) {
+              return;
+            }
+
+            button.disabled = true;
+            button.classList.add("is-disabled");
+            pendingOpenActions.add(inventoryId);
+
+            try {
+              const payload = await requestJson(`/tool-inventory/${encodeURIComponent(inventoryId)}/open`, {
+                method: "POST"
+              });
+              const data = extractData(payload, null);
+              if (data?.url) {
+                window.open(data.url, data?.target || "_blank", "noopener,noreferrer");
+              }
+            } catch (error) {
+              console.error("[workspace_tool_inventory_hub] inventory open failed", error);
+              window.alert("Inventory open 동작에 실패했습니다.");
+            } finally {
+              pendingOpenActions.delete(inventoryId);
+              button.disabled = false;
+              button.classList.remove("is-disabled");
+            }
+          });
+        });
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => {
+          loadToolInventoryHub().catch(handleLoadError);
+        }, { once: true });
+      } else {
+        loadToolInventoryHub().catch(handleLoadError);
+      }
+    })();
+  </script>
   <script src="concept_endpoint_overlay.js"></script>
 </body>
 </html>

@@ -9,6 +9,8 @@
     "check": "pnpm lint && pnpm format:check && pnpm build",
     "preview": "vite preview --host 0.0.0.0 --port 3000",
     "visual": "node scripts/playwright-visual.mjs",
+    "visual:strict": "VISUAL_STRICT=1 node scripts/playwright-visual.mjs",
+    "visual:update": "node scripts/playwright-visual.mjs --update-snapshots",
     "typecheck": "tsc --noEmit -p tsconfig.json --pretty && tsc --noEmit -p tsconfig.node.json --pretty",
     "lint": "eslint . --max-warnings=0",
     "lint:fix": "eslint . --fix --max-warnings=0",

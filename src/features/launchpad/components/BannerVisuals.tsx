@@ -1,5 +1,3 @@
-import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
-import VerifiedUserRoundedIcon from '@mui/icons-material/VerifiedUserRounded';
 import { Box, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 
@@ -7,8 +5,20 @@ import { WorkspaceIcon } from '@/components/WorkspaceIcon';
 import type { LaunchpadHero } from '@/features/launchpad/types';
 import type { ReferenceBannerSlide } from '@/features/launchpad/utils/bannerSlides';
 
-export function DejSnapshot({ hero }: { hero?: LaunchpadHero }) {
-  const rows = (hero?.heroStats ?? []).slice(0, 3);
+export function DejSnapshot({
+  hero,
+  slide,
+}: {
+  hero?: LaunchpadHero;
+  slide: ReferenceBannerSlide;
+}) {
+  const rows =
+    slide.snapshotRows ??
+    (hero?.heroStats ?? []).slice(0, 3).map((row) => ({
+      description: row.note ? `${row.value} · ${row.note}` : row.value,
+      icon: row.icon,
+      title: row.label,
+    }));
 
   return (
     <Box
@@ -25,11 +35,11 @@ export function DejSnapshot({ hero }: { hero?: LaunchpadHero }) {
       }}
     >
       <Typography color="rgba(255,255,255,.72)" fontSize={11} fontWeight={800}>
-        {hero?.workspaceName ?? 'DEJ Workspace'}
+        {slide.snapshotTitle || hero?.workspaceName || 'DEJ Workspace'}
       </Typography>
       {rows.map((row) => (
         <Box
-          key={row.key}
+          key={`${row.title}-${row.description}`}
           sx={{
             alignItems: 'center',
             bgcolor: 'rgba(255,255,255,.92)',
@@ -57,10 +67,10 @@ export function DejSnapshot({ hero }: { hero?: LaunchpadHero }) {
           </Box>
           <Box minWidth={0}>
             <Typography color="text.primary" fontSize={13} fontWeight={800} letterSpacing="-.03em">
-              {row.label}
+              {row.title}
             </Typography>
             <Typography color="text.secondary" fontSize={11} lineHeight={1.4} sx={{ mt: 0.25 }}>
-              {row.note ? `${row.value} · ${row.note}` : row.value}
+              {row.description}
             </Typography>
           </Box>
         </Box>
@@ -137,8 +147,6 @@ export function DejPipelineBackground() {
 }
 
 export function BannerVisualCard({ slide }: { slide: ReferenceBannerSlide }) {
-  const isSecurity = slide.variant === 'security';
-
   return (
     <Box
       sx={{
@@ -165,11 +173,10 @@ export function BannerVisualCard({ slide }: { slide: ReferenceBannerSlide }) {
             width: 38,
           }}
         >
-          {isSecurity ? (
-            <VerifiedUserRoundedIcon sx={{ fontSize: 20 }} />
-          ) : (
-            <GroupsRoundedIcon sx={{ fontSize: 20 }} />
-          )}
+          <WorkspaceIcon
+            name={slide.visualIcon || (slide.variant === 'security' ? 'security' : 'group')}
+            sx={{ fontSize: 20 }}
+          />
         </Box>
         <Typography
           color="rgba(255,255,255,.74)"

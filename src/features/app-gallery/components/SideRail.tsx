@@ -29,7 +29,7 @@ export function SideRail({
       <SoftPanelCard>
         <SectionLabel sx={{ mb: 1.75 }}>
           <ScheduleRoundedIcon sx={{ color: 'primary.main', fontSize: 15 }} />
-          추천 카탈로그
+          추천 앱 목록
           <SectionStatusBadge status={appGallerySectionStatus.sideRail} />
         </SectionLabel>
         <Stack spacing={1.25}>

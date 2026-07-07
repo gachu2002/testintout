@@ -7,14 +7,8 @@ import type {
   DatabaseTipsPanel,
 } from '@/features/database-hub/types';
 import { apiClient } from '@/lib/api/axios';
-import type { ApiDataResponse, PaginatedResponse } from '@/lib/api/types';
-
-type CursorParams = {
-  cursor: string;
-  limit: number;
-  q: string;
-  sort: string;
-};
+import type { ApiDataResponse, CursorParams, PaginatedResponse } from '@/lib/api/types';
+import { unwrapApiData } from '@/lib/api/types';
 
 export async function getDatabaseHubDatabases({
   cursor,
@@ -31,13 +25,13 @@ export async function getDatabaseHubDatabases({
 
 export async function getDatabaseHubStats(): Promise<DatabaseHubStats> {
   const response = await apiClient.get<ApiDataResponse<DatabaseHubStats>>('/v2/databases/stats');
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getDatabaseHubFilters(): Promise<DatabaseHubFilters> {
   const response =
     await apiClient.get<ApiDataResponse<DatabaseHubFilters>>('/v2/databases/filters');
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getDatabaseHubTipsPanel(): Promise<DatabaseTipsPanel> {
@@ -45,7 +39,7 @@ export async function getDatabaseHubTipsPanel(): Promise<DatabaseTipsPanel> {
     params: { surface: 'databases' },
   });
 
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getDatabaseHubGuideLinksPanel(): Promise<DatabaseGuideLinksPanel> {
@@ -56,7 +50,7 @@ export async function getDatabaseHubGuideLinksPanel(): Promise<DatabaseGuideLink
     },
   );
 
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getDatabaseHealthPanel(): Promise<DatabaseHealthPanel> {
@@ -64,5 +58,5 @@ export async function getDatabaseHealthPanel(): Promise<DatabaseHealthPanel> {
     '/v2/databases/panels/health',
   );
 
-  return response.data.data;
+  return unwrapApiData(response);
 }

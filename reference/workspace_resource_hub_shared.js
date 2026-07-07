@@ -49,10 +49,11 @@
     {
       title: "Support",
       links: [
+        { key: "messages", title: "Message Center", desc: "수신, 발신, 요청, 승인 메시지를 한 화면에서 관리", icon: "mark_email_unread", href: "workspace_message_hub.html" },
         { key: "docs", title: "다큐먼트", desc: "가이드와 운영 문서를 확인합니다", icon: "description", href: "#" },
         { key: "about-dej", title: "About DEJ", desc: "DEJ의 역사와 CEJ·DEJ 흐름을 확인합니다", icon: "timeline", href: "about_dej.html" },
         { key: "chatbot", title: "챗봇", desc: "지원 챗봇으로 빠르게 문의합니다", icon: "chat_bubble_outline", href: "dej_chatbot_trial.html" },
-        { key: "request", title: "요청하기", desc: "기능 요청이나 지원 요청을 등록합니다", icon: "campaign", href: "#" }
+        { key: "request", title: "요청하기", desc: "기능 요청이나 승인 요청을 바로 등록합니다", icon: "campaign", href: "workspace_message_hub.html?box=requests" }
       ]
     }
   ];
@@ -292,7 +293,7 @@
   };
 
   const renderDetails = (details) => (details || []).map((item) => `
-    <span class="metric-chip">
+    <span class="${["metric-chip", item.className || ""].filter(Boolean).join(" ")}">
       <span class="material-icons-round">${item.icon}</span>${item.text}
     </span>
   `).join("");
@@ -300,17 +301,34 @@
   const renderTags = (tags) => (tags || []).map((item) => {
     const tagClassName = ["tag", item.className || ""].filter(Boolean).join(" ");
     const tagTitle = item.title ? ` title="${escapeAttribute(item.title)}"` : "";
+    const extraAttributes = Object.entries(item.attributes || {})
+      .map(([key, value]) => {
+        if (value === false || value == null) return "";
+        if (value === true) return key;
+        return `${key}="${escapeAttribute(value)}"`;
+      })
+      .filter(Boolean)
+      .join(" ");
+    const attrs = extraAttributes ? ` ${extraAttributes}` : "";
 
     if (item.href) {
       return `
-        <a class="${tagClassName}" href="${item.href}"${tagTitle}>
+        <a class="${tagClassName}" href="${item.href}"${tagTitle}${attrs}>
           <span class="material-icons-round">${item.icon}</span>${item.text}
         </a>
       `;
     }
 
+    if (item.button) {
+      return `
+        <button class="${tagClassName}" type="button"${tagTitle}${attrs}>
+          <span class="material-icons-round">${item.icon}</span>${item.text}
+        </button>
+      `;
+    }
+
     return `
-      <span class="${tagClassName}"${tagTitle}>
+      <span class="${tagClassName}"${tagTitle}${attrs}>
         <span class="material-icons-round">${item.icon}</span>${item.text}
       </span>
     `;
@@ -347,6 +365,10 @@
     if (!usage) return "";
     const rawValue = Number(usage.value);
     const value = Number.isFinite(rawValue) ? Math.max(0, Math.min(100, rawValue)) : 0;
+    const rawVisualValue = Number(usage.visualValue);
+    const visualValue = Number.isFinite(rawVisualValue)
+      ? Math.max(0, Math.min(100, rawVisualValue))
+      : value;
     return `
       <div class="resource-usage-block">
         <div class="resource-usage-head">
@@ -354,7 +376,7 @@
           <div class="resource-usage-value">${value}%</div>
         </div>
         <div class="resource-usage-track">
-          <div class="resource-usage-fill" style="width:${value}%; background:${usage.color || "linear-gradient(90deg,var(--brand),var(--accent-2))"}"></div>
+          <div class="resource-usage-fill" style="width:${visualValue}%; background:${usage.color || "linear-gradient(90deg,var(--brand),var(--accent-2))"}"></div>
         </div>
         ${usage.meta ? `<div class="resource-usage-meta">${usage.meta}</div>` : ""}
       </div>
@@ -592,10 +614,11 @@
   }).join("");
 
   const renderRows = (rows) => (rows || []).map((row) => `
-    <div class="list-row">
+    <div class="list-row ${row.className || ""}">
       <div class="list-row-copy">
         <div class="list-row-title">${row.href ? `<a href="${row.href}">${row.title}</a>` : row.title}</div>
-        <div class="list-row-meta">${row.meta || ""}</div>
+        ${row.subtitle ? `<div class="list-row-subtitle">${row.subtitle}</div>` : ""}
+        <div class="list-row-meta ${row.metaClassName || ""}">${row.meta || ""}</div>
       </div>
       ${row.pill ? `<span class="ops-pill ${toneClass[row.pill.tone] || "tone-info"}">${row.pill.label}</span>` : ""}
     </div>
@@ -758,6 +781,13 @@
     }
 
     const summary = primaryPanel.summary || {};
+    const overviewStats = Array.isArray(summary.stats) && summary.stats.length
+      ? summary.stats.slice(0, 3)
+      : [
+          { label: "Healthy", value: summary.healthy ?? 0 },
+          { label: "Needs Action", value: summary.degraded ?? 0 },
+          { label: "Unknown", value: summary.unknown ?? 0 }
+        ];
 
     return `
       <section class="hub-briefing-rail">
@@ -776,18 +806,12 @@
               <span class="hub-briefing-pill tone-info">live snapshot</span>
             </div>
             <div class="hub-briefing-overview-grid">
-              <div class="hub-briefing-overview-stat">
-                <div class="hub-briefing-overview-label">Healthy</div>
-                <div class="hub-briefing-overview-number">${summary.healthy ?? 0}</div>
-              </div>
-              <div class="hub-briefing-overview-stat">
-                <div class="hub-briefing-overview-label">Needs Action</div>
-                <div class="hub-briefing-overview-number">${summary.degraded ?? 0}</div>
-              </div>
-              <div class="hub-briefing-overview-stat">
-                <div class="hub-briefing-overview-label">Unknown</div>
-                <div class="hub-briefing-overview-number">${summary.unknown ?? 0}</div>
-              </div>
+              ${overviewStats.map((item) => `
+                <div class="hub-briefing-overview-stat">
+                  <div class="hub-briefing-overview-label">${item?.label || ""}</div>
+                  <div class="hub-briefing-overview-number">${item?.value ?? 0}</div>
+                </div>
+              `).join("")}
             </div>
           </div>
           <div class="hub-briefing-rail-list">

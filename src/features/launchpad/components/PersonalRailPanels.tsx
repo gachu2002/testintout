@@ -13,7 +13,13 @@ import { SoftPanel } from '@/components/workspace';
 import { WorkspaceIcon } from '@/components/WorkspaceIcon';
 import { routes } from '@/config/routes';
 import { launchpadSectionStatus } from '@/features/launchpad/sectionStatus';
-import type { Job, Notification, Project } from '@/features/launchpad/types';
+import type {
+  Job,
+  LaunchpadMyWork,
+  LaunchpadResources,
+  Notification,
+  Project,
+} from '@/features/launchpad/types';
 import { buildDeploymentRows, type DeploymentRow } from '@/features/launchpad/utils/deploymentRows';
 import type { ResourceRailItem } from '@/features/launchpad/utils/resourceItems';
 import { formatRelativeTime, stripMarkup } from '@/lib/formatters';
@@ -61,14 +67,18 @@ export function NotificationsPanel({
 
 export function ProjectsJobsPanel({
   hasError = false,
+  ideCount,
   isLoading,
   jobs,
   projects,
+  summary,
 }: {
   hasError?: boolean;
+  ideCount: number;
   isLoading: boolean;
   jobs: Job[];
   projects: Project[];
+  summary?: LaunchpadMyWork['summary'];
 }) {
   const rows = buildDeploymentRows(projects, jobs);
 
@@ -90,10 +100,18 @@ export function ProjectsJobsPanel({
         </Typography>
       ) : null}
       {!isLoading && !hasError ? (
-        <Stack spacing={0}>
-          {rows.map((row) => (
-            <DeploymentItem key={row.id} row={row} />
-          ))}
+        <Stack spacing={1.25}>
+          <DeploymentSummaryCards
+            ideCount={ideCount}
+            jobCount={jobs.length}
+            projectCount={projects.length}
+            summary={summary}
+          />
+          <Stack spacing={0}>
+            {rows.map((row) => (
+              <DeploymentItem key={row.id} row={row} />
+            ))}
+          </Stack>
         </Stack>
       ) : null}
     </SoftPanel>
@@ -104,10 +122,12 @@ export function ResourcesPanel({
   hasError = false,
   isLoading,
   resources,
+  summary,
 }: {
   hasError?: boolean;
   isLoading: boolean;
   resources: ResourceRailItem[];
+  summary?: LaunchpadResources['summary'];
 }) {
   return (
     <SoftPanel>
@@ -124,22 +144,79 @@ export function ResourcesPanel({
         </Typography>
       ) : null}
       {!isLoading && !hasError ? (
-        <Stack
-          spacing={1}
-          sx={{
-            maxHeight: 560,
-            overflow: 'auto',
-            pr: 0.5,
-            scrollbarColor: 'rgba(146,152,160,.45) transparent',
-            scrollbarWidth: 'thin',
-          }}
-        >
-          {resources.slice(0, 8).map((resource) => (
-            <ResourceItem key={resource.id} resource={resource} />
-          ))}
+        <Stack spacing={1.5}>
+          <ResourceSummaryCards summary={summary} />
+          <Stack
+            spacing={1}
+            sx={{
+              maxHeight: 560,
+              overflow: 'auto',
+              pr: 0.5,
+              scrollbarColor: 'rgba(146,152,160,.45) transparent',
+              scrollbarWidth: 'thin',
+            }}
+          >
+            {resources.slice(0, 8).map((resource) => (
+              <ResourceItem key={resource.id} resource={resource} />
+            ))}
+          </Stack>
         </Stack>
       ) : null}
     </SoftPanel>
+  );
+}
+
+function DeploymentSummaryCards({
+  ideCount,
+  jobCount,
+  projectCount,
+  summary,
+}: {
+  ideCount: number;
+  jobCount: number;
+  projectCount: number;
+  summary?: LaunchpadMyWork['summary'];
+}) {
+  return (
+    <Box sx={{ display: 'grid', gap: 1.25, gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
+      <SummaryCard label="내 프로젝트" value={summary?.projectCount ?? projectCount} />
+      <SummaryCard
+        label="활성 IDE / Job"
+        value={`${summary?.ideCount ?? ideCount} / ${summary?.jobCount ?? jobCount}`}
+      />
+    </Box>
+  );
+}
+
+function ResourceSummaryCards({ summary }: { summary?: LaunchpadResources['summary'] }) {
+  return (
+    <Box sx={{ display: 'grid', gap: 1, gridTemplateColumns: 'repeat(3, minmax(0, 1fr))' }}>
+      <SummaryCard label="전체 리소스" value={summary?.totalResources ?? 0} />
+      <SummaryCard label="점검 필요" value={summary?.attentionCount ?? 0} />
+      <SummaryCard label="연결 수" value={summary?.totalBindings ?? 0} />
+    </Box>
+  );
+}
+
+function SummaryCard({ label, value }: { label: string; value: number | string }) {
+  return (
+    <Box
+      sx={(theme) => ({
+        bgcolor: 'background.default',
+        border: `1px solid ${theme.workspace.colors.border}`,
+        borderRadius: '14px',
+        minWidth: 0,
+        px: 1.5,
+        py: 1.25,
+      })}
+    >
+      <Typography color="text.disabled" fontSize={11} fontWeight={700} letterSpacing=".02em">
+        {label}
+      </Typography>
+      <Typography color="text.primary" fontSize={18} fontWeight={800} sx={{ mt: 0.5 }}>
+        {value}
+      </Typography>
+    </Box>
   );
 }
 

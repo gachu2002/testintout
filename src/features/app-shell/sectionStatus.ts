@@ -6,7 +6,8 @@ export const appShellSectionStatus = {
       { contract: 'accepted', method: 'GET', path: '/api/v2/me' },
       { contract: 'deferred', method: 'PATCH', path: '/api/v2/me/preferences' },
     ],
-    evidence: 'Verified with Playwright visual target and pnpm check.',
+    evidence:
+      'Implemented avatar navigation to the approved Account Settings route with the accepted GET /api/v2/me sample payload for displayed user fields.',
     fieldsUsed: [
       'displayName',
       'name',
@@ -16,8 +17,9 @@ export const appShellSectionStatus = {
       'summary.pendingRequestCount',
     ],
     id: 'shared-shell-current-user-avatar',
+    nextAction: '/ref-verify "Shared App Shell :: Current user/avatar"',
     page: 'Shared App Shell',
-    progress: 'verified',
+    progress: 'implemented',
     readiness: 'Ready',
     reference: 'workspace_resource_hub_shared.js/css',
     section: 'Current user/avatar',

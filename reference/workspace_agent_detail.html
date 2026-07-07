@@ -8,6 +8,94 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
   <link rel="stylesheet" href="workspace_detail_shared.css" />
   <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <style>
+    .section-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .section-tab {
+      border: 1px solid rgba(148, 163, 184, .22);
+      background: rgba(255, 255, 255, .84);
+      color: var(--t2);
+      border-radius: 999px;
+      padding: 10px 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .18s ease;
+    }
+    .section-tab:hover {
+      color: var(--brand);
+      border-color: rgba(124, 58, 237, .26);
+      background: rgba(124, 58, 237, .08);
+    }
+    .section-tab.is-active {
+      color: #fff;
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--brand), var(--accent));
+      box-shadow: 0 14px 24px rgba(124, 58, 237, .18);
+    }
+    .section-tab .material-icons-round {
+      font-size: 16px;
+    }
+    [data-detail-panel][hidden] {
+      display: none;
+    }
+    .secret-value-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+    .secret-text {
+      min-width: 0;
+      flex: 1 1 auto;
+      font-size: 14px;
+      line-height: 1.6;
+      word-break: break-all;
+    }
+    .secret-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      align-self: flex-end;
+    }
+    .secret-grid.two.credential-grid {
+      grid-template-columns: 1fr;
+    }
+    .secret-icon-btn {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(148, 163, 184, .24);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .92);
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: color .18s ease, border-color .18s ease, background .18s ease, transform .18s ease;
+    }
+    .secret-icon-btn:hover {
+      color: var(--brand);
+      border-color: rgba(124, 58, 237, .24);
+      background: rgba(124, 58, 237, .08);
+      transform: translateY(-1px);
+    }
+    .secret-icon-btn .material-icons-round {
+      font-size: 18px;
+    }
+    @media (max-width: 720px) {
+      .secret-value-row {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
 </head>
 <body>
   <div id="app"></div>
@@ -24,14 +112,53 @@
     function kv(rows) {
       return rows.map((row) => `<div class="kv-item"><div class="kv-key">${row.key}</div><div class="kv-value">${row.value}</div></div>`).join("");
     }
+    function maskSecretValue(value) {
+      const normalized = String(value ?? "");
+      if (!normalized) return "-";
+      return "•".repeat(Math.max(8, Math.min(normalized.length, 24)));
+    }
     function secretGrid(rows) {
-      return `<div class="secret-grid two">${rows.map((row) => `
+      return `<div class="secret-grid two credential-grid">${rows.map((row, index) => {
+        const label = String(row.label || "");
+        const rawValue = String(row.value ?? "");
+        const normalizedLabel = label.trim().toLowerCase();
+        const isPassword = row.maskable !== undefined ? Boolean(row.maskable) : normalizedLabel === "password";
+        const isAgentId = normalizedLabel === "agent id";
+        const copyable = row.copyable !== undefined ? Boolean(row.copyable) : (isPassword || isAgentId);
+        const fieldId = `secret-field-${index}-${normalizedLabel.replace(/[^a-z0-9]+/g, "-") || "value"}`;
+        const displayValue = isPassword ? maskSecretValue(rawValue) : rawValue;
+        return `
         <article class="secret-card">
-          <div class="secret-label">${row.label}</div>
-          <div class="secret-value"><span class="mono">${row.value}</span></div>
+          <div class="secret-label">${escapeHtml(label)}</div>
+          <div class="secret-value">
+            <div class="secret-value-row">
+              <span
+                class="mono secret-text"
+                id="${fieldId}"
+                data-secret-display
+                data-secret-raw="${escapeHtml(rawValue)}"
+                data-secret-visible="${isPassword ? "false" : "true"}"
+              >${escapeHtml(displayValue)}</span>
+              ${(isPassword || copyable) ? `
+              <span class="secret-actions">
+                ${isPassword ? `
+                <button class="secret-icon-btn" type="button" data-toggle-secret="${fieldId}" aria-label="비밀번호 보기" aria-pressed="false" title="비밀번호 보기">
+                  <span class="material-icons-round">visibility</span>
+                </button>
+                ` : ""}
+                ${copyable ? `
+                <button class="secret-icon-btn" type="button" data-copy-secret="${escapeHtml(rawValue)}" data-copy-default-icon="content_copy" aria-label="${isPassword ? "비밀번호 복사" : "ID 복사"}" title="${isPassword ? "비밀번호 복사" : "ID 복사"}">
+                  <span class="material-icons-round">content_copy</span>
+                </button>
+                ` : ""}
+              </span>
+              ` : ""}
+            </div>
+          </div>
           <div class="secret-meta">${row.meta || ""}</div>
         </article>
-      `).join("")}</div>`;
+      `;
+      }).join("")}</div>`;
     }
     function escapeHtml(value) {
       return String(value)
@@ -129,10 +256,45 @@
         ...item,
         layoutMode: "full-width",
         mainHtml: `
-          <section class="panel section">
+          <section class="section-tabs" aria-label="Agent detail sections">
+            <button class="section-tab is-active" type="button" data-detail-tab="overview"><span class="material-icons-round">dashboard</span>Overview</button>
+            <button class="section-tab" type="button" data-detail-tab="access"><span class="material-icons-round">badge</span>Access</button>
+            <button class="section-tab" type="button" data-detail-tab="status"><span class="material-icons-round">dns</span>Status</button>
+            <button class="section-tab" type="button" data-detail-tab="logs"><span class="material-icons-round">terminal</span>Logs</button>
+            <button class="section-tab" type="button" data-detail-tab="connected"><span class="material-icons-round">hub</span>Connected</button>
+          </section>
+
+          <section class="panel section" data-detail-panel="overview">
             <div class="section-head">
               <div>
-                <div class="section-kicker"><span class="material-icons-round">badge</span>접속정보</div>
+                <div class="section-kicker"><span class="material-icons-round">dashboard</span>Overview</div>
+                <h2 class="section-title">Agent 개요</h2>
+                <p class="section-desc">운영 목적과 현재 관리 포인트를 먼저 보고, 아래에서 핵심 메모를 이어서 확인할 수 있게 정리했습니다.</p>
+              </div>
+              <a class="section-link" href="${item.relatedHref}"><span class="material-icons-round">arrow_outward</span>관련 허브</a>
+            </div>
+            <div class="stats-grid three">
+              ${cardList(item.cards)}
+            </div>
+            <div style="height:16px;"></div>
+            <div class="list-grid two">
+              <div class="subpanel">
+                <div class="panel-title" style="font-size:16px;">Operational Notes</div>
+                <div class="panel-subtitle" style="margin-bottom:16px;">운영자가 같이 보는 체크 포인트를 빠르게 정리했습니다.</div>
+                <div class="info-list">${list(item.notes)}</div>
+              </div>
+              <div class="subpanel">
+                <div class="panel-title" style="font-size:16px;">Agent Facts</div>
+                <div class="panel-subtitle" style="margin-bottom:16px;">실행 공간과 owner 같은 기본 런타임 메타를 확인합니다.</div>
+                <div class="kv-list">${kv(item.facts)}</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel section" data-detail-panel="access" hidden>
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">badge</span>Access</div>
                 <h2 class="section-title">접속정보</h2>
                 <p class="section-desc">운영자가 바로 확인해야 하는 agent id / password 와 기본 런타임 메타를 한 화면에서 확인할 수 있게 구성했습니다.</p>
               </div>
@@ -145,37 +307,55 @@
                 ${secretGrid(item.credentials)}
               </div>
               <div class="subpanel">
-                <div class="panel-title" style="font-size:16px;">Agent Facts</div>
+                <div class="panel-title" style="font-size:16px;">Runtime Facts</div>
+                <div class="panel-subtitle" style="margin-bottom:16px;">owner, namespace, key scope 같은 기본 정보를 함께 봅니다.</div>
                 <div class="kv-list">${kv(item.facts)}</div>
               </div>
             </div>
           </section>
-          <section class="panel section">
-            <div class="section-kicker"><span class="material-icons-round">dns</span>상태</div>
-            <h2 class="section-title">상태</h2>
-            <p class="section-desc">CPU 와 Memory 점유 상태를 시계열로 먼저 보고, 아래에서 파드 이름과 Ready, Status, Restarts, Age, CPU, Mem 을 바로 확인할 수 있게 정리했습니다.</p>
+
+          <section class="panel section" data-detail-panel="status" hidden>
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">dns</span>Status</div>
+                <h2 class="section-title">상태</h2>
+                <p class="section-desc">CPU 와 Memory 점유 상태를 시계열로 먼저 보고, 아래에서 파드 이름과 Ready, Status, Restarts, Age, CPU, Mem 을 바로 확인할 수 있게 정리했습니다.</p>
+              </div>
+            </div>
             ${resourceTimelineCards(item.resourceTimelines)}
             <div style="height:16px;"></div>
             ${podMetricsTable(item.podMetrics)}
           </section>
-          <section class="panel section">
-            <div class="section-kicker"><span class="material-icons-round">terminal</span>로그</div>
-            <h2 class="section-title">로그</h2>
-            <p class="section-desc">파드를 선택하면서 최근 스트림 로그를 바로 전환해 볼 수 있게 구성했습니다. 장애 조사 시 CPU/Memory 흐름과 같은 맥락으로 빠르게 이어집니다.</p>
+
+          <section class="panel section" data-detail-panel="logs" hidden>
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">terminal</span>Logs</div>
+                <h2 class="section-title">로그</h2>
+                <p class="section-desc">파드를 선택하면서 최근 스트림 로그를 바로 전환해 볼 수 있게 구성했습니다. 장애 조사 시 CPU/Memory 흐름과 같은 맥락으로 빠르게 이어집니다.</p>
+              </div>
+            </div>
             ${logViewer(item.logs)}
           </section>
-          <section class="panel section">
-            <div class="section-kicker"><span class="material-icons-round">hub</span>Connection Status</div>
-            <h2 class="section-title">운영 메모와 연결 상태</h2>
-            <p class="section-desc">운영자가 함께 보는 참고 포인트와 연결 상태를 마지막에 정리했습니다.</p>
+
+          <section class="panel section" data-detail-panel="connected" hidden>
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">hub</span>Connected</div>
+                <h2 class="section-title">연결 상태</h2>
+                <p class="section-desc">현재 agent와 이어진 허브, tool, surface를 별도 섹션으로 분리해 관리 흐름을 따라가기 쉽게 정리했습니다.</p>
+              </div>
+            </div>
             <div class="list-grid two">
               <div class="subpanel">
-                <div class="panel-title" style="font-size:16px;">Operational Notes</div>
-                <div class="info-list">${list(item.notes)}</div>
+                <div class="panel-title" style="font-size:16px;">Connection Status</div>
+                <div class="panel-subtitle" style="margin-bottom:16px;">이 agent가 참조하거나 결과를 전달하는 연결 지점을 모았습니다.</div>
+                <div class="info-list">${list(item.relatedLinks)}</div>
               </div>
               <div class="subpanel">
-                <div class="panel-title" style="font-size:16px;">Connection Status</div>
-                <div class="info-list">${list(item.relatedLinks)}</div>
+                <div class="panel-title" style="font-size:16px;">Management Notes</div>
+                <div class="panel-subtitle" style="margin-bottom:16px;">운영 시 특히 같이 봐야 하는 연결성 메모를 다시 모았습니다.</div>
+                <div class="info-list">${list(item.notes)}</div>
               </div>
             </div>
           </section>
@@ -331,6 +511,184 @@
           { key: "Owner", value: "workspace user" },
           { key: "Namespace", value: '<span class="mono">browser-storage</span>' }
         ]
+      };
+    };
+
+
+    const createUnavailableSeries = () => [0, 0, 0, 0, 0, 0, 0];
+
+    const formatDateLabel = (value) => {
+      if (!value) return "N/A";
+      const date = new Date(value);
+      return Number.isNaN(date.valueOf()) ? "N/A" : date.toLocaleString("ko-KR", { hour12: false });
+    };
+
+    const createAgentDetailPlaceholder = (key, overrides = {}) => ({
+      key,
+      title: overrides.title || key,
+      description: overrides.description || "Agent 상세 정보를 불러오는 중입니다.",
+      heroIcon: "smart_toy",
+      typeLabel: "Agent",
+      statusLabel: overrides.statusLabel || "Loading",
+      statusTone: overrides.statusTone || "review",
+      theme: { bg: "#f1ebff", brand: "#7c3aed", brandH: "#6d28d9", brandBg: "#e4d9ff", brandSoft: "rgba(124,58,237,.18)", accent: "#22d3ee" },
+      relatedHref: "workspace_agent_hub.html",
+      actions: [
+        { label: "Agent Hub", icon: "arrow_back", href: "workspace_agent_hub.html" }
+      ],
+      heroStats: [
+        { label: "Status", value: overrides.statusLabel || "Loading", meta: "agent detail fetch" },
+        { label: "Workflow", value: "-", meta: "API 확인 중" },
+        { label: "Tools", value: "-", meta: "API 확인 중" },
+        { label: "Updated", value: "-", meta: "API 확인 중" }
+      ],
+      credentials: [
+        { label: "Agent ID", value: key, meta: "requested item", copyable: true },
+        { label: "Password", value: overrides.password || "API 미제공", meta: "샘플 detail placeholder", copyable: Boolean(overrides.password), maskable: Boolean(overrides.password) }
+      ],
+      resourceTimelines: [
+        { title: "CPU", meta: "실시간 메트릭 API 미제공", value: "N/A", startLabel: "n/a", endLabel: "n/a", series: createUnavailableSeries() },
+        { title: "Memory", meta: "실시간 메트릭 API 미제공", value: "N/A", startLabel: "n/a", endLabel: "n/a", series: createUnavailableSeries() }
+      ],
+      podMetrics: [
+        { pod: key, ready: "-", status: overrides.statusLabel || "Loading", restarts: "-", age: "-", cpu: "API 미제공", mem: "API 미제공" }
+      ],
+      cards: [
+        { title: "Detail", desc: overrides.description || "Agent 상세 정보를 불러오는 중입니다.", tags: ["loading", "api"] },
+        { title: "Route", desc: `/api/v2/agents/${key} 응답을 기다리는 중입니다.`, tags: ["v2", "detail"] },
+        { title: "Fallback", desc: "실시간 메트릭과 로그는 API에서 제공되지 않으면 placeholder로 유지됩니다.", tags: ["sample", "placeholder"] }
+      ],
+      logs: {
+        defaultPod: key,
+        pods: [
+          {
+            pod: key,
+            title: `${key} / loading`,
+            stream: "GET /api/v2/agents/:id",
+            since: "now",
+            lines: "1 line",
+            content: `Loading agent detail for ${key}...`
+          }
+        ]
+      },
+      notes: [
+        { title: "API 연결 준비", meta: "요청한 agent id 기준으로 detail 응답을 조회합니다.", side: "Fetch" },
+        { title: "관리 섹션 유지", meta: "Overview / Access / Status / Logs / Connected 구성을 그대로 유지합니다.", side: "Layout" },
+        { title: "빈 값 처리", meta: "응답에 없는 메트릭/로그는 API 미제공으로 표시합니다.", side: "Fallback" }
+      ],
+      relatedLinks: [
+        { title: "Agent Hub", meta: "목록으로 돌아가 다른 agent를 확인합니다.", side: "Hub" },
+        { title: "API v2", meta: `/api/v2/agents/${key}`, side: "API" }
+      ],
+      facts: [
+        { key: "Agent ID", value: `<span class="mono">${escapeHtml(key)}</span>` },
+        { key: "Runtime URL", value: "N/A" },
+        { key: "Owner", value: "확인 중" },
+        { key: "Updated At", value: "N/A" }
+      ],
+      __isLoading: overrides.isLoading !== undefined ? Boolean(overrides.isLoading) : true
+    });
+
+    const buildApiItem = (agent) => {
+      const agentId = String(agent?.id || agent?.slug || agent?.name || "agent").trim() || "agent";
+      const title = String(agent?.name || agentId).trim() || agentId;
+      const description = String(agent?.summary || "").trim() || "등록된 agent 상세 정보입니다.";
+      const workflowSteps = Array.isArray(agent?.workflow?.steps) ? agent.workflow.steps : [];
+      const workflowLabels = workflowSteps
+        .map((step) => step?.label || step?.name || step?.id)
+        .filter(Boolean);
+      const toolRefs = Array.isArray(agent?.toolInventoryRefs) ? agent.toolInventoryRefs.filter(Boolean) : [];
+      const authors = Array.isArray(agent?.authors)
+        ? agent.authors.map((author) => author?.name || author?.id).filter(Boolean)
+        : [];
+      const runtimeUrl = agent?.openUrl || agent?.runtime?.url || "";
+      const modelLabel = agent?.model?.primary || "미지정";
+      const updatedAtLabel = formatDateLabel(agent?.updatedAt);
+      const approvalMode = agent?.approval?.mode || agent?.approvalMode || "none";
+      const authMode = agent?.auth?.mode || agent?.authMode || "workspace";
+      const accountId = agent?.account?.id || "API 미제공";
+      const accountPassword = agent?.account?.password || "API 미제공";
+
+      const relatedLinks = toolRefs.length
+        ? toolRefs.slice(0, 3).map((ref) => ({ title: ref, meta: "연결된 Tool Inventory 참조", side: "Tool" }))
+        : [
+            { title: "Tool Inventory", meta: "연결된 tool inventory 정보가 아직 없습니다.", side: "Tool" },
+            { title: "Agent Hub", meta: "목록으로 돌아가 다른 agent를 확인합니다.", side: "Hub" }
+          ];
+
+      if (runtimeUrl) {
+        relatedLinks.unshift({ title: "Open Agent", meta: runtimeUrl, side: "Runtime" });
+      }
+
+      return {
+        key: agentId,
+        title,
+        description,
+        heroIcon: "smart_toy",
+        typeLabel: agent?.typeLabel || agent?.type || "Agent",
+        statusLabel: agent?.statusLabel || agent?.status || "Unknown",
+        statusTone: agent?.status === "running" ? "healthy" : "review",
+        theme: { bg: "#f1ebff", brand: "#7c3aed", brandH: "#6d28d9", brandBg: "#e4d9ff", brandSoft: "rgba(124,58,237,.18)", accent: "#22d3ee" },
+        relatedHref: "workspace_agent_hub.html",
+        actions: [
+          { label: "Agent Hub", icon: "arrow_back", href: "workspace_agent_hub.html" },
+          ...(runtimeUrl ? [{ label: "Open Agent", icon: "arrow_outward", variant: "primary", href: runtimeUrl }] : [])
+        ],
+        heroStats: [
+          { label: "Type", value: agent?.typeLabel || agent?.type || "Agent", meta: agent?.runtime?.provider || "runtime" },
+          { label: "Status", value: agent?.statusLabel || agent?.status || "Unknown", meta: `auth ${String(authMode).toUpperCase()}` },
+          { label: "Workflow", value: String(agent?.workflow?.stepCount ?? workflowSteps.length ?? 0), meta: workflowLabels[0] || "step metadata" },
+          { label: "Tools", value: String(toolRefs.length), meta: modelLabel }
+        ],
+        credentials: [
+          { label: "Agent ID", value: accountId, meta: "account.id", copyable: Boolean(agent?.account?.id) },
+          { label: "Password", value: accountPassword, meta: agent?.account?.password ? "account.password" : (runtimeUrl || "account.password is not exposed"), copyable: Boolean(agent?.account?.password), maskable: Boolean(agent?.account?.password) }
+        ],
+        resourceTimelines: [
+          { title: "CPU", meta: "실시간 메트릭 API 미제공", value: "N/A", startLabel: "n/a", endLabel: "n/a", series: createUnavailableSeries() },
+          { title: "Memory", meta: "실시간 메트릭 API 미제공", value: "N/A", startLabel: "n/a", endLabel: "n/a", series: createUnavailableSeries() }
+        ],
+        podMetrics: [
+          { pod: agent?.runtime?.provider || agent?.slug || agentId, ready: "-", status: agent?.statusLabel || agent?.status || "Unknown", restarts: "-", age: updatedAtLabel, cpu: "API 미제공", mem: "API 미제공" }
+        ],
+        cards: [
+          { title: "Summary", desc: description, tags: [agent?.typeLabel || agent?.type || "agent", agent?.statusLabel || agent?.status || "unknown"] },
+          { title: "Workflow", desc: workflowLabels.length ? workflowLabels.join(" -> ") : "등록된 workflow step 정보가 없습니다.", tags: [`${workflowSteps.length} steps`, agent?.triggerChannel || "manual"] },
+          { title: "Access", desc: `Auth ${String(authMode).toUpperCase()} / Approval ${String(approvalMode).toUpperCase()}`, tags: [toolRefs.length ? `${toolRefs.length} tools` : "no tools", authors.length ? `${authors.length} authors` : "owner only"] }
+        ],
+        logs: {
+          defaultPod: agentId,
+          pods: [
+            {
+              pod: agentId,
+              title: `${title} / agent detail`,
+              stream: "GET /api/v2/agents/:id",
+              since: updatedAtLabel,
+              lines: "6 lines",
+              content: [
+                `[detail] id=${agentId}`,
+                `[detail] type=${agent?.typeLabel || agent?.type || "Agent"} status=${agent?.statusLabel || agent?.status || "Unknown"}`,
+                `[detail] runtime=${agent?.runtime?.provider || "agent"} url=${runtimeUrl || "n/a"}`,
+                `[detail] workflowSteps=${agent?.workflow?.stepCount ?? workflowSteps.length ?? 0} toolCount=${toolRefs.length}`,
+                `[detail] model=${modelLabel}`,
+                `[detail] updatedAt=${agent?.updatedAt || "n/a"}`
+              ].join("\n")
+            }
+          ]
+        },
+        notes: [
+          { title: "Owner", meta: agent?.owner?.name || "미지정", side: "Owner" },
+          { title: "Authors", meta: authors.length ? authors.join(", ") : "추가 author 정보 없음", side: "Access" },
+          { title: "Last Updated", meta: updatedAtLabel, side: "Sync" }
+        ],
+        relatedLinks,
+        facts: [
+          { key: "Agent ID", value: `<span class="mono">${escapeHtml(agentId)}</span>` },
+          { key: "Runtime URL", value: runtimeUrl ? `<span class="mono">${escapeHtml(runtimeUrl)}</span>` : "N/A" },
+          { key: "Owner", value: escapeHtml(agent?.owner?.name || "미지정") },
+          { key: "Updated At", value: escapeHtml(updatedAtLabel) }
+        ],
+        __isLoading: false
       };
     };
 
@@ -545,6 +903,14 @@
       }
     ];
 
+    const configuredItems = Object.fromEntries([...rawItems, ...parseStoredAgents().map(buildStoredItem).filter(Boolean)].map((item) => [item.key, buildItem(item)]));
+    const detailParams = new URLSearchParams(window.location.search);
+    const requestedItemKey = detailParams.get("item");
+
+    if (requestedItemKey && !Object.prototype.hasOwnProperty.call(configuredItems, requestedItemKey)) {
+      configuredItems[requestedItemKey] = buildItem(createAgentDetailPlaceholder(requestedItemKey));
+    }
+
     window.DETAIL_PAGE_CONFIG = {
       paramName: "item",
       pageTitle: "Agent Detail",
@@ -553,10 +919,162 @@
       activeHubKey: "agent-hub",
       eyebrow: "AI · Automation Runtimes",
       searchPlaceholder: "agent 이름, workflow step, key tier를 검색하세요...",
-      items: Object.fromEntries([...rawItems, ...parseStoredAgents().map(buildStoredItem).filter(Boolean)].map((item) => [item.key, buildItem(item)]))
+      items: configuredItems
     };
   </script>
   <script src="workspace_detail_shared.js"></script>
+  <script>
+    window.initAgentDetailCredentials = function initAgentDetailCredentials() {
+      const copyButtons = Array.from(document.querySelectorAll("[data-copy-secret]"));
+      const toggleButtons = Array.from(document.querySelectorAll("[data-toggle-secret]"));
+
+      const copyText = async (value) => {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(value);
+          return;
+        }
+
+        const textarea = document.createElement("textarea");
+        textarea.value = value;
+        textarea.setAttribute("readonly", "true");
+        textarea.style.position = "absolute";
+        textarea.style.left = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+      };
+
+      copyButtons.forEach((button) => {
+        button.onclick = async () => {
+          const value = button.dataset.copySecret || "";
+          if (!value) return;
+
+          try {
+            await copyText(value);
+            const icon = button.querySelector(".material-icons-round");
+            if (!icon) return;
+            const defaultIcon = button.dataset.copyDefaultIcon || "content_copy";
+            icon.textContent = "check";
+            clearTimeout(button.__copyTimer);
+            button.__copyTimer = window.setTimeout(() => {
+              icon.textContent = defaultIcon;
+            }, 1200);
+          } catch (error) {
+            console.error("Failed to copy secret", error);
+          }
+        };
+      });
+
+      toggleButtons.forEach((button) => {
+        button.onclick = () => {
+          const targetId = button.dataset.toggleSecret;
+          const field = targetId ? document.getElementById(targetId) : null;
+          if (!field) return;
+
+          const rawValue = field.dataset.secretRaw || "";
+          const nextVisible = field.dataset.secretVisible !== "true";
+          field.dataset.secretVisible = String(nextVisible);
+          field.textContent = nextVisible ? rawValue : maskSecretValue(rawValue);
+          button.setAttribute("aria-pressed", String(nextVisible));
+          button.setAttribute("aria-label", nextVisible ? "비밀번호 숨기기" : "비밀번호 보기");
+          button.setAttribute("title", nextVisible ? "비밀번호 숨기기" : "비밀번호 보기");
+
+          const icon = button.querySelector(".material-icons-round");
+          if (icon) {
+            icon.textContent = nextVisible ? "visibility_off" : "visibility";
+          }
+        };
+      });
+    };
+
+    window.initAgentDetailTabs = function initAgentDetailTabs() {
+      const detailTabButtons = Array.from(document.querySelectorAll("[data-detail-tab]"));
+      const detailPanels = Array.from(document.querySelectorAll("[data-detail-panel]"));
+
+      const setActiveDetailPanel = (panelName) => {
+        const nextPanel = panelName || "overview";
+
+        detailTabButtons.forEach((button) => {
+          const isActive = button.dataset.detailTab === nextPanel;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-pressed", String(isActive));
+        });
+
+        detailPanels.forEach((panel) => {
+          panel.hidden = panel.dataset.detailPanel !== nextPanel;
+        });
+      };
+
+      if (!detailTabButtons.length || !detailPanels.length) return;
+
+      detailTabButtons.forEach((button) => {
+        button.onclick = () => {
+          setActiveDetailPanel(button.dataset.detailTab);
+        };
+      });
+
+      setActiveDetailPanel("overview");
+    };
+
+    window.initAgentDetailTabs();
+    window.initAgentDetailCredentials();
+  </script>
   <script src="ax_studio_topbar.js"></script>
+  <script>
+    (function () {
+      const config = window.DETAIL_PAGE_CONFIG;
+      const params = new URLSearchParams(window.location.search);
+      const requestedKey = params.get(config?.paramName || "item");
+
+      if (!requestedKey) return;
+
+      const currentItem = config?.items?.[requestedKey];
+      if (!currentItem || !currentItem.__isLoading) return;
+
+      const rerender = (nextItem) => {
+        window.DETAIL_PAGE_CONFIG.items[requestedKey] = buildItem(nextItem);
+        window.renderWorkspaceDetailPage?.();
+        window.initAgentDetailTabs?.();
+        window.initAgentDetailCredentials?.();
+
+        const topbarHost = document.querySelector("[data-ax-topbar]");
+        if (topbarHost && window.mountAxStudioTopbar) {
+          window.mountAxStudioTopbar(topbarHost);
+        }
+      };
+
+      const renderError = (message) => {
+        rerender(createAgentDetailPlaceholder(requestedKey, {
+          title: requestedKey,
+          description: message,
+          statusLabel: "Unavailable",
+          isLoading: false
+        }));
+      };
+
+      fetch(`/api/v2/agents/${encodeURIComponent(requestedKey)}`, { credentials: "same-origin" })
+        .then((response) => {
+          if (response.ok) return response.json();
+
+          return response.json()
+            .catch(() => null)
+            .then((body) => {
+              throw new Error(body?.error?.message || `Request failed (${response.status})`);
+            });
+        })
+        .then((body) => {
+          if (!body?.data) {
+            throw new Error("Agent detail payload is empty");
+          }
+
+          rerender(buildApiItem(body.data));
+        })
+        .catch((error) => {
+          console.error("Failed to load agent detail", error);
+          renderError(`요청한 agent 정보를 불러오지 못했습니다. ${error.message || "Unknown error"}`);
+        });
+    })();
+  </script>
 </body>
 </html>

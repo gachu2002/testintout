@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 
 import { SectionStatusBadge } from '@/components/reference-status';
+import { routes } from '@/config/routes';
 import { AppHeaderNotifications } from '@/features/app-shell/components/AppHeaderNotifications';
 import { AppHeaderSearch } from '@/features/app-shell/components/AppHeaderSearch';
 import { AxLogoMark } from '@/features/app-shell/components/AxLogoMark';
@@ -58,7 +59,7 @@ const BrandLink = styled(RouterLink)(({ theme }) => ({
 
 const ServiceMenuButton = styled(ButtonBase)(({ theme }) => ({
   alignItems: 'center',
-  backgroundColor: '#fbfcfe',
+  backgroundColor: theme.workspace.colors.surfaceSoft,
   border: `1px solid ${theme.workspace.colors.border}`,
   borderRadius: 12,
   color: theme.palette.text.primary,
@@ -82,7 +83,7 @@ const ServiceMenuButton = styled(ButtonBase)(({ theme }) => ({
 
 const ReferenceStatusToggle = styled(ButtonBase)(({ theme }) => ({
   alignItems: 'center',
-  backgroundColor: '#fbfcfe',
+  backgroundColor: theme.workspace.colors.surfaceSoft,
   border: `1px solid ${theme.workspace.colors.border}`,
   borderRadius: 999,
   color: theme.palette.text.secondary,
@@ -117,6 +118,17 @@ const ReferenceStatusToggle = styled(ButtonBase)(({ theme }) => ({
     '& .reference-status-toggle-label': {
       display: 'none',
     },
+  },
+}));
+
+const AvatarLink = styled(RouterLink)(({ theme }) => ({
+  borderRadius: '50%',
+  display: 'inline-flex',
+  flexShrink: 0,
+  textDecoration: 'none',
+  '&:focus-visible': {
+    outline: theme.workspace.focus.outline,
+    outlineOffset: theme.workspace.focus.outlineOffset,
   },
 }));
 
@@ -220,14 +232,19 @@ export function AppHeader() {
           </ReferenceStatusToggle>
         </Tooltip>
 
-        <Avatar
-          alt={currentUser?.displayName ?? 'Current user'}
+        <AvatarLink
+          aria-label="Open Account Settings"
           data-ref="current-user-avatar"
-          src={currentUser?.photo ? `data:image/png;base64,${currentUser.photo}` : undefined}
-          sx={{ bgcolor: 'primary.main', fontSize: 12, fontWeight: 800, height: 32, width: 32 }}
+          to={routes.accountSettings}
         >
-          {currentUser ? getInitials(currentUser.name || currentUser.email) : 'AX'}
-        </Avatar>
+          <Avatar
+            alt={currentUser?.displayName ?? 'Current user'}
+            src={currentUser?.photo ? `data:image/png;base64,${currentUser.photo}` : undefined}
+            sx={{ bgcolor: 'primary.main', fontSize: 12, fontWeight: 800, height: 32, width: 32 }}
+          >
+            {currentUser ? getInitials(currentUser.name || currentUser.email) : 'AX'}
+          </Avatar>
+        </AvatarLink>
         <SectionStatusBadge status={appShellSectionStatus.currentUser} />
       </HeaderInner>
 

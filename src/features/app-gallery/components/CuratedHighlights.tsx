@@ -7,7 +7,7 @@ import { alpha } from '@mui/material/styles';
 import type { ReactNode } from 'react';
 
 import { SectionStatusBadge } from '@/components/reference-status';
-import { IconTile } from '@/components/workspace';
+import { focusVisibleStyles, IconTile } from '@/components/workspace';
 import { WorkspaceIcon } from '@/components/WorkspaceIcon';
 import {
   FeatureCard,
@@ -36,7 +36,7 @@ export function CuratedHighlights({
     <PanelCard>
       <SectionLabel sx={{ mb: 1.75 }}>
         <StarRoundedIcon sx={{ color: 'primary.main', fontSize: 15 }} />
-        Curated Highlights
+        Recommended Highlights
         <SectionStatusBadge status={appGallerySectionStatus.highlights} />
       </SectionLabel>
       {isLoading && sideApps.length === 0 ? (
@@ -111,6 +111,11 @@ function FeaturedPrimaryCard({
       <Typography color="text.secondary" fontSize={13} lineHeight={1.7} sx={{ mt: 1 }}>
         {app.summary}
       </Typography>
+      {app.recommendationReason ? (
+        <Typography color="text.secondary" fontSize={13} lineHeight={1.7} sx={{ mt: 1.25 }}>
+          {app.recommendationReason}
+        </Typography>
+      ) : null}
       <Stack spacing={1.125} sx={{ my: 2 }}>
         {app.tags.slice(0, 3).map((tag) => (
           <Point icon={<CheckCircleRoundedIcon />} key={tag} text={tag} />
@@ -136,7 +141,7 @@ function FeaturedPrimaryCard({
         sx={{ mt: 2.25 }}
         variant="contained"
       >
-        상세 계약 보기
+        상세 보기
       </Button>
     </FeatureCard>
   );
@@ -151,8 +156,8 @@ function FeaturedSideCard({
   index: number;
   onOpenAppDetail: (slug: string) => void;
 }) {
-  const label = index === 0 ? '운영 관점 추천' : '문서/협업 관점 추천';
-  const marker = index === 0 ? 'O' : 'W';
+  const label = index === 0 ? '추가 추천' : '함께 보기';
+  const marker = index === 0 ? 'A' : 'B';
 
   return (
     <Box
@@ -166,6 +171,7 @@ function FeaturedSideCard({
         cursor: 'pointer',
         p: 2,
         textAlign: 'left',
+        ...focusVisibleStyles(theme),
       })}
       type="button"
     >

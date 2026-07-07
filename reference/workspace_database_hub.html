@@ -8,6 +8,336 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
   <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
   <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <style>
+    .db-create-progress-track {
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:0;
+    }
+
+    .hub-lite-create-progress-rail.is-hidden {
+      visibility:hidden;
+    }
+
+    .db-create-stage[hidden] {
+      display:none !important;
+    }
+
+    .hub-lite-create-actions [hidden] {
+      display:none !important;
+    }
+
+    .db-create-stage {
+      width:min(100%, var(--hub-lite-create-wide-width, 920px));
+      margin:0 auto;
+    }
+
+    .db-create-stage.is-compact {
+      width:min(100%, var(--hub-lite-create-content-width, 680px));
+    }
+
+    .db-create-size-input-wrap {
+      position:relative;
+    }
+
+    .db-create-size-input-wrap .hub-lite-create-input {
+      padding-right:52px;
+    }
+
+    .db-create-size-suffix {
+      position:absolute;
+      right:16px;
+      top:50%;
+      transform:translateY(-50%);
+      color:var(--t2);
+      font-size:13px;
+      font-weight:700;
+      pointer-events:none;
+    }
+
+    .db-create-engine-grid {
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0, 1fr));
+      gap:14px;
+    }
+
+    .db-create-engine-card {
+      min-width:0;
+      display:grid;
+      gap:12px;
+      padding:18px;
+      border:1px solid rgba(214,216,219,.94);
+      border-radius:18px;
+      background:
+        radial-gradient(circle at top left, rgba(76,106,136,.08), transparent 45%),
+        #fff;
+      text-align:left;
+      transition:border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+    }
+
+    .db-create-engine-card:hover {
+      transform:translateY(-1px);
+      border-color:color-mix(in srgb, var(--brand) 24%, transparent);
+      box-shadow:0 14px 26px rgba(15,23,42,.08);
+    }
+
+    .db-create-engine-card.is-selected {
+      border-color:var(--brand);
+      box-shadow:0 18px 32px color-mix(in srgb, var(--brand) 14%, transparent);
+    }
+
+    .db-create-engine-head {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .db-create-engine-icon {
+      width:48px;
+      height:48px;
+      border-radius:16px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px;
+      background:#fff;
+      border:1px solid rgba(214,216,219,.92);
+      box-shadow:0 12px 24px rgba(15,23,42,.08);
+      flex-shrink:0;
+    }
+
+    .db-create-engine-icon svg,
+    .db-create-size-pill svg {
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    .db-create-engine-radio {
+      width:18px;
+      height:18px;
+      border-radius:999px;
+      border:2px solid #d2d7e0;
+      position:relative;
+      flex-shrink:0;
+      margin-top:2px;
+    }
+
+    .db-create-engine-card.is-selected .db-create-engine-radio {
+      border-color:var(--brand);
+    }
+
+    .db-create-engine-card.is-selected .db-create-engine-radio::after {
+      content:"";
+      position:absolute;
+      inset:3px;
+      border-radius:999px;
+      background:var(--brand);
+    }
+
+    .db-create-engine-title {
+      font-size:17px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      line-height:1.3;
+    }
+
+    .db-create-engine-meta {
+      color:var(--t2);
+      font-size:13px;
+      line-height:1.55;
+    }
+
+    .db-create-engine-submeta {
+      color:var(--t3);
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    .db-create-size-summary {
+      display:grid;
+      gap:10px;
+      padding:16px;
+      border-radius:18px;
+      border:1px solid rgba(214,216,219,.86);
+      background:#fbfcfe;
+    }
+
+    .db-create-size-pill {
+      width:max-content;
+      min-height:28px;
+      padding:0 10px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      background:var(--brand-bg);
+      color:var(--brand);
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .db-create-size-pill svg {
+      width:14px;
+      height:14px;
+      flex-shrink:0;
+    }
+
+    .db-create-size-summary-title {
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:-.03em;
+    }
+
+    .db-create-size-summary-copy {
+      color:var(--t2);
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    .db-create-size-hint {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .db-create-size-chip {
+      min-height:28px;
+      padding:0 10px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      background:#f4f6fa;
+      color:var(--t2);
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .db-create-status-card {
+      display:grid;
+      gap:16px;
+      padding:20px;
+      border-radius:22px;
+      border:1px solid rgba(214,216,219,.86);
+      background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,251,255,.94));
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.8),
+        0 12px 24px rgba(15,23,42,.04);
+    }
+
+    .db-create-status-head {
+      display:grid;
+      gap:8px;
+    }
+
+    .db-create-status-kicker {
+      width:max-content;
+      min-height:28px;
+      padding:0 10px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      background:var(--brand-bg);
+      color:var(--brand);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+
+    .db-create-status-title {
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:-.04em;
+      line-height:1.25;
+    }
+
+    .db-create-status-copy {
+      color:var(--t2);
+      font-size:14px;
+      line-height:1.7;
+    }
+
+    .db-create-status-list {
+      display:grid;
+      gap:12px;
+    }
+
+    .db-create-status-row {
+      display:grid;
+      grid-template-columns:auto minmax(0, 1fr) auto;
+      gap:12px;
+      align-items:center;
+      padding:14px 16px;
+      border-radius:16px;
+      border:1px solid rgba(214,216,219,.82);
+      background:#fff;
+    }
+
+    .db-create-status-row.is-active {
+      border-color:color-mix(in srgb, var(--brand) 26%, transparent);
+      background:color-mix(in srgb, var(--brand) 4%, #fff);
+    }
+
+    .db-create-status-row.is-complete {
+      border-color:rgba(16,185,129,.22);
+      background:rgba(236,253,245,.86);
+    }
+
+    .db-create-status-dot {
+      width:28px;
+      height:28px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:#d7dbe2;
+      color:#fff;
+      flex-shrink:0;
+    }
+
+    .db-create-status-row.is-active .db-create-status-dot {
+      background:var(--brand);
+    }
+
+    .db-create-status-row.is-complete .db-create-status-dot {
+      background:#10b981;
+    }
+
+    .db-create-status-label {
+      font-size:14px;
+      font-weight:700;
+      color:var(--t1);
+      line-height:1.45;
+    }
+
+    .db-create-status-state {
+      font-size:12px;
+      font-weight:800;
+      color:var(--t3);
+      white-space:nowrap;
+    }
+
+    .db-create-status-row.is-active .db-create-status-state {
+      color:var(--brand);
+    }
+
+    .db-create-status-row.is-complete .db-create-status-state {
+      color:#059669;
+    }
+
+    @media (max-width:860px) {
+      .db-create-engine-grid {
+        grid-template-columns:1fr;
+      }
+      .db-create-progress-track {
+        grid-template-columns:1fr;
+        gap:12px;
+      }
+    }
+  </style>
 </head>
 <body>
   <div id="app"></div>
@@ -33,8 +363,9 @@
       eyebrow: "Storage · Data Plane",
       title: "Database Hub",
       description: "데이터베이스 리소스 모음입니다. 실제 접속과 운영 콘솔은 Consoles Hub에서 열고, 여기서는 리소스 상태와 연결 프로젝트를 빠르게 찾습니다.",
-      primaryAction: { href: "workspace_project_detail.html?project=hermes-be", icon: "add_circle", label: "새 데이터베이스 생성" },
+      primaryAction: null,
       secondaryAction: { href: "workspace_tools_hub.html", icon: "web", label: "Consoles Hub 보기" },
+      createAction: { href: "#", icon: "add_circle", label: "새 데이터베이스 생성" },
       heroStats: [
         { icon: "storage", value: "-", label: "등록 리소스", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#2563eb,#3b82f6)" },
         { icon: "link", value: "-", label: "연결 바인딩", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#3b82f6,#38bdf8)" },
@@ -84,50 +415,125 @@
     (() => {
       const API_BASE = "/api/v2";
       const DEFAULT_RESOURCE_LIMIT = 4;
+      const FETCH_LIMIT = 100;
       const RESTART_POLL_INTERVAL_MS = 5000;
       const RESTART_POLL_MAX_ATTEMPTS = 24;
       const FALLBACK_CONFIG = window.HUB_CONFIG;
+      const createdDatabaseResources = [];
+      let lastRenderedConfig = FALLBACK_CONFIG;
       const pendingRestarts = new Map();
-      const pagingState = {
-        currentPage: 1,
-        totalItems: 0
+      const DB_CREATE_ENGINE_OPTIONS = [
+        { id: "mongo", title: "MongoDB", desc: "문서 중심 데이터를 유연하게 저장하는 DB입니다.", meta: "Document DB", hint: "로그, 문서형 서비스, 빠른 프로토타입", sizeHint: "예: 20, 50, 100" },
+        { id: "mysql", title: "MariaDB", desc: "가장 익숙한 관계형 워크로드에 적합한 DB입니다.", meta: "Relational DB", hint: "업무 시스템, 백오피스, 일반 CRUD", sizeHint: "예: 20, 100, 200" },
+        { id: "elastic", title: "Elastic Search", desc: "검색과 로그 분석을 위한 인덱싱 중심 DB입니다.", meta: "Search DB", hint: "검색, 운영 로그, 분석 쿼리", sizeHint: "예: 50, 200, 500" },
+        { id: "postgres", title: "Postgresql", desc: "확장성과 안정성이 중요한 관계형 서비스에 적합합니다.", meta: "Relational DB", hint: "서비스 DB, 분석, 복잡한 쿼리", sizeHint: "예: 20, 100, 200" },
+        { id: "milvus", title: "Milvus", desc: "벡터 검색과 AI 검색 시나리오에 맞는 DB입니다.", meta: "Vector DB", hint: "RAG, 추천, 임베딩 검색", sizeHint: "예: 50, 100, 300" },
+        { id: "redis", title: "redis", desc: "빠른 캐시와 세션 저장에 적합한 인메모리 DB입니다.", meta: "Cache DB", hint: "캐시, 세션, 큐, 실시간 상태", sizeHint: "예: 2, 8, 16" }
+      ];
+      const DB_CREATE_STATUS_STEPS = [
+        "DB 리소스를 예약하고 있습니다.",
+        "스토리지와 기본 설정을 적용하고 있습니다.",
+        "네트워크와 보안 정책을 연결하고 있습니다.",
+        "생성 결과를 정리하고 있습니다."
+      ];
+      const ENGINE_LOGOS = {
+        mongo: `
+          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <path fill="#13AA52" d="M16.11 2.4c-.56 1.84-1.98 3.42-3.68 5.32-2.6 2.92-5.83 6.54-5.83 11.25 0 6 4.31 10.61 9.4 10.61 4.91 0 9.18-4.5 9.18-10.55 0-4.69-2.87-8.29-5.41-11.47-1.63-2.04-3.04-3.8-3.66-5.16Z"/>
+            <path fill="#0F7F3E" d="M16.02 7.14c1.06 2.46 1.53 5.15 1.53 7.84 0 4.26-.87 8.34-1.53 12.54-.68-4.2-1.62-8.28-1.62-12.54 0-2.69.5-5.38 1.62-7.84Z"/>
+          </svg>`,
+        mysql: `
+          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <path fill="#1F6E8C" d="M7.27 21.39c1.63-5.86 7.65-9.95 14.15-9.95 1.35 0 2.64.18 3.83.52-.64-.58-1.42-1.07-2.31-1.44-.44-1.52-1.77-2.77-3.63-3.32-2.04-.6-4.16-.2-5.39.88-.73-.4-1.81-.67-3.02-.67-2.45 0-4.44 1.12-4.44 2.5 0 .15.02.29.06.43-1.4.77-2.27 1.84-2.27 3.02 0 .65.26 1.26.74 1.79-.57.87-.89 1.83-.89 2.83 0 2.12 1.44 4.05 3.17 5.11Z"/>
+            <path fill="#83C341" d="M22.41 12.59c-4.94.14-9.7 3.06-11.97 7.52 1.42-1.33 3.62-2.18 6.08-2.18 3.93 0 7.22 2.15 8.06 5.03 1.32-.94 2.23-2.37 2.23-3.98 0-3.58-1.71-6.49-4.4-6.39Z"/>
+          </svg>`,
+        elastic: `
+          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <path fill="#F04E98" d="M22.74 4.86a8.08 8.08 0 0 0-6.8 3.7c.96 1.41 1.52 3.12 1.52 4.95h11.44a8 8 0 0 0-6.16-8.65Z"/>
+            <path fill="#00BFB3" d="M10.4 13.51a8.1 8.1 0 0 0 5.54-2.2A8.08 8.08 0 0 0 7.5 4.8a8.09 8.09 0 0 0 2.9 8.71Z"/>
+            <path fill="#FDB515" d="M17.46 18.45c0 1.83-.56 3.54-1.52 4.95a8.08 8.08 0 0 0 6.8 3.7 8 8 0 0 0 6.16-8.65H17.46Z"/>
+            <path fill="#343741" d="M10.4 18.45H3.06A8 8 0 0 0 9.2 27.1a8.08 8.08 0 0 0 6.74-3.7 8.06 8.06 0 0 1-5.54-4.95Z"/>
+          </svg>`,
+        postgres: `
+          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <path fill="#336791" d="M16.2 3.84c-4.74 0-8.86 3.48-8.86 8.68v8.41c0 2.35 1.75 3.91 3.67 3.91 1 0 1.86-.35 2.42-1.01l.32 3.06c.08.8.75 1.39 1.55 1.39h1.61c.86 0 1.56-.7 1.56-1.56v-4.5c.84.76 1.97 1.16 3.18 1.16 2.85 0 4.99-2.23 4.99-5.19V12.5c0-5.18-4.22-8.66-10.46-8.66Z"/>
+            <path fill="#FFFFFF" d="M11.49 13.33a1.62 1.62 0 1 0 0-3.24 1.62 1.62 0 0 0 0 3.24Zm9.54 0a1.62 1.62 0 1 0 0-3.24 1.62 1.62 0 0 0 0 3.24Z"/>
+            <path fill="#FFFFFF" d="M12.42 18.46c2.21 1.22 4.83 1.22 7.15 0 .44-.23.98-.06 1.21.39.23.44.05.98-.39 1.21-2.85 1.49-6.06 1.49-8.84-.01a.89.89 0 1 1 .87-1.59Z"/>
+          </svg>`,
+        milvus: `
+          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <path fill="#14B8A6" d="M7.04 10.54a4.2 4.2 0 1 1 8.39 0v10.92a4.2 4.2 0 1 1-8.39 0V10.54Z"/>
+            <path fill="#6366F1" d="M16.57 14.71a4.2 4.2 0 1 1 8.39 0v6.75a4.2 4.2 0 1 1-8.39 0v-6.75Z"/>
+          </svg>`,
+        redis: `
+          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <path fill="#D82C20" d="M16.01 4.21 6.08 8.15 16 12.1l9.93-3.95-9.92-3.94Z"/>
+            <path fill="#C6281E" d="M6.08 13.11 16 17.05l9.93-3.94v5.42L16 22.47l-9.92-3.94v-5.42Z"/>
+            <path fill="#B71C1C" d="M6.08 23.47 16 27.41l9.93-3.94v-2.68L16 24.73l-9.92-3.94v2.68Z"/>
+            <circle cx="11.5" cy="8.18" r="1.05" fill="#FFF2F2"/>
+            <circle cx="16" cy="10.12" r="1.05" fill="#FFF2F2"/>
+            <circle cx="20.48" cy="8.18" r="1.05" fill="#FFF2F2"/>
+          </svg>`,
+        unknown: `
+          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <ellipse cx="16" cy="8.5" rx="8.5" ry="3.5" fill="#64748B"/>
+            <path fill="#94A3B8" d="M7.5 8.5v11c0 1.94 3.81 3.5 8.5 3.5s8.5-1.56 8.5-3.5v-11c0 1.94-3.81 3.5-8.5 3.5S7.5 10.44 7.5 8.5Z"/>
+          </svg>`
+      };
+      const dbCreateState = {
+        step: 1,
+        engine: "",
+        name: "",
+        size: "",
+        statusIndex: 0,
+        statusDone: false,
+        created: false,
+        timer: null,
+        isSubmitting: false,
+        errorMessage: ""
       };
       const ENGINE_META = {
         mysql: {
           category: "relational",
           icon: "table_chart",
           label: "Relational DB · MariaDB / MySQL",
-          color: "linear-gradient(135deg,#0891b2,#22d3ee)"
+          color: "linear-gradient(135deg,#0891b2,#22d3ee)",
+          logo: ENGINE_LOGOS.mysql
         },
         postgres: {
           category: "relational",
           icon: "database",
           label: "Relational DB · PostgreSQL",
-          color: "linear-gradient(135deg,#2563eb,#60a5fa)"
+          color: "linear-gradient(135deg,#2563eb,#60a5fa)",
+          logo: ENGINE_LOGOS.postgres
         },
         mongo: {
           category: "document",
           icon: "account_tree",
           label: "Document DB · MongoDB",
-          color: "linear-gradient(135deg,#16a34a,#4ade80)"
+          color: "linear-gradient(135deg,#16a34a,#4ade80)",
+          logo: ENGINE_LOGOS.mongo
         },
         redis: {
           category: "cache",
           icon: "memory",
           label: "Cache DB · Redis",
-          color: "linear-gradient(135deg,#f97316,#fb923c)"
+          color: "linear-gradient(135deg,#f97316,#fb923c)",
+          logo: ENGINE_LOGOS.redis
         },
         elastic: {
           category: "search",
           icon: "travel_explore",
           label: "Search DB · Elasticsearch",
-          color: "linear-gradient(135deg,#7c3aed,#a78bfa)"
+          color: "linear-gradient(135deg,#7c3aed,#a78bfa)",
+          logo: ENGINE_LOGOS.elastic
         },
         milvus: {
           category: "vector",
           icon: "hub",
           label: "Vector DB · Milvus",
-          color: "linear-gradient(135deg,#0f766e,#5eead4)"
+          color: "linear-gradient(135deg,#0f766e,#5eead4)",
+          logo: ENGINE_LOGOS.milvus
         }
       };
       const FILTER_META = {
@@ -179,7 +585,25 @@
         });
 
         if (!response.ok) {
-          throw new Error(`${response.status} ${response.statusText}`);
+          let message = `${response.status} ${response.statusText}`;
+          try {
+            const payload = await response.json();
+            const apiMessage = payload?.message || payload?.error?.message || payload?.error || payload?.code;
+            if (apiMessage) {
+              message = `${response.status} ${apiMessage}`;
+            }
+          } catch {
+            try {
+              const text = await response.text();
+              if (text) {
+                message = `${response.status} ${text}`;
+              }
+            } catch {
+              // ignore body parsing failure
+            }
+          }
+
+          throw new Error(message);
         }
 
         return response.json();
@@ -215,15 +639,47 @@
         return fallback;
       }
 
-      function encodeCursorOffset(offset) {
-        if (!Number.isFinite(offset) || offset <= 0) {
-          return null;
+      function extractNextCursor(payload) {
+        if (payload && payload.page && typeof payload.page.nextCursor === "string") {
+          return payload.page.nextCursor;
+        }
+        if (payload && payload.data && payload.data.page && typeof payload.data.page.nextCursor === "string") {
+          return payload.data.page.nextCursor;
+        }
+        return null;
+      }
+
+      async function fetchAllDatabases(limit = FETCH_LIMIT) {
+        const items = [];
+        let cursor = null;
+        let total = 0;
+        let hasNext = true;
+
+        while (hasNext) {
+          const payload = await fetchJson("/databases", {
+            limit,
+            ...(cursor ? { cursor } : {})
+          });
+          const pageItems = extractItems(payload);
+          const nextCursor = extractNextCursor(payload);
+          const pageTotal = extractPageTotal(payload, total || pageItems.length);
+
+          items.push(...pageItems);
+          total = pageTotal;
+          cursor = nextCursor;
+          hasNext = Boolean(nextCursor);
+
+          if (!pageItems.length || items.length >= pageTotal) {
+            hasNext = false;
+          }
         }
 
-        return btoa(JSON.stringify({ offset }))
-          .replace(/\+/g, "-")
-          .replace(/\//g, "_")
-          .replace(/=+$/g, "");
+        return {
+          items,
+          page: {
+            total: total || items.length
+          }
+        };
       }
 
       function formatNumber(value) {
@@ -588,7 +1044,8 @@
           category: "unknown",
           icon: "storage",
           label: engine ? `Database · ${engine}` : "Database",
-          color: "linear-gradient(135deg,#475569,#94a3b8)"
+          color: "linear-gradient(135deg,#475569,#94a3b8)",
+          logo: ENGINE_LOGOS.unknown
         };
       }
 
@@ -637,12 +1094,12 @@
 
         return [
           { id: "all", icon: "apps", label: "전체" },
-          ...Object.entries(grouped).map(([category, count]) => {
+          ...Object.entries(grouped).map(([category]) => {
             const filterMeta = FILTER_META[category] || FILTER_META.unknown;
             return {
               id: category,
               icon: filterMeta.icon,
-              label: `${filterMeta.label} (${count})`
+              label: filterMeta.label
             };
           })
         ];
@@ -654,6 +1111,480 @@
         }
 
         return `${formatNumber(resourceTotal)}개의 데이터베이스 리소스를 API 기준으로 렌더링합니다. 각 카드는 사용량, 백업 정책, 최근 수정 시각, bindings, restart 액션을 실제 응답으로 연결합니다.`;
+      }
+
+      function getDatabaseCreateEngineOption() {
+        return DB_CREATE_ENGINE_OPTIONS.find((item) => item.id === dbCreateState.engine) || DB_CREATE_ENGINE_OPTIONS[0];
+      }
+
+      function normalizeDatabaseSizeInput(value) {
+        return String(value || "").replace(/\D+/g, "").trim();
+      }
+
+      function formatDatabaseSizeValue(value) {
+        const normalized = normalizeDatabaseSizeInput(value);
+        return normalized ? `${normalized}Gi` : "";
+      }
+
+      function buildCreatedDatabaseResource(engineId, name, size) {
+        const option = DB_CREATE_ENGINE_OPTIONS.find((item) => item.id === engineId) || DB_CREATE_ENGINE_OPTIONS[0];
+        const engineMeta = getEngineMeta(engineId);
+        const normalizedName = String(name || "").trim() || `${engineId}-db`;
+        const normalizedSize = formatDatabaseSizeValue(size) || "20Gi";
+        const slug = normalizedName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+        return {
+          id: `draft-${slug}-${Date.now()}`,
+          categories: ["all", engineMeta.category].filter(Boolean),
+          status: { label: "Running", tone: "healthy" },
+          engine: `${engineMeta.label} · ${normalizedSize}`,
+          icon: engineMeta.icon,
+          name: normalizedName,
+          meta: `${option.title} 리소스가 생성되었습니다. 콘솔 연결과 바인딩은 상세 화면에서 이어서 진행합니다.`,
+          color: engineMeta.color,
+          owner: {
+            initials: "ME",
+            name: "Current User",
+            meta: "create flow",
+            color: engineMeta.color
+          },
+          sharing: {
+            collaborators: []
+          },
+          details: [
+            { icon: "link", text: "Bindings 0" },
+            { icon: "backup", text: "Backup 없음" }
+          ],
+          usage: {
+            label: "Storage",
+            value: 0,
+            meta: normalizedSize,
+            color: engineMeta.color
+          },
+          connectionsLabel: "Connected Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [],
+          secondaryConnectionsLabel: "Connected Consoles",
+          secondaryConnectionsMaxItems: 2,
+          secondaryConnectionsLayoutClass: "is-fixed-consoles",
+          secondaryConnections: [],
+          footer: "방금 생성됨",
+          actions: [
+            {
+              label: "Detail",
+              icon: "open_in_new",
+              kind: "open",
+              href: `workspace_database_detail.html?db=${encodeURIComponent(slug || normalizedName)}`
+            }
+          ]
+        };
+      }
+
+      function clearDatabaseCreateTimer() {
+        if (dbCreateState.timer) {
+          window.clearTimeout(dbCreateState.timer);
+          dbCreateState.timer = null;
+        }
+      }
+
+      function resetDatabaseCreateState() {
+        clearDatabaseCreateTimer();
+        dbCreateState.step = 1;
+        dbCreateState.engine = "";
+        dbCreateState.name = "";
+        dbCreateState.size = "";
+        dbCreateState.statusIndex = 0;
+        dbCreateState.statusDone = false;
+        dbCreateState.created = false;
+        dbCreateState.isSubmitting = false;
+        dbCreateState.errorMessage = "";
+      }
+
+      function ensureDatabaseCreateModal() {
+        let modal = document.getElementById("databaseCreateModal");
+        if (modal) {
+          return modal;
+        }
+
+        modal = document.createElement("div");
+        modal.className = "hub-lite-create-backdrop";
+        modal.id = "databaseCreateModal";
+        modal.hidden = true;
+        modal.innerHTML = `
+          <div class="hub-lite-create-shell" role="dialog" aria-modal="true" aria-labelledby="databaseCreateTitle">
+            <div class="hub-lite-create-head">
+              <div class="hub-lite-create-copy">
+                <div class="hub-lite-create-title-row">
+                  <span class="hub-lite-create-step-badge" id="databaseCreateStepBadge">1</span>
+                  <h2 id="databaseCreateTitle">데이터베이스를 생성합니다</h2>
+                </div>
+                <p class="hub-lite-create-subtitle" id="databaseCreateSubtitle">먼저 사용할 DB 종류를 선택해주세요.</p>
+              </div>
+              <div class="hub-lite-create-head-actions">
+                <div class="hub-lite-create-hero" aria-hidden="true"><span class="material-icons-round">storage</span></div>
+                <button class="hub-lite-create-close" type="button" id="databaseCreateClose" aria-label="데이터베이스 생성 닫기">
+                  <span class="material-icons-round">close</span>
+                </button>
+              </div>
+            </div>
+            <div class="hub-lite-create-progress">
+              <div class="hub-lite-create-progress-track db-create-progress-track" id="databaseCreateProgress"></div>
+            </div>
+            <form class="hub-lite-create-form" id="databaseCreateForm">
+              <section class="db-create-stage" data-db-create-step="1">
+                <div class="hub-lite-create-panel">
+                  <div class="hub-lite-create-panel-title">DB 종류를 선택해주세요.</div>
+                  <div class="db-create-engine-grid" id="databaseCreateEngineGrid"></div>
+                </div>
+              </section>
+              <section class="db-create-stage db-create-stage is-compact" data-db-create-step="2" hidden>
+                <div class="hub-lite-create-panel">
+                  <div class="hub-lite-create-panel-title">DB 이름과 사이즈를 입력해주세요.</div>
+                  <div class="db-create-size-summary" id="databaseCreateSizeSummary"></div>
+                  <input class="hub-lite-create-input" id="databaseCreateNameInput" type="text" placeholder="예: workspace-main-postgres" />
+                  <div class="db-create-size-input-wrap">
+                    <input class="hub-lite-create-input" id="databaseCreateSizeInput" type="text" inputmode="numeric" placeholder="예: 20" />
+                    <span class="db-create-size-suffix">Gi</span>
+                  </div>
+                  <div class="hub-lite-create-note"><span class="material-icons-round">info</span>현재 화면에서는 이름과 크기만 먼저 정합니다. 실제 서비스에서는 프리셋, quota, 백업 정책으로 이어서 연결할 수 있습니다.</div>
+                </div>
+              </section>
+              <section class="db-create-stage db-create-stage is-compact" data-db-create-step="3" hidden>
+                <div class="db-create-status-card">
+                  <div class="db-create-status-head">
+                    <div class="db-create-status-kicker"><span class="material-icons-round">sync</span>Create Status</div>
+                    <div class="db-create-status-title" id="databaseCreateStatusTitle">생성을 준비하고 있습니다</div>
+                    <div class="db-create-status-copy" id="databaseCreateStatusCopy">선택한 DB 정보를 기준으로 생성 단계를 순차적으로 진행합니다.</div>
+                  </div>
+                  <div class="db-create-status-list" id="databaseCreateStatusList"></div>
+                </div>
+              </section>
+              <div class="hub-lite-create-actions">
+                <button class="hub-lite-create-action ghost" type="button" id="databaseCreateBack">취소</button>
+                <button class="hub-lite-create-action primary" type="button" id="databaseCreateNext">다음</button>
+                <button class="hub-lite-create-action primary" type="button" id="databaseCreateDone" hidden disabled><span class="material-icons-round">check_circle</span>완료</button>
+              </div>
+            </form>
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        const elements = {
+          modal,
+          stepBadge: modal.querySelector("#databaseCreateStepBadge"),
+          subtitle: modal.querySelector("#databaseCreateSubtitle"),
+          progress: modal.querySelector("#databaseCreateProgress"),
+          form: modal.querySelector("#databaseCreateForm"),
+          stages: Array.from(modal.querySelectorAll("[data-db-create-step]")),
+          engineGrid: modal.querySelector("#databaseCreateEngineGrid"),
+          sizeSummary: modal.querySelector("#databaseCreateSizeSummary"),
+          nameInput: modal.querySelector("#databaseCreateNameInput"),
+          sizeInput: modal.querySelector("#databaseCreateSizeInput"),
+          statusTitle: modal.querySelector("#databaseCreateStatusTitle"),
+          statusCopy: modal.querySelector("#databaseCreateStatusCopy"),
+          statusList: modal.querySelector("#databaseCreateStatusList"),
+          close: modal.querySelector("#databaseCreateClose"),
+          back: modal.querySelector("#databaseCreateBack"),
+          next: modal.querySelector("#databaseCreateNext"),
+          done: modal.querySelector("#databaseCreateDone")
+        };
+
+        const stepMeta = [
+          { label: "DB 종류", subtitle: "먼저 사용할 DB 종류를 선택해주세요." },
+          { label: "DB 정보", subtitle: "선택한 DB의 이름과 사이즈를 입력해주세요." },
+          { label: "생성 상태", subtitle: "생성 진행 상황을 확인해주세요." }
+        ];
+
+        const renderProgress = () => {
+          elements.progress.innerHTML = stepMeta.map((item, index) => {
+            const step = index + 1;
+            const isCurrent = step === dbCreateState.step;
+            const isComplete = step < dbCreateState.step || (step === 3 && dbCreateState.statusDone);
+            const value = step === 1
+              ? (DB_CREATE_ENGINE_OPTIONS.find((option) => option.id === dbCreateState.engine)?.title || "")
+              : step === 2
+                ? [String(dbCreateState.name || "").trim(), formatDatabaseSizeValue(dbCreateState.size)].filter(Boolean).join(" · ")
+                : (dbCreateState.statusDone ? "완료" : "진행 중");
+            return `
+              <div class="hub-lite-create-progress-item ${isCurrent ? "is-current" : ""} ${isComplete ? "is-complete" : ""}">
+                <div class="hub-lite-create-progress-line">
+                  <span class="hub-lite-create-progress-rail ${index === 0 ? "is-hidden" : ""}"></span>
+                  <span class="hub-lite-create-progress-dot">${isComplete ? '<span class="material-icons-round" style="font-size:15px">done</span>' : step}</span>
+                  <span class="hub-lite-create-progress-rail ${index === stepMeta.length - 1 ? "is-hidden" : ""}"></span>
+                </div>
+                <div class="hub-lite-create-progress-label">${item.label}</div>
+                <div class="hub-lite-create-progress-value">${value || " "}</div>
+              </div>
+            `;
+          }).join("");
+        };
+
+        const renderEngineGrid = () => {
+          elements.engineGrid.innerHTML = DB_CREATE_ENGINE_OPTIONS.map((item) => {
+            const engineMeta = getEngineMeta(item.id);
+            return `
+              <button class="db-create-engine-card ${dbCreateState.engine === item.id ? "is-selected" : ""}" type="button" data-db-engine="${item.id}">
+                <div class="db-create-engine-head">
+                  <span class="db-create-engine-icon" aria-hidden="true">${engineMeta.logo}</span>
+                  <span class="db-create-engine-radio" aria-hidden="true"></span>
+                </div>
+                <div class="db-create-engine-title">${item.title}</div>
+                <div class="db-create-engine-meta">${item.desc}</div>
+                <div class="db-create-engine-submeta">${item.meta} · ${item.hint}</div>
+              </button>
+            `;
+          }).join("");
+        };
+
+        const renderSizeSummary = () => {
+          const option = getDatabaseCreateEngineOption();
+          const engineMeta = getEngineMeta(option.id);
+          elements.sizeSummary.innerHTML = `
+            <div class="db-create-size-pill">${engineMeta.logo}${option.title}</div>
+            <div class="db-create-size-summary-title">${option.title} 리소스 크기를 입력합니다</div>
+            <div class="db-create-size-summary-copy">${option.desc}</div>
+            <div class="db-create-size-hint">
+              <span class="db-create-size-chip">${option.meta}</span>
+              <span class="db-create-size-chip">${option.sizeHint}</span>
+            </div>
+          `;
+          elements.nameInput.value = dbCreateState.name;
+          elements.sizeInput.placeholder = option.sizeHint;
+          elements.sizeInput.value = normalizeDatabaseSizeInput(dbCreateState.size);
+        };
+
+        const renderStatus = () => {
+          const option = getDatabaseCreateEngineOption();
+          const nameValue = String(dbCreateState.name || "").trim() || option.title;
+          const sizeValue = formatDatabaseSizeValue(dbCreateState.size) || `${String(option.sizeHint || "").replace(/^예:\s*/, "").split(",")[0].trim()}Gi` || "20Gi";
+          if (dbCreateState.errorMessage) {
+            elements.statusTitle.textContent = `${nameValue} 생성에 실패했습니다`;
+            elements.statusCopy.textContent = dbCreateState.errorMessage;
+          } else {
+            elements.statusTitle.textContent = dbCreateState.statusDone
+              ? `${nameValue} ${sizeValue} 생성이 완료되었습니다`
+              : `${nameValue} ${sizeValue} 생성이 진행 중입니다`;
+            elements.statusCopy.textContent = dbCreateState.statusDone
+              ? "이제 상세 화면에서 바인딩과 콘솔 연결을 이어서 진행할 수 있습니다."
+              : "선택한 DB 정보를 기준으로 실제 생성 API를 호출하고 상태를 정리합니다.";
+          }
+          elements.statusList.innerHTML = DB_CREATE_STATUS_STEPS.map((label, index) => {
+            const isComplete = index < dbCreateState.statusIndex || dbCreateState.statusDone;
+            const isFailed = Boolean(dbCreateState.errorMessage) && index === Math.min(dbCreateState.statusIndex, DB_CREATE_STATUS_STEPS.length - 1);
+            const isActive = !dbCreateState.statusDone && !dbCreateState.errorMessage && index === dbCreateState.statusIndex;
+            const stateLabel = isFailed ? "실패" : (isComplete ? "완료" : (isActive ? "진행 중" : "대기"));
+            return `
+              <div class="db-create-status-row ${isComplete ? "is-complete" : ""} ${isActive ? "is-active" : ""}">
+                <span class="db-create-status-dot">
+                  <span class="material-icons-round">${isFailed ? "error" : (isComplete ? "done" : (isActive ? "autorenew" : "more_horiz"))}</span>
+                </span>
+                <div class="db-create-status-label">${label}</div>
+                <div class="db-create-status-state">${stateLabel}</div>
+              </div>
+            `;
+          }).join("");
+        };
+
+        const renderStages = () => {
+          elements.stages.forEach((stage) => {
+            stage.hidden = Number(stage.dataset.dbCreateStep) !== dbCreateState.step;
+          });
+        };
+
+        const syncHeader = () => {
+          const meta = stepMeta[dbCreateState.step - 1];
+          elements.stepBadge.textContent = String(dbCreateState.step);
+          elements.subtitle.textContent = meta.subtitle;
+        };
+
+        const syncActions = () => {
+          const isProcessing = dbCreateState.step === 3 && dbCreateState.isSubmitting;
+          const isComplete = dbCreateState.step === 3 && dbCreateState.statusDone;
+          elements.back.textContent = dbCreateState.step === 1 ? "취소" : "뒤로";
+          elements.back.hidden = isProcessing || isComplete;
+          elements.next.hidden = dbCreateState.step === 3;
+          elements.done.hidden = !isComplete;
+          elements.back.style.display = isProcessing || isComplete ? "none" : "";
+          elements.next.style.display = dbCreateState.step === 3 ? "none" : "";
+          elements.done.style.display = isComplete ? "" : "none";
+          elements.done.disabled = !dbCreateState.statusDone;
+          elements.back.disabled = dbCreateState.isSubmitting || isComplete;
+          if (dbCreateState.step === 1) {
+            elements.next.textContent = "다음";
+            elements.next.disabled = isProcessing || isComplete || !dbCreateState.engine || dbCreateState.isSubmitting;
+          } else if (dbCreateState.step === 2) {
+            elements.next.innerHTML = `<span class="material-icons-round">rocket_launch</span>생성 시작`;
+            elements.next.disabled = isProcessing || isComplete || !String(dbCreateState.name || "").trim() || !normalizeDatabaseSizeInput(dbCreateState.size) || dbCreateState.isSubmitting;
+          }
+        };
+
+        const rerender = () => {
+          syncHeader();
+          renderProgress();
+          renderStages();
+          renderEngineGrid();
+          renderSizeSummary();
+          renderStatus();
+          syncActions();
+        };
+
+        const closeModal = () => {
+          modal.hidden = true;
+          document.body.style.overflow = "";
+          resetDatabaseCreateState();
+          rerender();
+        };
+
+        const startDatabaseCreate = async () => {
+          clearDatabaseCreateTimer();
+          dbCreateState.statusIndex = 0;
+          dbCreateState.statusDone = false;
+          dbCreateState.created = false;
+          dbCreateState.isSubmitting = true;
+          dbCreateState.errorMessage = "";
+          rerender();
+
+          const tick = () => {
+            if (!dbCreateState.isSubmitting || dbCreateState.statusDone || dbCreateState.errorMessage) {
+              return;
+            }
+
+            dbCreateState.statusIndex = Math.min(dbCreateState.statusIndex + 1, DB_CREATE_STATUS_STEPS.length - 1);
+            rerender();
+            dbCreateState.timer = window.setTimeout(tick, 900);
+          };
+
+          dbCreateState.timer = window.setTimeout(tick, 900);
+
+          try {
+            await requestJson("/databases", {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                name: String(dbCreateState.name || "").trim(),
+                engine: dbCreateState.engine,
+                size: formatDatabaseSizeValue(dbCreateState.size)
+              })
+            });
+            dbCreateState.isSubmitting = false;
+            dbCreateState.statusDone = true;
+            dbCreateState.created = true;
+            dbCreateState.statusIndex = DB_CREATE_STATUS_STEPS.length;
+            clearDatabaseCreateTimer();
+            rerender();
+            await loadDatabaseHub();
+          } catch (error) {
+            dbCreateState.isSubmitting = false;
+            dbCreateState.statusDone = false;
+            dbCreateState.created = false;
+            dbCreateState.errorMessage = String(error?.message || "데이터베이스 생성에 실패했습니다.").replace(/^\d+\s*/, "").trim();
+            clearDatabaseCreateTimer();
+            rerender();
+          }
+        };
+
+        elements.engineGrid.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-db-engine]");
+          if (!button) return;
+          dbCreateState.engine = button.dataset.dbEngine || "";
+          rerender();
+        });
+
+        elements.sizeInput.addEventListener("input", (event) => {
+          dbCreateState.size = normalizeDatabaseSizeInput(event.target.value || "");
+          event.target.value = dbCreateState.size;
+          syncActions();
+          renderProgress();
+        });
+        elements.nameInput.addEventListener("input", (event) => {
+          dbCreateState.name = event.target.value || "";
+          syncActions();
+          renderProgress();
+        });
+
+        elements.close.addEventListener("click", closeModal);
+        elements.back.addEventListener("click", () => {
+          if (dbCreateState.step === 1) {
+            closeModal();
+            return;
+          }
+          if (dbCreateState.step === 3) {
+            if (dbCreateState.created) {
+              closeModal();
+              return;
+            }
+            clearDatabaseCreateTimer();
+            dbCreateState.step = 2;
+            dbCreateState.statusIndex = 0;
+            dbCreateState.statusDone = false;
+            dbCreateState.created = false;
+            rerender();
+            return;
+          }
+          dbCreateState.step -= 1;
+          rerender();
+        });
+
+        elements.next.addEventListener("click", async () => {
+          if (dbCreateState.isSubmitting) {
+            return;
+          }
+          if (dbCreateState.step === 1 && dbCreateState.engine) {
+            dbCreateState.step = 2;
+            rerender();
+            requestAnimationFrame(() => elements.nameInput.focus());
+            return;
+          }
+          if (dbCreateState.step === 2 && String(dbCreateState.name || "").trim() && normalizeDatabaseSizeInput(dbCreateState.size)) {
+            elements.back.disabled = true;
+            elements.next.disabled = true;
+            dbCreateState.step = 3;
+            rerender();
+            await startDatabaseCreate();
+          }
+        });
+
+        elements.done.addEventListener("click", closeModal);
+
+        modal.addEventListener("click", (event) => {
+          if (event.target === modal) {
+            closeModal();
+          }
+        });
+
+        modal.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && !modal.hidden) {
+            closeModal();
+          }
+        });
+
+        rerender();
+        return modal;
+      }
+
+      function wireDatabaseCreateAction() {
+        const button = document.querySelector(".control-actions .create-btn");
+        if (!button || button.dataset.databaseCreateBound === "true") {
+          return;
+        }
+
+        button.dataset.databaseCreateBound = "true";
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          resetDatabaseCreateState();
+          const modal = ensureDatabaseCreateModal();
+          const firstEngine = modal.querySelector("[data-db-engine]");
+          modal.hidden = false;
+          document.body.style.overflow = "hidden";
+          requestAnimationFrame(() => {
+            if (firstEngine) firstEngine.focus();
+          });
+        });
       }
 
       function buildHeroStats(stats, healthPanel) {
@@ -845,109 +1776,6 @@
         return Object.fromEntries(entries);
       }
 
-      function getVisiblePages(currentPage, totalPages) {
-        if (totalPages <= 7) {
-          return Array.from({ length: totalPages }, (_, index) => index + 1);
-        }
-
-        const pages = new Set([1, totalPages, currentPage - 1, currentPage, currentPage + 1]);
-        return Array.from(pages)
-          .filter(page => page >= 1 && page <= totalPages)
-          .sort((left, right) => left - right);
-      }
-
-      function renderDatabasePagination() {
-        const pagination = document.getElementById("resourcePagination");
-        if (!pagination) {
-          return;
-        }
-
-        const totalItems = Number(pagingState.totalItems || 0);
-        const totalPages = Math.max(1, Math.ceil(totalItems / DEFAULT_RESOURCE_LIMIT));
-        const currentPage = Math.min(Math.max(1, pagingState.currentPage || 1), totalPages);
-
-        if (totalPages <= 1) {
-          pagination.innerHTML = "";
-          pagination.hidden = true;
-          return;
-        }
-
-        const startItem = ((currentPage - 1) * DEFAULT_RESOURCE_LIMIT) + 1;
-        const endItem = Math.min(currentPage * DEFAULT_RESOURCE_LIMIT, totalItems);
-        const visiblePages = getVisiblePages(currentPage, totalPages);
-        const buttons = [];
-
-        visiblePages.forEach((page, index) => {
-          const previousPage = visiblePages[index - 1];
-          if (index > 0 && page - previousPage > 1) {
-            buttons.push(`<span class="resource-pagination-ellipsis" aria-hidden="true">...</span>`);
-          }
-
-          buttons.push(`
-            <button
-              class="resource-pagination-btn${page === currentPage ? " is-active" : ""}"
-              type="button"
-              data-database-page="${page}"
-              aria-label="페이지 ${page}"
-              aria-current="${page === currentPage ? "page" : "false"}"
-            >
-              ${page}
-            </button>
-          `);
-        });
-
-        pagination.hidden = false;
-        pagination.innerHTML = `
-          <div class="resource-pagination-summary">총 ${totalItems}개 중 ${startItem}-${endItem}</div>
-          <div class="resource-pagination-controls">
-            <button
-              class="resource-pagination-btn is-nav"
-              type="button"
-              data-database-page-nav="prev"
-              aria-label="이전 페이지"
-              ${currentPage === 1 ? "disabled" : ""}
-            >
-              <span class="material-icons-round">chevron_left</span>
-            </button>
-            ${buttons.join("")}
-            <button
-              class="resource-pagination-btn is-nav"
-              type="button"
-              data-database-page-nav="next"
-              aria-label="다음 페이지"
-              ${currentPage === totalPages ? "disabled" : ""}
-            >
-              <span class="material-icons-round">chevron_right</span>
-            </button>
-          </div>
-        `;
-
-        pagination.querySelectorAll("[data-database-page]").forEach(button => {
-          button.addEventListener("click", () => {
-            const nextPage = Number(button.getAttribute("data-database-page"));
-            if (!Number.isFinite(nextPage) || nextPage === pagingState.currentPage) {
-              return;
-            }
-
-            loadDatabaseHub({ page: nextPage });
-          });
-        });
-
-        pagination.querySelectorAll("[data-database-page-nav]").forEach(button => {
-          button.addEventListener("click", () => {
-            const direction = button.getAttribute("data-database-page-nav");
-            if (direction === "prev" && currentPage > 1) {
-              loadDatabaseHub({ page: currentPage - 1 });
-              return;
-            }
-
-            if (direction === "next" && currentPage < totalPages) {
-              loadDatabaseHub({ page: currentPage + 1 });
-            }
-          });
-        });
-      }
-
       function getRestartButtonById(restartId) {
         return Array.from(document.querySelectorAll("[data-restart-id]"))
           .find(button => button.getAttribute("data-restart-id") === String(restartId));
@@ -1055,11 +1883,17 @@
       }
 
       function renderConfig(config) {
-        window.HUB_CONFIG = config;
+        lastRenderedConfig = config;
+        const nextConfig = {
+          ...config,
+          resources: [...createdDatabaseResources, ...(config.resources || [])]
+        };
+        window.HUB_CONFIG = nextConfig;
         if (typeof window.renderWorkspaceResourceHub === "function") {
-          window.renderWorkspaceResourceHub(config);
+          window.renderWorkspaceResourceHub(nextConfig);
           syncPendingRestartCards();
           attachRestartHandlers();
+          wireDatabaseCreateAction();
           if (typeof window.refreshConceptEndpointOverlay === "function") {
             requestAnimationFrame(() => {
               window.refreshConceptEndpointOverlay();
@@ -1068,14 +1902,9 @@
         }
       }
 
-      async function loadDatabaseHub({ page = pagingState.currentPage } = {}) {
-        const safePage = Number.isFinite(page) && page > 0 ? Math.floor(page) : 1;
-        const cursor = encodeCursorOffset((safePage - 1) * DEFAULT_RESOURCE_LIMIT);
+      async function loadDatabaseHub() {
         const results = await Promise.allSettled([
-          fetchJson("/databases", {
-            limit: DEFAULT_RESOURCE_LIMIT,
-            ...(cursor ? { cursor } : {})
-          }),
+          fetchAllDatabases(),
           fetchJson("/databases/stats"),
           fetchJson("/databases/filters"),
           fetchJson("/panels/tips", { surface: "databases" }),
@@ -1101,15 +1930,13 @@
 
         const databaseItems = extractItems(databasesPayload);
         const sortedDatabaseItems = databaseItems.slice().sort((left, right) => {
-          const leftTime = new Date(left?.updatedAt || left?.createdAt || 0).getTime();
-          const rightTime = new Date(right?.updatedAt || right?.createdAt || 0).getTime();
+          const leftTime = new Date(left?.createdAt || left?.updatedAt || 0).getTime();
+          const rightTime = new Date(right?.createdAt || right?.updatedAt || 0).getTime();
           return rightTime - leftTime;
         });
         const mergedHealthPayload = mergeHealthPanel(healthPayload, sortedDatabaseItems, statsPayload);
         const bindingsMap = await fetchBindingsMap(sortedDatabaseItems);
         const resourceTotal = extractPageTotal(databasesPayload, sortedDatabaseItems.length);
-        pagingState.currentPage = safePage;
-        pagingState.totalItems = resourceTotal;
         const config = {
           ...FALLBACK_CONFIG,
           resourcePageSize: DEFAULT_RESOURCE_LIMIT,
@@ -1128,7 +1955,6 @@
         };
 
         renderConfig(config);
-        renderDatabasePagination();
       }
 
       if (document.readyState === "loading") {

@@ -37,6 +37,9 @@
       activeKey: "domain",
       panelVariant: "briefing",
       connectionsType: "project",
+      searchSource: "domains",
+      searchSourceLabel: "Domain Hub",
+      searchDefaultType: "hub",
       theme: {
         bg: "#f5f5ff",
         brand: "#4f46e5",
@@ -49,198 +52,44 @@
       eyebrow: "Accessibility · Domain Provisioning",
       title: "Domain Hub",
       description: "워크스페이스 DNS 리소스 모음입니다. 각 도메인에 어떤 프로젝트가 연결되어 있는지, 인증서와 커넥션 상태가 어떤지 빠르게 찾는 구성을 목표로 합니다.",
-      primaryAction: { href: "workspace_project_detail.html?project=restaurant", icon: "add_circle", label: "새 도메인 생성" },
+      primaryAction: null,
       secondaryAction: { href: "workspace_projects_hub.html", icon: "inventory_2", label: "프로젝트 허브 보기" },
       utilityAction: null,
-      createAction: null,
+      createAction: { href: "#", icon: "add_circle", label: "새 도메인 생성" },
       heroStats: [
-        { icon: "language", value: "6", label: "등록 도메인", note: "Connected 4 · Pending 2", color: "linear-gradient(135deg,#4f46e5,#6366f1)" },
-        { icon: "link", value: "6", label: "바인딩 프로젝트", note: "도메인당 1개 프로젝트", color: "linear-gradient(135deg,#6366f1,#818cf8)" },
-        { icon: "verified_user", value: "4", label: "정상 인증서", note: "발급 완료 기준", color: "linear-gradient(135deg,#4338ca,#60a5fa)" },
-        { icon: "cable", value: "4", label: "연결 완료", note: "ingress / cdn route 기준", color: "linear-gradient(135deg,#3730a3,#6366f1)" }
+        { icon: "language", value: "-", label: "등록 도메인", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#4f46e5,#6366f1)" },
+        { icon: "link", value: "-", label: "바인딩 프로젝트", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#6366f1,#818cf8)" },
+        { icon: "verified_user", value: "-", label: "정상 인증서", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#4338ca,#60a5fa)" },
+        { icon: "cable", value: "-", label: "연결 완료", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#3730a3,#6366f1)" }
       ],
       filters: [
         { id: "all", icon: "apps", label: "전체" },
         { id: "pending", icon: "schedule", label: "대기" },
+        { id: "review", icon: "fact_check", label: "검토" },
         { id: "certificate", icon: "verified_user", label: "인증서" },
         { id: "connected", icon: "lan", label: "연결 완료" }
       ],
+      resourcePageSize: 6,
       resourceSectionIcon: "language",
       resourceSectionLabel: "DNS Fleet",
       resourceTitle: "Domains",
-      resourceDescription: "워크스페이스에서 운영 중인 DNS 리소스를 한곳에 모았습니다. 각 도메인은 단일 프로젝트에만 바인딩되며, 카드에서는 인증서와 커넥션 상태를 빠르게 읽고 바로 Open할 수 있습니다.",
+      resourceDescription: "도메인 목록을 불러오는 중입니다.",
       resourceHeaderLink: { href: "workspace_projects_hub.html", label: "프로젝트 연결 보기" },
-      resources: [
-        {
-          categories: ["all", "pending"],
-          status: { label: "Pending", tone: "pending" },
-          engine: "Preview DNS · Pending Route",
-          icon: "public",
-          name: "alpha.workspace.hedej.lge.com",
-          meta: "zone 생성 전",
-          color: "linear-gradient(135deg,#4f46e5,#60a5fa)",
-          owner: { initials: "TN", name: "Taehun Nam", meta: "taehun@example.com", color: "linear-gradient(135deg,#4f46e5,#60a5fa)" },
-          connectionsLabel: "Bound Project",
-          connectionsEqualWidth: true,
-          connectionsMaxItems: 1,
-          connectionsLayoutClass: "is-fixed-consoles",
-          connections: [
-            { abbr: "AL", name: "alpha-web", meta: "preview app", color: "linear-gradient(135deg,#4f46e5,#60a5fa)" }
-          ],
-          actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_domain_detail.html?item=alpha" }
-          ]
-        },
-        {
-          categories: ["all", "pending", "certificate"],
-          status: { label: "Pending", tone: "pending" },
-          engine: "Preview DNS · Certificate Requested",
-          icon: "language",
-          name: "beta-review.workspace.hedej.lge.com",
-          meta: "인증서 요청 넣어둠",
-          color: "linear-gradient(135deg,#0f766e,#14b8a6)",
-          owner: { initials: "JK", name: "Jungkyu Kim", meta: "jungkyu@example.com", color: "linear-gradient(135deg,#0f766e,#14b8a6)" },
-          sharing: {
-            collaborators: [
-              { initials: "TN", color: "linear-gradient(135deg,#6366f1,#818cf8)" },
-              { initials: "SY", color: "linear-gradient(135deg,#ec4899,#f9a8d4)" }
-            ]
-          },
-          connectionsLabel: "Bound Project",
-          connectionsEqualWidth: true,
-          connectionsMaxItems: 1,
-          connectionsLayoutClass: "is-fixed-consoles",
-          connections: [
-            { abbr: "BR", name: "beta-review", meta: "preview route", color: "linear-gradient(135deg,#0f766e,#14b8a6)" }
-          ],
-          actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_domain_detail.html?item=beta-review" }
-          ]
-        },
-        {
-          categories: ["all", "certificate"],
-          status: { label: "Review", tone: "review" },
-          engine: "Preview DNS · Certificate Binding",
-          icon: "verified_user",
-          name: "preview.restaurant.workspace.hedej.lge.com",
-          meta: "SAN 승인 기다리는 중",
-          color: "linear-gradient(135deg,#2563eb,#06b6d4)",
-          owner: { initials: "SY", name: "Sooyeon Park", meta: "sooyeon@example.com", color: "linear-gradient(135deg,#2563eb,#06b6d4)" },
-          sharing: {
-            collaborators: [
-              { initials: "JK", color: "linear-gradient(135deg,#6366f1,#818cf8)" },
-              { initials: "MH", color: "linear-gradient(135deg,#f97316,#fbd38d)" }
-            ]
-          },
-          connectionsLabel: "Bound Project",
-          connectionsEqualWidth: true,
-          connectionsMaxItems: 1,
-          connectionsLayoutClass: "is-fixed-consoles",
-          connections: [
-            { abbr: "RT", name: "restaurant", meta: "preview web", color: "linear-gradient(135deg,#2563eb,#06b6d4)" }
-          ],
-          actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_domain_detail.html?item=preview-restaurant" }
-          ]
-        },
-        {
-          categories: ["all", "certificate"],
-          status: { label: "Warn", tone: "warn" },
-          engine: "Service DNS · Certificate Renewal",
-          icon: "shield",
-          name: "coverity-ai.workspace.hedej.lge.com",
-          meta: "인증서 갱신 승인만 남음",
-          color: "linear-gradient(135deg,#f59e0b,#fbbf24)",
-          owner: { initials: "MH", name: "Minhyuk Lee", meta: "minhyuk@example.com", color: "linear-gradient(135deg,#f59e0b,#fbbf24)" },
-          connectionsLabel: "Bound Project",
-          connectionsEqualWidth: true,
-          connectionsMaxItems: 1,
-          connectionsLayoutClass: "is-fixed-consoles",
-          connections: [
-            { abbr: "CA", name: "coverity-ai", meta: "internal service", color: "linear-gradient(135deg,#f59e0b,#fbbf24)" }
-          ],
-          actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_domain_detail.html?item=coverity-ai" }
-          ]
-        },
-        {
-          categories: ["all", "connected"],
-          status: { label: "Connected", tone: "healthy" },
-          engine: "Service DNS · Ingress Route",
-          icon: "lan",
-          name: "hermes-be.workspace.hedej.lge.com",
-          meta: "운영 연결 완료",
-          color: "linear-gradient(135deg,#4f46e5,#818cf8)",
-          owner: { initials: "YJ", name: "Yujin Cho", meta: "yujin@example.com", color: "linear-gradient(135deg,#4f46e5,#818cf8)" },
-          sharing: {
-            collaborators: [
-              { initials: "TN", color: "linear-gradient(135deg,#6366f1,#818cf8)" },
-              { initials: "JK", color: "linear-gradient(135deg,#ec4899,#f9a8d4)" },
-              { initials: "SY", color: "linear-gradient(135deg,#f97316,#fbd38d)" }
-            ]
-          },
-          connectionsLabel: "Bound Project",
-          connectionsEqualWidth: true,
-          connectionsMaxItems: 1,
-          connectionsLayoutClass: "is-fixed-consoles",
-          connections: [
-            { abbr: "HB", name: "hermes-be", meta: "primary api", color: "linear-gradient(135deg,#4f46e5,#818cf8)" }
-          ],
-          actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_domain_detail.html?item=hermes-be" }
-          ]
-        },
-        {
-          categories: ["all", "connected"],
-          status: { label: "Connected", tone: "healthy" },
-          engine: "Service DNS · CDN Route",
-          icon: "domain_verification",
-          name: "docs.workspace.hedej.lge.com",
-          meta: "배포 후 확인 완료",
-          color: "linear-gradient(135deg,#0f766e,#34d399)",
-          owner: { initials: "TN", name: "Taehun Nam", meta: "taehun@example.com", color: "linear-gradient(135deg,#0f766e,#34d399)" },
-          sharing: {
-            collaborators: [
-              { initials: "YJ", color: "linear-gradient(135deg,#6366f1,#818cf8)" },
-              { initials: "MH", color: "linear-gradient(135deg,#ec4899,#f9a8d4)" }
-            ]
-          },
-          connectionsLabel: "Bound Project",
-          connectionsEqualWidth: true,
-          connectionsMaxItems: 1,
-          connectionsLayoutClass: "is-fixed-consoles",
-          connections: [
-            { abbr: "DC", name: "docs-center", meta: "public docs", color: "linear-gradient(135deg,#0f766e,#34d399)" }
-          ],
-          actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_domain_detail.html?item=docs" }
-          ]
-        }
-      ],
+      resources: [],
       mainPanels: [
         {
           icon: "tips_and_updates",
           label: "Tips",
           title: "DNS 운영 팁",
-          description: "도메인 카드에서는 연결 판단에 필요한 정보만 남기고, 참고할 내용은 아래 패널에서 짧게 확인하는 구조로 맞췄습니다.",
-          rows: [
-            { title: "도메인은 단일 프로젝트에만 바인딩합니다", meta: "같은 DNS 리소스에 여러 프로젝트를 섞지 않고, 카드 안에서도 Bound Project를 하나만 보여주는 전제를 둡니다." },
-            { title: "인증서와 커넥션 상태를 같이 봅니다", meta: "도메인 오픈 전 인증서 발급/갱신 상태와 실제 ingress 또는 CDN 연결 상태를 함께 읽을 수 있어야 합니다." },
-            { title: "세부 운영 절차는 카드 밖으로 분리합니다", meta: "승인, 예외, 보안 절차는 카드 안에 넣지 않고 별도 가이드 링크에서 이어서 확인합니다." }
-          ],
-          footerLink: { href: "workspace_projects_hub.html", label: "연결 프로젝트 보기" }
+          description: "운영 팁을 불러오는 중입니다.",
+          rows: []
         },
         {
           icon: "menu_book",
           label: "Guide Links",
-          title: "가이드 링크",
-          description: "운영 문서와 관련 허브 진입점은 카드 안에 넣지 않고, 링크 패널에서 분리해 여는 방식으로 정리했습니다.",
-          rows: [
-            { title: "프로젝트 허브", meta: "각 DNS 리소스가 어떤 프로젝트에 바인딩되는지 프로젝트 단위로 다시 확인합니다.", href: "workspace_projects_hub.html" },
-            { title: "권한/승인 가이드", meta: "인증서 갱신 승인과 예외 처리 흐름을 확인합니다.", href: "workspace_permission_hub.html" },
-            { title: "Bucket Hub", meta: "퍼블릭 버킷이 연결되는 도메인 노출 흐름을 함께 봅니다.", href: "workspace_s3_hub.html" }
-          ],
-          footerLink: { href: "portal_launchpad.html", label: "런치패드로 돌아가기" }
+          title: "도메인 연계 허브",
+          description: "가이드 링크를 불러오는 중입니다.",
+          rows: []
         }
       ],
       summary: null,
@@ -249,32 +98,1027 @@
           icon: "verified_user",
           label: "Certificate Status",
           title: "현재 인증서 상태",
-          description: "우측 레일은 인증서 상태와 갱신/발급 진행 정도만 간단히 보여줍니다.",
-          rows: [
-            { title: "alpha.workspace.hedej.lge.com", meta: "SSL 미연결 · certificate request 전", pill: { label: "Pending", tone: "pending" } },
-            { title: "preview.restaurant.workspace.hedej.lge.com", meta: "SAN binding review 중", pill: { label: "Review", tone: "review" } },
-            { title: "coverity-ai.workspace.hedej.lge.com", meta: "만료 12일 전 · renewal pending", pill: { label: "Warn", tone: "warn" } },
-            { title: "docs.workspace.hedej.lge.com", meta: "valid 143d", pill: { label: "Valid", tone: "healthy" } }
-          ],
-          footerLink: { href: "workspace_permission_hub.html", label: "승인/예외 보기" }
+          description: "인증서 상태를 불러오는 중입니다.",
+          rows: []
         },
         {
           icon: "cable",
           label: "Connection Status",
           title: "현재 커넥션 상태",
-          description: "실제 ingress, ELB, CDN 연결 여부만 빠르게 읽을 수 있도록 분리했습니다.",
-          rows: [
-            { title: "alpha.workspace.hedej.lge.com", meta: "DNS zone 생성 대기", pill: { label: "None", tone: "draft" } },
-            { title: "preview.restaurant.workspace.hedej.lge.com", meta: "ELB binding 준비 완료", pill: { label: "Ready", tone: "review" } },
-            { title: "hermes-be.workspace.hedej.lge.com", meta: "ingress 연결 완료", pill: { label: "Connected", tone: "healthy" } },
-            { title: "docs.workspace.hedej.lge.com", meta: "CDN 연결 완료", pill: { label: "Connected", tone: "healthy" } }
-          ]
+          description: "커넥션 상태를 불러오는 중입니다.",
+          rows: []
         }
       ]
     };
   </script>
   <script src="workspace_resource_hub_shared.js"></script>
   <script src="ax_studio_topbar.js"></script>
+  <script>
+    (() => {
+      const API_BASE = "/api/v2";
+      const DOMAIN_PAGE_LIMIT = 100;
+      const SIDEBAR_ROW_LIMIT = 4;
+      const FALLBACK_CONFIG = window.HUB_CONFIG;
+      const STATUS_ORDER = { connected: 0, review: 1, pending: 2 };
+      const CERTIFICATE_ORDER = { expired: 0, pending: 1, issued: 2, none: 3 };
+      const CONNECTION_ORDER = { ready: 0, connected: 1, none: 2 };
+      const createdDomainResources = [];
+      let lastRenderedConfig = FALLBACK_CONFIG;
+      const STATUS_META = {
+        pending: {
+          label: "Pending",
+          tone: "pending",
+          icon: "schedule",
+          filterLabel: "대기",
+          color: "linear-gradient(135deg,#f59e0b,#fbbf24)"
+        },
+        review: {
+          label: "Review",
+          tone: "review",
+          icon: "verified_user",
+          filterLabel: "검토",
+          color: "linear-gradient(135deg,#2563eb,#60a5fa)"
+        },
+        connected: {
+          label: "Connected",
+          tone: "healthy",
+          icon: "lan",
+          filterLabel: "연결 완료",
+          color: "linear-gradient(135deg,#0f766e,#34d399)"
+        }
+      };
+      const CERTIFICATE_META = {
+        none: { label: "None", tone: "draft" },
+        pending: { label: "Pending", tone: "pending" },
+        issued: { label: "Valid", tone: "healthy" },
+        expired: { label: "Expired", tone: "warn" }
+      };
+      const CONNECTION_META = {
+        none: { label: "None", tone: "draft" },
+        ready: { label: "Ready", tone: "review" },
+        connected: { label: "Connected", tone: "healthy" }
+      };
+      const KIND_LABEL = {
+        custom: "Custom",
+        managed: "Managed",
+        internal: "Internal"
+      };
+
+      function buildQuery(params) {
+        const searchParams = new URLSearchParams();
+        Object.entries(params || {}).forEach(([key, value]) => {
+          if (value === undefined || value === null || value === "") {
+            return;
+          }
+
+          searchParams.set(key, String(value));
+        });
+
+        const query = searchParams.toString();
+        return query ? `?${query}` : "";
+      }
+
+      async function requestJson(path, options) {
+        const requestOptions = {
+          credentials: "same-origin",
+          headers: {
+            Accept: "application/json"
+          },
+          ...(options || {})
+        };
+        const mergedHeaders = {
+          Accept: "application/json",
+          ...((options && options.headers) || {})
+        };
+
+        if (requestOptions.body && !("Content-Type" in mergedHeaders)) {
+          mergedHeaders["Content-Type"] = "application/json";
+        }
+
+        requestOptions.headers = mergedHeaders;
+
+        const response = await fetch(`${API_BASE}${path}`, requestOptions);
+
+        const payload = await response.json().catch(() => null);
+
+        if (!response.ok) {
+          const message = normalizeText(payload && payload.error && payload.error.message);
+          throw new Error(message || `${response.status} ${response.statusText}`);
+        }
+
+        return payload;
+      }
+
+      async function fetchJson(path, params) {
+        return requestJson(`${path}${buildQuery(params)}`);
+      }
+
+      function extractData(payload, fallback) {
+        if (payload && typeof payload === "object" && "data" in payload) {
+          return payload.data;
+        }
+
+        return payload ?? fallback;
+      }
+
+      function extractItems(payload) {
+        if (payload && Array.isArray(payload.items)) {
+          return payload.items;
+        }
+
+        if (payload && payload.data && Array.isArray(payload.data.items)) {
+          return payload.data.items;
+        }
+
+        return [];
+      }
+
+      function extractNextCursor(payload) {
+        if (payload && payload.page && typeof payload.page.nextCursor === "string") {
+          return payload.page.nextCursor;
+        }
+
+        if (payload && payload.data && payload.data.page && typeof payload.data.page.nextCursor === "string") {
+          return payload.data.page.nextCursor;
+        }
+
+        return null;
+      }
+
+      function extractPageTotal(payload, fallback) {
+        if (payload && payload.page && Number.isFinite(payload.page.total)) {
+          return payload.page.total;
+        }
+
+        if (payload && payload.data && payload.data.page && Number.isFinite(payload.data.page.total)) {
+          return payload.data.page.total;
+        }
+
+        return fallback;
+      }
+
+      function formatNumber(value) {
+        const amount = Number(value);
+        if (!Number.isFinite(amount)) {
+          return "-";
+        }
+
+        return new Intl.NumberFormat("ko-KR").format(amount);
+      }
+
+      function formatDate(value) {
+        if (!value) {
+          return "";
+        }
+
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return "";
+        }
+
+        return new Intl.DateTimeFormat("ko-KR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit"
+        }).format(date);
+      }
+
+      function normalizeText(value) {
+        return String(value || "").trim();
+      }
+
+      function toAbsoluteDomainUrl(value) {
+        const input = normalizeText(value);
+        if (!input) {
+          return "";
+        }
+
+        const candidate = /^[a-z]+:\/\//i.test(input) ? input : `https://${input}`;
+
+        try {
+          return new URL(candidate).toString();
+        } catch (error) {
+          return "";
+        }
+      }
+
+      function toInitials(value) {
+        const text = normalizeText(value);
+        if (!text) {
+          return "NA";
+        }
+
+        return text
+          .split(/[-_\s.]+/)
+          .map(part => part[0])
+          .filter(Boolean)
+          .slice(0, 2)
+          .join("")
+          .toUpperCase();
+      }
+
+      function getStatusMeta(status) {
+        return STATUS_META[normalizeText(status)] || {
+          label: normalizeText(status) || "Unknown",
+          tone: "info",
+          icon: "language",
+          filterLabel: normalizeText(status) || "기타",
+          color: "linear-gradient(135deg,#4f46e5,#60a5fa)"
+        };
+      }
+
+      function getCertificateMeta(status) {
+        return CERTIFICATE_META[normalizeText(status)] || {
+          label: normalizeText(status) || "Unknown",
+          tone: "info"
+        };
+      }
+
+      function getConnectionMeta(status) {
+        return CONNECTION_META[normalizeText(status)] || {
+          label: normalizeText(status) || "Unknown",
+          tone: "info"
+        };
+      }
+
+      function getKindLabel(kind) {
+        return KIND_LABEL[normalizeText(kind)] || (normalizeText(kind) ? normalizeText(kind) : "Custom");
+      }
+
+      function buildResourceMeta(domain) {
+        const description = normalizeText(domain && domain.description);
+        if (description) {
+          return description;
+        }
+
+        const certificateText = buildCertificateSummary(domain && domain.certificate);
+        const connectionText = buildConnectionSummary(domain && domain.connection, domain && domain.boundProject);
+        return [certificateText, connectionText].filter(Boolean).join(" · ");
+      }
+
+      function buildCertificateSummary(certificate) {
+        const status = normalizeText(certificate && certificate.status);
+        if (status === "issued" && certificate && certificate.expiresAt) {
+          return `인증서 유효 ${formatDate(certificate.expiresAt)}`;
+        }
+        if (status === "expired") {
+          return "인증서 만료";
+        }
+        if (status === "pending") {
+          return "인증서 발급 대기";
+        }
+        if (status === "none") {
+          return "인증서 미등록";
+        }
+
+        return "";
+      }
+
+      function buildConnectionSummary(connection, boundProject) {
+        const status = normalizeText(connection && connection.status);
+        if (status === "connected") {
+          return boundProject && boundProject.label
+            ? `${boundProject.label} 연결 완료`
+            : "라우트 연결 완료";
+        }
+        if (status === "ready") {
+          return boundProject && boundProject.label
+            ? `${boundProject.label} 연결 준비 완료`
+            : "라우트 연결 준비 완료";
+        }
+        if (status === "none") {
+          return "바인딩 전";
+        }
+
+        return "";
+      }
+
+      function buildDomainHref(domain) {
+        const key = encodeURIComponent(normalizeText(domain && (domain.id || domain.name)));
+        return `workspace_domain_detail.html?item=${key}`;
+      }
+
+      function buildProjectHref(project) {
+        const label = normalizeText(project && project.label);
+        if (!label) {
+          return "";
+        }
+
+        return `workspace_project_detail.html?project=${encodeURIComponent(label)}`;
+      }
+
+      function buildProjectConnection(project, color) {
+        if (!project) {
+          return [];
+        }
+
+        return [
+          {
+            abbr: toInitials(project.label),
+            name: project.label,
+            meta: project.role || project.kind || "project",
+            color,
+            href: buildProjectHref(project)
+          }
+        ];
+      }
+
+      function buildResource(domain) {
+        const statusMeta = getStatusMeta(domain && domain.status);
+        const certificateStatus = normalizeText(domain && domain.certificate && domain.certificate.status);
+        const categories = ["all"];
+        const normalizedStatus = normalizeText(domain && domain.status);
+        if (normalizedStatus) {
+          categories.push(normalizedStatus);
+        }
+        if (certificateStatus && certificateStatus !== "none") {
+          categories.push("certificate");
+        }
+
+        return {
+          categories,
+          status: { label: statusMeta.label, tone: statusMeta.tone },
+          engine: `${getKindLabel(domain && domain.kind)} DNS · ${getConnectionMeta(domain && domain.connection && domain.connection.status).label} Route`,
+          icon: statusMeta.icon,
+          name: normalizeText(domain && domain.name) || "Unnamed domain",
+          meta: buildResourceMeta(domain),
+          color: statusMeta.color,
+          details: [
+            {
+              icon: "verified_user",
+              text: buildCertificateSummary(domain && domain.certificate) || "인증서 상태 정보 없음"
+            },
+            {
+              icon: "link",
+              text: buildConnectionSummary(domain && domain.connection, domain && domain.boundProject) || "커넥션 상태 정보 없음"
+            }
+          ],
+          useConnectionBlocks: true,
+          connectionsLabel: "Bound Project",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 1,
+          connectionsLayoutClass: "is-fixed-consoles",
+          connections: buildProjectConnection(domain && domain.boundProject, statusMeta.color),
+          footer: domain && domain.capabilities && domain.capabilities.canEdit === false
+            ? "read-only"
+            : "api/v2/domains",
+          actions: [
+            {
+              label: "Open",
+              icon: "open_in_new",
+              kind: "open",
+              href: buildDomainHref(domain)
+            }
+          ]
+        };
+      }
+
+      function countPanelStatus(panel, targetStatus) {
+        const items = Array.isArray(panel && panel.items) ? panel.items : [];
+        const match = items.find(item => normalizeText(item && item.status) === targetStatus);
+        return Number(match && match.count) || 0;
+      }
+
+      function buildHeroStats(statsPayload, certificatePanel, connectionPanel, items) {
+        const stats = statsPayload || {};
+        const total = Number(stats.total) || items.length;
+        const pending = Number(stats.pending) || 0;
+        const review = Number(stats.review) || 0;
+        const connected = Number(stats.connected) || 0;
+        const boundProjects = items.filter(item => item && item.boundProject).length;
+        const issuedCertificates = countPanelStatus(certificatePanel, "issued");
+        const connectedRoutes = countPanelStatus(connectionPanel, "connected");
+
+        return [
+          {
+            icon: "language",
+            value: formatNumber(total),
+            label: "등록 도메인",
+            note: `Connected ${formatNumber(connected)} · Pending ${formatNumber(pending + review)}`,
+            color: "linear-gradient(135deg,#4f46e5,#6366f1)"
+          },
+          {
+            icon: "link",
+            value: formatNumber(boundProjects),
+            label: "바인딩 프로젝트",
+            note: total > 0 ? `${formatNumber(total)}개 도메인 중 ${formatNumber(boundProjects)}개 연결` : "도메인 연결 정보 없음",
+            color: "linear-gradient(135deg,#6366f1,#818cf8)"
+          },
+          {
+            icon: "verified_user",
+            value: formatNumber(issuedCertificates),
+            label: "정상 인증서",
+            note: `Issued ${formatNumber(issuedCertificates)} · Review ${formatNumber(countPanelStatus(certificatePanel, "pending"))}`,
+            color: "linear-gradient(135deg,#4338ca,#60a5fa)"
+          },
+          {
+            icon: "cable",
+            value: formatNumber(connectedRoutes),
+            label: "연결 완료",
+            note: `Ready ${formatNumber(countPanelStatus(connectionPanel, "ready"))} · None ${formatNumber(countPanelStatus(connectionPanel, "none"))}`,
+            color: "linear-gradient(135deg,#3730a3,#6366f1)"
+          }
+        ];
+      }
+
+      function buildFilters(filtersPayload, items) {
+        const statuses = Array.isArray(filtersPayload && filtersPayload.statuses) && filtersPayload.statuses.length
+          ? filtersPayload.statuses
+          : Array.from(new Set(items.map(item => normalizeText(item && item.status)).filter(Boolean)))
+            .sort((left, right) => (STATUS_ORDER[left] ?? 99) - (STATUS_ORDER[right] ?? 99));
+
+        return [
+          { id: "all", icon: "apps", label: "전체" },
+          ...statuses.map(status => {
+            const meta = getStatusMeta(status);
+            return {
+              id: status,
+              icon: meta.icon,
+              label: meta.filterLabel
+            };
+          }),
+          { id: "certificate", icon: "verified_user", label: "인증서" }
+        ];
+      }
+
+      function buildResourceDescription(total) {
+        if (total <= 0) {
+          return "조회 가능한 도메인이 없습니다. 권한 또는 바인딩 상태를 확인해 주세요.";
+        }
+
+        return `${formatNumber(total)}개의 도메인 리소스를 실제 API 응답으로 렌더링합니다. 카드에서는 인증서 상태와 바인딩된 프로젝트를 바로 확인할 수 있습니다.`;
+      }
+
+      function buildCreatedDomainResource(name) {
+        const normalizedName = normalizeText(name) || "new-domain";
+        return {
+          categories: ["all", "pending"],
+          status: { label: "Pending", tone: "pending" },
+          engine: "Custom DNS · None Route",
+          icon: "language",
+          name: normalizedName,
+          meta: "새 도메인 초안입니다. 인증서와 프로젝트 연결은 상세 화면에서 이어서 설정합니다.",
+          color: "linear-gradient(135deg,#4f46e5,#818cf8)",
+          details: [
+            { icon: "verified_user", text: "인증서 발급 전" },
+            { icon: "link", text: "프로젝트 연결 전" }
+          ],
+          useConnectionBlocks: true,
+          connectionsLabel: "Bound Project",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 1,
+          connectionsLayoutClass: "is-fixed-consoles",
+          connections: [],
+          footer: "방금 생성됨",
+          actions: [
+            {
+              label: "Open",
+              icon: "open_in_new",
+              kind: "open",
+              href: buildDomainHref({ id: normalizedName, name: normalizedName })
+            }
+          ]
+        };
+      }
+
+      function ensureDomainCreateModal() {
+        let modal = document.getElementById("domainCreateModal");
+        if (modal) {
+          return modal;
+        }
+
+        modal = document.createElement("div");
+        modal.className = "hub-lite-create-backdrop";
+        modal.id = "domainCreateModal";
+        modal.hidden = true;
+        modal.innerHTML = `
+          <div class="hub-lite-create-shell" role="dialog" aria-modal="true" aria-labelledby="domainCreateTitle">
+            <div class="hub-lite-create-head">
+              <div class="hub-lite-create-copy">
+                <div class="hub-lite-create-title-row">
+                  <span class="hub-lite-create-step-badge">1</span>
+                  <h2 id="domainCreateTitle">도메인을 생성합니다</h2>
+                </div>
+                <p class="hub-lite-create-subtitle">이름만 입력하면 나머지 연결과 인증서 설정은 상세 화면에서 이어서 진행할 수 있습니다.</p>
+              </div>
+              <div class="hub-lite-create-head-actions">
+                <div class="hub-lite-create-hero" aria-hidden="true"><span class="material-icons-round">language</span></div>
+                <button class="hub-lite-create-close" type="button" id="domainCreateClose" aria-label="도메인 생성 닫기">
+                  <span class="material-icons-round">close</span>
+                </button>
+              </div>
+            </div>
+            <div class="hub-lite-create-progress">
+              <div class="hub-lite-create-progress-track">
+                <div class="hub-lite-create-progress-item">
+                  <div class="hub-lite-create-progress-line">
+                    <span class="hub-lite-create-progress-rail"></span>
+                    <span class="hub-lite-create-progress-dot">1</span>
+                    <span class="hub-lite-create-progress-rail"></span>
+                  </div>
+                  <div class="hub-lite-create-progress-label">도메인 이름</div>
+                  <div class="hub-lite-create-progress-value" id="domainCreateValue">아직 입력되지 않았습니다.</div>
+                </div>
+              </div>
+            </div>
+            <form class="hub-lite-create-form" id="domainCreateForm">
+              <div class="hub-lite-create-stage">
+                <div class="hub-lite-create-panel">
+                  <div class="hub-lite-create-panel-title">도메인 이름을 입력해주세요.</div>
+                  <input class="hub-lite-create-input" id="domainCreateName" type="text" placeholder="예: app.workspace.lge.com" required />
+                  <div class="hub-lite-create-note"><span class="material-icons-round">info</span>현재 화면에서는 이름만 먼저 등록하고, 이후 상세에서 프로젝트와 연결합니다.</div>
+                  <div class="hub-lite-create-note" id="domainCreateError" hidden><span class="material-icons-round">error</span><span></span></div>
+                </div>
+              </div>
+              <div class="hub-lite-create-actions">
+                <button class="hub-lite-create-action ghost" type="button" id="domainCreateCancel">취소</button>
+                <button class="hub-lite-create-action primary" type="submit" id="domainCreateSubmit" disabled><span class="material-icons-round">check_circle</span>도메인 생성</button>
+              </div>
+            </form>
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        const form = modal.querySelector("#domainCreateForm");
+        const input = modal.querySelector("#domainCreateName");
+        const value = modal.querySelector("#domainCreateValue");
+        const submit = modal.querySelector("#domainCreateSubmit");
+        const errorBox = modal.querySelector("#domainCreateError");
+        const errorText = errorBox && errorBox.querySelector("span:last-child");
+        const submitLabel = submit ? submit.innerHTML : "";
+        const closeButtons = [
+          modal.querySelector("#domainCreateClose"),
+          modal.querySelector("#domainCreateCancel")
+        ].filter(Boolean);
+
+        const setError = (message) => {
+          if (!errorBox || !errorText) {
+            return;
+          }
+
+          const text = normalizeText(message);
+          errorText.textContent = text;
+          errorBox.hidden = !text;
+        };
+
+        const setSubmitting = (isSubmitting) => {
+          if (submit) {
+            submit.disabled = isSubmitting || !normalizeText(input && input.value);
+            submit.innerHTML = isSubmitting
+              ? '<span class="material-icons-round">progress_activity</span>생성 중...'
+              : submitLabel;
+          }
+
+          if (input) {
+            input.disabled = Boolean(isSubmitting);
+          }
+
+          closeButtons.forEach((button) => {
+            button.disabled = Boolean(isSubmitting);
+          });
+        };
+
+        const sync = () => {
+          const currentValue = normalizeText(input && input.value);
+          if (value) {
+            value.textContent = currentValue || "아직 입력되지 않았습니다.";
+          }
+          if (submit) {
+            submit.disabled = !currentValue;
+          }
+          if (currentValue) {
+            setError("");
+          }
+        };
+
+        const close = () => {
+          modal.hidden = true;
+          document.body.style.overflow = "";
+          if (form) form.reset();
+          setError("");
+          setSubmitting(false);
+          sync();
+        };
+
+        closeButtons.forEach((button) => {
+          button.addEventListener("click", close);
+        });
+
+        modal.addEventListener("click", (event) => {
+          if (event.target === modal) {
+            close();
+          }
+        });
+
+        modal.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && !modal.hidden) {
+            close();
+          }
+        });
+
+        if (input) {
+          input.addEventListener("input", sync);
+        }
+
+        if (form) {
+          form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const name = normalizeText(input && input.value);
+            if (!name) {
+              sync();
+              return;
+            }
+
+            const url = toAbsoluteDomainUrl(name);
+            if (!url) {
+              setError("유효한 도메인 주소를 입력해 주세요.");
+              sync();
+              return;
+            }
+
+            setError("");
+            setSubmitting(true);
+
+            try {
+              await requestJson("/domains", {
+                method: "POST",
+                body: JSON.stringify({
+                  url
+                })
+              });
+              close();
+              await loadDomainHub();
+            } catch (error) {
+              setError(error && error.message ? error.message : "도메인 생성에 실패했습니다.");
+              setSubmitting(false);
+            }
+          });
+        }
+
+        sync();
+        return modal;
+      }
+
+      function wireDomainCreateAction() {
+        const button = document.querySelector(".control-actions .create-btn");
+        if (!button || button.dataset.domainCreateBound === "true") {
+          return;
+        }
+
+        button.dataset.domainCreateBound = "true";
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          const modal = ensureDomainCreateModal();
+          const input = modal && modal.querySelector("#domainCreateName");
+          if (!modal) return;
+          modal.hidden = false;
+          document.body.style.overflow = "hidden";
+          requestAnimationFrame(() => {
+            if (input) input.focus();
+          });
+        });
+      }
+
+      function buildPanelFromPayload(panel, fallbackPanel) {
+        if (!panel) {
+          return fallbackPanel;
+        }
+
+        return {
+          ...fallbackPanel,
+          icon: panel.icon || fallbackPanel.icon,
+          label: panel.label || fallbackPanel.label,
+          title: panel.title || fallbackPanel.title,
+          description: panel.description || fallbackPanel.description,
+          rows: Array.isArray(panel.rows) ? panel.rows : fallbackPanel.rows,
+          footerLink: panel.footerLink || fallbackPanel.footerLink
+        };
+      }
+
+      function buildCertificatePanelDescription(panel) {
+        const total = Number(panel && panel.total) || 0;
+        const items = Array.isArray(panel && panel.items) ? panel.items : [];
+        const summary = items
+          .filter(item => Number(item && item.count) > 0)
+          .map(item => `${getCertificateMeta(item.status).label} ${formatNumber(item.count)}`)
+          .join(" · ");
+
+        return total > 0
+          ? `총 ${formatNumber(total)}개 도메인 기준 ${summary || "상태 정보 없음"}`
+          : "인증서 상태를 확인할 수 있는 도메인이 없습니다.";
+      }
+
+      function buildConnectionPanelDescription(panel) {
+        const total = Number(panel && panel.total) || 0;
+        const items = Array.isArray(panel && panel.items) ? panel.items : [];
+        const summary = items
+          .filter(item => Number(item && item.count) > 0)
+          .map(item => `${getConnectionMeta(item.status).label} ${formatNumber(item.count)}`)
+          .join(" · ");
+
+        return total > 0
+          ? `총 ${formatNumber(total)}개 도메인 기준 ${summary || "상태 정보 없음"}`
+          : "커넥션 상태를 확인할 수 있는 도메인이 없습니다.";
+      }
+
+      function buildCertificateRowFromDetail(detail) {
+        if (!detail) {
+          return null;
+        }
+
+        const meta = getCertificateMeta(detail.status);
+        return {
+          title: normalizeText(detail.name) || "도메인 정보 없음",
+          meta: buildCertificateSummary(detail),
+          pill: { label: meta.label, tone: meta.tone }
+        };
+      }
+
+      function buildConnectionRowFromDetail(detail) {
+        if (!detail) {
+          return null;
+        }
+
+        const meta = getConnectionMeta(detail.status);
+        const projectLabel = normalizeText(detail.boundProject && detail.boundProject.label);
+        const detailMeta = projectLabel
+          ? `${projectLabel} · ${buildConnectionSummary(detail, detail.boundProject)}`
+          : buildConnectionSummary(detail, detail.boundProject);
+
+        return {
+          title: normalizeText(detail.name) || "도메인 정보 없음",
+          meta: detailMeta || "커넥션 상태 정보 없음",
+          pill: { label: meta.label, tone: meta.tone }
+        };
+      }
+
+      function buildCertificateRows(items, detail) {
+        const detailRow = buildCertificateRowFromDetail(detail);
+        const detailId = normalizeText(detail && detail.id);
+        const rows = items
+          .filter(item => normalizeText(item && item.certificate && item.certificate.status) !== "none")
+          .sort((left, right) => (
+            (CERTIFICATE_ORDER[normalizeText(left && left.certificate && left.certificate.status)] ?? 99) -
+            (CERTIFICATE_ORDER[normalizeText(right && right.certificate && right.certificate.status)] ?? 99)
+          ))
+          .filter(item => normalizeText(item && item.id) !== detailId)
+          .map(item => {
+            const meta = getCertificateMeta(item.certificate && item.certificate.status);
+            return {
+              title: normalizeText(item && item.name) || "도메인 정보 없음",
+              meta: buildCertificateSummary(item && item.certificate) || "인증서 상태 정보 없음",
+              pill: { label: meta.label, tone: meta.tone }
+            };
+          });
+
+        const merged = [detailRow, ...rows].filter(Boolean);
+        if (merged.length) {
+          return merged.slice(0, SIDEBAR_ROW_LIMIT);
+        }
+
+        return [
+          {
+            title: "표시할 인증서 상태가 없습니다.",
+            meta: "인증서가 등록된 도메인이 아직 없습니다.",
+            pill: { label: "Empty", tone: "draft" }
+          }
+        ];
+      }
+
+      function buildConnectionRows(items, detail) {
+        const detailRow = buildConnectionRowFromDetail(detail);
+        const detailId = normalizeText(detail && detail.id);
+        const rows = items
+          .filter(item => normalizeText(item && item.connection && item.connection.status) !== "none")
+          .sort((left, right) => (
+            (CONNECTION_ORDER[normalizeText(left && left.connection && left.connection.status)] ?? 99) -
+            (CONNECTION_ORDER[normalizeText(right && right.connection && right.connection.status)] ?? 99)
+          ))
+          .filter(item => normalizeText(item && item.id) !== detailId)
+          .map(item => {
+            const meta = getConnectionMeta(item.connection && item.connection.status);
+            return {
+              title: normalizeText(item && item.name) || "도메인 정보 없음",
+              meta: buildConnectionSummary(item && item.connection, item && item.boundProject) || "커넥션 상태 정보 없음",
+              pill: { label: meta.label, tone: meta.tone }
+            };
+          });
+
+        const merged = [detailRow, ...rows].filter(Boolean);
+        if (merged.length) {
+          return merged.slice(0, SIDEBAR_ROW_LIMIT);
+        }
+
+        return [
+          {
+            title: "표시할 커넥션 상태가 없습니다.",
+            meta: "프로젝트와 연결된 도메인이 아직 없습니다.",
+            pill: { label: "Empty", tone: "draft" }
+          }
+        ];
+      }
+
+      function pickCertificateDetailTarget(items) {
+        return items.find(item => normalizeText(item && item.certificate && item.certificate.status) !== "none") || items[0] || null;
+      }
+
+      function pickConnectionDetailTarget(items) {
+        return items.find(item => normalizeText(item && item.connection && item.connection.status) !== "none") || items[0] || null;
+      }
+
+      async function fetchAllDomains() {
+        const items = [];
+        let cursor = null;
+        let total = 0;
+        let hasNext = true;
+
+        while (hasNext) {
+          const payload = await fetchJson("/domains", {
+            limit: DOMAIN_PAGE_LIMIT,
+            sort: "-lastModified",
+            ...(cursor ? { cursor } : {})
+          });
+
+          const pageItems = extractItems(payload);
+          const nextCursor = extractNextCursor(payload);
+          const pageTotal = extractPageTotal(payload, total || pageItems.length);
+
+          items.push(...pageItems);
+          total = pageTotal;
+          cursor = nextCursor;
+          hasNext = Boolean(nextCursor);
+
+          if (!pageItems.length || (pageTotal > 0 && items.length >= pageTotal)) {
+            hasNext = false;
+          }
+        }
+
+        return {
+          items,
+          page: {
+            total: total || items.length
+          }
+        };
+      }
+
+      function renderConfig(config) {
+        lastRenderedConfig = config;
+        const nextConfig = {
+          ...config,
+          resources: [...createdDomainResources, ...(config.resources || [])]
+        };
+        window.HUB_CONFIG = nextConfig;
+        if (typeof window.renderWorkspaceResourceHub === "function") {
+          window.renderWorkspaceResourceHub(nextConfig);
+          wireDomainCreateAction();
+          if (typeof window.refreshConceptEndpointOverlay === "function") {
+            requestAnimationFrame(() => {
+              window.refreshConceptEndpointOverlay();
+            });
+          }
+        }
+      }
+
+      async function loadDomainHub() {
+        const [
+          domainsResult,
+          statsResult,
+          filtersResult,
+          certificatePanelResult,
+          connectionPanelResult,
+          tipsResult,
+          guideLinksResult
+        ] = await Promise.allSettled([
+          fetchAllDomains(),
+          fetchJson("/domains/stats"),
+          fetchJson("/domains/filters"),
+          fetchJson("/domains/panels/certificates"),
+          fetchJson("/domains/panels/connections"),
+          fetchJson("/panels/tips", { surface: "domains" }),
+          fetchJson("/panels/guide-links", { surface: "domains" })
+        ]);
+
+        if (domainsResult.status !== "fulfilled") {
+          throw domainsResult.reason;
+        }
+
+        const domainsPayload = domainsResult.value;
+        const items = extractItems(domainsPayload);
+        const total = extractPageTotal(domainsPayload, items.length);
+        const statsPayload = statsResult.status === "fulfilled" ? extractData(statsResult.value, null) : null;
+        const filtersPayload = filtersResult.status === "fulfilled" ? extractData(filtersResult.value, null) : null;
+        const certificatePanel = certificatePanelResult.status === "fulfilled"
+          ? extractData(certificatePanelResult.value, null)
+          : null;
+        const connectionPanel = connectionPanelResult.status === "fulfilled"
+          ? extractData(connectionPanelResult.value, null)
+          : null;
+        const tipsPayload = tipsResult.status === "fulfilled" ? extractData(tipsResult.value, null) : null;
+        const guideLinksPayload = guideLinksResult.status === "fulfilled" ? extractData(guideLinksResult.value, null) : null;
+
+        const certificateTarget = pickCertificateDetailTarget(items);
+        const connectionTarget = pickConnectionDetailTarget(items);
+        const [certificateDetailResult, connectionDetailResult] = await Promise.allSettled([
+          certificateTarget
+            ? fetchJson(`/domains/${encodeURIComponent(certificateTarget.id)}/certificate`)
+            : Promise.resolve(null),
+          connectionTarget
+            ? fetchJson(`/domains/${encodeURIComponent(connectionTarget.id)}/connection`)
+            : Promise.resolve(null)
+        ]);
+
+        const certificateDetail = certificateDetailResult.status === "fulfilled"
+          ? extractData(certificateDetailResult.value, null)
+          : null;
+        const connectionDetail = connectionDetailResult.status === "fulfilled"
+          ? extractData(connectionDetailResult.value, null)
+          : null;
+
+        renderConfig({
+          ...FALLBACK_CONFIG,
+          heroStats: buildHeroStats(statsPayload, certificatePanel, connectionPanel, items),
+          filters: buildFilters(filtersPayload, items),
+          resourceDescription: buildResourceDescription(total),
+          resources: items.map(buildResource),
+          mainPanels: [
+            buildPanelFromPayload(tipsPayload, FALLBACK_CONFIG.mainPanels[0]),
+            buildPanelFromPayload(guideLinksPayload, FALLBACK_CONFIG.mainPanels[1])
+          ],
+          sidebarPanels: [
+            {
+              ...FALLBACK_CONFIG.sidebarPanels[0],
+              description: buildCertificatePanelDescription(certificatePanel),
+              rows: buildCertificateRows(items, certificateDetail)
+            },
+            {
+              ...FALLBACK_CONFIG.sidebarPanels[1],
+              description: buildConnectionPanelDescription(connectionPanel),
+              rows: buildConnectionRows(items, connectionDetail)
+            }
+          ]
+        });
+      }
+
+      function handleLoadError(error) {
+        console.warn("[domain_hub] Failed to load domain hub data", error);
+
+        renderConfig({
+          ...FALLBACK_CONFIG,
+          heroStats: [],
+          resources: [],
+          resourceDescription: "Domain Hub 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.",
+          mainPanels: [
+            {
+              icon: "error",
+              label: "Load Error",
+              title: "Domain Hub 데이터를 읽지 못했습니다.",
+              description: "도메인 API 응답 상태 또는 권한을 확인해 주세요.",
+              rows: [
+                {
+                  title: "API 호출 실패",
+                  meta: String(error && error.message || error || "Unknown error")
+                }
+              ]
+            },
+            FALLBACK_CONFIG.mainPanels[1]
+          ],
+          sidebarPanels: [
+            {
+              ...FALLBACK_CONFIG.sidebarPanels[0],
+              description: "인증서 상태를 불러오지 못했습니다.",
+              rows: [
+                {
+                  title: "상태 동기화 실패",
+                  meta: "domain certificates",
+                  pill: { label: "Error", tone: "incident" }
+                }
+              ]
+            },
+            {
+              ...FALLBACK_CONFIG.sidebarPanels[1],
+              description: "커넥션 상태를 불러오지 못했습니다.",
+              rows: [
+                {
+                  title: "상태 동기화 실패",
+                  meta: "domain connections",
+                  pill: { label: "Error", tone: "incident" }
+                }
+              ]
+            }
+          ]
+        });
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => {
+          loadDomainHub().catch(handleLoadError);
+        }, { once: true });
+      } else {
+        loadDomainHub().catch(handleLoadError);
+      }
+    })();
+  </script>
   <script src="concept_endpoint_overlay.js"></script>
 </body>
 </html>

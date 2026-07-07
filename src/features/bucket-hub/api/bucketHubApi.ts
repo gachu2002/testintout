@@ -7,14 +7,8 @@ import type {
   BucketUsagePanel,
 } from '@/features/bucket-hub/types';
 import { apiClient } from '@/lib/api/axios';
-import type { ApiDataResponse, PaginatedResponse } from '@/lib/api/types';
-
-type CursorParams = {
-  cursor: string;
-  limit: number;
-  q: string;
-  sort: string;
-};
+import type { ApiDataResponse, CursorParams, PaginatedResponse } from '@/lib/api/types';
+import { unwrapApiData } from '@/lib/api/types';
 
 export async function getBucketHubBuckets({
   cursor,
@@ -31,12 +25,12 @@ export async function getBucketHubBuckets({
 
 export async function getBucketHubStats(): Promise<BucketHubStats> {
   const response = await apiClient.get<ApiDataResponse<BucketHubStats>>('/v2/buckets/stats');
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getBucketHubFilters(): Promise<BucketHubFilters> {
   const response = await apiClient.get<ApiDataResponse<BucketHubFilters>>('/v2/buckets/filters');
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getBucketHubTipsPanel(): Promise<BucketTipsPanel> {
@@ -44,7 +38,7 @@ export async function getBucketHubTipsPanel(): Promise<BucketTipsPanel> {
     params: { surface: 'buckets' },
   });
 
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getBucketHubGuideLinksPanel(): Promise<BucketGuideLinksPanel> {
@@ -55,7 +49,7 @@ export async function getBucketHubGuideLinksPanel(): Promise<BucketGuideLinksPan
     },
   );
 
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getBucketUsagePanel(): Promise<BucketUsagePanel> {
@@ -63,5 +57,5 @@ export async function getBucketUsagePanel(): Promise<BucketUsagePanel> {
     '/v2/buckets/panels/usage',
   );
 
-  return response.data.data;
+  return unwrapApiData(response);
 }

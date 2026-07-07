@@ -1,5 +1,9 @@
 import type { ServiceMenuGroup } from '@/features/app-shell/types';
-import type { LaunchpadAnnouncement, LaunchpadHero } from '@/features/launchpad/types';
+import type {
+  LaunchpadAnnouncement,
+  LaunchpadBanner,
+  LaunchpadHero,
+} from '@/features/launchpad/types';
 import { workspaceTokens } from '@/styles/tokens';
 
 export type BannerVariant = 'dej' | 'learning' | 'release' | 'research' | 'security';
@@ -8,19 +12,42 @@ export type ReferenceBannerSlide = {
   chips: string[];
   description: string;
   eyebrow: string;
+  eyebrowIcon?: string;
   id: string;
   primaryHref: string;
+  primaryIcon?: string;
   primaryLabel: string;
   secondaryHref?: string;
+  secondaryIcon?: string;
   secondaryLabel?: string;
+  showBackdrop: boolean;
+  snapshotRows?: Array<{ description: string; icon: string; title: string }>;
+  snapshotTitle?: string;
   title: string;
   type: string;
   variant: BannerVariant;
+  visualIcon?: string;
   visualMeta: string;
+  visualMode: string;
   visualTitle: string;
 };
 
 export function buildBannerSlides(
+  banners: LaunchpadBanner[],
+  announcements: LaunchpadAnnouncement[],
+  hero?: LaunchpadHero,
+  serviceGroups: ServiceMenuGroup[] = [],
+): ReferenceBannerSlide[] {
+  const apiSlides = getSortedBanners(banners).map(mapBannerToSlide);
+
+  if (apiSlides.length > 0) {
+    return apiSlides;
+  }
+
+  return buildFallbackBannerSlides(announcements, hero, serviceGroups);
+}
+
+function buildFallbackBannerSlides(
   announcements: LaunchpadAnnouncement[],
   hero?: LaunchpadHero,
   serviceGroups: ServiceMenuGroup[] = [],
@@ -44,15 +71,26 @@ export function buildBannerSlides(
       chips: (hero?.heroStats ?? []).slice(0, 3).map((stat) => stat.label),
       description: hero?.subtitle ?? '지금 필요한 앱과 작업 현황을 한눈에 확인해 보세요.',
       eyebrow: '오늘의 Workspace',
+      eyebrowIcon: 'timeline',
       id: 'launchpad-overview',
       primaryHref: quickLinks[0]?.href ?? '/workspace/app-gallery',
+      primaryIcon: quickLinks[0]?.icon,
       primaryLabel: quickLinks[0]?.label ?? 'App Gallery',
       secondaryHref: quickLinks[1]?.href ?? '/workspace/ai-gallery',
+      secondaryIcon: quickLinks[1]?.icon,
       secondaryLabel: quickLinks[1]?.label ?? 'AI Gallery',
+      showBackdrop: true,
+      snapshotRows: (hero?.heroStats ?? []).slice(0, 3).map((stat) => ({
+        description: stat.note ? `${stat.value} · ${stat.note}` : stat.value,
+        icon: stat.icon || 'data_usage',
+        title: stat.label,
+      })),
+      snapshotTitle: hero?.workspaceName ?? 'DEJ Workspace',
       title: hero?.title ?? '오늘의 Workspace',
       type: 'info',
       variant: 'dej',
       visualMeta: '현재 작업 현황',
+      visualMode: 'snapshot',
       visualTitle: hero?.workspaceName ?? 'DEJ Workspace',
     },
     {
@@ -63,17 +101,23 @@ export function buildBannerSlides(
       ],
       description: releaseAnnouncement?.message ?? 'Launchpad API announcements are not available.',
       eyebrow: '새로운 소식',
+      eyebrowIcon: 'rocket_launch',
       id: releaseAnnouncement?.id ?? 'launchpad-release',
       primaryHref: releaseAnnouncement?.href ?? '/docs/api/v2/features/launchpad',
+      primaryIcon: 'rocket_launch',
       primaryLabel: '가이드 열기',
       secondaryHref: '/workspace/app-gallery',
+      secondaryIcon: 'app_gallery',
       secondaryLabel: 'App Gallery 보기',
+      showBackdrop: false,
       title: releaseAnnouncement?.title ?? 'Launchpad Release',
       type: releaseAnnouncement?.type ?? 'release',
       variant: 'release',
       visualMeta: releaseAnnouncement?.publishedAt
         ? `${formatDate(releaseAnnouncement.publishedAt)} 기준`
         : '최근 업데이트',
+      visualIcon: 'rocket_launch',
+      visualMode: 'card',
       visualTitle: 'Product Release',
     },
     {
@@ -82,39 +126,153 @@ export function buildBannerSlides(
         spotlightAnnouncement?.message ??
         '새로 공개된 기능과 사용 방법을 한 번에 살펴볼 수 있습니다.',
       eyebrow: '추천 보기',
+      eyebrowIcon: 'campaign',
       id: spotlightAnnouncement?.id
         ? `${spotlightAnnouncement.id}-spotlight`
         : 'launchpad-spotlight',
       primaryHref: spotlightAnnouncement?.href ?? '/docs/articles/token-hygiene',
+      primaryIcon: 'campaign',
       primaryLabel: '관련 문서 보기',
       secondaryHref: '/workspace/ai-gallery',
+      secondaryIcon: 'ai_gallery',
       secondaryLabel: 'AI Gallery 보기',
+      showBackdrop: false,
       title: spotlightAnnouncement?.title ?? 'AX Studio Conference 소식을 확인해 보세요.',
       type: spotlightAnnouncement?.type ?? 'info',
       variant: 'learning',
       visualMeta: spotlightAnnouncement?.publishedAt
         ? `${formatDate(spotlightAnnouncement.publishedAt)} 기준`
         : '최근 업데이트',
+      visualIcon: 'campaign',
+      visualMode: 'card',
       visualTitle: 'Learning Spotlight',
     },
     {
       chips: ['Security', 'API Key', 'MCP Policy'],
       description: securityAnnouncement?.message ?? 'Security notice content is not available.',
       eyebrow: 'Security Notice',
+      eyebrowIcon: 'security',
       id: securityAnnouncement?.id ? `${securityAnnouncement.id}-security` : 'ax-studio-security',
       primaryHref: securityAnnouncement?.href ?? '/docs/articles/token-hygiene',
+      primaryIcon: 'security',
       primaryLabel: '보안 가이드',
       secondaryHref: '/workspace/keycenter',
+      secondaryIcon: 'keycenter',
       secondaryLabel: 'Keycenter 보기',
+      showBackdrop: false,
       title: securityAnnouncement?.title ?? 'Security Notice',
       type: securityAnnouncement?.type ?? 'security',
       variant: 'security',
       visualMeta: securityAnnouncement?.publishedAt
         ? `${formatDate(securityAnnouncement.publishedAt)} 기준`
         : '최근 업데이트',
+      visualIcon: 'security',
+      visualMode: 'card',
       visualTitle: 'Access Guard',
     },
   ];
+}
+
+function mapBannerToSlide(banner: LaunchpadBanner): ReferenceBannerSlide {
+  const primaryAction = banner.primaryAction ?? { href: '', icon: '', label: '' };
+  const secondaryAction = banner.secondaryAction ?? { href: '', icon: '', label: '' };
+  const primaryHref = primaryAction.href || banner.href || '';
+  const secondaryHref = secondaryAction.href || '';
+
+  return {
+    chips: getBannerChips(banner),
+    description: banner.message || '표시할 안내 메시지가 없습니다.',
+    eyebrow: banner.eyebrow || banner.title || 'Announcement',
+    eyebrowIcon: banner.eyebrowIcon,
+    id: banner.id,
+    primaryHref,
+    primaryIcon: primaryAction.icon,
+    primaryLabel: primaryAction.label,
+    secondaryHref,
+    secondaryIcon: secondaryAction.icon,
+    secondaryLabel: secondaryAction.label,
+    showBackdrop: banner.showBackdrop,
+    snapshotRows: banner.snapshotRows,
+    snapshotTitle: banner.snapshotTitle,
+    title: banner.title || '안내 배너',
+    type: banner.type || 'announcement',
+    variant: getBannerVariant(banner.theme),
+    visualIcon: banner.visualIcon,
+    visualMeta: getBannerVisualMeta(banner),
+    visualMode: banner.visualMode || 'card',
+    visualTitle: getBannerVisualTitle(banner),
+  };
+}
+
+function getSortedBanners(items: LaunchpadBanner[]) {
+  return items.filter(isBannerVisible).sort((a, b) => {
+    const pinnedGap = Number(Boolean(b.pinned)) - Number(Boolean(a.pinned));
+    if (pinnedGap) return pinnedGap;
+
+    const priorityGap = (Number(b.priority) || 0) - (Number(a.priority) || 0);
+    if (priorityGap) return priorityGap;
+
+    const dateA = getComparableDate(a);
+    const dateB = getComparableDate(b);
+
+    return dateB - dateA;
+  });
+}
+
+function isBannerVisible(item: LaunchpadBanner) {
+  if (!item || item.status === 'archived' || item.status === 'hidden') {
+    return false;
+  }
+
+  const now = Date.now();
+  const startAt = item.startAt ? new Date(item.startAt).getTime() : null;
+  const endAt = item.endAt ? new Date(item.endAt).getTime() : null;
+
+  if (startAt && !Number.isNaN(startAt) && startAt > now) return false;
+  if (endAt && !Number.isNaN(endAt) && endAt < now) return false;
+
+  return true;
+}
+
+function getComparableDate(item: LaunchpadBanner) {
+  const value = item.publishedAt || item.updatedAt || item.lastModified || item.created || '';
+  const parsed = new Date(value).getTime();
+
+  return Number.isNaN(parsed) ? 0 : parsed;
+}
+
+function getBannerVariant(theme: string): BannerVariant {
+  if (theme === 'dej') return 'dej';
+  if (theme === 'event' || theme === 'learning') return 'learning';
+  if (theme === 'research') return 'research';
+  if (theme === 'security') return 'security';
+
+  return 'release';
+}
+
+function getBannerChips(item: LaunchpadBanner) {
+  const chips = Array.isArray(item.chips) ? item.chips.filter(Boolean) : [];
+
+  if (chips.length > 0) return chips.slice(0, 3);
+
+  return [item.type || 'notice', '최근 등록', '바로가기'];
+}
+
+function getBannerVisualTitle(item: LaunchpadBanner) {
+  if (item.visualTitle) return item.visualTitle;
+  if (item.theme === 'learning' || item.theme === 'event') return 'Learning Spotlight';
+  if (item.theme === 'research') return 'Research Program';
+  if (item.theme === 'release') return 'Product Release';
+  if (item.theme === 'security') return 'Access Guard';
+
+  return item.title || 'Announcement';
+}
+
+function getBannerVisualMeta(item: LaunchpadBanner) {
+  if (item.visualMeta) return item.visualMeta;
+  if (item.publishedAt) return `${formatDate(item.publishedAt)} 기준`;
+
+  return item.theme === 'dej' ? '현재 작업 현황' : '최근 업데이트';
 }
 
 function formatDate(value: string) {

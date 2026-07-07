@@ -49,6 +49,60 @@
       line-height: 1.55;
       color: var(--muted);
     }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .detail-card {
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+    }
+    .detail-card-title {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      margin-bottom: 14px;
+    }
+    .detail-rows {
+      display: grid;
+      gap: 12px;
+    }
+    .detail-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .detail-row-label {
+      color: var(--muted);
+      flex: 0 0 132px;
+    }
+    .detail-row-value {
+      min-width: 0;
+      flex: 1 1 auto;
+      text-align: right;
+      color: #0f172a;
+      word-break: break-word;
+    }
+    .detail-row-value.mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+    }
+    .detail-note {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(59, 130, 246, .16);
+      background: rgba(239, 246, 255, .9);
+      color: #1d4ed8;
+      font-size: 13px;
+      line-height: 1.6;
+    }
     .mock-modal-backdrop[hidden] { display:none; }
     .mock-modal-backdrop {
       position: fixed;
@@ -153,13 +207,30 @@
     .mock-inline-note {
       padding: 12px 14px;
       border-radius: 14px;
-      background: #eff6ff;
-      color: #1d4ed8;
       font-size: 13px;
       font-weight: 600;
+      line-height: 1.6;
+    }
+    .mock-inline-note.is-info {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    .mock-inline-note.is-success {
+      background: #ecfdf3;
+      color: #027a48;
+    }
+    .mock-inline-note.is-error {
+      background: #fef3f2;
+      color: #b42318;
+    }
+    .modal-input[readonly] {
+      background: #f8fafc;
+      color: #667085;
+      cursor: default;
     }
     @media (max-width: 900px) {
-      .tls-summary {
+      .tls-summary,
+      .detail-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -173,7 +244,7 @@
         <div>
           <div class="section-kicker"><span class="material-icons-round">verified_user</span>TLS Update</div>
           <h2 class="mock-modal-title" id="tlsEditTitle">TLS 업데이트</h2>
-          <p class="mock-modal-desc">HTTPRoute가 참조하는 TLS 설정을 샘플로 업데이트합니다.</p>
+          <p class="mock-modal-desc">실제 Domain v2 API로 cert/key를 검증한 뒤 저장합니다. Certificate Ref는 조회용 표시값이며 저장되지 않습니다.</p>
         </div>
         <button class="mock-modal-close" type="button" data-modal-close>
           <span class="material-icons-round">close</span>
@@ -182,7 +253,7 @@
       <div class="mock-modal-body">
         <label class="modal-field">
           <span class="modal-label">Certificate Ref</span>
-          <input class="modal-input" id="tlsEditorCertRef" type="text" />
+          <input class="modal-input" id="tlsEditorCertRef" type="text" readonly />
         </label>
         <label class="modal-field">
           <span class="modal-label">TLS CRT</span>
@@ -192,7 +263,7 @@
           <span class="modal-label">TLS Key</span>
           <textarea class="modal-textarea" id="tlsEditorKey" spellcheck="false" placeholder="-----BEGIN PRIVATE KEY-----"></textarea>
         </label>
-        <div class="mock-inline-note" id="tlsEditHint">실제 저장 없이 현재 샘플 화면만 갱신합니다.</div>
+        <div class="mock-inline-note is-info" id="tlsEditHint">현재 API는 기존 PEM 원문을 다시 내려주지 않으므로, 새 인증서와 키를 입력해 검증 후 저장합니다.</div>
       </div>
       <div class="mock-modal-foot">
         <button class="action-btn secondary" type="button" data-modal-close>
@@ -207,9 +278,130 @@
     </div>
   </div>
   <script>
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function normalizeText(value) {
+      return String(value ?? "").trim();
+    }
+
     function formatPemState(value, emptyLabel) {
-      const trimmed = (value || "").trim();
+      const trimmed = normalizeText(value);
       return trimmed ? `입력됨 · ${trimmed.split("\n")[0]}` : emptyLabel;
+    }
+
+    function formatDate(value) {
+      if (!value) {
+        return "-";
+      }
+
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) {
+        return "-";
+      }
+
+      return new Intl.DateTimeFormat("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).format(date);
+    }
+
+    function formatRemainingDays(expiresAt, certificateStatus) {
+      if (!expiresAt) {
+        if (normalizeText(certificateStatus) === "none") {
+          return {
+            value: "-",
+            meta: "인증서가 아직 등록되지 않았습니다."
+          };
+        }
+
+        return {
+          value: "-",
+          meta: "인증서 만료일 정보를 확인할 수 없습니다."
+        };
+      }
+
+      const expiryDate = new Date(expiresAt);
+      if (Number.isNaN(expiryDate.getTime())) {
+        return {
+          value: "-",
+          meta: "인증서 만료일 형식을 해석하지 못했습니다."
+        };
+      }
+
+      const diffDays = Math.ceil((expiryDate.getTime() - Date.now()) / 86400000);
+      if (diffDays < 0) {
+        return {
+          value: `${Math.abs(diffDays)}d`,
+          meta: `${formatDate(expiresAt)} 기준으로 인증서가 만료되었습니다.`
+        };
+      }
+
+      return {
+        value: `${diffDays}d`,
+        meta: `${formatDate(expiresAt)} 만료 예정입니다.`
+      };
+    }
+
+    function getStatusPresentation(status) {
+      switch (normalizeText(status)) {
+        case "connected":
+          return { label: "Connected", tone: "healthy" };
+        case "review":
+          return { label: "Review", tone: "review" };
+        case "pending":
+          return { label: "Pending", tone: "muted" };
+        default:
+          return { label: normalizeText(status) || "Unknown", tone: "warning" };
+      }
+    }
+
+    function getCertificatePresentation(status) {
+      switch (normalizeText(status)) {
+        case "issued":
+          return { label: "Issued", tone: "healthy", message: "유효한 인증서가 등록되어 있습니다." };
+        case "expired":
+          return { label: "Expired", tone: "warning", message: "인증서가 만료되어 갱신이 필요합니다." };
+        case "pending":
+          return { label: "Pending", tone: "review", message: "인증서가 저장되었지만 발급 상태 확인이 필요합니다." };
+        case "none":
+          return { label: "None", tone: "muted", message: "등록된 인증서가 없습니다." };
+        default:
+          return { label: normalizeText(status) || "Unknown", tone: "warning", message: "인증서 상태를 확인할 수 없습니다." };
+      }
+    }
+
+    function getConnectionPresentation(status) {
+      switch (normalizeText(status)) {
+        case "connected":
+          return { label: "Connected", message: "프로젝트와 라우트 연결이 완료되었습니다." };
+        case "ready":
+          return { label: "Ready", message: "프로젝트는 연결되었고 인증서 상태만 확인하면 됩니다." };
+        case "none":
+          return { label: "None", message: "아직 바인딩된 프로젝트가 없습니다." };
+        default:
+          return { label: normalizeText(status) || "Unknown", message: "연결 상태를 확인할 수 없습니다." };
+      }
+    }
+
+    function renderDetailRows(rows) {
+      return `
+        <div class="detail-rows">
+          ${rows.map((row) => `
+            <div class="detail-row">
+              <div class="detail-row-label">${escapeHtml(row.label)}</div>
+              <div class="detail-row-value${row.mono ? " mono" : ""}">${escapeHtml(row.value)}</div>
+            </div>
+          `).join("")}
+        </div>
+      `;
     }
 
     function buildTlsSummary(item) {
@@ -217,217 +409,235 @@
         <div class="tls-summary">
           <article class="tls-metric">
             <div class="tls-metric-label">TLS Remaining</div>
-            <div class="tls-metric-value" data-tls-field="remainingDays">${item.remainingDays}</div>
-            <div class="tls-metric-meta">${item.remainingMeta}</div>
+            <div class="tls-metric-value" data-tls-field="remainingDays">${escapeHtml(item.remainingDays)}</div>
+            <div class="tls-metric-meta" data-tls-field="remainingMeta">${escapeHtml(item.remainingMeta)}</div>
           </article>
           <article class="tls-metric">
-            <div class="tls-metric-label">Certificate Ref</div>
-            <div class="tls-metric-value" style="font-size:20px;" data-tls-field="certRef">${item.tlsEditor.certRef}</div>
-            <div class="tls-metric-meta">Gateway API HTTPRoute TLS reference</div>
+            <div class="tls-metric-label">Target Domain</div>
+            <div class="tls-metric-value" style="font-size:20px;" data-tls-field="certRef">${escapeHtml(item.tlsEditor.certRef)}</div>
+            <div class="tls-metric-meta">API에서 secret ref를 직접 주지 않아 현재 도메인 이름을 표시합니다.</div>
           </article>
           <article class="tls-metric">
             <div class="tls-metric-label">TLS Material</div>
             <div class="tls-metric-value" style="font-size:20px;">PEM Input</div>
-            <div class="tls-metric-meta"><span data-tls-field="crtStatus">${formatPemState(item.tlsEditor.crt, "CRT 미입력")}</span><br /><span data-tls-field="keyStatus">${formatPemState(item.tlsEditor.key, "KEY 미입력")}</span></div>
+            <div class="tls-metric-meta">
+              <span data-tls-field="crtStatus">${escapeHtml(formatPemState(item.tlsEditor.crt, "CRT 미입력"))}</span><br />
+              <span data-tls-field="keyStatus">${escapeHtml(formatPemState(item.tlsEditor.key, "KEY 미입력"))}</span>
+            </div>
           </article>
         </div>
       `;
     }
 
-    function buildItem(item) {
+    function createDomainDetailPlaceholder(key, overrides = {}) {
+      const title = normalizeText(overrides.title) || normalizeText(key) || "Domain";
+      const message = normalizeText(overrides.description) || "도메인 상세 정보를 불러오는 중입니다.";
+      const editor = overrides.editor || {};
       return {
-        ...item,
+        key: normalizeText(key) || "domain",
+        title,
+        description: message,
+        heroIcon: "verified_user",
+        typeLabel: "Domain Detail",
+        statusLabel: overrides.statusLabel || "Loading",
+        statusTone: overrides.statusTone || "muted",
+        theme: {
+          bg: "#eef0ff",
+          brand: "#4f46e5",
+          brandH: "#4338ca",
+          brandBg: "#d8dcff",
+          brandSoft: "rgba(79,70,229,.18)",
+          accent: "#60a5fa"
+        },
+        actions: [
+          { label: "TLS 업데이트", icon: "edit", kind: "button", actionKey: "tls-edit", variant: "primary", disabled: true },
+          { label: "Domain Hub", icon: "arrow_back", kind: "link", href: "workspace_domain_hub.html", variant: "secondary" }
+        ],
+        heroStats: [
+          { label: "TLS Remaining", value: "-", meta: "데이터를 불러오는 중입니다." },
+          { label: "Certificate", value: "-", meta: "데이터를 불러오는 중입니다." },
+          { label: "Connection", value: "-", meta: "데이터를 불러오는 중입니다." },
+          { label: "Edit Access", value: "-", meta: "권한을 확인하는 중입니다." }
+        ],
+        remainingDays: "-",
+        remainingMeta: message,
+        tlsEditor: {
+          certRef: editor.certRef || normalizeText(key) || "-",
+          crt: editor.crt || "",
+          key: editor.key || ""
+        },
         mainHtml: `
           <section class="panel section">
             <div class="section-head">
               <div>
                 <div class="section-kicker"><span class="material-icons-round">verified_user</span>TLS</div>
                 <h2 class="section-title">TLS 상태</h2>
-                <p class="section-desc">도메인은 Gateway API HTTPRoute를 사용하지만, 이 화면은 TLS 잔여 유효일과 TLS 업데이트만 확인하는 단순한 detail 샘플입니다.</p>
+                <p class="section-desc">${escapeHtml(message)}</p>
               </div>
-              <button class="action-btn primary" type="button" data-action-key="tls-edit">
+            </div>
+            ${buildTlsSummary({
+              remainingDays: "-",
+              remainingMeta: message,
+              tlsEditor: {
+                certRef: editor.certRef || normalizeText(key) || "-",
+                crt: editor.crt || "",
+                key: editor.key || ""
+              }
+            })}
+            <div class="detail-note">실제 값은 <span class="mono">GET /api/v2/domains/:id</span> 응답을 받은 뒤 다시 렌더링합니다.</div>
+          </section>
+        `,
+        sidebarHtml: "",
+        __isLoading: overrides.isLoading !== undefined ? Boolean(overrides.isLoading) : true
+      };
+    }
+
+    function buildApiItem(domain, options = {}) {
+      const normalizedName = normalizeText(domain && domain.name) || normalizeText(domain && domain.id) || "Unnamed domain";
+      const certificate = domain && domain.certificate ? domain.certificate : {};
+      const connection = domain && domain.connection ? domain.connection : {};
+      const boundProject = domain && domain.boundProject ? domain.boundProject : null;
+      const canEdit = !(domain && domain.capabilities && domain.capabilities.canEdit === false);
+      const inferredUrl = normalizeText(options.url) || (normalizedName ? `https://${normalizedName}` : "-");
+      const statusMeta = getStatusPresentation(domain && domain.status);
+      const certificateMeta = getCertificatePresentation(certificate && certificate.status);
+      const connectionMeta = getConnectionPresentation(connection && connection.status);
+      const remaining = formatRemainingDays(certificate && certificate.expiresAt, certificate && certificate.status);
+      const editor = options.editor || {};
+      const note = options.note || {
+        text: "현재 API는 기존 PEM 원문을 반환하지 않으므로, 새 인증서와 키를 입력해 검증 후 저장합니다.",
+        tone: "info"
+      };
+
+      return {
+        key: normalizeText(domain && domain.id) || normalizedName,
+        title: normalizedName,
+        description: normalizeText(domain && domain.description) || `${inferredUrl} 도메인의 TLS 인증서와 바인딩 상태를 실제 API 기준으로 확인합니다.`,
+        heroIcon: "public",
+        typeLabel: `${normalizeText(domain && domain.kind) || "custom"} domain`,
+        statusLabel: statusMeta.label,
+        statusTone: statusMeta.tone,
+        heroBadges: [
+          `Certificate · ${certificateMeta.label}`,
+          `Connection · ${connectionMeta.label}`
+        ],
+        theme: {
+          bg: "#eef0ff",
+          brand: "#4f46e5",
+          brandH: "#4338ca",
+          brandBg: "#d8dcff",
+          brandSoft: "rgba(79,70,229,.18)",
+          accent: "#60a5fa"
+        },
+        actions: [
+          { label: "TLS 업데이트", icon: "edit", kind: "button", actionKey: "tls-edit", variant: "primary", disabled: !canEdit },
+          { label: "Domain Hub", icon: "arrow_back", kind: "link", href: "workspace_domain_hub.html", variant: "secondary" }
+        ],
+        heroStats: [
+          { label: "TLS Remaining", value: remaining.value, meta: remaining.meta },
+          { label: "Certificate", value: certificateMeta.label, meta: certificate && certificate.expiresAt ? `만료 ${formatDate(certificate.expiresAt)}` : certificateMeta.message },
+          { label: "Connection", value: connectionMeta.label, meta: boundProject && boundProject.label ? boundProject.label : connectionMeta.message },
+          { label: "Edit Access", value: canEdit ? "Enabled" : "Read only", meta: canEdit ? "PATCH /api/v2/domains/:id 가능" : "수정 권한이 없어 읽기 전용입니다." }
+        ],
+        remainingDays: remaining.value,
+        remainingMeta: remaining.meta,
+        tlsEditor: {
+          certRef: editor.certRef || normalizedName,
+          crt: editor.crt || "",
+          key: editor.key || ""
+        },
+        mainHtml: `
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">verified_user</span>TLS</div>
+                <h2 class="section-title">TLS 상태</h2>
+                <p class="section-desc">도메인 상세는 실제 <span class="mono">Domain v2</span> 응답을 사용하고, 모달에서는 cert/key를 검증한 뒤 곧바로 저장합니다.</p>
+              </div>
+              <button class="action-btn primary" type="button" data-action-key="tls-edit"${canEdit ? "" : " disabled"}>
                 <span class="material-icons-round" style="font-size:18px;">edit</span>
                 TLS 업데이트
               </button>
             </div>
-            ${buildTlsSummary(item)}
+            ${buildTlsSummary({
+              remainingDays: remaining.value,
+              remainingMeta: remaining.meta,
+              tlsEditor: {
+                certRef: editor.certRef || normalizedName,
+                crt: editor.crt || "",
+                key: editor.key || ""
+              }
+            })}
+            <div class="detail-note">${escapeHtml(note.text)}</div>
+          </section>
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">dns</span>Overview</div>
+                <h2 class="section-title">현재 도메인 정보</h2>
+                <p class="section-desc">조회는 <span class="mono">GET /api/v2/domains/:id</span> 및 <span class="mono">GET /api/v2/domains/:id/certificate</span> 응답을 기준으로 구성합니다.</p>
+              </div>
+            </div>
+            <div class="detail-grid">
+              <article class="detail-card">
+                <div class="detail-card-title">Resource Snapshot</div>
+                ${renderDetailRows([
+                  { label: "Domain ID", value: normalizeText(domain && domain.id) || "-", mono: true },
+                  { label: "Host", value: normalizedName, mono: true },
+                  { label: "URL", value: inferredUrl, mono: true },
+                  { label: "Kind", value: normalizeText(domain && domain.kind) || "custom" },
+                  { label: "Status", value: statusMeta.label },
+                  { label: "Bound Project", value: boundProject && boundProject.label ? boundProject.label : "미연결" }
+                ])}
+              </article>
+              <article class="detail-card">
+                <div class="detail-card-title">API Flow</div>
+                ${renderDetailRows([
+                  { label: "Read Detail", value: `GET /api/v2/domains/${normalizeText(domain && domain.id) || ':id'}`, mono: true },
+                  { label: "Read Cert", value: `GET /api/v2/domains/${normalizeText(domain && domain.id) || ':id'}/certificate`, mono: true },
+                  { label: "Validate Pair", value: "POST /api/v2/domains/validate-certificate", mono: true },
+                  { label: "Validate Domain", value: "POST /api/v2/domains/validate-domain", mono: true },
+                  { label: "Save TLS", value: `PATCH /api/v2/domains/${normalizeText(domain && domain.id) || ':id'}`, mono: true },
+                  { label: "Patch Body", value: '{ \"cert\": \"...\", \"key\": \"...\" }', mono: true }
+                ])}
+              </article>
+            </div>
           </section>
         `,
-        sidebarHtml: ``
+        sidebarHtml: `
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">info</span>Constraints</div>
+                <h2 class="section-title">연동 제약</h2>
+                <p class="section-desc">현재 API가 보안상 기존 cert/key 원문을 내려주지 않는 점을 명시합니다.</p>
+              </div>
+            </div>
+            <div class="detail-rows">
+              <div class="detail-row">
+                <div class="detail-row-label">Certificate</div>
+                <div class="detail-row-value">${escapeHtml(certificateMeta.label)}</div>
+              </div>
+              <div class="detail-row">
+                <div class="detail-row-label">Expires At</div>
+                <div class="detail-row-value">${escapeHtml(formatDate(certificate && certificate.expiresAt))}</div>
+              </div>
+              <div class="detail-row">
+                <div class="detail-row-label">Connection</div>
+                <div class="detail-row-value">${escapeHtml(connectionMeta.label)}</div>
+              </div>
+              <div class="detail-row">
+                <div class="detail-row-label">PEM Readback</div>
+                <div class="detail-row-value">지원하지 않음</div>
+              </div>
+            </div>
+          </section>
+        `,
+        __isLoading: false
       };
     }
 
-    const rawItems = [
-      {
-        key: "alpha",
-        title: "alpha.workspace.hedej.lge.com",
-        description: "아직 TLS가 연결되지 않은 preview 도메인 샘플입니다.",
-        heroIcon: "public",
-        typeLabel: "Gateway Route",
-        statusLabel: "Pending TLS",
-        statusTone: "muted",
-        theme: { bg: "#eef0ff", brand: "#4f46e5", brandH: "#4338ca", brandBg: "#d8dcff", brandSoft: "rgba(79,70,229,.18)", accent: "#60a5fa" },
-        actions: [
-          { label: "TLS 업데이트", icon: "edit", kind: "button", actionKey: "tls-edit", variant: "primary" }
-        ],
-        heroStats: [
-          { label: "TLS Remaining", value: "-", meta: "certificate 미연결" }
-        ],
-        remainingDays: "-",
-        remainingMeta: "TLS를 먼저 연결해야 유효일 계산이 가능합니다.",
-        tlsEditor: {
-          certRef: "preview-alpha-tls",
-          crt: "",
-          key: ""
-        },
-        facts: [
-          { key: "Certificate Ref", value: '<span class="mono" data-tls-field="certRef">preview-alpha-tls</span>' },
-          { key: "TLS CRT", value: '<span data-tls-field="crtStatus">CRT 미입력</span>' },
-          { key: "TLS Key", value: '<span data-tls-field="keyStatus">KEY 미입력</span>' }
-        ]
-      },
-      {
-        key: "beta-review",
-        title: "beta-review.workspace.hedej.lge.com",
-        description: "review용 preview 도메인으로 TLS 잔여 유효일과 갱신 기준만 단순하게 보는 샘플입니다.",
-        heroIcon: "language",
-        typeLabel: "Gateway Route",
-        statusLabel: "Review",
-        statusTone: "review",
-        theme: { bg: "#eef0ff", brand: "#4f46e5", brandH: "#4338ca", brandBg: "#d8dcff", brandSoft: "rgba(79,70,229,.18)", accent: "#60a5fa" },
-        actions: [
-          { label: "TLS 업데이트", icon: "edit", kind: "button", actionKey: "tls-edit", variant: "primary" }
-        ],
-        heroStats: [
-          { label: "TLS Remaining", value: "34d", meta: "renewal review 필요" }
-        ],
-        remainingDays: "34d",
-        remainingMeta: "만료까지 34일 남아 있어 검토 구간입니다.",
-        tlsEditor: {
-          certRef: "beta-review-tls",
-          crt: "-----BEGIN CERTIFICATE-----\nMIICbeta-review\n-----END CERTIFICATE-----",
-          key: "-----BEGIN PRIVATE KEY-----\nMIIEbeta-review\n-----END PRIVATE KEY-----"
-        },
-        facts: [
-          { key: "Certificate Ref", value: '<span class="mono" data-tls-field="certRef">beta-review-tls</span>' },
-          { key: "TLS CRT", value: '<span data-tls-field="crtStatus">입력됨 · -----BEGIN CERTIFICATE-----</span>' },
-          { key: "TLS Key", value: '<span data-tls-field="keyStatus">입력됨 · -----BEGIN PRIVATE KEY-----</span>' }
-        ]
-      },
-      {
-        key: "preview-restaurant",
-        title: "preview.restaurant.workspace.hedej.lge.com",
-        description: "TLS 만료가 임박한 preview 웹 도메인 샘플입니다.",
-        heroIcon: "verified_user",
-        typeLabel: "Gateway Route",
-        statusLabel: "Expiring Soon",
-        statusTone: "warning",
-        theme: { bg: "#eef0ff", brand: "#4f46e5", brandH: "#4338ca", brandBg: "#d8dcff", brandSoft: "rgba(79,70,229,.18)", accent: "#60a5fa" },
-        actions: [
-          { label: "TLS 업데이트", icon: "edit", kind: "button", actionKey: "tls-edit", variant: "primary" }
-        ],
-        heroStats: [
-          { label: "TLS Remaining", value: "9d", meta: "곧 만료" }
-        ],
-        remainingDays: "9d",
-        remainingMeta: "만료가 임박해 바로 갱신을 준비해야 합니다.",
-        tlsEditor: {
-          certRef: "restaurant-preview-tls",
-          crt: "-----BEGIN CERTIFICATE-----\nMIICrestaurant-preview\n-----END CERTIFICATE-----",
-          key: "-----BEGIN PRIVATE KEY-----\nMIIErestaurant-preview\n-----END PRIVATE KEY-----"
-        },
-        facts: [
-          { key: "Certificate Ref", value: '<span class="mono" data-tls-field="certRef">restaurant-preview-tls</span>' },
-          { key: "TLS CRT", value: '<span data-tls-field="crtStatus">입력됨 · -----BEGIN CERTIFICATE-----</span>' },
-          { key: "TLS Key", value: '<span data-tls-field="keyStatus">입력됨 · -----BEGIN PRIVATE KEY-----</span>' }
-        ]
-      },
-      {
-        key: "coverity-ai",
-        title: "coverity-ai.workspace.hedej.lge.com",
-        description: "운영 도메인이지만 TLS 잔여 유효일이 짧아 경고성으로 보는 샘플입니다.",
-        heroIcon: "shield",
-        typeLabel: "Gateway Route",
-        statusLabel: "Warn",
-        statusTone: "warning",
-        theme: { bg: "#eef0ff", brand: "#4f46e5", brandH: "#4338ca", brandBg: "#d8dcff", brandSoft: "rgba(79,70,229,.18)", accent: "#60a5fa" },
-        actions: [
-          { label: "TLS 업데이트", icon: "edit", kind: "button", actionKey: "tls-edit", variant: "primary" }
-        ],
-        heroStats: [
-          { label: "TLS Remaining", value: "12d", meta: "운영 경고 구간" }
-        ],
-        remainingDays: "12d",
-        remainingMeta: "운영 도메인이라 만료 전 갱신 우선순위가 높습니다.",
-        tlsEditor: {
-          certRef: "coverity-ai-tls",
-          crt: "-----BEGIN CERTIFICATE-----\nMIICcoverity-ai\n-----END CERTIFICATE-----",
-          key: "-----BEGIN PRIVATE KEY-----\nMIIEcoverity-ai\n-----END PRIVATE KEY-----"
-        },
-        facts: [
-          { key: "Certificate Ref", value: '<span class="mono" data-tls-field="certRef">coverity-ai-tls</span>' },
-          { key: "TLS CRT", value: '<span data-tls-field="crtStatus">입력됨 · -----BEGIN CERTIFICATE-----</span>' },
-          { key: "TLS Key", value: '<span data-tls-field="keyStatus">입력됨 · -----BEGIN PRIVATE KEY-----</span>' }
-        ]
-      },
-      {
-        key: "hermes-be",
-        title: "hermes-be.workspace.hedej.lge.com",
-        description: "가장 안정적인 healthy TLS 상태를 보여주는 운영 API 샘플입니다.",
-        heroIcon: "lan",
-        typeLabel: "Gateway Route",
-        statusLabel: "Healthy",
-        statusTone: "healthy",
-        theme: { bg: "#eef0ff", brand: "#4f46e5", brandH: "#4338ca", brandBg: "#d8dcff", brandSoft: "rgba(79,70,229,.18)", accent: "#60a5fa" },
-        actions: [
-          { label: "TLS 업데이트", icon: "edit", kind: "button", actionKey: "tls-edit", variant: "primary" }
-        ],
-        heroStats: [
-          { label: "TLS Remaining", value: "143d", meta: "여유 충분" }
-        ],
-        remainingDays: "143d",
-        remainingMeta: "현재는 갱신보다 기준값 확인 용도에 가깝습니다.",
-        tlsEditor: {
-          certRef: "hermes-be-tls",
-          crt: "-----BEGIN CERTIFICATE-----\nMIIChermes-be\n-----END CERTIFICATE-----",
-          key: "-----BEGIN PRIVATE KEY-----\nMIIEhermes-be\n-----END PRIVATE KEY-----"
-        },
-        facts: [
-          { key: "Certificate Ref", value: '<span class="mono" data-tls-field="certRef">hermes-be-tls</span>' },
-          { key: "TLS CRT", value: '<span data-tls-field="crtStatus">입력됨 · -----BEGIN CERTIFICATE-----</span>' },
-          { key: "TLS Key", value: '<span data-tls-field="keyStatus">입력됨 · -----BEGIN PRIVATE KEY-----</span>' }
-        ]
-      },
-      {
-        key: "docs",
-        title: "docs.workspace.hedej.lge.com",
-        description: "public docs 도메인의 단순 TLS 상태 샘플입니다.",
-        heroIcon: "domain_verification",
-        typeLabel: "Gateway Route",
-        statusLabel: "Healthy",
-        statusTone: "healthy",
-        theme: { bg: "#eef0ff", brand: "#4f46e5", brandH: "#4338ca", brandBg: "#d8dcff", brandSoft: "rgba(79,70,229,.18)", accent: "#60a5fa" },
-        actions: [
-          { label: "TLS 업데이트", icon: "edit", kind: "button", actionKey: "tls-edit", variant: "primary" }
-        ],
-        heroStats: [
-          { label: "TLS Remaining", value: "88d", meta: "정상 구간" }
-        ],
-        remainingDays: "88d",
-        remainingMeta: "공개 도메인이지만 아직 여유가 충분합니다.",
-        tlsEditor: {
-          certRef: "docs-public-tls",
-          crt: "-----BEGIN CERTIFICATE-----\nMIICdocs-public\n-----END CERTIFICATE-----",
-          key: "-----BEGIN PRIVATE KEY-----\nMIIEdocs-public\n-----END PRIVATE KEY-----"
-        },
-        facts: [
-          { key: "Certificate Ref", value: '<span class="mono" data-tls-field="certRef">docs-public-tls</span>' },
-          { key: "TLS CRT", value: '<span data-tls-field="crtStatus">입력됨 · -----BEGIN CERTIFICATE-----</span>' },
-          { key: "TLS Key", value: '<span data-tls-field="keyStatus">입력됨 · -----BEGIN PRIVATE KEY-----</span>' }
-        ]
-      }
-    ];
-
+    window.DOMAIN_DETAIL_REQUESTED_KEY = new URLSearchParams(window.location.search).get("item") || "__missing__";
     window.DETAIL_PAGE_CONFIG = {
       paramName: "item",
       pageTitle: "Domain Detail",
@@ -436,38 +646,244 @@
       activeHubKey: "domain",
       eyebrow: "Accessibility · TLS",
       searchPlaceholder: "도메인과 tls 상태를 검색하세요...",
-      items: Object.fromEntries(rawItems.map((item) => [item.key, buildItem(item)]))
+      items: {
+        [window.DOMAIN_DETAIL_REQUESTED_KEY]: createDomainDetailPlaceholder(window.DOMAIN_DETAIL_REQUESTED_KEY, {
+          title: window.DOMAIN_DETAIL_REQUESTED_KEY === "__missing__" ? "Domain ID required" : window.DOMAIN_DETAIL_REQUESTED_KEY,
+          description: window.DOMAIN_DETAIL_REQUESTED_KEY === "__missing__"
+            ? "item 쿼리 파라미터에 domain id를 넣어 주세요. 예: workspace_domain_detail.html?item=<domainId>"
+            : "도메인 상세와 TLS 상태를 실제 API에서 불러오는 중입니다.",
+          statusLabel: window.DOMAIN_DETAIL_REQUESTED_KEY === "__missing__" ? "Missing" : "Loading",
+          statusTone: window.DOMAIN_DETAIL_REQUESTED_KEY === "__missing__" ? "warning" : "muted",
+          isLoading: window.DOMAIN_DETAIL_REQUESTED_KEY !== "__missing__"
+        })
+      }
     };
   </script>
   <script src="workspace_detail_shared.js"></script>
   <script src="ax_studio_topbar.js"></script>
   <script>
     (function () {
-      const config = window.DETAIL_PAGE_CONFIG;
-      if (!config || !config.items) return;
-
-      const params = new URLSearchParams(window.location.search);
-      const requestedKey = params.get(config.paramName || "item");
-      const keys = Object.keys(config.items);
-      const currentKey = Object.prototype.hasOwnProperty.call(config.items, requestedKey) ? requestedKey : keys[0];
-      const currentItem = config.items[currentKey];
+      const API_BASE = "/api/v2";
+      const state = {
+        requestedKey: window.DOMAIN_DETAIL_REQUESTED_KEY || "__missing__",
+        resolvedDomainId: "",
+        currentDomain: null,
+        inferredUrl: "",
+        isSaving: false,
+        editor: {
+          certRef: "",
+          crt: "",
+          key: ""
+        },
+        hint: {
+          text: "현재 API는 기존 PEM 원문을 다시 내려주지 않으므로, 새 인증서와 키를 입력해 검증 후 저장합니다.",
+          tone: "info"
+        }
+      };
 
       const modal = document.getElementById("tlsEditModal");
-      if (!modal || !currentItem) return;
-
       const certRefInput = document.getElementById("tlsEditorCertRef");
       const crtInput = document.getElementById("tlsEditorCrt");
       const keyInput = document.getElementById("tlsEditorKey");
       const saveButton = document.getElementById("tlsEditSaveButton");
       const hint = document.getElementById("tlsEditHint");
 
+      function extractData(payload, fallback = null) {
+        if (payload && typeof payload === "object" && "data" in payload) {
+          return payload.data;
+        }
+
+        return payload ?? fallback;
+      }
+
+      async function requestJson(path, options = {}) {
+        const hasBody = Object.prototype.hasOwnProperty.call(options, "body");
+        const response = await fetch(`${API_BASE}${path}`, {
+          credentials: "same-origin",
+          headers: {
+            Accept: "application/json",
+            ...(hasBody ? { "Content-Type": "application/json" } : {}),
+            ...(options.headers || {})
+          },
+          ...options
+        });
+
+        const payload = await response.json().catch(() => null);
+        if (!response.ok) {
+          throw new Error(payload && payload.error && payload.error.message
+            ? payload.error.message
+            : `Request failed (${response.status})`);
+        }
+
+        return payload;
+      }
+
+      function extractItems(payload) {
+        if (payload && Array.isArray(payload.items)) {
+          return payload.items;
+        }
+
+        if (payload && payload.data && Array.isArray(payload.data.items)) {
+          return payload.data.items;
+        }
+
+        return [];
+      }
+
+      function isAbsoluteUrl(value) {
+        try {
+          const candidate = new URL(normalizeText(value));
+          return candidate.protocol === "http:" || candidate.protocol === "https:";
+        } catch (error) {
+          return false;
+        }
+      }
+
+      function normalizeUrlForCompare(value) {
+        const text = normalizeText(value);
+        if (!text) {
+          return "";
+        }
+
+        try {
+          const url = new URL(text);
+          url.hash = "";
+          if (url.pathname === "/") {
+            url.pathname = "";
+          }
+          return url.toString().replace(/\/$/, "");
+        } catch (error) {
+          return text.replace(/\/$/, "");
+        }
+      }
+
+      function inferDomainUrl(domain) {
+        if (isAbsoluteUrl(state.requestedKey)) {
+          return normalizeText(state.requestedKey);
+        }
+
+        const name = normalizeText(domain && domain.name);
+        return name ? `https://${name}` : "";
+      }
+
+      function buildCertRef(domain) {
+        return normalizeText(domain && domain.name) || normalizeText(domain && domain.id) || "-";
+      }
+
+      async function resolveDomainIdentity(requestedKey) {
+        const normalizedKey = normalizeText(requestedKey);
+        if (!normalizedKey) {
+          throw new Error("domain id 또는 url이 필요합니다.");
+        }
+
+        try {
+          const detailPayload = await requestJson(`/domains/${encodeURIComponent(normalizedKey)}`);
+          return {
+            domain: extractData(detailPayload),
+            resolvedId: normalizedKey
+          };
+        } catch (directError) {
+          if (!isAbsoluteUrl(normalizedKey)) {
+            throw directError;
+          }
+
+          const listPayload = await requestJson(`/domains?q=${encodeURIComponent(normalizedKey)}&limit=100`);
+          const items = extractItems(listPayload);
+          const requestedUrl = normalizeUrlForCompare(normalizedKey);
+          const requestedHost = (() => {
+            try {
+              return new URL(normalizedKey).host;
+            } catch (error) {
+              return "";
+            }
+          })();
+          const matched = items.find((item) => normalizeText(item && item.name) === requestedHost) || items[0];
+
+          if (!matched || !normalizeText(matched.id)) {
+            throw new Error("URL에 매칭되는 domain id를 찾지 못했습니다.");
+          }
+
+          const detailPayload = await requestJson(`/domains/${encodeURIComponent(matched.id)}`);
+          const detail = extractData(detailPayload);
+          if (!detail) {
+            throw new Error("매칭된 domain 상세 응답이 비어 있습니다.");
+          }
+
+          const inferredUrl = normalizeUrlForCompare(`https://${normalizeText(detail.name)}`);
+          if (requestedUrl && inferredUrl && requestedUrl !== inferredUrl) {
+            console.warn("Resolved domain by host match", {
+              requestedUrl,
+              inferredUrl,
+              resolvedId: matched.id
+            });
+          }
+
+          return {
+            domain: detail,
+            resolvedId: normalizeText(matched.id)
+          };
+        }
+      }
+
+      function remountTopbar() {
+        const topbarHost = document.querySelector("[data-ax-topbar]");
+        if (topbarHost && window.mountAxStudioTopbar) {
+          window.mountAxStudioTopbar(topbarHost);
+        }
+      }
+
+      function currentItem() {
+        return window.DETAIL_PAGE_CONFIG && window.DETAIL_PAGE_CONFIG.items
+          ? window.DETAIL_PAGE_CONFIG.items[state.requestedKey]
+          : null;
+      }
+
+      function rerender(nextItem) {
+        window.DETAIL_PAGE_CONFIG.items[state.requestedKey] = nextItem;
+        window.renderWorkspaceDetailPage && window.renderWorkspaceDetailPage();
+        remountTopbar();
+        bindActionButtons();
+        syncModal();
+      }
+
+      function setHint(message, tone = "info") {
+        state.hint = {
+          text: normalizeText(message) || "처리 상태를 확인해 주세요.",
+          tone: tone === "success" || tone === "error" ? tone : "info"
+        };
+        syncHint();
+      }
+
+      function syncHint() {
+        if (!hint) {
+          return;
+        }
+
+        hint.textContent = state.hint.text;
+        hint.className = `mock-inline-note is-${state.hint.tone}`;
+      }
+
       function syncModal() {
-        certRefInput.value = currentItem.tlsEditor.certRef || "";
-        crtInput.value = currentItem.tlsEditor.crt || "";
-        keyInput.value = currentItem.tlsEditor.key || "";
+        const item = currentItem();
+        if (!item || !modal) {
+          return;
+        }
+
+        certRefInput.value = state.editor.certRef || (item.tlsEditor && item.tlsEditor.certRef) || "-";
+        crtInput.value = state.editor.crt || (item.tlsEditor && item.tlsEditor.crt) || "";
+        keyInput.value = state.editor.key || (item.tlsEditor && item.tlsEditor.key) || "";
+        saveButton.disabled = state.isSaving || !state.currentDomain || (state.currentDomain.capabilities && state.currentDomain.capabilities.canEdit === false);
+        saveButton.innerHTML = state.isSaving
+          ? '<span class="material-icons-round" style="font-size:18px;">sync</span>업데이트 중'
+          : '<span class="material-icons-round" style="font-size:18px;">check</span>업데이트';
+        syncHint();
       }
 
       function openModal() {
+        if (!state.currentDomain) {
+          return;
+        }
+
         syncModal();
         modal.hidden = false;
         document.body.style.overflow = "hidden";
@@ -478,45 +894,201 @@
         document.body.style.overflow = "";
       }
 
-      function applySummaryUpdates() {
-        const mapping = {
-          certRef: certRefInput.value,
-          crtStatus: formatPemState(crtInput.value, "CRT 미입력"),
-          keyStatus: formatPemState(keyInput.value, "KEY 미입력")
-        };
+      function bindModalEvents() {
+        if (!modal) {
+          return;
+        }
 
-        Object.entries(mapping).forEach(([key, value]) => {
-          document.querySelectorAll(`[data-tls-field="${key}"]`).forEach((node) => {
-            node.textContent = value;
-          });
+        modal.querySelectorAll("[data-modal-close]").forEach((button) => {
+          button.addEventListener("click", closeModal);
+        });
+
+        modal.addEventListener("click", (event) => {
+          if (event.target === modal) {
+            closeModal();
+          }
+        });
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && !modal.hidden) {
+            closeModal();
+          }
+        });
+
+        crtInput.addEventListener("input", () => {
+          state.editor.crt = crtInput.value;
+        });
+
+        keyInput.addEventListener("input", () => {
+          state.editor.key = keyInput.value;
+        });
+
+        saveButton.addEventListener("click", async () => {
+          if (state.isSaving) {
+            return;
+          }
+
+          if (!state.currentDomain) {
+            setHint("도메인 상세를 먼저 불러와야 합니다.", "error");
+            return;
+          }
+
+          if (state.currentDomain.capabilities && state.currentDomain.capabilities.canEdit === false) {
+            setHint("현재 계정에는 이 도메인을 수정할 권한이 없습니다.", "error");
+            return;
+          }
+
+          const cert = normalizeText(crtInput.value);
+          const key = normalizeText(keyInput.value);
+
+          state.editor.crt = crtInput.value;
+          state.editor.key = keyInput.value;
+
+          if (!cert || !key) {
+            setHint("CRT와 Key를 모두 입력해야 업데이트할 수 있습니다.", "error");
+            return;
+          }
+
+          if (!state.inferredUrl) {
+            setHint("도메인 URL을 계산하지 못해 검증을 진행할 수 없습니다.", "error");
+            return;
+          }
+
+          state.isSaving = true;
+          syncModal();
+
+          try {
+            setHint("인증서와 키 쌍을 검증하고 있습니다.", "info");
+            const keyValidationPayload = await requestJson("/domains/validate-certificate", {
+              method: "POST",
+              body: JSON.stringify({ cert, key })
+            });
+            const keyValidation = extractData(keyValidationPayload, {});
+            if (!keyValidation || keyValidation.valid !== true) {
+              throw new Error((keyValidation && keyValidation.message) || "인증서와 키가 일치하지 않습니다.");
+            }
+
+            setHint("현재 도메인과 인증서 매칭을 확인하고 있습니다.", "info");
+            const domainValidationPayload = await requestJson("/domains/validate-domain", {
+              method: "POST",
+              body: JSON.stringify({ url: state.inferredUrl, cert })
+            });
+            const domainValidation = extractData(domainValidationPayload, {});
+            if (!domainValidation || domainValidation.valid !== true) {
+              throw new Error((domainValidation && domainValidation.message) || "인증서가 현재 domain과 일치하지 않습니다.");
+            }
+
+            setHint("TLS 정보를 저장하고 있습니다.", "info");
+            const updatePayload = await requestJson(`/domains/${encodeURIComponent(state.resolvedDomainId || state.requestedKey)}`, {
+              method: "PATCH",
+              body: JSON.stringify({ cert, key })
+            });
+            const updatedDomain = extractData(updatePayload);
+            if (!updatedDomain) {
+              throw new Error("업데이트 응답이 비어 있습니다.");
+            }
+
+            state.currentDomain = updatedDomain;
+            state.editor.certRef = buildCertRef(updatedDomain);
+            state.hint = {
+              text: "TLS 업데이트가 완료되었습니다. 저장된 PEM 원문은 보안상 다시 조회되지 않습니다.",
+              tone: "success"
+            };
+            closeModal();
+            rerender(buildApiItem(updatedDomain, {
+              editor: state.editor,
+              note: state.hint,
+              url: state.inferredUrl
+            }));
+          } catch (error) {
+            console.error("Failed to update domain TLS", error);
+            setHint(error && error.message ? error.message : "TLS 업데이트 중 오류가 발생했습니다.", "error");
+          } finally {
+            state.isSaving = false;
+            syncModal();
+          }
         });
       }
 
-      document.querySelectorAll('[data-action-key="tls-edit"]').forEach((button) => {
-        button.addEventListener("click", openModal);
-      });
+      function bindActionButtons() {
+        document.querySelectorAll('[data-action-key="tls-edit"]').forEach((button) => {
+          button.onclick = openModal;
+        });
+      }
 
-      modal.querySelectorAll("[data-modal-close]").forEach((button) => {
-        button.addEventListener("click", closeModal);
-      });
+      async function loadDomainDetail() {
+        if (state.requestedKey === "__missing__") {
+          rerender(createDomainDetailPlaceholder(state.requestedKey, {
+            title: "Domain ID required",
+            description: "item 쿼리 파라미터에 domain id를 넣어 주세요. 예: workspace_domain_detail.html?item=<domainId>",
+            statusLabel: "Missing",
+            statusTone: "warning",
+            isLoading: false,
+            editor: state.editor
+          }));
+          return;
+        }
 
-      modal.addEventListener("click", (event) => {
-        if (event.target === modal) closeModal();
-      });
+        try {
+          const resolved = await resolveDomainIdentity(state.requestedKey);
+          if (!resolved || !resolved.domain || !resolved.resolvedId) {
+            throw new Error("domain id를 해석하지 못했습니다.");
+          }
 
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && !modal.hidden) closeModal();
-      });
+          state.resolvedDomainId = resolved.resolvedId;
 
-      saveButton.addEventListener("click", () => {
-        currentItem.tlsEditor.certRef = certRefInput.value;
-        currentItem.tlsEditor.crt = crtInput.value;
-        currentItem.tlsEditor.key = keyInput.value;
-        applySummaryUpdates();
-        hint.textContent = "TLS 업데이트 샘플이 현재 화면에 반영되었습니다.";
-        closeModal();
-      });
+          const [domainDetail, certificatePayload] = await Promise.all([
+            Promise.resolve(resolved.domain),
+            requestJson(`/domains/${encodeURIComponent(state.resolvedDomainId)}/certificate`).catch(() => null)
+          ]);
+          if (!domainDetail) {
+            throw new Error("도메인 상세 응답이 비어 있습니다.");
+          }
+
+          const certificateDetail = extractData(certificatePayload);
+          const nextDomain = certificateDetail
+            ? {
+                ...domainDetail,
+                certificate: {
+                  ...(domainDetail.certificate || {}),
+                  status: certificateDetail.status,
+                  expiresAt: certificateDetail.expiresAt
+                }
+              }
+            : domainDetail;
+
+          state.currentDomain = nextDomain;
+          state.inferredUrl = inferDomainUrl(nextDomain);
+          state.editor.certRef = buildCertRef(nextDomain);
+          state.hint = {
+            text: "실제 Domain v2 API 응답을 렌더링했습니다. TLS 업데이트 시 validate-certificate, validate-domain, PATCH 요청이 순서대로 실행됩니다.",
+            tone: "info"
+          };
+          rerender(buildApiItem(nextDomain, {
+            editor: state.editor,
+            note: state.hint,
+            url: state.inferredUrl
+          }));
+        } catch (error) {
+          console.error("Failed to load domain detail", error);
+          rerender(createDomainDetailPlaceholder(state.requestedKey, {
+            title: state.requestedKey,
+            description: `요청한 domain 정보를 불러오지 못했습니다. ${error && error.message ? error.message : "Unknown error"}`,
+            statusLabel: "Unavailable",
+            statusTone: "warning",
+            isLoading: false,
+            editor: state.editor
+          }));
+          setHint(error && error.message ? error.message : "도메인 상세를 불러오지 못했습니다.", "error");
+        }
+      }
+
+      bindModalEvents();
+      bindActionButtons();
+      syncModal();
+      loadDomainDetail();
     })();
   </script>
+  <script src="concept_endpoint_overlay.js"></script>
 </body>
 </html>

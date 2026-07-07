@@ -1,13 +1,13 @@
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Stack, Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 import { useState } from 'react';
 
-import { SectionStatusBadge } from '@/components/reference-status';
-import { CardGrid, Panel } from '@/components/workspace';
+import { CardGrid, MainGrid } from '@/components/workspace';
 import { QueryErrorAlerts } from '@/components/workspace/QueryErrorAlerts';
 import { PermissionGuideLinksPanel } from '@/features/permission-hub/components/PermissionGuideLinksPanel';
 import { PermissionHubFilterBar } from '@/features/permission-hub/components/PermissionHubFilterBar';
 import { PermissionHubHero } from '@/features/permission-hub/components/PermissionHubHero';
+import { PermissionRealmCardsPanel } from '@/features/permission-hub/components/PermissionRealmCardsPanel';
+import { PermissionRequestInboxRail } from '@/features/permission-hub/components/PermissionRequestInboxRail';
 import { PermissionTipsPanel } from '@/features/permission-hub/components/PermissionTipsPanel';
 import {
   usePermissionHubFiltersQuery,
@@ -16,16 +16,17 @@ import {
   usePermissionHubTipsQuery,
   usePermissionRealmsQuery,
 } from '@/features/permission-hub/hooks/usePermissionHubQueries';
-import { permissionHubSectionStatus } from '@/features/permission-hub/sectionStatus';
-import type { PermissionKindFilter } from '@/features/permission-hub/types';
+import type { PermissionKindFilter, PermissionRealm } from '@/features/permission-hub/types';
 
 export function PermissionHubPageContent() {
   const [activeKind, setActiveKind] = useState<PermissionKindFilter>('all');
-  const realmsQuery = usePermissionRealmsQuery(6, '', '', '');
+  const realmsQuery = usePermissionRealmsQuery(100, '', '', '-updatedAt');
   const filtersQuery = usePermissionHubFiltersQuery();
   const statsQuery = usePermissionHubStatsQuery();
   const tipsQuery = usePermissionHubTipsQuery();
   const guideLinksQuery = usePermissionHubGuideLinksQuery();
+  const realms = realmsQuery.data?.items ?? [];
+  const visibleRealms = realms.filter((realm) => matchesRealmKind(realm, activeKind));
 
   return (
     <Stack spacing={2.5}>
@@ -38,19 +39,32 @@ export function PermissionHubPageContent() {
         activeKind={activeKind}
         filters={filtersQuery.data}
         isLoading={filtersQuery.isLoading}
-        loadedCount={realmsQuery.data?.items.length ?? 0}
+        loadedCount={realms.length}
         onKindChange={setActiveKind}
         stats={statsQuery.data}
         total={realmsQuery.data?.page.total}
       />
-      <CardGrid collapseAt="md">
-        <PermissionTipsPanel isLoading={tipsQuery.isLoading} panel={tipsQuery.data} />
-        <PermissionGuideLinksPanel
-          isLoading={guideLinksQuery.isLoading}
-          panel={guideLinksQuery.data}
-        />
-      </CardGrid>
-      <BlockedSectionsNotice />
+      <MainGrid>
+        <Stack spacing={2.5}>
+          <PermissionRealmCardsPanel
+            activeKind={activeKind}
+            isLoading={realmsQuery.isLoading}
+            loadedCount={realms.length}
+            realms={visibleRealms}
+            total={realmsQuery.data?.page.total}
+          />
+          <CardGrid collapseAt="md">
+            <PermissionTipsPanel isLoading={tipsQuery.isLoading} panel={tipsQuery.data} />
+            <PermissionGuideLinksPanel
+              isLoading={guideLinksQuery.isLoading}
+              panel={guideLinksQuery.data}
+            />
+          </CardGrid>
+        </Stack>
+        <Stack spacing={2.5}>
+          <PermissionRequestInboxRail />
+        </Stack>
+      </MainGrid>
       <QueryErrorAlerts
         alerts={[
           {
@@ -83,23 +97,8 @@ export function PermissionHubPageContent() {
   );
 }
 
-function BlockedSectionsNotice() {
-  return (
-    <Panel hub="permissions" kind="soft">
-      <Stack direction="row" spacing={1.25}>
-        <InfoOutlinedIcon color="disabled" sx={{ fontSize: 18, mt: 0.25 }} />
-        <Stack spacing={0.5}>
-          <Typography fontSize={13} fontWeight={800}>
-            Realm cards and request inbox are waiting on API contracts.
-            <SectionStatusBadge status={permissionHubSectionStatus.blockedSections} />
-          </Typography>
-          <Typography color="text.secondary" fontSize={12} lineHeight={1.7}>
-            This route currently implements the accepted Permission Hub hero summary, filter, tips,
-            and guide-link contracts. Remaining dynamic sections stay blocked until their response
-            shapes are accepted.
-          </Typography>
-        </Stack>
-      </Stack>
-    </Panel>
-  );
+function matchesRealmKind(realm: PermissionRealm, activeKind: PermissionKindFilter) {
+  if (activeKind === 'all') return true;
+
+  return realm.kind === activeKind;
 }

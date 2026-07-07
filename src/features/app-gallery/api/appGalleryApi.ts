@@ -11,24 +11,25 @@ import type {
 } from '@/features/app-gallery/types';
 import { apiClient } from '@/lib/api/axios';
 import type { ApiDataResponse, PaginatedResponse } from '@/lib/api/types';
+import { unwrapApiData } from '@/lib/api/types';
 
 export async function getAppGalleryHero(): Promise<AppGalleryHero> {
   const response = await apiClient.get<ApiDataResponse<AppGalleryHero>>('/v2/app-gallery/hero');
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getAppGalleryCategories(): Promise<AppGalleryCategories> {
   const response = await apiClient.get<ApiDataResponse<AppGalleryCategories>>(
     '/v2/app-gallery/categories',
   );
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getAppGalleryFeatured(): Promise<AppGalleryFeaturedApp[]> {
   const response = await apiClient.get<ApiDataResponse<{ items: AppGalleryFeaturedApp[] }>>(
     '/v2/app-gallery/featured',
   );
-  return response.data.data.items;
+  return unwrapApiData(response).items;
 }
 
 export async function getAppGalleryApps({
@@ -52,14 +53,14 @@ export async function getAppGalleryAppDetail(slug: string): Promise<AppGalleryAp
   const response = await apiClient.get<ApiDataResponse<AppGalleryAppDetail>>(
     `/v2/app-gallery/apps/${encodeURIComponent(slug)}`,
   );
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getAppGalleryRelatedAi(): Promise<AppGalleryRelatedAi[]> {
   const response = await apiClient.get<ApiDataResponse<{ items: AppGalleryRelatedAi[] }>>(
     '/v2/app-gallery/related-ai',
   );
-  return response.data.data.items;
+  return unwrapApiData(response).items;
 }
 
 export async function installAppGalleryApp({
@@ -71,5 +72,5 @@ export async function installAppGalleryApp({
     { projectId },
   );
 
-  return response.data.data;
+  return unwrapApiData(response);
 }

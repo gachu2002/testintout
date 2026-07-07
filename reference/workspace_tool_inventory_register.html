@@ -1,0 +1,1789 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tool Inventory Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <link rel="stylesheet" href="workspace_detail_shared.css" />
+  <style>
+    .selector-grid,
+    .field-grid,
+    .summary-grid {
+      display:grid;
+      gap:16px;
+    }
+    .selector-grid {
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+    }
+    .summary-grid {
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+    }
+    .selector-card,
+    .field-card,
+    .summary-card {
+      display:block;
+      padding:18px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+    }
+    .selector-card {
+      transition:border-color .15s ease, box-shadow .15s ease, transform .15s ease, background .15s ease;
+    }
+    .selector-card:hover {
+      border-color:rgba(37,99,235,.16);
+      box-shadow:0 14px 28px rgba(15,23,42,.08);
+      transform:translateY(-1px);
+    }
+    .selector-card.is-active {
+      border-color:rgba(37,99,235,.22);
+      box-shadow:0 16px 30px rgba(15,23,42,.08), inset 0 0 0 1px rgba(37,99,235,.08);
+      background:linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    }
+    .selector-top,
+    .summary-top {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .selector-icon,
+    .summary-icon {
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:var(--brand-bg);
+      color:var(--brand);
+      flex-shrink:0;
+    }
+    .selector-icon .material-icons-round,
+    .summary-icon .material-icons-round {
+      font-size:20px;
+    }
+    .selector-title,
+    .summary-title {
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.02em;
+      margin-bottom:4px;
+    }
+    .selector-desc,
+    .summary-desc {
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .selector-meta {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:14px;
+    }
+    .selector-chip {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#f3f6fb;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+      border:1px solid var(--border);
+    }
+    .field-grid.two {
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+    }
+    .field-card {
+      padding:18px 18px 16px;
+    }
+    .field-label {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:12px;
+      font-weight:700;
+      color:var(--muted);
+      margin-bottom:10px;
+    }
+    .field-value {
+      min-height:46px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:#fbfcfe;
+      color:var(--text);
+      font-size:14px;
+      font-weight:600;
+      line-height:1.45;
+    }
+    .field-value.is-multi {
+      align-items:flex-start;
+      flex-direction:column;
+    }
+    .field-help {
+      margin-top:8px;
+      color:var(--subtle);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .field-tokens {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .field-token {
+      display:inline-flex;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      background:var(--brand-bg);
+      color:var(--brand);
+      font-size:12px;
+      font-weight:700;
+    }
+    .action-row {
+      display:flex;
+      justify-content:flex-end;
+      gap:12px;
+      margin-top:24px;
+    }
+    .inline-note {
+      color:var(--subtle);
+      font-size:12px;
+      line-height:1.5;
+      margin-top:10px;
+    }
+    .input-grid {
+      display:grid;
+      gap:16px;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+    }
+    .input-card {
+      padding:18px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+    }
+    .input-label {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:12px;
+      font-weight:800;
+      color:var(--muted);
+      margin-bottom:10px;
+    }
+    .field-input,
+    .field-select,
+    .field-textarea {
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:#fbfcfe;
+      color:var(--text);
+      font-size:14px;
+      font-weight:600;
+      padding:13px 14px;
+      outline:none;
+      transition:border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .field-input:focus,
+    .field-select:focus,
+    .field-textarea:focus {
+      border-color:rgba(37,99,235,.35);
+      box-shadow:0 0 0 4px rgba(37,99,235,.08);
+      background:#fff;
+    }
+    .field-select {
+      appearance:none;
+    }
+    .field-textarea {
+      min-height:116px;
+      resize:vertical;
+      font-family:inherit;
+      line-height:1.55;
+    }
+    .fixed-value {
+      min-height:48px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:#f8fbff;
+      font-size:14px;
+      font-weight:700;
+      color:var(--text);
+    }
+    .fixed-note {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:var(--brand-bg);
+      color:var(--brand);
+      font-size:12px;
+      font-weight:800;
+      border:1px solid rgba(37,99,235,.12);
+    }
+    @media (max-width: 920px) {
+      .selector-grid,
+      .summary-grid,
+      .field-grid.two,
+      .input-grid {
+        grid-template-columns:1fr;
+      }
+      .action-row {
+        flex-direction:column;
+      }
+      .action-row .action-btn {
+        width:100%;
+        justify-content:center;
+      }
+    }
+    .action-btn.is-disabled {
+      pointer-events:none;
+      opacity:.58;
+      cursor:progress;
+    }
+    .submit-feedback {
+      margin-top:14px;
+      padding:13px 14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:#f8fafc;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .submit-feedback[data-tone="success"] {
+      border-color:rgba(22,163,74,.24);
+      background:rgba(22,163,74,.08);
+      color:#166534;
+    }
+    .submit-feedback[data-tone="error"] {
+      border-color:rgba(220,38,38,.18);
+      background:rgba(254,242,242,.95);
+      color:#b91c1c;
+    }
+    .submit-feedback[data-tone="progress"] {
+      border-color:rgba(37,99,235,.18);
+      background:rgba(239,246,255,.95);
+      color:#1d4ed8;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const requestedType = params.get("type") || "external";
+
+    const serviceGroups = [
+      {
+        title: "Gallery",
+        links: [
+          ["dej_app_gallery.html", "widgets", "App Gallery", "실행형 개발 앱과 워크스페이스 도구를 발견하고 살펴보기", "app-gallery"],
+          ["dej_ai_gallery.html", "smart_toy", "AI Gallery", "챗봇과 tool 자산을 전시하고 재사용 흐름으로 연결", "ai-gallery"]
+        ]
+      },
+      {
+        title: "Accessibility",
+        links: [
+          ["workspace_domain_hub.html", "apartment", "Domain", "DNS 및 도메인 관리", "domain"],
+          ["workspace_permission_hub.html", "groups", "Permission", "IAM 및 권한 관리", "permission"]
+        ]
+      },
+      {
+        title: "Storage",
+        links: [
+          ["workspace_database_hub.html", "storage", "Database", "데이터베이스 관리(MongoDB, PostgreSQL, Redis 등)", "database"],
+          ["workspace_s3_hub.html", "folder", "Buckets", "S3 스토리지 및 버킷 관리", "s3"]
+        ]
+      },
+      {
+        title: "Development",
+        links: [
+          ["workspace_tools_hub.html", "web", "Consoles", "데이터베이스 웹 콘솔 모음", "tools"],
+          ["workspace_projects_hub.html", "public", "Project/Publish", "개발 프로젝트 관리(IDE 작업 공간)", "projects"],
+          ["#", "science", "Jupyter", "노트북 실험 및 분석 환경", "jupyter"]
+        ]
+      },
+      {
+        title: "AI",
+        links: [
+          ["workspace_agent_hub.html", "smart_toy", "Workflow", "Dify workflow와 승인형 자동화 런타임을 운영", "agent-hub"],
+          ["workspace_chatbot_hub.html", "chat", "Chatbot", "API와 Frontend URL 기반 챗봇 엔드포인트를 관리", "chatbot-hub"],
+          ["workspace_tool_inventory_hub.html", "inventory_2", "Tool Inventory", "에이전트가 사용하는 연결된 MCP 및 도구 자산을 관리", "tool-inventory"],
+          ["workspace_keycenter_hub.html", "vpn_key", "Keycenter", "발급된 LLM 키와 연결된 사용처를 관리", "keycenter"]
+        ]
+      },
+      {
+        title: "Support",
+        links: [
+          ["#", "description", "다큐먼트", "가이드와 운영 문서를 확인합니다", "docs"],
+          ["about_dej.html", "timeline", "About DEJ", "DEJ의 역사와 CEJ·DEJ 흐름을 확인합니다", "about"],
+          ["#", "chat_bubble_outline", "챗봇", "지원 챗봇으로 빠르게 문의합니다", "support-chat"],
+          ["#", "campaign", "요청하기", "기능 요청이나 지원 요청을 등록합니다", "request"]
+        ]
+      }
+    ];
+
+    const types = {
+      external: {
+        key: "external",
+        title: "External MCP",
+        heroTitle: "External MCP 등록",
+        description: "외부에서 제공하는 MCP 서버를 Tool Inventory에 등록합니다. MCP 호출 주소와 인증 정보를 입력하고 validate를 통과한 뒤 등록 요청을 생성합니다.",
+        icon: "public",
+        badges: ["MCP", "Vendor Hosted"],
+        stats: [
+          { label: "필수 항목", value: "5", meta: "타입 · 포맷 · MCP 주소 · function tool · validate" },
+          { label: "권장 항목", value: "3", meta: "owner · consumer · auth" },
+          { label: "등록 타입", value: "External", meta: "외부 연동형" },
+          { label: "기본 포맷", value: "MCP", meta: "transport는 Streamable HTTP 고정" }
+        ],
+        summary: [
+          { title: "꼭 보여줄 정보", desc: "타입, 포맷, MCP 주소, function tool, validate 상태" },
+          { title: "운영에 필요한 연결", desc: "인증 방식, owner 팀, consumer 연결" },
+          { title: "바로 구분할 상태", desc: "Connected, Review, Error, Deprecated" }
+        ],
+        quickFields: [
+          { label: "타입", value: "External MCP", help: "외부 제공 서버인지 바로 구분합니다." },
+          { label: "포맷", value: "MCP", help: "MCP 서버인지 다른 연동 형식인지 표시합니다." },
+          { label: "엔드포인트", value: "https://api.vendor.com/mcp", help: "실제 호출 대상 주소를 등록합니다." },
+          { label: "대표 function tool", value: ["list_pull_requests", "create_issue", "merge_pull_request"], help: "사용자가 이해할 핵심 기능만 먼저 보여줍니다." },
+          { label: "Validate", value: "MCP connection validate", help: "등록 요청 전에 연결 검사를 먼저 수행합니다." },
+          { label: "인증 방식", value: "OAuth / API Key", help: "필요한 인증 방식을 함께 검토합니다." }
+        ],
+        sections: [
+          {
+            kicker: "Basic",
+            title: "기본 정보",
+            desc: "등록할 inventory의 이름과 분류를 설정합니다.",
+            fields: [
+              { label: "Inventory 이름", value: "github-ops-external", help: "허브와 상세에서 그대로 보일 이름입니다." },
+              { label: "등록 타입", value: "External MCP", help: "외부 MCP로 분류됩니다." },
+              { label: "상태", value: "Review", help: "연결 검증 전에는 Review로 시작합니다." },
+              { label: "설명", value: "PR 조회와 승인된 변경 반영에 사용하는 GitHub MCP", help: "사용자가 무엇을 할 수 있는지 한 줄로 설명합니다." }
+            ]
+          },
+          {
+            kicker: "Connection",
+            title: "포맷과 엔드포인트",
+            desc: "서버 포맷, 엔드포인트, 인증 방식을 등록합니다.",
+            fields: [
+              { label: "포맷", value: "MCP", help: "현재 연결 형식이 MCP인지 표시합니다." },
+              { label: "Transport", value: "Streamable HTTP", help: "현재는 Streamable HTTP만 지원합니다." },
+              { label: "Endpoint", value: "https://api.vendor.com/mcp", help: "실제 호출 엔드포인트를 입력합니다." },
+              { label: "인증 방식", value: "OAuth / API Key", help: "필요한 인증 방식을 등록합니다." }
+            ]
+          },
+          {
+            kicker: "Function",
+            title: "function tool 정보",
+            desc: "대표 function tool과 제공 범위를 정리합니다.",
+            fields: [
+              { label: "대표 function tool", value: ["list_pull_requests", "list_workflow_runs", "merge_pull_request"], help: "핵심 기능만 먼저 등록합니다." },
+              { label: "Tool 수", value: "14", help: "전체 제공 tool 수를 표시합니다." },
+              { label: "쓰기 위험도", value: "read + guarded write", help: "write 도구가 있으면 따로 표시합니다." },
+              { label: "사용 대상", value: "repo-review-guard, release automation", help: "어떤 consumer가 쓰는지 연결합니다." }
+            ]
+          },
+          {
+            kicker: "Ops",
+            title: "validate와 연결 점검",
+            desc: "등록 전에 validate에 필요한 입력을 확인합니다.",
+            fields: [
+              { label: "Validate 순서", value: "주소 입력 후 validate", help: "호출 주소를 입력한 다음 연결 검사를 수행합니다." },
+              { label: "연결 검사", value: "MCP connection test", help: "실제 MCP 호출 가능 여부를 확인합니다." },
+              { label: "오류 응답", value: "endpoint / auth 검증 실패", help: "잘못된 주소나 인증 정보는 요청 전에 확인합니다." },
+              { label: "초안 저장", value: "버튼만 유지", help: "draft save 기능은 추후 구현 예정입니다." }
+            ]
+          },
+          {
+            kicker: "Owner",
+            title: "소유와 연결",
+            desc: "운영 책임과 노출 대상을 설정합니다.",
+            fields: [
+              { label: "Owner 팀", value: "developer platform", help: "운영 책임 팀을 지정합니다." },
+              { label: "Consumer", value: "Agent Hub / Chatbot Hub", help: "이 inventory를 사용하는 대상을 연결합니다." },
+              { label: "Keycenter 연결", value: "Paid Tier", help: "필요한 인증 키 연결을 지정합니다." },
+              { label: "승인 정책", value: "write tool은 approval required", help: "위험한 기능의 승인 기준을 표시합니다." }
+            ]
+          }
+        ]
+      },
+      internal: {
+        key: "internal",
+        title: "Internal MCP",
+        heroTitle: "Internal MCP 등록",
+        description: "사내에서 운영하는 MCP 서버를 Tool Inventory에 등록합니다. MCP 호출 주소와 인증 정보를 입력하고 validate를 통과한 뒤 등록 요청을 생성합니다.",
+        icon: "apartment",
+        badges: ["MCP", "Workspace Owned"],
+        stats: [
+          { label: "필수 항목", value: "5", meta: "타입 · 포맷 · MCP 주소 · function tool · validate" },
+          { label: "권장 항목", value: "4", meta: "owner · project · auth · consumer" },
+          { label: "등록 타입", value: "Internal", meta: "사내 운영형" },
+          { label: "기본 포맷", value: "MCP", meta: "사내 서비스와 직접 연결" }
+        ],
+        summary: [
+          { title: "꼭 보여줄 정보", desc: "타입, 포맷, MCP 주소, function tool, validate 상태" },
+          { title: "같이 묶을 연결", desc: "project, owner, consumer, auth" },
+          { title: "먼저 볼 상태", desc: "Healthy, Warning, Error" }
+        ],
+        quickFields: [
+          { label: "타입", value: "Internal MCP", help: "사내 운영 서버인지 구분합니다." },
+          { label: "포맷", value: "MCP", help: "MCP 기반 제공 여부를 표시합니다." },
+          { label: "엔드포인트", value: "https://docs-search.workspace/mcp", help: "내부 서비스 주소를 등록합니다." },
+          { label: "대표 function tool", value: ["search_docs", "read_page", "find_owner"], help: "바로 이해할 핵심 도구만 표시합니다." },
+          { label: "Validate", value: "MCP connection validate", help: "등록 요청 전에 연결 검사를 먼저 수행합니다." },
+          { label: "인증 방식", value: "SSO / Service Token", help: "사내 인증 기준을 함께 검토합니다." }
+        ],
+        sections: [
+          {
+            kicker: "Basic",
+            title: "기본 정보",
+            desc: "등록할 inventory의 이름과 운영 대상을 설정합니다.",
+            fields: [
+              { label: "Inventory 이름", value: "knowledge-discovery-internal", help: "허브와 상세에 노출될 이름입니다." },
+              { label: "등록 타입", value: "Internal MCP", help: "사내 운영 서버로 분류됩니다." },
+              { label: "연결 프로젝트", value: "knowledge-platform", help: "운영 프로젝트나 시스템을 연결합니다." },
+              { label: "설명", value: "문서 검색과 런북 확인에 사용하는 내부 MCP", help: "사용자가 이해할 기능 중심으로 적습니다." }
+            ]
+          },
+          {
+            kicker: "Connection",
+            title: "포맷과 엔드포인트",
+            desc: "서비스 주소와 인증 방식을 등록합니다.",
+            fields: [
+              { label: "포맷", value: "MCP", help: "연결 형식을 명확히 표시합니다." },
+              { label: "Transport", value: "Streamable HTTP", help: "현재는 Streamable HTTP만 지원합니다." },
+              { label: "Endpoint", value: "https://docs-search.workspace/mcp", help: "실제 서비스 주소를 등록합니다." },
+              { label: "인증 방식", value: "SSO / Service Token", help: "사내 인증 기준을 설정합니다." }
+            ]
+          },
+          {
+            kicker: "Function",
+            title: "function tool 정보",
+            desc: "핵심 기능과 도구 범위를 정리합니다.",
+            fields: [
+              { label: "대표 function tool", value: ["search_docs", "read_page", "find_runbook"], help: "대표 기능만 먼저 보입니다." },
+              { label: "Tool 수", value: "11", help: "전체 도구 수를 표시합니다." },
+              { label: "주요 기능", value: "검색 / 조회 / 담당자 탐색", help: "복잡한 내부 구조보다 기능 중심으로 정리합니다." },
+              { label: "사용 대상", value: "workspace-assistant-web, incident-triage-bot", help: "실사용 consumer를 연결합니다." }
+            ]
+          },
+          {
+            kicker: "Ops",
+            title: "validate와 연결 점검",
+            desc: "등록 전에 validate에 필요한 입력을 확인합니다.",
+            fields: [
+              { label: "Validate 순서", value: "주소 입력 후 validate", help: "호출 주소를 입력한 다음 연결 검사를 수행합니다." },
+              { label: "연결 검사", value: "MCP connection test", help: "실제 MCP 호출 가능 여부를 확인합니다." },
+              { label: "오류 응답", value: "endpoint / auth 검증 실패", help: "잘못된 주소나 인증 정보는 요청 전에 확인합니다." },
+              { label: "초안 저장", value: "버튼만 유지", help: "draft save 기능은 추후 구현 예정입니다." }
+            ]
+          },
+          {
+            kicker: "Owner",
+            title: "소유와 연결",
+            desc: "운영 책임과 연결 허브를 지정합니다.",
+            fields: [
+              { label: "Owner 팀", value: "knowledge platform", help: "운영 책임 팀을 지정합니다." },
+              { label: "Consumer", value: "Agent Hub / Chatbot Hub", help: "사용하는 허브를 연결합니다." },
+              { label: "연결 정책", value: "workspace internal only", help: "내부 전용 여부를 표시합니다." },
+              { label: "승인 정책", value: "read only", help: "위험도에 따라 정책을 표시합니다." }
+            ]
+          }
+        ]
+      },
+      direct: {
+        key: "direct",
+        title: "Direct Implementation",
+        heroTitle: "직접 구현 서버 등록",
+        description: "직접 구현한 서버를 Tool Inventory에 등록합니다. direct 포맷은 MCP와 REST만 지원하며, REST는 호출 주소와 openapi.json 주소를 모두 validate에 사용합니다.",
+        icon: "terminal",
+        badges: ["Custom", "Direct Implementation"],
+        stats: [
+          { label: "필수 항목", value: "6", meta: "타입 · 포맷 · 호출 주소 · OpenAPI 주소 · function tool · validate" },
+          { label: "권장 항목", value: "3", meta: "owner · consumer · auth" },
+          { label: "등록 타입", value: "Direct", meta: "직접 구현형" },
+          { label: "포맷 선택", value: "MCP or REST", meta: "직접 지정" }
+        ],
+        summary: [
+          { title: "꼭 보여줄 정보", desc: "타입, 포맷, 호출 주소, OpenAPI 주소, function tool, validate 상태" },
+          { title: "추가로 필요한 연결", desc: "owner, consumer, auth" },
+          { title: "구분 포인트", desc: "MCP인지 REST인지 바로 보이게" }
+        ],
+        quickFields: [
+          { label: "타입", value: "Direct Implementation", help: "직접 구현 자산임을 표시합니다." },
+          { label: "포맷", value: "MCP / REST", help: "direct 등록은 현재 두 포맷만 지원합니다." },
+          { label: "엔드포인트", value: "https://internal-api/tool", help: "호출 주소를 등록합니다." },
+          { label: "대표 function tool", value: ["classify_incident", "recommend_fix", "open_dashboard"], help: "실제 제공 기능을 바로 보여줍니다." },
+          { label: "OpenAPI 주소", value: "https://internal-api/openapi.json", help: "REST 포맷이면 OpenAPI 문서 주소가 필요합니다." },
+          { label: "Validate", value: "REST or MCP validate", help: "주소를 입력한 뒤 validate를 통과해야 등록할 수 있습니다." }
+        ],
+        sections: [
+          {
+            kicker: "Basic",
+            title: "기본 정보",
+            desc: "직접 구현 서버의 이름과 분류를 설정합니다.",
+            fields: [
+              { label: "Inventory 이름", value: "incident-classifier-direct", help: "허브와 상세에서 보일 이름입니다." },
+              { label: "등록 타입", value: "Direct Implementation", help: "직접 구현형으로 분류됩니다." },
+              { label: "설명", value: "장애 원인 후보를 분류하고 다음 조치를 추천하는 직접 구현 서버", help: "실제 기능 위주로 설명합니다." },
+              { label: "상태", value: "Review", help: "validate 전에는 등록 요청 전 단계로 봅니다." }
+            ]
+          },
+          {
+            kicker: "Connection",
+            title: "포맷과 호출 경로",
+            desc: "형식과 호출 경로를 명확히 등록합니다.",
+            fields: [
+              { label: "포맷", value: "REST API", help: "현재 direct 포맷은 REST API 또는 MCP입니다." },
+              { label: "호출 경로", value: "https://incident-ai.workspace/api/v1/tools", help: "실제 호출 주소를 등록합니다." },
+              { label: "OpenAPI 경로", value: "https://incident-ai.workspace/openapi.json", help: "REST 포맷이면 OpenAPI 주소가 함께 필요합니다." },
+              { label: "인증 방식", value: "Service Token", help: "호출 시 필요한 인증 기준입니다." }
+            ]
+          },
+          {
+            kicker: "Function",
+            title: "function tool 정보",
+            desc: "제공 기능과 노출 범위를 정리합니다.",
+            fields: [
+              { label: "대표 function tool", value: ["classify_incident", "summarize_root_cause", "recommend_runbook"], help: "대표 기능만 먼저 노출합니다." },
+              { label: "Tool 수", value: "8", help: "현재 제공 기능 수입니다." },
+              { label: "노출 방식", value: "Agent only", help: "직접 사용 가능한지, agent 전용인지 표시합니다." },
+              { label: "사용 대상", value: "incident-triage-bot", help: "실제 사용하는 consumer를 연결합니다." }
+            ]
+          },
+          {
+            kicker: "Ops",
+            title: "validate와 연결 점검",
+            desc: "REST/MCP 포맷에 맞춰 validate 입력을 확인합니다.",
+            fields: [
+              { label: "Validate 순서", value: "주소 입력 후 validate", help: "포맷에 맞는 주소를 입력한 다음 연결 검사를 수행합니다." },
+              { label: "MCP 요구사항", value: "MCP 호출 주소", help: "MCP 포맷이면 호출 주소만 있으면 됩니다." },
+              { label: "REST 요구사항", value: "호출 주소 + openapi.json", help: "REST 포맷이면 두 주소를 모두 입력해야 합니다." },
+              { label: "초안 저장", value: "버튼만 유지", help: "draft save 기능은 추후 구현 예정입니다." }
+            ]
+          },
+          {
+            kicker: "Owner",
+            title: "소유와 연결",
+            desc: "운영 책임과 연동 화면을 지정합니다.",
+            fields: [
+              { label: "Owner 팀", value: "site reliability", help: "주 운영 팀을 등록합니다." },
+              { label: "연결 허브", value: "Agent Hub", help: "주로 사용하는 허브를 연결합니다." },
+              { label: "Keycenter 연결", value: "Internal Service Token", help: "필요한 키 연결을 등록합니다." },
+              { label: "승인 정책", value: "recommendation only", help: "위험도 기준을 함께 표시합니다." }
+            ]
+          }
+        ]
+      },
+      skill: {
+        key: "skill",
+        title: "Skill",
+        heroTitle: "Skill 등록",
+        description: "내 AI Assistant에 붙여 쓰는 Skill 자산을 Tool Inventory에 등록합니다. MCP처럼 연결 자산으로 보이지만, 답변 흐름, tool binding, 재사용 가능한 실행 규칙을 중심으로 관리합니다.",
+        icon: "extension",
+        badges: ["Skill", "Assistant Attach"],
+        stats: [
+          { label: "필수 항목", value: "5", meta: "타입 · 포맷 · 바인딩 대상 · skill flow · 사용량" },
+          { label: "권장 항목", value: "4", meta: "owner · 연결 tool · version · consumer" },
+          { label: "등록 타입", value: "Skill", meta: "assistant 연결형" },
+          { label: "기본 포맷", value: "Skill", meta: "assistant에 바로 attach" }
+        ],
+        summary: [
+          { title: "꼭 보여줄 정보", desc: "타입, 포맷, 바인딩 대상, 대표 skill flow, 사용량" },
+          { title: "같이 묶을 연결", desc: "연결 tool, owner, consumer, version" },
+          { title: "먼저 볼 포인트", desc: "무엇을 도와주는지, 어디에 붙는지 바로 보이게" }
+        ],
+        quickFields: [
+          { label: "타입", value: "Skill", help: "Assistant에 붙는 skill 자산인지 바로 구분합니다." },
+          { label: "포맷", value: "Skill", help: "MCP와 구분되는 skill 자산으로 표시합니다." },
+          { label: "바인딩 대상", value: "workspace-assistant / personal assistant", help: "어떤 Assistant에 붙는지 등록합니다." },
+          { label: "대표 skill flow", value: ["summarize_release_scope", "highlight_risk_changes", "compose_briefing_note"], help: "사용자가 이해할 핵심 흐름만 먼저 보여줍니다." },
+          { label: "사용량", value: "attach 수 / invoke 수 / 재사용률", help: "실제로 얼마나 자주 붙여 쓰는지 확인합니다." },
+          { label: "연결 tool", value: "github-ops-bundle, workspace-knowledge", help: "함께 묶이는 MCP나 tool inventory를 연결합니다." }
+        ],
+        sections: [
+          {
+            kicker: "Basic",
+            title: "기본 정보",
+            desc: "등록할 Skill의 이름과 용도를 설정합니다.",
+            fields: [
+              { label: "Skill 이름", value: "release-briefing-skill", help: "허브와 AI Gallery에서 그대로 보일 이름입니다." },
+              { label: "등록 타입", value: "Skill", help: "assistant 연결형 skill로 분류됩니다." },
+              { label: "상태", value: "Connected", help: "바로 attach 가능한 상태인지 표시합니다." },
+              { label: "설명", value: "배포 변경점과 위험 포인트를 정리해 주는 assistant skill", help: "사용자가 무엇을 할 수 있는지 한 줄로 적습니다." }
+            ]
+          },
+          {
+            kicker: "Binding",
+            title: "바인딩 대상과 포맷",
+            desc: "어떤 Assistant에 어떤 방식으로 붙는지 등록합니다.",
+            fields: [
+              { label: "포맷", value: "Skill", help: "Skill 자산임을 명확히 표시합니다." },
+              { label: "바인딩 대상", value: "workspace-assistant", help: "주로 붙는 Assistant를 지정합니다." },
+              { label: "Attach 방식", value: "Assistant Skill Binding", help: "assistant에 attach 되는 경로를 표시합니다." },
+              { label: "Version", value: "v1.4.2", help: "현재 배포된 skill 버전을 보여줍니다." }
+            ]
+          },
+          {
+            kicker: "Flow",
+            title: "대표 skill flow",
+            desc: "Assistant가 이 Skill로 어떤 흐름을 수행하는지 정리합니다.",
+            fields: [
+              { label: "대표 skill flow", value: ["summarize_release_scope", "highlight_risk_changes", "compose_briefing_note"], help: "핵심 흐름만 먼저 노출합니다." },
+              { label: "연결 tool", value: "github-ops-bundle / workspace-knowledge", help: "함께 호출하는 MCP나 tool inventory를 연결합니다." },
+              { label: "출력 형태", value: "briefing note / risk summary", help: "사용자가 받게 될 결과 형태를 표시합니다." },
+              { label: "사용 대상", value: "workspace-assistant, release-notes-pilot", help: "실제 사용하는 Assistant나 챗봇을 연결합니다." }
+            ]
+          },
+          {
+            kicker: "Ops",
+            title: "사용량과 재사용 정보",
+            desc: "얼마나 자주 붙여 쓰는지와 재사용 상태를 등록합니다.",
+            fields: [
+              { label: "사용량 수집", value: "attach 수 / invoke 수 / 재사용률", help: "가장 자주 보는 사용 지표를 등록합니다." },
+              { label: "최근 24시간", value: "attach 184 / invoke 3.2K", help: "최근 사용량을 바로 확인합니다." },
+              { label: "재사용률", value: "82%", help: "동일 Skill이 반복 사용되는 정도를 봅니다." },
+              { label: "최근 업데이트", value: "2026-06-24 09:40", help: "Skill 최신 갱신 시각을 표시합니다." }
+            ]
+          },
+          {
+            kicker: "Owner",
+            title: "소유와 연결",
+            desc: "운영 책임과 연결 화면을 지정합니다.",
+            fields: [
+              { label: "Owner 팀", value: "assistant platform", help: "주 운영 팀을 등록합니다." },
+              { label: "Consumer", value: "AI Gallery / Chatbot Hub", help: "이 Skill이 노출되는 화면을 연결합니다." },
+              { label: "연결 Key", value: "Paid Tier", help: "필요한 Keycenter tier를 연결합니다." },
+              { label: "노출 정책", value: "workspace assistant default", help: "기본 제공 여부를 표시합니다." }
+            ]
+          }
+        ]
+      }
+    };
+
+    const current = types[types[requestedType] ? requestedType : "external"];
+    const interactiveRegisterTypes = new Set(["external", "internal", "direct"]);
+    const registerState = {
+      inventoryName: "",
+      description: "",
+      endpointUrl: "",
+      format: current.key === "direct" ? "rest" : "mcp",
+      openapiSpecUrl: "",
+      authType: "none",
+      authSecret: "",
+      validateStatus: "idle",
+      validateMessage: current.key === "direct"
+        ? "포맷에 맞는 주소를 입력하면 validate를 수행합니다."
+        : "MCP 주소를 입력하면 validate를 수행합니다.",
+      validateMeta: "아직 검사하지 않았습니다.",
+      validatedTools: [],
+      validatedToolCount: 0,
+      validateRequestSeq: 0,
+      validateTimer: null,
+      submitTone: "idle",
+      submitMessage: "등록 요청 버튼을 누르면 `/api/v2/tool-inventory`로 request를 생성합니다.",
+      isSubmitting: false
+    };
+
+    function renderServiceGroups() {
+      return serviceGroups.map((group) => `
+        <section class="service-group">
+          <div class="service-group-title">${group.title}</div>
+          <div class="service-links">
+            ${group.links.map(([href, icon, title, desc, key]) => `
+              <a class="service-link${key === "tool-inventory" ? " is-current" : ""}" href="${href}">
+                <span class="material-icons-round service-link-icon">${icon}</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">${title}</span>
+                  <span class="service-link-desc">${desc}</span>
+                </span>
+              </a>
+            `).join("")}
+          </div>
+        </section>
+      `).join("");
+    }
+
+    function renderActions(actions) {
+      return actions.map((action) => {
+        const commonAttrs = [
+          `class="action-btn ${action.variant || "secondary"}"`,
+          action.href ? `href="${action.href}"` : "",
+          action.action ? `data-action="${action.action}"` : "",
+          action.id ? `id="${action.id}"` : ""
+        ].filter(Boolean).join(" ");
+
+        if (action.element === "button") {
+          return `
+            <button ${commonAttrs} type="button">
+              <span class="material-icons-round">${action.icon}</span>${action.label}
+            </button>
+          `;
+        }
+
+        return `
+          <a ${commonAttrs}>
+            <span class="material-icons-round">${action.icon}</span>${action.label}
+          </a>
+        `;
+      }).join("");
+    }
+
+    function renderStats(stats) {
+      return stats.map((stat) => `
+        <article class="stat-card">
+          <div class="stat-label">${stat.label}</div>
+          <div class="stat-value">${stat.value}</div>
+          <div class="stat-meta">${stat.meta || ""}</div>
+        </article>
+      `).join("");
+    }
+
+    function renderTypeSelector() {
+      return Object.values(types).map((item) => `
+        <a class="selector-card${item.key === current.key ? " is-active" : ""}" href="?type=${item.key}">
+          <div class="selector-top">
+            <div>
+              <div class="selector-title">${item.title}</div>
+              <div class="selector-desc">${item.description}</div>
+            </div>
+            <div class="selector-icon"><span class="material-icons-round">${item.icon}</span></div>
+          </div>
+          <div class="selector-meta">
+            ${item.badges.map((badge) => `<span class="selector-chip">${badge}</span>`).join("")}
+          </div>
+        </a>
+      `).join("");
+    }
+
+    function renderSummary() {
+      return current.summary.map((item) => `
+        <article class="summary-card">
+          <div class="summary-top">
+            <div>
+              <div class="summary-title">${item.title}</div>
+              <div class="summary-desc">${item.desc}</div>
+            </div>
+            <div class="summary-icon"><span class="material-icons-round">done_all</span></div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderFieldValue(value) {
+      if (Array.isArray(value)) {
+        return `
+          <div class="field-value is-multi">
+            <div class="field-tokens">
+              ${value.map((item) => `<span class="field-token">${item}</span>`).join("")}
+            </div>
+          </div>
+        `;
+      }
+      return `<div class="field-value">${value}</div>`;
+    }
+
+    function renderFields(fields) {
+      return fields.map((field) => `
+        <article class="field-card">
+          <div class="field-label"><span class="material-icons-round" style="font-size:16px;">subdirectory_arrow_right</span>${field.label}</div>
+          ${renderFieldValue(field.value)}
+          ${field.help ? `<div class="field-help">${field.help}</div>` : ""}
+        </article>
+      `).join("");
+    }
+
+    function isInteractiveRegisterType() {
+      return interactiveRegisterTypes.has(current.key);
+    }
+
+    function isDirectType() {
+      return current.key === "direct";
+    }
+
+    function getSelectedFormat() {
+      return isDirectType() ? registerState.format : "mcp";
+    }
+
+    function requiresOpenapiSpec() {
+      return isDirectType() && getSelectedFormat() === "rest";
+    }
+
+    function getEndpointLabel() {
+      if (requiresOpenapiSpec()) {
+        return "API Endpoint";
+      }
+      return "MCP Endpoint";
+    }
+
+    function getEndpointPlaceholder() {
+      if (current.key === "external") {
+        return "https://api.vendor.com/mcp";
+      }
+      if (current.key === "internal") {
+        return "https://docs-search.workspace/mcp";
+      }
+      if (requiresOpenapiSpec()) {
+        return "https://incident-ai.workspace/api/v1/tools";
+      }
+      return "https://incident-ai.workspace/mcp";
+    }
+
+    function getOpenapiPlaceholder() {
+      return "https://incident-ai.workspace/openapi.json";
+    }
+
+    function getInventoryNamePlaceholder() {
+      if (current.key === "external") {
+        return "github_ops_external";
+      }
+      if (current.key === "internal") {
+        return "knowledge_discovery_internal";
+      }
+      return "incident_classifier_direct";
+    }
+
+    function getInventoryDescriptionPlaceholder() {
+      if (current.key === "external") {
+        return "PR 조회와 승인된 변경 반영에 사용하는 GitHub MCP";
+      }
+      if (current.key === "internal") {
+        return "문서 검색과 런북 확인에 사용하는 내부 MCP";
+      }
+      return "장애 원인 후보를 분류하고 다음 조치를 추천하는 직접 구현 서버";
+    }
+
+    function getValidateIdleMessage() {
+      if (requiresOpenapiSpec()) {
+        return "API Endpoint와 OpenAPI 주소를 입력하면 validate를 수행합니다.";
+      }
+      return "MCP 주소를 입력하면 validate를 수행합니다.";
+    }
+
+    function getValidateCheckingMessage() {
+      if (requiresOpenapiSpec()) {
+        return "REST 연결 정보를 검사하고 있습니다.";
+      }
+      return "MCP 연결을 검사하고 있습니다.";
+    }
+
+    function getAuthTypeMeta(authType = registerState.authType) {
+      switch (authType) {
+        case "bearer_static":
+          return {
+            label: "Bearer Token",
+            placeholder: "ghp_xxxxxxxxxxxx",
+            help: "입력한 값을 Authorization Bearer 토큰으로 사용합니다."
+          };
+        case "api_key_static":
+          return {
+            label: "API Key",
+            placeholder: "api_key_xxxxxxxxxxxx",
+            help: "입력한 값을 기본 X-API-Key 헤더로 사용합니다."
+          };
+        case "cookie_static":
+          return {
+            label: "Cookie Value",
+            placeholder: "sessionid=xxxxxxxxxxxx",
+            help: "입력한 값을 Cookie 헤더로 사용합니다."
+          };
+        default:
+          return {
+            label: "인증 값",
+            placeholder: "",
+            help: "인증이 필요하지 않으면 값을 입력하지 않습니다."
+          };
+      }
+    }
+
+    function renderInteractiveMcpSections() {
+      if (!isInteractiveRegisterType()) {
+        return "";
+      }
+
+      const transportLabel = "Streamable HTTP";
+      const authMeta = getAuthTypeMeta();
+      const selectedFormat = getSelectedFormat();
+      const showTransport = !isDirectType() || selectedFormat === "mcp";
+      const connectionDescription = isDirectType()
+        ? "Direct 등록도 external/internal처럼 이름, 포맷, 주소, 인증 정보를 직접 입력합니다. 포맷이 REST면 OpenAPI 주소까지 함께 입력해야 validate를 수행합니다."
+        : "현재 external/internal MCP는 Streamable HTTP만 지원합니다. MCP 주소와 인증 정보가 바뀌면 validate를 자동으로 다시 수행합니다.";
+      return `
+        <section class="panel section">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker"><span class="material-icons-round">inventory_2</span>Basic</div>
+              <h2 class="section-title">기본 정보</h2>
+              <p class="section-desc">Inventory 이름과 설명은 요청하는 사람이 직접 입력합니다.</p>
+            </div>
+          </div>
+          <div class="input-grid">
+            <article class="input-card">
+              <div class="input-label"><span class="material-icons-round" style="font-size:16px;">badge</span>Inventory 이름</div>
+              <input id="inventoryNameInput" class="field-input" type="text" placeholder="${getInventoryNamePlaceholder()}" value="${registerState.inventoryName}" />
+              <div class="field-help">허브와 상세에 노출될 이름이며, MCP 주소 규칙 때문에 영문 소문자, 숫자, underscore(_)만 사용할 수 있습니다.</div>
+            </article>
+            <article class="input-card">
+              <div class="input-label"><span class="material-icons-round" style="font-size:16px;">description</span>설명</div>
+              <textarea id="inventoryDescriptionInput" class="field-textarea" placeholder="${getInventoryDescriptionPlaceholder()}">${registerState.description}</textarea>
+              <div class="field-help">사용자가 이 inventory로 무엇을 할 수 있는지 한 줄로 설명합니다.</div>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel section">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker"><span class="material-icons-round">lan</span>Connection</div>
+              <h2 class="section-title">포맷과 엔드포인트 및 인증 정보</h2>
+              <p class="section-desc">${connectionDescription}</p>
+            </div>
+          </div>
+          <div class="input-grid">
+            ${isDirectType() ? `
+              <article class="input-card">
+                <div class="input-label"><span class="material-icons-round" style="font-size:16px;">tune</span>Format</div>
+                <select id="inventoryFormatInput" class="field-select">
+                  <option value="mcp"${selectedFormat === "mcp" ? " selected" : ""}>MCP</option>
+                  <option value="rest"${selectedFormat === "rest" ? " selected" : ""}>REST</option>
+                </select>
+                <div class="field-help">Direct 등록 포맷은 MCP와 REST만 선택할 수 있습니다.</div>
+              </article>
+            ` : ""}
+            ${showTransport ? `
+              <article class="input-card">
+                <div class="input-label"><span class="material-icons-round" style="font-size:16px;">swap_horiz</span>Transport</div>
+                <div class="fixed-value">
+                  <span>${transportLabel}</span>
+                  <span class="fixed-note"><span class="material-icons-round" style="font-size:14px;">lock</span>고정</span>
+                </div>
+                <div class="field-help">현재 지원 transport는 Streamable HTTP 하나로 고정합니다.</div>
+              </article>
+            ` : ""}
+            <article class="input-card">
+              <div class="input-label"><span class="material-icons-round" style="font-size:16px;">link</span>${getEndpointLabel()}</div>
+              <input id="inventoryEndpointInput" class="field-input" type="url" placeholder="${getEndpointPlaceholder()}" value="${registerState.endpointUrl}" />
+              <div class="field-help">${requiresOpenapiSpec()
+                ? "REST 포맷에서 실제 호출할 API 주소를 입력합니다. OpenAPI 주소까지 함께 입력해야 validate를 수행합니다."
+                : "등록하려는 MCP 서버의 실제 호출 주소를 입력합니다. 주소 입력 후 function tool 정보 영역에서 validate 결과와 tool 목록을 확인합니다."}</div>
+            </article>
+            ${isDirectType() && requiresOpenapiSpec() ? `
+              <article class="input-card">
+                <div class="input-label"><span class="material-icons-round" style="font-size:16px;">api</span>OpenAPI URL</div>
+                <input id="inventoryOpenapiInput" class="field-input" type="url" placeholder="${getOpenapiPlaceholder()}" value="${registerState.openapiSpecUrl}" />
+                <div class="field-help">REST 포맷에서는 OpenAPI 문서 주소가 필수입니다.</div>
+              </article>
+            ` : ""}
+            <article class="input-card">
+              <div class="input-label"><span class="material-icons-round" style="font-size:16px;">vpn_key</span>Auth Type</div>
+              <select id="inventoryAuthTypeInput" class="field-select">
+                <option value="none"${registerState.authType === "none" ? " selected" : ""}>None</option>
+                <option value="bearer_static"${registerState.authType === "bearer_static" ? " selected" : ""}>Bearer Token</option>
+                <option value="api_key_static"${registerState.authType === "api_key_static" ? " selected" : ""}>API Key</option>
+                <option value="cookie_static"${registerState.authType === "cookie_static" ? " selected" : ""}>Static Cookie</option>
+              </select>
+              <div class="field-help">현재 화면에서는 키 또는 토큰 기반 인증만 우선 입력합니다.</div>
+            </article>
+            <article class="input-card">
+              <div class="input-label"><span class="material-icons-round" style="font-size:16px;">password</span>${authMeta.label}</div>
+              <input id="inventoryAuthSecretInput" class="field-input" type="password" placeholder="${authMeta.placeholder}" value="${registerState.authSecret}" ${registerState.authType === "none" ? "disabled" : ""} />
+              <div class="field-help">${authMeta.help}</div>
+            </article>
+          </div>
+        </section>
+      `;
+    }
+
+    function getValidateLabel() {
+      if (registerState.validateStatus === "checking") return "Checking";
+      if (registerState.validateStatus === "ok") return "OK";
+      if (registerState.validateStatus === "failed") return "Failed";
+      return "Pending";
+    }
+
+    function renderInteractiveMcpFunctionSection() {
+      if (!isInteractiveRegisterType()) {
+        return "";
+      }
+
+      const tools = registerState.validatedTools;
+      const toolCount = registerState.validatedToolCount;
+      const toolListValue = registerState.validateStatus === "ok" && tools.length > 0
+        ? tools
+        : registerState.validateStatus === "ok"
+          ? "노출된 tool 정보가 없습니다."
+          : "validate 성공 후 tool 목록을 표시합니다.";
+
+      const fields = [
+        {
+          label: "Validate 결과",
+          value: getValidateLabel(),
+          help: registerState.validateStatus === "ok"
+            ? registerState.validateMeta
+            : registerState.validateMessage
+        },
+        {
+          label: "Tool 수",
+          value: registerState.validateStatus === "ok" ? String(toolCount) : "-",
+          help: registerState.validateStatus === "ok"
+            ? "validate 응답 기준 전체 tool 수입니다."
+            : "validate 성공 후 tool 수를 표시합니다."
+        },
+        {
+          label: "Tool 목록",
+          value: toolListValue,
+          help: registerState.validateStatus === "ok"
+            ? "validate 응답에서 확인한 tool 이름입니다."
+            : `${getSelectedFormat() === "rest" ? "REST" : "MCP"} validate가 끝나면 자동으로 채웁니다.`
+        },
+        {
+          label: "안내",
+          value: registerState.validateMessage,
+          help: "별도 validate/연결 점검 섹션 대신 이 영역에서 결과를 바로 확인합니다."
+        },
+        ...(isDirectType() ? [{
+          label: "선택 포맷",
+          value: getSelectedFormat().toUpperCase(),
+          help: requiresOpenapiSpec()
+            ? `OpenAPI: ${registerState.openapiSpecUrl.trim() || "미입력"}`
+            : "MCP direct 등록으로 처리합니다."
+        }] : []),
+        {
+          label: "인증 방식",
+          value: registerState.authType === "none" ? "None" : registerState.authType,
+          help: registerState.authType === "none"
+            ? "인증 없이 validate를 수행합니다."
+            : `입력값: ${maskSecret(registerState.authSecret)}`
+        }
+      ];
+
+      return `
+        <section class="panel section" id="interactiveMcpFunctionSection">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker"><span class="material-icons-round">inventory_2</span>Function</div>
+              <h2 class="section-title">function tool 정보</h2>
+              <p class="section-desc">${getSelectedFormat() === "rest" ? "REST validate" : "MCP validate"} 결과를 기준으로 tool 목록과 tool 수를 표시합니다.</p>
+            </div>
+          </div>
+          <div class="field-grid two">${renderFields(fields.slice(0, 4))}</div>
+          <div class="field-grid two" style="margin-top:16px;">${renderFields(fields.slice(4))}</div>
+        </section>
+      `;
+    }
+
+    function renderSections() {
+      const sections = isInteractiveRegisterType()
+        ? current.sections.filter((section) => section.kicker === "Owner")
+        : current.sections;
+      return sections.map((section) => `
+        <section class="panel section">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker"><span class="material-icons-round">inventory_2</span>${section.kicker}</div>
+              <h2 class="section-title">${section.title}</h2>
+              <p class="section-desc">${section.desc}</p>
+            </div>
+          </div>
+          <div class="field-grid two">${renderFields(section.fields)}</div>
+        </section>
+        `).join("");
+    }
+
+    const app = document.getElementById("app");
+    app.innerHTML = `
+      <div
+        data-ax-topbar
+        data-active-key="tool-inventory"
+        data-search-placeholder="inventory 이름, endpoint, tool을 검색하세요..."
+        data-search-source="workspace-tool-inventory-register"
+        data-search-source-label="Tool Inventory Register"
+        data-search-default-type="tool-inventory"
+      ></div>
+      <template data-legacy-topbar>
+        <div class="topbar-inner">
+          <a class="topbar-brand" href="portal_launchpad.html" aria-label="AX Studio">
+            <span class="brand-mark" aria-hidden="true">AX</span>
+            <span class="brand-name">AX Studio</span>
+          </a>
+          <div class="logo-menu" id="serviceMenuWrap">
+            <button class="menu-trigger" id="serviceMenuButton" type="button" aria-label="전체 메뉴 열기" aria-haspopup="true" aria-expanded="false" aria-controls="serviceMenuPopover">
+              <span class="material-icons-round">apps</span>
+              <span class="material-icons-round menu-caret">expand_more</span>
+            </button>
+            <div class="service-popover" id="serviceMenuPopover" aria-labelledby="serviceMenuButton" hidden>
+              <div class="service-popover-inner">
+                <div class="service-groups">${renderServiceGroups()}</div>
+                <div class="service-outlinks" aria-label="외부 서비스 바로가기">
+                  <div class="service-outlinks-title">DEJ 시스템</div>
+                  <div class="service-outlink-list">
+                    <a class="service-outlink" href="https://dej-chatbot.apps.hedej.lge.com" target="_blank" rel="noopener noreferrer"><span class="material-icons-round">forum</span><span>DEJ 챗봇</span></a>
+                    <a class="service-outlink" href="https://workspace.hedej.lge.com/heans" target="_blank" rel="noopener noreferrer"><span class="material-icons-round">north_east</span><span>HEANS</span></a>
+                    <a class="service-outlink" href="https://workspace.hedej.lge.com/hevpds" target="_blank" rel="noopener noreferrer"><span class="material-icons-round">north_east</span><span>HEVPDS</span></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="search-wrap">
+            <span class="material-icons-round">search</span>
+            <input class="search-input" placeholder="inventory 이름, endpoint, tool을 검색하세요..." />
+            <div class="search-ai"><span class="material-icons-round" style="font-size:14px;">auto_awesome</span>AI</div>
+          </div>
+          <div class="tb-spacer"></div>
+          <div class="tb-icon"><span class="material-icons-round">notifications_none</span><div class="dot"></div></div>
+          <a class="avatar" href="workspace_settings.html" aria-label="설정 페이지 열기">TN</a>
+        </div>
+      </template>
+
+      <main class="page">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <a href="portal_launchpad.html">Launchpad</a>
+          <span class="material-icons-round" aria-hidden="true">chevron_right</span>
+          <a href="workspace_tool_inventory_hub.html">Tool Inventory Hub</a>
+          <span class="material-icons-round" aria-hidden="true">chevron_right</span>
+          <span>New Inventory</span>
+        </nav>
+
+        <section class="panel hero">
+          <div class="hero-top">
+            <div>
+              <div class="eyebrow"><span class="material-icons-round" style="font-size:16px;">${current.icon}</span>AI · Connected Tool Assets</div>
+              <div class="hero-title-row">
+                <h1 class="hero-title">${current.heroTitle}</h1>
+                <span class="pill engine">${current.title}</span>
+                ${current.badges.map((badge) => `<span class="pill engine">${badge}</span>`).join("")}
+              </div>
+              <p class="hero-desc">${current.description}</p>
+            </div>
+            <div class="hero-actions">${renderActions([
+              { label: "Tool Inventory Hub", icon: "inventory_2", href: "workspace_tool_inventory_hub.html", variant: "secondary" },
+              { label: "등록 요청", icon: "check_circle", href: "#", variant: "primary", action: "submit-register-request" }
+            ])}</div>
+          </div>
+          <div class="hero-stats">${renderStats(current.stats)}</div>
+        </section>
+
+        <section class="panel section">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker"><span class="material-icons-round">category</span>Type Selector</div>
+              <h2 class="section-title">등록 타입 선택</h2>
+              <p class="section-desc">등록할 서버 타입을 먼저 선택하면 필요한 항목만 간단하게 입력할 수 있습니다.</p>
+            </div>
+          </div>
+          <div class="selector-grid">${renderTypeSelector()}</div>
+        </section>
+
+        <section class="panel section">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker"><span class="material-icons-round">rule</span>Required Items</div>
+              <h2 class="section-title">먼저 보여줄 항목</h2>
+              <p class="section-desc">복잡한 내부 구조보다 실제 판단에 필요한 정보만 먼저 등록합니다.</p>
+            </div>
+          </div>
+          <div class="summary-grid">${renderSummary()}</div>
+          <div class="field-grid two" style="margin-top:16px;">${renderFields(current.quickFields)}</div>
+          <div class="inline-note">External, Internal, Direct 등록은 모두 실제 입력 폼과 validate 흐름을 연결했습니다. Skill 화면은 계속 목업 상태이며 validate는 모든 등록 요청 전에 필수입니다.</div>
+        </section>
+
+        <div id="interactiveMcpSections">${renderInteractiveMcpSections()}</div>
+
+        ${renderInteractiveMcpFunctionSection()}
+
+        ${renderSections()}
+
+        <section class="panel section">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker"><span class="material-icons-round">done</span>Register</div>
+              <h2 class="section-title">등록 마무리</h2>
+              <p class="section-desc">등록 요청 전 validate를 반드시 통과해야 하며, 초안 저장 버튼은 현재 기능 보류 상태로 유지합니다.</p>
+            </div>
+          </div>
+          <div class="action-row">
+            <a class="action-btn secondary" href="workspace_tool_inventory_hub.html"><span class="material-icons-round">draft</span>초안 저장</a>
+            <a class="action-btn primary" href="#" data-action="submit-register-request"><span class="material-icons-round">check_circle</span>등록 요청</a>
+          </div>
+          <div id="submitFeedback" class="submit-feedback" data-tone="idle">${registerState.submitMessage}</div>
+        </section>
+      </main>
+    `;
+
+    const menuWrap = document.getElementById("serviceMenuWrap");
+    const menuButton = document.getElementById("serviceMenuButton");
+    const menuPopover = document.getElementById("serviceMenuPopover");
+
+    if (menuWrap && menuButton && menuPopover) {
+      const setOpen = (open) => {
+        menuWrap.classList.toggle("is-open", open);
+        menuButton.setAttribute("aria-expanded", String(open));
+        menuPopover.hidden = !open;
+      };
+
+      setOpen(false);
+
+      menuButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        setOpen(!menuWrap.classList.contains("is-open"));
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!menuWrap.contains(event.target)) setOpen(false);
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          setOpen(false);
+          menuButton.focus();
+        }
+      });
+    }
+
+    function updateInteractiveMcpFunctionSection() {
+      const section = document.getElementById("interactiveMcpFunctionSection");
+      if (!section) return;
+      section.outerHTML = renderInteractiveMcpFunctionSection();
+    }
+
+    function updateInteractiveMcpSections() {
+      const wrapper = document.getElementById("interactiveMcpSections");
+      if (!wrapper) return;
+      wrapper.innerHTML = renderInteractiveMcpSections();
+      bindInteractiveMcpInputs();
+    }
+
+    function updateValidateStatus(status, message, meta) {
+      registerState.validateStatus = status;
+      registerState.validateMessage = message;
+      registerState.validateMeta = meta;
+      if (status !== "ok") {
+        registerState.validatedTools = [];
+        registerState.validatedToolCount = 0;
+      }
+      updateInteractiveMcpFunctionSection();
+    }
+
+    function getRegisterButtons() {
+      return Array.from(document.querySelectorAll('[data-action="submit-register-request"]'));
+    }
+
+    function syncRegisterButtons() {
+      getRegisterButtons().forEach((button) => {
+        button.classList.toggle("is-disabled", registerState.isSubmitting);
+        button.setAttribute("aria-disabled", String(registerState.isSubmitting));
+      });
+    }
+
+    function updateSubmitStatus(tone, message) {
+      registerState.submitTone = tone;
+      registerState.submitMessage = message;
+      const feedback = document.getElementById("submitFeedback");
+      if (!feedback) return;
+      feedback.dataset.tone = tone;
+      feedback.textContent = message;
+    }
+
+    function maskSecret(value) {
+      const trimmed = String(value || "").trim();
+      if (!trimmed) return "미입력";
+      if (trimmed.length <= 6) return `${trimmed.slice(0, 1)}***${trimmed.slice(-1)}`;
+      return `${trimmed.slice(0, 3)}***${trimmed.slice(-3)}`;
+    }
+
+    function isSupportedMcpAddressName(value) {
+      return /^[a-z0-9_]+$/.test(String(value || "").trim());
+    }
+
+    function buildMcpAuthPayload() {
+      const authType = String(registerState.authType || "none").trim() || "none";
+      if (authType === "none") {
+        return { authType };
+      }
+
+      const secret = registerState.authSecret.trim();
+      if (!secret) {
+        throw new Error("선택한 authType에 맞는 키 또는 토큰 값을 입력해 주세요.");
+      }
+
+      if (authType === "bearer_static") {
+        return {
+          authType,
+          authConfig: {
+            token: secret,
+            scheme: "Bearer"
+          },
+          headers: {
+            Authorization: `Bearer ${secret}`
+          }
+        };
+      }
+
+      if (authType === "api_key_static") {
+        return {
+          authType,
+          authConfig: {
+            apiKey: secret,
+            headerName: "X-API-Key"
+          },
+          headers: {
+            "X-API-Key": secret
+          }
+        };
+      }
+
+      if (authType === "cookie_static") {
+        return {
+          authType,
+          authConfig: {
+            cookie: secret
+          },
+          headers: {
+            Cookie: secret
+          }
+        };
+      }
+
+      throw new Error("현재 화면에서는 선택한 authType을 지원하지 않습니다.");
+    }
+
+    function buildCreateInventoryPayload() {
+      if (!isInteractiveRegisterType()) {
+        throw new Error("현재 샘플 화면에서는 External/Internal/Direct 등록 요청만 실제 생성할 수 있습니다.");
+      }
+
+      if (registerState.validateStatus !== "ok") {
+        throw new Error("등록 요청 전에 validate를 먼저 통과해 주세요.");
+      }
+
+      const endpointUrl = registerState.endpointUrl.trim();
+      if (!endpointUrl) {
+        throw new Error(`${getEndpointLabel()} 주소를 입력해 주세요.`);
+      }
+
+      const payload = {
+        name: registerState.inventoryName.trim() || `${current.key}_mcp_request`,
+        description: registerState.description.trim(),
+        kind: "mcp",
+        scopeType: current.key,
+        endpointUrl
+      };
+
+      if (current.key === "direct") {
+        payload.format = getSelectedFormat();
+        if (requiresOpenapiSpec()) {
+          const openapiSpecUrl = registerState.openapiSpecUrl.trim();
+          if (!openapiSpecUrl) {
+            throw new Error("REST 포맷은 OpenAPI 주소를 함께 입력해 주세요.");
+          }
+          payload.openapiSpecUrl = openapiSpecUrl;
+        } else {
+          payload.transport = "streamable_http";
+        }
+      } else {
+        payload.transport = "streamable_http";
+      }
+
+      Object.assign(payload, buildMcpAuthPayload());
+
+      if (Array.isArray(registerState.validatedTools) && registerState.validatedTools.length > 0) {
+        payload.tools = registerState.validatedTools.map((toolName) => ({ name: toolName }));
+      }
+
+      return payload;
+    }
+
+    async function submitRegisterRequest() {
+      if (registerState.isSubmitting) return;
+
+      let payload;
+      try {
+        payload = buildCreateInventoryPayload();
+      } catch (error) {
+        updateSubmitStatus("error", error.message || "등록 요청 payload를 만들지 못했습니다.");
+        return;
+      }
+
+      registerState.isSubmitting = true;
+      syncRegisterButtons();
+      updateSubmitStatus("progress", "등록 요청을 생성하고 있습니다. validate 결과를 기준으로 `/api/v2/tool-inventory`를 호출합니다.");
+
+      try {
+        const response = await fetch("/api/v2/tool-inventory", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          credentials: "same-origin",
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(result?.error?.message || "등록 요청 생성에 실패했습니다.");
+        }
+
+        const requestId = result?.data?.id || "";
+        updateSubmitStatus("success", requestId
+          ? `등록 요청이 생성되었습니다. request id: ${requestId}`
+          : "등록 요청이 생성되었습니다.");
+
+        window.setTimeout(() => {
+          const nextUrl = requestId
+            ? `workspace_tool_inventory_hub.html?requestId=${encodeURIComponent(requestId)}`
+            : "workspace_tool_inventory_hub.html";
+          window.location.href = nextUrl;
+        }, 900);
+      } catch (error) {
+        updateSubmitStatus("error", error?.message || "등록 요청 중 네트워크 오류가 발생했습니다.");
+      } finally {
+        registerState.isSubmitting = false;
+        syncRegisterButtons();
+      }
+    }
+
+    function bindRegisterActions() {
+      getRegisterButtons().forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          submitRegisterRequest();
+        });
+      });
+      syncRegisterButtons();
+    }
+
+    function normalizeValidatedTool(entry) {
+      if (typeof entry === "string") {
+        return entry.trim();
+      }
+
+      if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+        return "";
+      }
+
+      return String(
+        entry.name
+        || entry.id
+        || entry.label
+        || entry.title
+        || entry.toolName
+        || entry.displayName
+        || entry?.function?.name
+        || entry?.tool?.name
+        || entry?.metadata?.name
+        || entry?.attributes?.name
+        || ""
+      ).trim();
+    }
+
+    function isToolLikeArray(candidate) {
+      if (!Array.isArray(candidate) || candidate.length === 0) {
+        return false;
+      }
+
+      const normalized = candidate.map(normalizeValidatedTool).filter(Boolean);
+      return normalized.length > 0;
+    }
+
+    function findNestedToolArray(root) {
+      if (!root || typeof root !== "object") {
+        return [];
+      }
+
+      const queue = [root];
+      const visited = new Set();
+
+      while (queue.length > 0) {
+        const currentNode = queue.shift();
+        if (!currentNode || typeof currentNode !== "object") {
+          continue;
+        }
+
+        if (visited.has(currentNode)) {
+          continue;
+        }
+        visited.add(currentNode);
+
+        if (Array.isArray(currentNode)) {
+          if (isToolLikeArray(currentNode)) {
+            return currentNode;
+          }
+          currentNode.forEach(item => {
+            if (item && typeof item === "object") {
+              queue.push(item);
+            }
+          });
+          continue;
+        }
+
+        Object.values(currentNode).forEach(value => {
+          if (Array.isArray(value) && isToolLikeArray(value)) {
+            queue.unshift(value);
+            return;
+          }
+
+          if (value && typeof value === "object") {
+            queue.push(value);
+          }
+        });
+      }
+
+      return [];
+    }
+
+    function extractValidatedTools(validation) {
+      const candidateArrays = [
+        validation?.tools,
+        validation?.items,
+        validation?.server?.tools,
+        validation?.result?.tools,
+        validation?.data?.tools,
+        validation?.capabilities?.tools,
+        validation?.tooling?.representativeItems,
+        validation?.result?.items,
+        validation?.data?.items,
+        validation?.data?.result?.tools,
+        validation?.data?.result?.items,
+        validation?.server?.capabilities?.tools,
+        validation?.server?.result?.tools,
+        validation?.validation?.tools,
+        findNestedToolArray(validation)
+      ];
+
+      const toolArray = candidateArrays.find((candidate) => isToolLikeArray(candidate)) || [];
+      const tools = toolArray
+        .map(normalizeValidatedTool)
+        .filter(Boolean);
+
+      const toolCountCandidates = [
+        validation?.toolCount,
+        validation?.itemCount,
+        validation?.summary?.toolCount,
+        validation?.server?.toolCount,
+        validation?.data?.toolCount,
+        validation?.data?.itemCount,
+        validation?.result?.toolCount,
+        validation?.result?.itemCount,
+        validation?.capabilities?.toolCount,
+        tools.length
+      ];
+      const toolCount = toolCountCandidates.find((value) => Number.isFinite(Number(value)));
+
+      return {
+        tools,
+        toolCount: Number(toolCount || 0)
+      };
+    }
+
+    async function runMcpValidate() {
+      if (!isInteractiveRegisterType()) return;
+
+      const endpointUrl = registerState.endpointUrl.trim();
+      if (!endpointUrl) {
+        updateValidateStatus("idle", getValidateIdleMessage(), "아직 검사하지 않았습니다.");
+        return;
+      }
+
+      if (requiresOpenapiSpec() && !registerState.openapiSpecUrl.trim()) {
+        updateValidateStatus(
+          "idle",
+          "OpenAPI 주소를 함께 입력하면 validate를 수행합니다.",
+          "REST 포맷은 endpointUrl 과 openapiSpecUrl 이 모두 필요합니다.",
+        );
+        return;
+      }
+
+      const inventoryName = registerState.inventoryName.trim() || `${current.key}_mcp_draft`;
+      if (!isSupportedMcpAddressName(inventoryName)) {
+        updateValidateStatus(
+          "failed",
+          "Inventory 이름에는 영문 소문자, 숫자, `_`만 사용할 수 있습니다.",
+          "이 값이 MCP 주소 이름으로 함께 사용되기 때문에 `-`, 공백, 대문자는 허용되지 않습니다.",
+        );
+        return;
+      }
+
+      const requestSeq = registerState.validateRequestSeq + 1;
+      registerState.validateRequestSeq = requestSeq;
+
+      updateValidateStatus("checking", getValidateCheckingMessage(), "입력 변경을 감지해 validate를 다시 실행했습니다.");
+
+      const payload = {
+        name: inventoryName,
+        description: registerState.description.trim(),
+        kind: "mcp",
+        scopeType: current.key,
+        endpointUrl
+      };
+
+      if (current.key === "direct") {
+        payload.format = getSelectedFormat();
+        if (requiresOpenapiSpec()) {
+          payload.openapiSpecUrl = registerState.openapiSpecUrl.trim();
+        } else {
+          payload.transport = "streamable_http";
+        }
+      } else {
+        payload.transport = "streamable_http";
+      }
+
+      try {
+        Object.assign(payload, buildMcpAuthPayload());
+      } catch (error) {
+        updateValidateStatus("failed", error.message, "인증 입력 형식을 확인한 뒤 다시 시도해 주세요.");
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/v2/tool-inventory/validate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          credentials: "same-origin",
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json().catch(() => ({}));
+        if (requestSeq !== registerState.validateRequestSeq) return;
+
+        if (!response.ok) {
+          const errorMessage = result?.error?.message || "validate 호출에 실패했습니다.";
+          updateValidateStatus("failed", errorMessage, "Endpoint 또는 인증 정보를 다시 확인해 주세요.");
+          return;
+        }
+
+        const extracted = extractValidatedTools(result?.data?.validation || null);
+        registerState.validatedTools = extracted.tools;
+        registerState.validatedToolCount = extracted.toolCount;
+        const sourceType = result?.data?.sourceType === "openapi" ? "REST" : "MCP";
+        updateValidateStatus("ok", `OK · ${sourceType} validate를 통과했습니다.`, `${sourceType} source 검사가 완료되었고 ${extracted.toolCount}개의 tool을 확인했습니다.`);
+      } catch (error) {
+        if (requestSeq !== registerState.validateRequestSeq) return;
+        updateValidateStatus("failed", error?.message || "validate 요청 중 네트워크 오류가 발생했습니다.", "브라우저 세션 인증 또는 API 연결 상태를 확인해 주세요.");
+      }
+    }
+
+    function scheduleMcpValidate() {
+      if (registerState.validateTimer) {
+        window.clearTimeout(registerState.validateTimer);
+      }
+
+      registerState.validateTimer = window.setTimeout(() => {
+        runMcpValidate();
+      }, 700);
+    }
+
+    function bindInteractiveMcpInputs() {
+      if (!isInteractiveRegisterType()) return;
+
+      const nameInput = document.getElementById("inventoryNameInput");
+      const descriptionInput = document.getElementById("inventoryDescriptionInput");
+      const formatInput = document.getElementById("inventoryFormatInput");
+      const endpointInput = document.getElementById("inventoryEndpointInput");
+      const openapiInput = document.getElementById("inventoryOpenapiInput");
+      const authTypeInput = document.getElementById("inventoryAuthTypeInput");
+      const authSecretInput = document.getElementById("inventoryAuthSecretInput");
+
+      if (!nameInput || !descriptionInput || !endpointInput || !authTypeInput || !authSecretInput) return;
+
+      nameInput.addEventListener("input", (event) => {
+        registerState.inventoryName = event.target.value;
+        scheduleMcpValidate();
+      });
+
+      nameInput.addEventListener("blur", () => {
+        registerState.inventoryName = nameInput.value;
+        if (registerState.validateTimer) {
+          window.clearTimeout(registerState.validateTimer);
+          registerState.validateTimer = null;
+        }
+        runMcpValidate();
+      });
+
+      descriptionInput.addEventListener("input", (event) => {
+        registerState.description = event.target.value;
+      });
+
+      if (formatInput) {
+        formatInput.addEventListener("change", (event) => {
+          registerState.format = event.target.value === "rest" ? "rest" : "mcp";
+          updateInteractiveMcpSections();
+          updateInteractiveMcpFunctionSection();
+          scheduleMcpValidate();
+        });
+      }
+
+      endpointInput.addEventListener("input", (event) => {
+        registerState.endpointUrl = event.target.value;
+        scheduleMcpValidate();
+      });
+
+      endpointInput.addEventListener("blur", () => {
+        registerState.endpointUrl = endpointInput.value;
+        if (registerState.validateTimer) {
+          window.clearTimeout(registerState.validateTimer);
+          registerState.validateTimer = null;
+        }
+        runMcpValidate();
+      });
+
+      if (openapiInput) {
+        openapiInput.addEventListener("input", (event) => {
+          registerState.openapiSpecUrl = event.target.value;
+          scheduleMcpValidate();
+        });
+
+        openapiInput.addEventListener("blur", () => {
+          registerState.openapiSpecUrl = openapiInput.value;
+          if (registerState.validateTimer) {
+            window.clearTimeout(registerState.validateTimer);
+            registerState.validateTimer = null;
+          }
+          runMcpValidate();
+        });
+      }
+
+      authTypeInput.addEventListener("change", (event) => {
+        registerState.authType = event.target.value;
+        registerState.authSecret = "";
+        updateInteractiveMcpSections();
+        updateInteractiveMcpFunctionSection();
+        scheduleMcpValidate();
+      });
+
+      authSecretInput.addEventListener("input", (event) => {
+        registerState.authSecret = event.target.value;
+        updateInteractiveMcpFunctionSection();
+        scheduleMcpValidate();
+      });
+    }
+
+    bindInteractiveMcpInputs();
+    bindRegisterActions();
+  </script>
+  <script src="ax_studio_topbar.js"></script>
+</body>
+</html>

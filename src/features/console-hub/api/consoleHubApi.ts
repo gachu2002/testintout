@@ -7,14 +7,8 @@ import type {
   ConsoleTipsPanel,
 } from '@/features/console-hub/types';
 import { apiClient } from '@/lib/api/axios';
-import type { ApiDataResponse, PaginatedResponse } from '@/lib/api/types';
-
-type CursorParams = {
-  cursor: string;
-  limit: number;
-  q: string;
-  sort: string;
-};
+import type { ApiDataResponse, CursorParams, PaginatedResponse } from '@/lib/api/types';
+import { unwrapApiData } from '@/lib/api/types';
 
 export async function getConsoleHubConsoles({
   cursor,
@@ -31,12 +25,12 @@ export async function getConsoleHubConsoles({
 
 export async function getConsoleHubStats(): Promise<ConsoleHubStats> {
   const response = await apiClient.get<ApiDataResponse<ConsoleHubStats>>('/v2/consoles/stats');
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getConsoleHubFilters(): Promise<ConsoleHubFilters> {
   const response = await apiClient.get<ApiDataResponse<ConsoleHubFilters>>('/v2/consoles/filters');
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getConsoleHubTipsPanel(): Promise<ConsoleTipsPanel> {
@@ -44,7 +38,7 @@ export async function getConsoleHubTipsPanel(): Promise<ConsoleTipsPanel> {
     '/v2/consoles/panels/tips',
   );
 
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getConsoleHubGuideLinksPanel(): Promise<ConsoleGuideLinksPanel> {
@@ -52,7 +46,7 @@ export async function getConsoleHubGuideLinksPanel(): Promise<ConsoleGuideLinksP
     '/v2/consoles/panels/guide-links',
   );
 
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getConsoleHealthPanel(): Promise<ConsoleHealthPanel> {
@@ -60,5 +54,5 @@ export async function getConsoleHealthPanel(): Promise<ConsoleHealthPanel> {
     '/v2/consoles/panels/health',
   );
 
-  return response.data.data;
+  return unwrapApiData(response);
 }

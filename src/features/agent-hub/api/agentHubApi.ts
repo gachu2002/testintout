@@ -8,14 +8,8 @@ import type {
   AgentTipsPanel,
 } from '@/features/agent-hub/types';
 import { apiClient } from '@/lib/api/axios';
-import type { ApiDataResponse, PaginatedResponse } from '@/lib/api/types';
-
-type CursorParams = {
-  cursor: string;
-  limit: number;
-  q: string;
-  sort: string;
-};
+import type { ApiDataResponse, CursorParams, PaginatedResponse } from '@/lib/api/types';
+import { unwrapApiData } from '@/lib/api/types';
 
 export async function getAgentHubAgents({
   cursor,
@@ -32,12 +26,12 @@ export async function getAgentHubAgents({
 
 export async function getAgentHubStats(): Promise<AgentHubStats> {
   const response = await apiClient.get<ApiDataResponse<AgentHubStats>>('/v2/agents/stats');
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getAgentHubFilters(): Promise<AgentHubFilters> {
   const response = await apiClient.get<ApiDataResponse<AgentHubFilters>>('/v2/agents/filters');
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getAgentHubTipsPanel(): Promise<AgentTipsPanel> {
@@ -45,7 +39,7 @@ export async function getAgentHubTipsPanel(): Promise<AgentTipsPanel> {
     params: { surface: 'agents' },
   });
 
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getAgentHubGuideLinksPanel(): Promise<AgentGuideLinksPanel> {
@@ -56,7 +50,7 @@ export async function getAgentHubGuideLinksPanel(): Promise<AgentGuideLinksPanel
     },
   );
 
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getAgentHubModelsPanel(): Promise<AgentModelPanel> {
@@ -64,7 +58,7 @@ export async function getAgentHubModelsPanel(): Promise<AgentModelPanel> {
     '/v2/agents/panels/models',
   );
 
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getAgentRuntimeStatusPanel(): Promise<AgentRuntimeStatusPanel> {
@@ -72,5 +66,5 @@ export async function getAgentRuntimeStatusPanel(): Promise<AgentRuntimeStatusPa
     '/v2/agents/panels/runtime-status',
   );
 
-  return response.data.data;
+  return unwrapApiData(response);
 }

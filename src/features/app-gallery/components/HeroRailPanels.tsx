@@ -21,10 +21,10 @@ export function RecentRailCard({ apps, isLoading }: { apps: AppGalleryApp[]; isL
         <SectionStatusBadge status={appGallerySectionStatus.heroRail} />
       </SectionLabel>
       <Typography fontSize={18} fontWeight={800} letterSpacing="-0.03em" sx={{ mb: 0.75 }}>
-        빠르게 둘러볼 앱
+        지금 추천하는 앱
       </Typography>
       <Typography color="text.secondary" fontSize={12} lineHeight={1.6} sx={{ mb: 1.75 }}>
-        실제 /api/v2/app-gallery/apps 응답에서 먼저 추천할 카탈로그를 보여줍니다.
+        배포된 앱 중 먼저 살펴보면 좋은 앱을 보여드립니다.
       </Typography>
       {isLoading ? <CircularProgress size={22} /> : <MiniAppList apps={apps} />}
     </RailCard>
@@ -32,8 +32,6 @@ export function RecentRailCard({ apps, isLoading }: { apps: AppGalleryApp[]; isL
 }
 
 export function CriteriaRailCard({ relatedAi }: { relatedAi: AppGalleryRelatedAi[] }) {
-  const firstRelatedAi = relatedAi.at(0);
-
   return (
     <RailCard>
       <SectionLabel sx={{ color: 'secondary.main', mb: 1.25 }}>
@@ -41,20 +39,25 @@ export function CriteriaRailCard({ relatedAi }: { relatedAi: AppGalleryRelatedAi
         <SectionStatusBadge status={appGallerySectionStatus.heroRail} />
       </SectionLabel>
       <Typography fontSize={18} fontWeight={800} letterSpacing="-0.03em" sx={{ mb: 0.75 }}>
-        AI Gallery와 함께 보기
+        함께 보면 좋은 AI
       </Typography>
       <Typography color="text.secondary" fontSize={12} lineHeight={1.6} sx={{ mb: 1.75 }}>
-        앱 상세와 연결되는 related AI 큐레이션도 같은 host의 v2 API에서 읽어옵니다.
+        추천 앱과 함께 이어서 볼 만한 AI 항목을 보여드립니다.
       </Typography>
-      {firstRelatedAi ? (
-        <MiniRow
-          href={firstRelatedAi.href}
-          icon="ai_gallery"
-          iconColor="#7c5fcf"
-          meta={firstRelatedAi.subtitle}
-          pill={firstRelatedAi.category}
-          title={firstRelatedAi.title}
-        />
+      {relatedAi.length ? (
+        <Stack spacing={1.25}>
+          {relatedAi.map((item) => (
+            <MiniRow
+              href={item.href}
+              icon="ai_gallery"
+              iconColor="#7c5fcf"
+              key={item.slug}
+              meta={item.subtitle}
+              pill={item.category}
+              title={item.title}
+            />
+          ))}
+        </Stack>
       ) : null}
     </RailCard>
   );
@@ -63,13 +66,13 @@ export function CriteriaRailCard({ relatedAi }: { relatedAi: AppGalleryRelatedAi
 function MiniAppList({ apps }: { apps: AppGalleryApp[] }) {
   return (
     <Stack spacing={1.25}>
-      {apps.map((app) => (
+      {apps.map((app, index) => (
         <MiniRow
           icon={app.icon}
           iconColor={app.iconColor}
           key={app.slug}
-          meta={app.summary}
-          pill={app.categoryLabel}
+          meta={app.recommendationReason || app.summary}
+          pill={index === 0 ? app.lifecycleLabel || '추천 시작' : app.categoryLabel}
           title={app.title}
         />
       ))}

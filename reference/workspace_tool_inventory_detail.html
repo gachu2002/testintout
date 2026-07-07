@@ -266,6 +266,27 @@
         </article>
       `).join("")}</div>`;
     }
+    function consumerCards(rows) {
+      return `<div class="project-list">${rows.map((row) => `
+        <article class="project-card">
+          <div class="project-main">
+            <div class="project-top">
+              <div class="project-name">${row.title}</div>
+              <span class="tag">${row.badge || "Consumer"}</span>
+            </div>
+            <div class="project-meta">${row.meta}</div>
+            <div class="project-tags">
+              ${(row.tags || []).map((tag) => `<span class="tag">${tag}</span>`).join("")}
+            </div>
+          </div>
+          <div class="project-side">
+            <div class="tiny-label">${row.sideLabel || "Kind"}</div>
+            <div class="tiny-value">${row.sideValue || "-"}</div>
+            <a class="project-link" href="${row.href || "workspace_tool_inventory_hub.html"}">${row.linkLabel || "상세 보기"}<span class="material-icons-round">chevron_right</span></a>
+          </div>
+        </article>
+      `).join("")}</div>`;
+    }
     function buildItem(item) {
       const usageRow = item.progress[0];
       const healthRow = item.progress[1];
@@ -371,6 +392,346 @@
           </section>
         `,
         sidebarHtml: ""
+      };
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function mono(value) {
+      return `<span class="mono">${escapeHtml(value || "-")}</span>`;
+    }
+
+    function formatDateLabel(value) {
+      if (!value) {
+        return "N/A";
+      }
+
+      const date = new Date(value);
+      if (Number.isNaN(date.valueOf())) {
+        return "N/A";
+      }
+
+      return new Intl.DateTimeFormat("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      }).format(date);
+    }
+
+    function formatRelativeTimeLabel(value) {
+      if (!value) {
+        return "갱신 시각 정보 없음";
+      }
+
+      const date = new Date(value);
+      if (Number.isNaN(date.valueOf())) {
+        return "갱신 시각 정보 없음";
+      }
+
+      const diffMs = Date.now() - date.valueOf();
+      const diffMinutes = Math.max(0, Math.round(diffMs / 60000));
+      if (diffMinutes < 1) {
+        return "방금 갱신";
+      }
+      if (diffMinutes < 60) {
+        return `${diffMinutes}분 전 갱신`;
+      }
+      const diffHours = Math.round(diffMinutes / 60);
+      if (diffHours < 24) {
+        return `${diffHours}시간 전 갱신`;
+      }
+      const diffDays = Math.round(diffHours / 24);
+      return `${diffDays}일 전 갱신`;
+    }
+
+    function clampPercent(value, fallback = 0) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) {
+        return fallback;
+      }
+      return Math.max(0, Math.min(100, Math.round(number)));
+    }
+
+    function buildToolInventoryPlaceholder(key, options = {}) {
+      const title = escapeHtml(options.title || key || "tool-inventory");
+      const description = escapeHtml(options.description || "Tool Inventory 상세를 실제 API에서 불러오는 중입니다.");
+      const statusLabel = escapeHtml(options.statusLabel || "Loading");
+      const statusTone = options.statusTone || "review";
+
+      return {
+        key,
+        id: key,
+        title,
+        description,
+        heroIcon: "inventory_2",
+        typeLabel: "Tool Inventory",
+        statusLabel,
+        statusTone,
+        heroBadges: ["API detail"],
+        theme: { bg: "#ebf1ff", brand: "#3b5ccc", brandH: "#314ca6", brandBg: "#d4deff", brandSoft: "rgba(59,92,204,.18)", accent: "#38bdf8" },
+        actions: [
+          { label: "Tool Inventory Hub", icon: "inventory_2", href: "workspace_tool_inventory_hub.html" }
+        ],
+        heroStats: [
+          { label: "Lookup", value: "1", meta: mono(key || "-") },
+          { label: "Functions", value: "0", meta: "detail 로딩 중" },
+          { label: "Consumers", value: "0", meta: "detail 로딩 중" },
+          { label: "Status", value: statusLabel, meta: "API 응답 대기" }
+        ],
+        layoutMode: "full-width",
+        mainHtml: `
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">sync</span>Loading</div>
+                <h2 class="section-title">현재 정보를 불러오는 중입니다</h2>
+                <p class="section-desc">${description}</p>
+              </div>
+            </div>
+            <article class="card">
+              <div class="card-title">Lookup Key</div>
+              <div class="kv-list">${kv([
+                { key: "item", value: mono(key || "-") },
+                { key: "상태", value: escapeHtml(statusLabel) }
+              ])}</div>
+            </article>
+          </section>
+        `,
+        sidebarHtml: "",
+        __isLoading: Boolean(options.isLoading ?? true)
+      };
+    }
+
+    function buildConsumerRows(detail) {
+      const refs = Array.isArray(detail?.consumers?.refs) ? detail.consumers.refs : [];
+      if (!refs.length) {
+        return [{
+          title: "연결된 consumer 없음",
+          meta: "현재 agent/chatbot consumer ref가 등록되지 않았습니다.",
+          badge: "None",
+          tags: ["No Consumer"],
+          sideLabel: "Status",
+          sideValue: "Empty",
+          href: "workspace_tool_inventory_hub.html",
+          linkLabel: "허브로 돌아가기"
+        }];
+      }
+
+      return refs.map((ref) => {
+        const kind = String(ref?.kind || "consumer").toLowerCase();
+        const id = String(ref?.id || "").trim();
+        const label = escapeHtml(ref?.label || ref?.id || "consumer");
+        const href = kind === "agent"
+          ? `workspace_agent_detail.html?item=${encodeURIComponent(id || ref?.label || "")}`
+          : kind === "chatbot"
+            ? `workspace_chatbot_detail.html?item=${encodeURIComponent(id || ref?.label || "")}`
+            : "workspace_tool_inventory_hub.html";
+
+        return {
+          title: label,
+          meta: `${escapeHtml(id || "consumer-id 없음")} · Tool Inventory consumer reference`,
+          badge: kind === "agent" ? "Agent" : kind === "chatbot" ? "Chatbot" : "Consumer",
+          tags: [escapeHtml(kind), escapeHtml(detail?.statusLabel || detail?.status || "-")],
+          sideLabel: "Kind",
+          sideValue: kind === "agent" ? "Agent" : kind === "chatbot" ? "Chatbot" : "Consumer",
+          href,
+          linkLabel: kind === "agent" ? "Agent detail 보기" : kind === "chatbot" ? "Chatbot detail 보기" : "상세 보기"
+        };
+      });
+    }
+
+    function buildDynamicToolInventoryItem(detail) {
+      const endpoint = detail?.accessEndpointUrl || detail?.openUrl || detail?.endpointUrl || detail?.openapiSpecUrl || "";
+      const sourceUrl = detail?.endpointUrl || detail?.openapiSpecUrl || "";
+      const canViewSource = Boolean(sourceUrl);
+      const toolCount = Number(detail?.toolCount || detail?.tooling?.itemCount || 0);
+      const consumerCount = Number(detail?.consumerCount || 0);
+      const tools = Array.isArray(detail?.tools) ? detail.tools : [];
+      const topToolLabels = tools.slice(0, 3).map((tool) => escapeHtml(tool?.name || tool?.id || "tool"));
+      const consumerRows = buildConsumerRows(detail);
+      const toolRows = tools.length
+        ? tools.map((tool) => [
+          escapeHtml(tool?.name || tool?.id || "tool"),
+          escapeHtml(detail?.name || detail?.slug || "inventory"),
+          escapeHtml(detail?.formatLabel || detail?.format || "Registered"),
+          escapeHtml(
+            consumerRows[0]?.title === "연결된 consumer 없음"
+              ? "No consumer"
+              : consumerRows.map((row) => row.title.replace(/<[^>]+>/g, "")).slice(0, 2).join(", ")
+          ),
+          escapeHtml(tool?.summary || "등록된 tool descriptor")
+        ])
+        : [[
+          escapeHtml(detail?.slug || detail?.id || "inventory"),
+          escapeHtml(detail?.name || detail?.slug || "inventory"),
+          "Registered",
+          consumerCount > 0 ? escapeHtml(String(consumerCount)) : "No consumer",
+          "등록된 tool descriptor가 없습니다."
+        ]];
+      const accessFacts = [
+        { key: "Type", value: escapeHtml(detail?.typeLabel || detail?.type || "-") },
+        { key: "Scope", value: escapeHtml(detail?.scopeLabel || detail?.scopeType || "-") },
+        { key: "Format", value: escapeHtml(detail?.formatLabel || detail?.format || "-") },
+        { key: "Endpoint", value: mono(endpoint || "-") },
+        { key: "Transport", value: escapeHtml(detail?.transport || "-") },
+        { key: "Auth", value: escapeHtml(detail?.authMode || "-") },
+        { key: "Slug", value: mono(detail?.slug || detail?.id || "-") }
+      ];
+      if (canViewSource) {
+        accessFacts.splice(4, 0, { key: "Source", value: mono(sourceUrl) });
+      }
+      const tips = [
+        {
+          title: "Access endpoint는 LiteLLM runtime 기준입니다",
+          meta: endpoint
+            ? `현재 endpoint는 ${escapeHtml(detail?.slug || detail?.id || "-")} slug를 기준으로 계산한 runtime 접근 경로입니다.`
+            : "LITELLM_BASE_URL 또는 slug가 없어 runtime endpoint를 계산하지 못했습니다.",
+          side: "Runtime"
+        },
+        {
+          title: "consumer 연결은 실제 ref 기준으로 보여줍니다",
+          meta: consumerCount > 0
+            ? `현재 agent ${Number(detail?.consumerAgentCount || 0)}개, chatbot ${Number(detail?.consumerChatbotCount || 0)}개가 연결되어 있습니다.`
+            : "등록된 consumer ref가 없어 연결된 사용처를 표시하지 않습니다.",
+          side: "Consumer"
+        }
+      ];
+      if (canViewSource) {
+        tips.splice(1, 0, {
+          title: "Source URL은 등록 원본을 따로 보여줍니다",
+          meta: "원본 endpoint/openapi URL은 Access 섹션의 Source로 분리해 보여줍니다.",
+          side: "Source"
+        });
+      }
+
+      return {
+        key: detail?.slug || detail?.id || "tool-inventory",
+        id: detail?.id || detail?.slug || "tool-inventory",
+        title: escapeHtml(detail?.name || detail?.slug || detail?.id || "tool-inventory"),
+        description: escapeHtml(detail?.description || detail?.summary || "등록된 Tool Inventory 상세입니다."),
+        heroIcon: detail?.format === "rest" ? "api" : detail?.kind === "skill" ? "psychology" : "inventory_2",
+        typeLabel: escapeHtml(detail?.typeLabel || detail?.kindLabel || "Tool Inventory"),
+        statusLabel: escapeHtml(detail?.statusLabel || detail?.status || "Review"),
+        statusTone: String(detail?.status || "").toLowerCase() === "connected" ? "healthy" : "review",
+        heroBadges: [
+          escapeHtml(detail?.scopeLabel || detail?.scopeType || "-"),
+          escapeHtml(detail?.access || "approved-user")
+        ],
+        theme: { bg: "#ebf1ff", brand: "#3b5ccc", brandH: "#314ca6", brandBg: "#d4deff", brandSoft: "rgba(59,92,204,.18)", accent: "#38bdf8" },
+        actions: [
+          { label: "Tool Inventory Hub", icon: "inventory_2", href: "workspace_tool_inventory_hub.html" },
+          endpoint
+            ? { label: "Endpoint 열기", icon: "open_in_new", variant: "primary", href: endpoint }
+            : { label: "등록 화면 보기", icon: "arrow_outward", variant: "primary", href: "workspace_tool_inventory_register.html" }
+        ],
+        heroStats: [
+          { label: "Type", value: escapeHtml(detail?.scopeLabel || detail?.typeLabel || "-"), meta: escapeHtml(detail?.kindLabel || detail?.kind || "-") },
+          { label: "Format", value: escapeHtml(detail?.formatLabel || detail?.format || "-"), meta: escapeHtml(detail?.transport || "transport 없음") },
+          { label: "Function Tool", value: String(toolCount), meta: topToolLabels.length ? `${topToolLabels.join(", ")} 등록` : "등록된 function/tool 없음" },
+          { label: "Consumers", value: String(consumerCount), meta: formatRelativeTimeLabel(detail?.updatedAt) }
+        ],
+        layoutMode: "full-width",
+        mainHtml: `
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">stacked_bar_chart</span>Current Inventory</div>
+                <h2 class="section-title">등록 현황</h2>
+                <p class="section-desc">현재 inventory projection 기준으로 등록된 tool과 consumer 구성을 확인합니다.</p>
+              </div>
+            </div>
+            <article class="usage-card">
+              <div class="usage-head">
+                <div>
+                  <div class="usage-name">등록된 Function, Tool</div>
+                  <div class="usage-meta">${topToolLabels.length ? `${topToolLabels.join(", ")} 등 대표 항목` : "현재 등록된 대표 function/tool 정보가 없습니다."}</div>
+                </div>
+                <div class="usage-value">${toolCount}</div>
+              </div>
+              <div class="usage-track"><div class="usage-fill" style="width:${clampPercent(toolCount * 10, toolCount > 0 ? 35 : 0)}%;"></div></div>
+              <div class="usage-legend">
+                <span>현재 projection 기준</span>
+                <span>${consumerCount} connected consumers</span>
+              </div>
+              <div class="mini-stats">
+                <article class="mini-stat">
+                  <div class="mini-stat-label">Status</div>
+                  <div class="mini-stat-value">${escapeHtml(detail?.statusLabel || detail?.status || "-")}</div>
+                  <div class="mini-stat-meta">${escapeHtml(detail?.access || "-")} 권한으로 조회된 현재 상태</div>
+                </article>
+                <article class="mini-stat">
+                  <div class="mini-stat-label">Consumers</div>
+                  <div class="mini-stat-value">${consumerCount}</div>
+                  <div class="mini-stat-meta">agent ${Number(detail?.consumerAgentCount || 0)} · chatbot ${Number(detail?.consumerChatbotCount || 0)}</div>
+                </article>
+                <article class="mini-stat">
+                  <div class="mini-stat-label">Updated</div>
+                  <div class="mini-stat-value">${escapeHtml(formatRelativeTimeLabel(detail?.updatedAt))}</div>
+                  <div class="mini-stat-meta">${escapeHtml(formatDateLabel(detail?.updatedAt))}</div>
+                </article>
+                <article class="mini-stat">
+                  <div class="mini-stat-label">Endpoint</div>
+                  <div class="mini-stat-value">${endpoint ? "Ready" : "N/A"}</div>
+                  <div class="mini-stat-meta">${endpoint ? mono(endpoint) : "runtime endpoint 없음"}</div>
+                </article>
+              </div>
+            </article>
+          </section>
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">vpn_key</span>Access</div>
+                <h2 class="section-title">접근 정보</h2>
+                <p class="section-desc">${canViewSource ? "runtime 접근 endpoint와 등록 원본 source URL을 구분해서 확인합니다." : "현재 사용할 runtime 접근 endpoint와 연결 형식을 확인합니다."}</p>
+              </div>
+            </div>
+            <article class="card">
+              <div class="card-title">접속 정보</div>
+              <div class="kv-list">${kv(accessFacts)}</div>
+            </article>
+          </section>
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">link</span>Consumers</div>
+                <h2 class="section-title">연결된 사용처</h2>
+                <p class="section-desc">현재 inventory 를 참조하는 agent/chatbot consumer ref를 보여줍니다.</p>
+              </div>
+            </div>
+            ${consumerCards(consumerRows)}
+          </section>
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">functions</span>Function Catalog</div>
+                <h2 class="section-title">Function, Tool 목록</h2>
+                <p class="section-desc">현재 등록된 tool descriptor를 projection 기준으로 정리했습니다.</p>
+              </div>
+            </div>
+            ${table(toolRows)}
+          </section>
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">lightbulb</span>Usage Tips</div>
+                <h2 class="section-title">운영 메모</h2>
+                <p class="section-desc">현재 API projection으로 확인 가능한 정보와 해석 포인트를 같이 봅니다.</p>
+              </div>
+            </div>
+            <div class="info-list">${list(tips)}</div>
+          </section>
+        `,
+        sidebarHtml: "",
+        __isLoading: false
       };
     }
 
@@ -709,6 +1070,19 @@
       }
     ];
 
+    const configuredItems = {};
+    const detailParams = new URLSearchParams(window.location.search);
+    const requestedItemKey = detailParams.get("item");
+    const initialLookupKey = requestedItemKey || "__auto__";
+
+    configuredItems[initialLookupKey] = buildToolInventoryPlaceholder(initialLookupKey, {
+      title: requestedItemKey || "tool-inventory",
+      description: requestedItemKey
+        ? "Tool Inventory 상세와 접근 정보를 실제 API에서 불러오는 중입니다."
+        : "첫 번째 Tool Inventory 상세를 실제 API에서 불러오는 중입니다.",
+      isLoading: true
+    });
+
     window.DETAIL_PAGE_CONFIG = {
       paramName: "item",
       pageTitle: "Tool Inventory Detail",
@@ -717,10 +1091,79 @@
       activeHubKey: "tool-inventory",
       eyebrow: "AI · Connected Tool Assets",
       searchPlaceholder: "inventory 이름, service, tool, consumer를 검색하세요...",
-      items: Object.fromEntries(rawItems.map((item) => [item.key, buildItem(item)]))
+      items: configuredItems
     };
   </script>
   <script src="workspace_detail_shared.js"></script>
   <script src="ax_studio_topbar.js"></script>
+  <script>
+    (function () {
+      const config = window.DETAIL_PAGE_CONFIG;
+      const params = new URLSearchParams(window.location.search);
+      const requestedKey = params.get(config?.paramName || "item");
+      const renderKey = requestedKey || "__auto__";
+
+      function requestJson(url) {
+        return fetch(url, {
+          method: "GET",
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: {
+            Accept: "application/json"
+          }
+        })
+          .then(async (response) => {
+            const payload = await response.json().catch(() => null);
+            if (!response.ok) {
+              throw new Error(payload?.error?.message || `Request failed (${response.status})`);
+            }
+            return payload;
+          });
+      }
+
+      function remountTopbar() {
+        const topbarHost = document.querySelector("[data-ax-topbar]");
+        if (topbarHost && window.mountAxStudioTopbar) {
+          window.mountAxStudioTopbar(topbarHost);
+        }
+      }
+
+      function rerender(nextItem) {
+        window.DETAIL_PAGE_CONFIG.items[renderKey] = nextItem;
+        window.renderWorkspaceDetailPage?.();
+        remountTopbar();
+      }
+
+      const loadDetail = requestedKey
+        ? requestJson(`/api/v2/tool-inventory/${encodeURIComponent(requestedKey)}`)
+        : requestJson("/api/v2/tool-inventory?limit=1")
+          .then((payload) => {
+            const firstItem = Array.isArray(payload?.items) ? payload.items[0] : null;
+            if (!firstItem) {
+              throw new Error("등록된 tool inventory가 없습니다.");
+            }
+            return { data: firstItem };
+          });
+
+      loadDetail
+        .then((payload) => {
+          if (!payload?.data) {
+            throw new Error("Tool inventory detail payload is empty");
+          }
+
+          rerender(buildDynamicToolInventoryItem(payload.data));
+        })
+        .catch((error) => {
+          console.error("Failed to load tool inventory detail", error);
+          rerender(buildToolInventoryPlaceholder(renderKey, {
+            title: requestedKey || "tool-inventory",
+            description: `요청한 tool inventory 정보를 불러오지 못했습니다. ${error?.message || "Unknown error"}`,
+            statusLabel: "Unavailable",
+            statusTone: "review",
+            isLoading: false
+          }));
+        });
+    })();
+  </script>
 </body>
 </html>

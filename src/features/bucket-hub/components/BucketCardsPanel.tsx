@@ -7,7 +7,13 @@ import StorageRoundedIcon from '@mui/icons-material/StorageRounded';
 import { Box, Button, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-import { Badge, IconTile, Meter, Metric } from '@/components/workspace';
+import {
+  Badge,
+  buildResourceResultCopy,
+  IconTile,
+  Metric,
+  WorkspaceUsageMeter,
+} from '@/components/workspace';
 import {
   ResourceCardFooter,
   ResourceCardRoot,
@@ -28,7 +34,6 @@ import {
 import { bucketHubSectionStatus } from '@/features/bucket-hub/sectionStatus';
 import type { BucketFilterValue, BucketResource } from '@/features/bucket-hub/types';
 import {
-  clampPercent,
   formatPercent,
   getBucketIconBackground,
   getBucketStatusLabel,
@@ -105,7 +110,12 @@ export function BucketCardsPanel({
       isEmpty={buckets.length === 0}
       isLoading={isLoading}
       label={panelCopy.label}
-      resultCopy={buildResultCopy(activeFilter, buckets.length, loadedCount, total)}
+      resultCopy={buildResourceResultCopy({
+        isDefault: activeFilter === 'all',
+        loadedCount,
+        total,
+        visibleCount: buckets.length,
+      })}
       status={bucketHubSectionStatus.cards}
       title={panelCopy.title}
     >
@@ -117,8 +127,6 @@ export function BucketCardsPanel({
 }
 
 function BucketCard({ bucket }: { bucket: BucketResource }) {
-  const usagePercent = clampPercent(bucket.usage.usagePercent);
-
   return (
     <ResourceCardRoot hub="buckets">
       <ResourceCardTop>
@@ -168,11 +176,10 @@ function BucketCard({ bucket }: { bucket: BucketResource }) {
           <BlockLabel sx={{ mb: 0 }}>Usage</BlockLabel>
           <UsageValue>{formatPercent(bucket.usage.usagePercent)}</UsageValue>
         </UsageHead>
-        <Meter
-          aria-label={`${bucket.name} usage`}
+        <WorkspaceUsageMeter
           fill="linear-gradient(90deg,#0f766e,#2dd4bf)"
-          value={usagePercent}
-          variant="determinate"
+          label={`${bucket.name} usage`}
+          value={bucket.usage.usagePercent}
         />
         <Typography color="text.disabled" fontSize={10} lineHeight={1.4} mt={0.75}>
           {bucket.usage.label} of {bucket.capacity.label} accepted capacity label
@@ -199,20 +206,6 @@ function BucketCard({ bucket }: { bucket: BucketResource }) {
       </ResourceCardFooter>
     </ResourceCardRoot>
   );
-}
-
-function buildResultCopy(
-  activeFilter: BucketFilterValue,
-  visibleCount: number,
-  loadedCount: number,
-  total?: number,
-) {
-  const totalCopy = typeof total === 'number' ? `${total.toLocaleString()} total` : 'total unknown';
-  const loadedCopy = `${loadedCount.toLocaleString()} loaded`;
-
-  if (activeFilter === 'all') return `${loadedCopy} · ${totalCopy}`;
-
-  return `${visibleCount.toLocaleString()} visible · ${loadedCopy}`;
 }
 
 function buildCollaboratorCopy(count: number) {

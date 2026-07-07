@@ -70,14 +70,14 @@ export const HoverCard = styled(CardBox, {
   return {
     background: `radial-gradient(circle at top right, ${hubTheme?.soft ?? 'rgba(180,14,77,.1)'}, transparent 32%), linear-gradient(180deg, #ffffff 0%, #fbfcff 100%)`,
     borderColor: alpha(theme.workspace.colors.borderStrong, 0.94),
-    borderRadius: theme.workspace.radii.card,
-    boxShadow: '0 18px 34px rgba(15,23,42,.06), 0 2px 0 rgba(255,255,255,.88) inset',
+    borderRadius: theme.workspace.radii.resourceCard,
+    boxShadow: theme.workspace.shadows.resourceCard,
     transition: theme.transitions.create(['border-color', 'box-shadow', 'transform'], {
       duration: theme.transitions.duration.shortest,
     }),
     '&:hover': {
       borderColor: alpha(hubTheme?.brand ?? theme.palette.primary.main, 0.18),
-      boxShadow: theme.workspace.shadows.interactive,
+      boxShadow: theme.workspace.shadows.resourceCardHover,
       transform: 'translateY(-2px)',
     },
   };

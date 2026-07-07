@@ -45,6 +45,7 @@ export function AppGalleryPageContent() {
   const selectedAppQuery = useAppGalleryAppDetailQuery(selectedAppSlug);
   const catalogApps = catalogAppsQuery.data?.items ?? [];
   const apps = appsQuery.data?.items ?? [];
+  const appResultTotal = appsQuery.data?.page.total;
   const featuredApps = featuredQuery.data ?? [];
   const relatedAi = relatedAiQuery.data ?? [];
   const hasPageError =
@@ -57,11 +58,15 @@ export function AppGalleryPageContent() {
 
   return (
     <Stack spacing={2.5}>
-      <PageIntro hero={heroQuery.data} totalApps={appsQuery.data?.page.total ?? apps.length} />
+      <PageIntro
+        hero={heroQuery.data}
+        resultTotal={appResultTotal}
+        totalApps={appResultTotal ?? apps.length}
+      />
 
       <HeroRail>
         <RecentRailCard apps={catalogApps.slice(0, 3)} isLoading={catalogAppsQuery.isLoading} />
-        <CriteriaRailCard relatedAi={relatedAi.slice(0, 1)} />
+        <CriteriaRailCard relatedAi={relatedAi.slice(0, 3)} />
       </HeroRail>
 
       <MainLayout>

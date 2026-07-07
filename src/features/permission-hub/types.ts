@@ -23,6 +23,18 @@ export type PermissionHubFilters = {
 export type PermissionKindFilter = 'all' | PermissionRealmKind;
 
 export type PermissionRealm = {
+  access: {
+    accessLevel: string;
+    canInspectBindings: boolean;
+    canInspectGroups: boolean;
+    canInspectMembers: boolean;
+    canManage: boolean;
+    canRequest: boolean;
+    currentUserRoles: string[];
+    isOwner: boolean;
+    isSystemAdmin: boolean;
+    visibilitySource: string;
+  };
   boundProjects: {
     id: string;
     kind: string;
@@ -36,6 +48,7 @@ export type PermissionRealm = {
     canEdit: boolean;
     canRequest: boolean;
   };
+  currentUserRoles: string[];
   description: string;
   id: string;
   kind: PermissionRealmKind;

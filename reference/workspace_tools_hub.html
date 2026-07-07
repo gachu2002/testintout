@@ -8,6 +8,213 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
   <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
   <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <style>
+    .console-create-stage[hidden] {
+      display:none !important;
+    }
+
+    .hub-lite-create-actions [hidden] {
+      display:none !important;
+    }
+
+    .console-create-stage {
+      width:min(100%, var(--hub-lite-create-wide-width, 920px));
+      margin:0 auto;
+    }
+
+    .console-create-stage.is-compact {
+      width:min(100%, var(--hub-lite-create-content-width, 680px));
+    }
+
+    .console-create-option-grid {
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0, 1fr));
+      gap:14px;
+    }
+
+    .console-create-option-card {
+      min-width:0;
+      display:grid;
+      gap:12px;
+      padding:18px;
+      border:1px solid rgba(214,216,219,.94);
+      border-radius:18px;
+      background:
+        radial-gradient(circle at top left, rgba(76,106,136,.08), transparent 45%),
+        #fff;
+      text-align:left;
+      transition:border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+    }
+
+    .console-create-option-card:hover {
+      transform:translateY(-1px);
+      border-color:color-mix(in srgb, var(--brand) 24%, transparent);
+      box-shadow:0 14px 26px rgba(15,23,42,.08);
+    }
+
+    .console-create-option-card.is-selected {
+      border-color:var(--brand);
+      box-shadow:0 18px 32px color-mix(in srgb, var(--brand) 14%, transparent);
+    }
+
+    .console-create-option-head {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .console-create-option-icon {
+      width:46px;
+      height:46px;
+      border-radius:14px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px;
+      background:#fff;
+      border:1px solid rgba(214,216,219,.92);
+      box-shadow:0 12px 24px rgba(15,23,42,.08);
+      flex-shrink:0;
+    }
+
+    .console-create-option-icon svg,
+    .console-create-summary-pill svg {
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    .console-create-option-radio {
+      width:18px;
+      height:18px;
+      border-radius:999px;
+      border:2px solid #d2d7e0;
+      position:relative;
+      flex-shrink:0;
+      margin-top:2px;
+    }
+
+    .console-create-option-card.is-selected .console-create-option-radio {
+      border-color:var(--brand);
+    }
+
+    .console-create-option-card.is-selected .console-create-option-radio::after {
+      content:"";
+      position:absolute;
+      inset:3px;
+      border-radius:999px;
+      background:var(--brand);
+    }
+
+    .console-create-option-title {
+      font-size:17px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      line-height:1.3;
+    }
+
+    .console-create-option-meta {
+      color:var(--t2);
+      font-size:13px;
+      line-height:1.55;
+    }
+
+    .console-create-option-submeta {
+      color:var(--t3);
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    .console-create-summary {
+      display:grid;
+      gap:10px;
+      padding:16px;
+      border-radius:18px;
+      border:1px solid rgba(214,216,219,.86);
+      background:#fbfcfe;
+    }
+
+    .console-create-summary-pill {
+      width:max-content;
+      min-height:28px;
+      padding:0 10px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      background:var(--brand-bg);
+      color:var(--brand);
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .console-create-summary-pill svg {
+      width:14px;
+      height:14px;
+      flex-shrink:0;
+    }
+
+    .console-create-summary-title {
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:-.03em;
+    }
+
+    .console-create-summary-copy {
+      color:var(--t2);
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    .console-create-summary-hint {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .console-create-summary-chip {
+      min-height:28px;
+      padding:0 10px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      background:#f4f6fa;
+      color:var(--t2);
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .console-create-status-note {
+      min-height:20px;
+      color:var(--t2);
+      font-size:12px;
+      line-height:1.5;
+    }
+
+    #consoleCreateDatabaseSelect {
+      appearance:none;
+      -webkit-appearance:none;
+      -moz-appearance:none;
+      padding-right:48px;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;
+      background-position:right 16px center;
+      background-size:16px 16px;
+    }
+
+    #consoleCreateDatabaseSelect:disabled {
+      background-color:#f8fafc;
+      color:var(--t3);
+      cursor:not-allowed;
+    }
+
+    @media (max-width:860px) {
+      .console-create-option-grid {
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
 </head>
 <body>
   <div id="app"></div>
@@ -29,8 +236,9 @@
       eyebrow: "Development · Database Consoles",
       title: "Consoles Hub",
       description: "데이터베이스 콘솔 모음입니다. 실제 DB 리소스는 Database Hub에서 관리하고 여기서는 접속, 조회, 운영에 쓰는 콘솔을 빠르게 찾습니다.",
-      primaryAction: { href: "dej_app_gallery.html", icon: "add_circle", label: "새 콘솔 생성" },
+      primaryAction: null,
       secondaryAction: { href: "workspace_database_hub.html", icon: "storage", label: "Database Hub 보기" },
+      createAction: { href: "#", icon: "add_circle", label: "새 콘솔 생성" },
       heroStats: [
         { icon: "web", value: "-", label: "등록 콘솔", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#15803d,#22c55e)" },
         { icon: "database", value: "-", label: "연결 엔드포인트", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#166534,#4ade80)" },
@@ -38,7 +246,6 @@
         { icon: "visibility", value: "-", label: "주간 콘솔 진입", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#22c55e,#bbf7d0)" }
       ],
       filters: [
-        { id: "basic", icon: "dashboard_customize", label: "기본" },
         { id: "all", icon: "apps", label: "전체" },
         { id: "relational", icon: "table_chart", label: "관계형" },
         { id: "document", icon: "account_tree", label: "문서형" },
@@ -52,7 +259,7 @@
       resourceDescription: "실제 Console Hub API 응답을 불러오는 중입니다.",
       resourceHeaderLink: { href: "workspace_database_hub.html", label: "연결 리소스 같이 보기" },
       resources: Array.from({ length: 6 }, (_, index) => ({
-        categories: ["all", "basic"],
+        categories: ["all"],
         status: { label: "Loading", tone: "pending" },
         engine: "Console Runtime",
         icon: "web",
@@ -101,6 +308,80 @@
       const ACTION_POLL_INTERVAL_MS = 4000;
       const ACTION_POLL_MAX_ATTEMPTS = 20;
       const FALLBACK_CONFIG = window.HUB_CONFIG;
+      const createdConsoleResources = [];
+      let lastRenderedConfig = FALLBACK_CONFIG;
+      const CONSOLE_DB_LOGOS = {
+        mongo: `
+          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <path fill="#13AA52" d="M16.11 2.4c-.56 1.84-1.98 3.42-3.68 5.32-2.6 2.92-5.83 6.54-5.83 11.25 0 6 4.31 10.61 9.4 10.61 4.91 0 9.18-4.5 9.18-10.55 0-4.69-2.87-8.29-5.41-11.47-1.63-2.04-3.04-3.8-3.66-5.16Z"/>
+            <path fill="#0F7F3E" d="M16.02 7.14c1.06 2.46 1.53 5.15 1.53 7.84 0 4.26-.87 8.34-1.53 12.54-.68-4.2-1.62-8.28-1.62-12.54 0-2.69.5-5.38 1.62-7.84Z"/>
+          </svg>`,
+        mariadb: `
+          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <path fill="#1F6E8C" d="M7.27 21.39c1.63-5.86 7.65-9.95 14.15-9.95 1.35 0 2.64.18 3.83.52-.64-.58-1.42-1.07-2.31-1.44-.44-1.52-1.77-2.77-3.63-3.32-2.04-.6-4.16-.2-5.39.88-.73-.4-1.81-.67-3.02-.67-2.45 0-4.44 1.12-4.44 2.5 0 .15.02.29.06.43-1.4.77-2.27 1.84-2.27 3.02 0 .65.26 1.26.74 1.79-.57.87-.89 1.83-.89 2.83 0 2.12 1.44 4.05 3.17 5.11Z"/>
+            <path fill="#83C341" d="M22.41 12.59c-4.94.14-9.7 3.06-11.97 7.52 1.42-1.33 3.62-2.18 6.08-2.18 3.93 0 7.22 2.15 8.06 5.03 1.32-.94 2.23-2.37 2.23-3.98 0-3.58-1.71-6.49-4.4-6.39Z"/>
+          </svg>`,
+        elastic: `
+          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <path fill="#F04E98" d="M22.74 4.86a8.08 8.08 0 0 0-6.8 3.7c.96 1.41 1.52 3.12 1.52 4.95h11.44a8 8 0 0 0-6.16-8.65Z"/>
+            <path fill="#00BFB3" d="M10.4 13.51a8.1 8.1 0 0 0 5.54-2.2A8.08 8.08 0 0 0 7.5 4.8a8.09 8.09 0 0 0 2.9 8.71Z"/>
+            <path fill="#FDB515" d="M17.46 18.45c0 1.83-.56 3.54-1.52 4.95a8.08 8.08 0 0 0 6.8 3.7 8 8 0 0 0 6.16-8.65H17.46Z"/>
+            <path fill="#343741" d="M10.4 18.45H3.06A8 8 0 0 0 9.2 27.1a8.08 8.08 0 0 0 6.74-3.7 8.06 8.06 0 0 1-5.54-4.95Z"/>
+          </svg>`,
+        postgres: `
+          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <path fill="#336791" d="M16.2 3.84c-4.74 0-8.86 3.48-8.86 8.68v8.41c0 2.35 1.75 3.91 3.67 3.91 1 0 1.86-.35 2.42-1.01l.32 3.06c.08.8.75 1.39 1.55 1.39h1.61c.86 0 1.56-.7 1.56-1.56v-4.5c.84.76 1.97 1.16 3.18 1.16 2.85 0 4.99-2.23 4.99-5.19V12.5c0-5.18-4.22-8.66-10.46-8.66Z"/>
+            <path fill="#FFFFFF" d="M11.49 13.33a1.62 1.62 0 1 0 0-3.24 1.62 1.62 0 0 0 0 3.24Zm9.54 0a1.62 1.62 0 1 0 0-3.24 1.62 1.62 0 0 0 0 3.24Z"/>
+            <path fill="#FFFFFF" d="M12.42 18.46c2.21 1.22 4.83 1.22 7.15 0 .44-.23.98-.06 1.21.39.23.44.05.98-.39 1.21-2.85 1.49-6.06 1.49-8.84-.01a.89.89 0 1 1 .87-1.59Z"/>
+          </svg>`,
+        milvus: `
+          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <path fill="#14B8A6" d="M7.04 10.54a4.2 4.2 0 1 1 8.39 0v10.92a4.2 4.2 0 1 1-8.39 0V10.54Z"/>
+            <path fill="#6366F1" d="M16.57 14.71a4.2 4.2 0 1 1 8.39 0v6.75a4.2 4.2 0 1 1-8.39 0v-6.75Z"/>
+          </svg>`,
+        redis: `
+          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <path fill="#D82C20" d="M16.01 4.21 6.08 8.15 16 12.1l9.93-3.95-9.92-3.94Z"/>
+            <path fill="#C6281E" d="M6.08 13.11 16 17.05l9.93-3.94v5.42L16 22.47l-9.92-3.94v-5.42Z"/>
+            <path fill="#B71C1C" d="M6.08 23.47 16 27.41l9.93-3.94v-2.68L16 24.73l-9.92-3.94v2.68Z"/>
+            <circle cx="11.5" cy="8.18" r="1.05" fill="#FFF2F2"/>
+            <circle cx="16" cy="10.12" r="1.05" fill="#FFF2F2"/>
+            <circle cx="20.48" cy="8.18" r="1.05" fill="#FFF2F2"/>
+          </svg>`,
+        unknown: `
+          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <ellipse cx="16" cy="8.5" rx="8.5" ry="3.5" fill="#64748B"/>
+            <path fill="#94A3B8" d="M7.5 8.5v11c0 1.94 3.81 3.5 8.5 3.5s8.5-1.56 8.5-3.5v-11c0 1.94-3.81 3.5-8.5 3.5S7.5 10.44 7.5 8.5Z"/>
+          </svg>`
+      };
+      const CONSOLE_CREATE_OPTIONS = [
+        { id: "mongogui", title: "Mongo GUI", dbLabel: "MongoDB", dbKey: "mongo", desc: "MongoDB 데이터를 브라우저에서 바로 확인하는 콘솔입니다.", hint: "문서 조회, 인덱스 확인, 간단 관리" },
+        { id: "pgadmin", title: "pgAdmin", dbLabel: "PostgreSQL", dbKey: "postgres", desc: "PostgreSQL 쿼리와 스키마를 관리하는 대표 콘솔입니다.", hint: "쿼리, 스키마 관리, 운영 점검" },
+        { id: "phpmyadmin", title: "phpMyAdmin", dbLabel: "MariaDB", dbKey: "mariadb", desc: "MariaDB 테이블과 데이터를 빠르게 확인하는 웹 콘솔입니다.", hint: "테이블 조회, 데이터 수정, 운영 점검" },
+        { id: "attu", title: "Attu", dbLabel: "Milvus", dbKey: "milvus", desc: "Milvus 컬렉션과 벡터 데이터를 확인하는 콘솔입니다.", hint: "컬렉션 조회, 인덱스 확인, 벡터 탐색" },
+        { id: "kibana", title: "Kibana", dbLabel: "Elastic Search", dbKey: "elastic", desc: "Elastic Search 인덱스와 검색 결과를 탐색하는 콘솔입니다.", hint: "검색, 대시보드, 운영 로그 확인" },
+        { id: "redisinsight", title: "Redis Insight", dbLabel: "Redis", dbKey: "redis", desc: "Redis 키와 메모리 상태를 확인하는 관리 콘솔입니다.", hint: "키 조회, 메모리 점검, 성능 확인" }
+      ];
+      const CONSOLE_TYPE_TO_ENGINE = {
+        mongogui: "mongo",
+        pgadmin: "postgres",
+        phpmyadmin: "mysql",
+        attu: "milvus",
+        kibana: "elastic",
+        redisinsight: "redis"
+      };
+      const consoleCreateState = {
+        step: 1,
+        type: "",
+        name: "",
+        databaseId: "",
+        availableDatabases: [],
+        isLoadingDatabases: false,
+        isSubmitting: false,
+        created: false,
+        errorMessage: ""
+      };
+      let consoleCreateDatabaseCache = null;
       const pendingLifecycleActions = new Map();
       const pendingOpenActions = new Set();
       const TYPE_META = {
@@ -177,7 +458,25 @@
         });
 
         if (!response.ok) {
-          throw new Error(`${response.status} ${response.statusText}`);
+          let message = `${response.status} ${response.statusText}`;
+          try {
+            const payload = await response.json();
+            const apiMessage = payload?.message || payload?.error?.message || payload?.error || payload?.code;
+            if (apiMessage) {
+              message = `${response.status} ${apiMessage}`;
+            }
+          } catch {
+            try {
+              const text = await response.text();
+              if (text) {
+                message = `${response.status} ${text}`;
+              }
+            } catch {
+              // ignore body parsing failure
+            }
+          }
+
+          throw new Error(message);
         }
 
         return response.json();
@@ -233,7 +532,41 @@
         while (hasNext) {
           const payload = await fetchJson("/consoles", {
             limit,
-            sort: "-updatedAt",
+            sort: "-createdAt",
+            ...(cursor ? { cursor } : {})
+          });
+          const pageItems = extractItems(payload);
+          const nextCursor = extractNextCursor(payload);
+          const pageTotal = extractPageTotal(payload, total || pageItems.length);
+
+          items.push(...pageItems);
+          total = pageTotal;
+          cursor = nextCursor;
+          hasNext = Boolean(nextCursor);
+
+          if (!pageItems.length || items.length >= pageTotal) {
+            hasNext = false;
+          }
+        }
+
+        return {
+          items,
+          page: {
+            total: total || items.length
+          }
+        };
+      }
+
+      async function fetchAllDatabases(limit = FETCH_LIMIT) {
+        const items = [];
+        let cursor = null;
+        let total = 0;
+        let hasNext = true;
+
+        while (hasNext) {
+          const payload = await fetchJson("/databases", {
+            limit,
+            sort: "-createdAt",
             ...(cursor ? { cursor } : {})
           });
           const pageItems = extractItems(payload);
@@ -486,23 +819,13 @@
       }
 
       function buildConsoleFilters(items) {
-        const counts = (items || []).reduce((acc, item) => {
-          const category = getTypeMeta(item?.type).category;
-          if (category) {
-            acc[category] = (acc[category] || 0) + 1;
-          }
-          return acc;
-        }, {});
-        const defaultCount = Math.min((items || []).length, 6);
-
         return [
-          { id: "basic", icon: "dashboard_customize", label: defaultCount > 0 ? `기본 (${defaultCount})` : "기본" },
-          { id: "all", icon: "apps", label: (items || []).length > 0 ? `전체 (${formatNumber((items || []).length)})` : "전체" },
-          { id: "relational", icon: "table_chart", label: counts.relational ? `관계형 (${counts.relational})` : "관계형" },
-          { id: "document", icon: "account_tree", label: counts.document ? `문서형 (${counts.document})` : "문서형" },
-          { id: "cache", icon: "bolt", label: counts.cache ? `캐시 (${counts.cache})` : "캐시" },
-          { id: "search", icon: "travel_explore", label: counts.search ? `검색 (${counts.search})` : "검색" },
-          { id: "vector", icon: "hub", label: counts.vector ? `벡터 (${counts.vector})` : "벡터" }
+          { id: "all", icon: "apps", label: "전체" },
+          { id: "relational", icon: "table_chart", label: "관계형" },
+          { id: "document", icon: "account_tree", label: "문서형" },
+          { id: "cache", icon: "bolt", label: "캐시" },
+          { id: "search", icon: "travel_explore", label: "검색" },
+          { id: "vector", icon: "hub", label: "벡터" }
         ];
       }
 
@@ -515,7 +838,7 @@
         }));
       }
 
-      function toResource(item, isDefaultResource) {
+      function toResource(item) {
         const typeMeta = getTypeMeta(item?.type);
         const ownerName = getOwnerName(item?.owner);
         const collaborators = getCollaborators(item);
@@ -523,7 +846,7 @@
         const statusMeta = getStatusMeta(statusValue);
 
         return {
-          categories: ["all", typeMeta.category, isDefaultResource ? "basic" : ""].filter(Boolean),
+          categories: ["all", typeMeta.category].filter(Boolean),
           status: statusMeta,
           engine: typeMeta.engineLabel || item?.typeLabel || "Database Console",
           icon: item?.icon || typeMeta.icon,
@@ -622,11 +945,453 @@
         };
       }
 
+      function getConsoleCreateOption() {
+        return CONSOLE_CREATE_OPTIONS.find((item) => item.id === consoleCreateState.type) || CONSOLE_CREATE_OPTIONS[0];
+      }
+
+      function getConsoleDbLogo(type) {
+        const option = CONSOLE_CREATE_OPTIONS.find((item) => item.id === type);
+        return CONSOLE_DB_LOGOS[option?.dbKey] || CONSOLE_DB_LOGOS.unknown;
+      }
+
+      function buildCreatedConsoleResource(name, type) {
+        const consoleName = String(name || "").trim() || "New Console";
+        const typeMeta = getTypeMeta(type);
+        const option = CONSOLE_CREATE_OPTIONS.find((item) => item.id === type) || CONSOLE_CREATE_OPTIONS[0];
+        return {
+          categories: ["all", typeMeta.category].filter(Boolean),
+          status: { label: "Draft", tone: "draft" },
+          engine: `${option.dbLabel} Console · ${option.title}`,
+          icon: typeMeta.icon || "web",
+          name: consoleName,
+          meta: `${option.dbLabel}용 ${option.title} 콘솔 초안입니다. 연결 대상과 세부 접근 설정은 상세에서 이어서 진행합니다.`,
+          color: typeMeta.color,
+          owner: {
+            initials: "ME",
+            name: "Current User",
+            meta: "create draft",
+            color: typeMeta.color
+          },
+          sharing: {
+            collaborators: []
+          },
+          connectionsLabel: "Bound DB",
+          connections: [],
+          footer: "방금 생성됨",
+          action: {
+            href: `workspace_console_detail.html?id=${encodeURIComponent(consoleName)}`
+          },
+          actions: [
+            {
+              label: "Open",
+              icon: "open_in_new",
+              kind: "open",
+              href: `workspace_console_detail.html?id=${encodeURIComponent(consoleName)}`
+            }
+          ]
+        };
+      }
+
+      function resetConsoleCreateState() {
+        consoleCreateState.step = 1;
+        consoleCreateState.type = "";
+        consoleCreateState.name = "";
+        consoleCreateState.databaseId = "";
+        consoleCreateState.availableDatabases = [];
+        consoleCreateState.isLoadingDatabases = false;
+        consoleCreateState.isSubmitting = false;
+        consoleCreateState.created = false;
+        consoleCreateState.errorMessage = "";
+      }
+
+      function getConsoleCreateDatabases(type) {
+        const engine = CONSOLE_TYPE_TO_ENGINE[type];
+        if (!engine || !Array.isArray(consoleCreateDatabaseCache)) {
+          return [];
+        }
+
+        return consoleCreateDatabaseCache.filter((item) => String(item?.engine || "").trim().toLowerCase() === engine);
+      }
+
+      async function ensureConsoleCreateDatabases(type) {
+        if (!consoleCreateDatabaseCache) {
+          const payload = await fetchAllDatabases();
+          consoleCreateDatabaseCache = extractItems(payload);
+        }
+
+        const matched = getConsoleCreateDatabases(type);
+        consoleCreateState.availableDatabases = matched;
+        const currentId = String(consoleCreateState.databaseId || "");
+        consoleCreateState.databaseId = matched.some((item) => String(item?.id || "") === currentId)
+          ? currentId
+          : "";
+      }
+
+      function ensureConsoleCreateModal() {
+        let modal = document.getElementById("consoleCreateModal");
+        if (modal) {
+          return modal;
+        }
+
+        modal = document.createElement("div");
+        modal.className = "hub-lite-create-backdrop";
+        modal.id = "consoleCreateModal";
+        modal.hidden = true;
+        modal.innerHTML = `
+          <div class="hub-lite-create-shell" role="dialog" aria-modal="true" aria-labelledby="consoleCreateTitle">
+            <div class="hub-lite-create-head">
+              <div class="hub-lite-create-copy">
+                <div class="hub-lite-create-title-row">
+                  <span class="hub-lite-create-step-badge" id="consoleCreateStepBadge">1</span>
+                  <h2 id="consoleCreateTitle">콘솔을 생성합니다</h2>
+                </div>
+                <p class="hub-lite-create-subtitle" id="consoleCreateSubtitle">먼저 사용할 콘솔 타입을 선택해주세요.</p>
+              </div>
+              <div class="hub-lite-create-head-actions">
+                <div class="hub-lite-create-hero" aria-hidden="true"><span class="material-icons-round">web</span></div>
+                <button class="hub-lite-create-close" type="button" id="consoleCreateClose" aria-label="콘솔 생성 닫기">
+                  <span class="material-icons-round">close</span>
+                </button>
+              </div>
+            </div>
+            <div class="hub-lite-create-progress">
+              <div class="hub-lite-create-progress-track" id="consoleCreateProgress"></div>
+            </div>
+            <form class="hub-lite-create-form" id="consoleCreateForm">
+              <section class="console-create-stage" data-console-create-step="1">
+                <div class="hub-lite-create-panel">
+                  <div class="hub-lite-create-panel-title">DB에 맞는 콘솔 타입을 선택해주세요.</div>
+                  <div class="console-create-option-grid" id="consoleCreateOptionGrid"></div>
+                </div>
+              </section>
+              <section class="console-create-stage console-create-stage is-compact" data-console-create-step="2" hidden>
+                <div class="hub-lite-create-panel">
+                  <div class="hub-lite-create-panel-title">콘솔 이름을 입력하고 필요하면 DB를 선택해주세요.</div>
+                  <div class="console-create-summary" id="consoleCreateSummary"></div>
+                  <input class="hub-lite-create-input" id="consoleCreateName" type="text" placeholder="예: analytics-kibana-console" required />
+                  <div class="hub-lite-create-note"><span class="material-icons-round">link</span>연결할 DB는 선택사항입니다. 지금 선택하지 않아도 나중에 바인딩할 수 있습니다.</div>
+                  <select class="hub-lite-create-input" id="consoleCreateDatabaseSelect"></select>
+                  <div class="console-create-status-note" id="consoleCreateDatabaseNote"></div>
+                  <div class="hub-lite-create-note"><span class="material-icons-round">info</span>생성 후 상세 화면에서 연결할 DB와 세부 접근 정책을 이어서 정리할 수 있습니다.</div>
+                </div>
+              </section>
+              <div class="hub-lite-create-actions">
+                <button class="hub-lite-create-action ghost" type="button" id="consoleCreateBack">취소</button>
+                <button class="hub-lite-create-action primary" type="button" id="consoleCreateNext">다음</button>
+                <button class="hub-lite-create-action primary" type="submit" id="consoleCreateSubmit" hidden disabled><span class="material-icons-round">check_circle</span>콘솔 생성</button>
+                <button class="hub-lite-create-action primary" type="button" id="consoleCreateDone" hidden>완료</button>
+              </div>
+            </form>
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        const form = modal.querySelector("#consoleCreateForm");
+        const stepBadge = modal.querySelector("#consoleCreateStepBadge");
+        const subtitle = modal.querySelector("#consoleCreateSubtitle");
+        const progress = modal.querySelector("#consoleCreateProgress");
+        const stages = Array.from(modal.querySelectorAll("[data-console-create-step]"));
+        const optionGrid = modal.querySelector("#consoleCreateOptionGrid");
+        const summary = modal.querySelector("#consoleCreateSummary");
+        const input = modal.querySelector("#consoleCreateName");
+        const databaseSelect = modal.querySelector("#consoleCreateDatabaseSelect");
+        const databaseNote = modal.querySelector("#consoleCreateDatabaseNote");
+        const submit = modal.querySelector("#consoleCreateSubmit");
+        const done = modal.querySelector("#consoleCreateDone");
+        const next = modal.querySelector("#consoleCreateNext");
+        const back = modal.querySelector("#consoleCreateBack");
+        const stepMeta = [
+          { label: "콘솔 타입", subtitle: "먼저 사용할 콘솔 타입을 선택해주세요." },
+          { label: "콘솔 정보", subtitle: "선택한 콘솔 이름을 입력하고 필요하면 연결 DB를 지정해주세요." }
+        ];
+
+        const renderProgress = () => {
+          progress.innerHTML = stepMeta.map((item, index) => {
+            const step = index + 1;
+            const isCurrent = step === consoleCreateState.step;
+            const isComplete = step < consoleCreateState.step;
+            const value = step === 1
+              ? (CONSOLE_CREATE_OPTIONS.find((option) => option.id === consoleCreateState.type)?.title || "")
+              : [String(consoleCreateState.name || "").trim(), consoleCreateState.availableDatabases.find((item) => String(item?.id || "") === String(consoleCreateState.databaseId || ""))?.name || ""].filter(Boolean).join(" · ");
+            return `
+              <div class="hub-lite-create-progress-item ${isCurrent ? "is-current" : ""} ${isComplete ? "is-complete" : ""}">
+                <div class="hub-lite-create-progress-line">
+                  <span class="hub-lite-create-progress-rail ${index === 0 ? "is-hidden" : ""}"></span>
+                  <span class="hub-lite-create-progress-dot">${isComplete ? '<span class="material-icons-round" style="font-size:15px">done</span>' : step}</span>
+                  <span class="hub-lite-create-progress-rail ${index === stepMeta.length - 1 ? "is-hidden" : ""}"></span>
+                </div>
+                <div class="hub-lite-create-progress-label">${item.label}</div>
+                <div class="hub-lite-create-progress-value">${value || " "}</div>
+              </div>
+            `;
+          }).join("");
+        };
+
+        const renderOptionGrid = () => {
+          optionGrid.innerHTML = CONSOLE_CREATE_OPTIONS.map((item) => {
+            return `
+              <button class="console-create-option-card ${consoleCreateState.type === item.id ? "is-selected" : ""}" type="button" data-console-type="${item.id}">
+                <div class="console-create-option-head">
+                  <span class="console-create-option-icon" aria-hidden="true">${getConsoleDbLogo(item.id)}</span>
+                  <span class="console-create-option-radio" aria-hidden="true"></span>
+                </div>
+                <div class="console-create-option-title">${item.title}</div>
+                <div class="console-create-option-meta">${item.dbLabel}</div>
+                <div class="console-create-option-submeta">${item.desc}</div>
+              </button>
+            `;
+          }).join("");
+        };
+
+        const renderSummary = () => {
+          const option = getConsoleCreateOption();
+          const selectedDatabase = consoleCreateState.availableDatabases.find((item) => String(item?.id || "") === String(consoleCreateState.databaseId || ""));
+          const isLocked = consoleCreateState.isSubmitting || consoleCreateState.created;
+          summary.innerHTML = `
+            <div class="console-create-summary-pill">${getConsoleDbLogo(option.id)}${option.title}</div>
+            <div class="console-create-summary-title">${option.dbLabel}용 ${option.title} 콘솔을 만듭니다</div>
+            <div class="console-create-summary-copy">${option.desc}</div>
+            <div class="console-create-summary-hint">
+              <span class="console-create-summary-chip">${option.dbLabel}</span>
+              <span class="console-create-summary-chip">${option.hint}</span>
+              ${selectedDatabase ? `<span class="console-create-summary-chip">${selectedDatabase.name}</span>` : ""}
+            </div>
+          `;
+          input.value = consoleCreateState.name;
+          input.disabled = isLocked;
+          databaseSelect.innerHTML = [
+            '<option value="">지금은 연결하지 않음</option>',
+            ...consoleCreateState.availableDatabases.map((item) => `<option value="${item.id}" ${String(item.id) === String(consoleCreateState.databaseId || "") ? "selected" : ""}>${item.name} · ${item.engine || "-"}</option>`)
+          ].join("");
+          databaseSelect.disabled = consoleCreateState.isLoadingDatabases || isLocked;
+
+          if (consoleCreateState.isLoadingDatabases) {
+            databaseNote.textContent = "연결 가능한 DB를 불러오는 중입니다.";
+          } else if (consoleCreateState.created) {
+            databaseNote.textContent = "선택한 정보로 콘솔이 생성되었습니다.";
+          } else if (consoleCreateState.errorMessage) {
+            databaseNote.textContent = consoleCreateState.errorMessage;
+          } else if (!consoleCreateState.availableDatabases.length) {
+            databaseNote.textContent = "호환되는 데이터베이스가 없어도 콘솔만 먼저 생성할 수 있습니다.";
+          } else if (!String(consoleCreateState.databaseId || "").trim()) {
+            databaseNote.textContent = "DB 연결은 선택 사항입니다. 지금은 콘솔만 만들고 나중에 바인딩할 수 있습니다.";
+          } else {
+            databaseNote.textContent = "선택한 데이터베이스와 함께 콘솔을 생성합니다.";
+          }
+        };
+
+        const renderStages = () => {
+          stages.forEach((stage) => {
+            stage.hidden = Number(stage.dataset.consoleCreateStep) !== consoleCreateState.step;
+          });
+        };
+
+        const syncHeader = () => {
+          const meta = stepMeta[consoleCreateState.step - 1];
+          stepBadge.textContent = String(consoleCreateState.step);
+          subtitle.textContent = consoleCreateState.created ? "콘솔 생성이 완료되었습니다." : meta.subtitle;
+        };
+
+        const syncActions = () => {
+          const isComplete = consoleCreateState.created;
+          back.textContent = consoleCreateState.step === 1 ? "취소" : "뒤로";
+          back.hidden = isComplete;
+          next.hidden = consoleCreateState.step === 2 || isComplete;
+          submit.hidden = consoleCreateState.step !== 2 || isComplete;
+          done.hidden = !isComplete;
+          back.disabled = consoleCreateState.isSubmitting || isComplete;
+          next.disabled = isComplete || !consoleCreateState.type || consoleCreateState.isLoadingDatabases || consoleCreateState.isSubmitting;
+          submit.disabled = isComplete || !String(consoleCreateState.name || "").trim() || consoleCreateState.isLoadingDatabases || consoleCreateState.isSubmitting;
+          if (consoleCreateState.step === 2) {
+            submit.innerHTML = consoleCreateState.isSubmitting
+              ? '<span class="material-icons-round">progress_activity</span>생성 중'
+              : '<span class="material-icons-round">check_circle</span>콘솔 생성';
+          }
+        };
+
+        const rerender = () => {
+          syncHeader();
+          renderProgress();
+          renderStages();
+          renderOptionGrid();
+          renderSummary();
+          syncActions();
+        };
+
+        const close = () => {
+          modal.hidden = true;
+          document.body.style.overflow = "";
+          resetConsoleCreateState();
+          if (form) form.reset();
+          rerender();
+        };
+
+        modal.addEventListener("click", (event) => {
+          if (event.target === modal) {
+            close();
+          }
+        });
+
+        modal.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && !modal.hidden) {
+            close();
+          }
+        });
+
+        modal.querySelector("#consoleCreateClose").addEventListener("click", close);
+
+        optionGrid.addEventListener("click", (event) => {
+          if (consoleCreateState.isSubmitting || consoleCreateState.created) {
+            return;
+          }
+          const button = event.target.closest("[data-console-type]");
+          if (!button) return;
+          consoleCreateState.type = button.dataset.consoleType || "";
+          consoleCreateState.databaseId = "";
+          consoleCreateState.availableDatabases = [];
+          consoleCreateState.created = false;
+          consoleCreateState.errorMessage = "";
+          rerender();
+        });
+
+        input.addEventListener("input", () => {
+          if (consoleCreateState.isSubmitting || consoleCreateState.created) {
+            input.value = consoleCreateState.name;
+            return;
+          }
+          consoleCreateState.name = String(input.value || "").trim();
+          consoleCreateState.created = false;
+          renderProgress();
+          syncActions();
+        });
+
+        databaseSelect.addEventListener("change", () => {
+          if (consoleCreateState.isSubmitting || consoleCreateState.created) {
+            databaseSelect.value = String(consoleCreateState.databaseId || "");
+            return;
+          }
+          consoleCreateState.databaseId = String(databaseSelect.value || "").trim();
+          consoleCreateState.created = false;
+          renderProgress();
+          renderSummary();
+          syncActions();
+        });
+
+        back.addEventListener("click", () => {
+          if (consoleCreateState.step === 1) {
+            close();
+            return;
+          }
+          consoleCreateState.step = 1;
+          rerender();
+        });
+
+        next.addEventListener("click", async () => {
+          if (!consoleCreateState.type || consoleCreateState.isSubmitting || consoleCreateState.created) {
+            return;
+          }
+          consoleCreateState.isLoadingDatabases = true;
+          consoleCreateState.created = false;
+          consoleCreateState.errorMessage = "";
+          rerender();
+          try {
+            await ensureConsoleCreateDatabases(consoleCreateState.type);
+          } catch (error) {
+            consoleCreateState.availableDatabases = [];
+            consoleCreateState.databaseId = "";
+            consoleCreateState.errorMessage = String(error?.message || "연결 가능한 데이터베이스를 불러오지 못했습니다.").replace(/^\d+\s*/, "").trim();
+          } finally {
+            consoleCreateState.isLoadingDatabases = false;
+          }
+          consoleCreateState.step = 2;
+          rerender();
+          requestAnimationFrame(() => {
+            input.focus();
+          });
+        });
+
+        if (form) {
+          form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            if (consoleCreateState.isSubmitting || consoleCreateState.created) {
+              return;
+            }
+            const name = String(input && input.value || "").trim();
+            const databaseId = String(databaseSelect && databaseSelect.value || "").trim();
+            if (!name) {
+              rerender();
+              return;
+            }
+            consoleCreateState.isSubmitting = true;
+            consoleCreateState.created = false;
+            consoleCreateState.errorMessage = "";
+            rerender();
+
+            requestJson("/consoles", {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                name,
+                type: consoleCreateState.type,
+                ...(databaseId ? { databaseId: [databaseId] } : {})
+              })
+            })
+              .then(async () => {
+                consoleCreateState.isSubmitting = false;
+                consoleCreateState.created = true;
+                rerender();
+                await loadConsoleHub();
+              })
+              .catch((error) => {
+                consoleCreateState.errorMessage = String(error?.message || "콘솔 생성에 실패했습니다.").replace(/^\d+\s*/, "").trim();
+                consoleCreateState.isSubmitting = false;
+                rerender();
+              });
+          });
+        }
+
+        done.addEventListener("click", close);
+
+        rerender();
+        return modal;
+      }
+
+      function wireConsoleCreateAction() {
+        const button = document.querySelector(".control-actions .create-btn");
+        if (!button || button.dataset.consoleCreateBound === "true") {
+          return;
+        }
+
+        button.dataset.consoleCreateBound = "true";
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          resetConsoleCreateState();
+          const modal = ensureConsoleCreateModal();
+          const input = modal && modal.querySelector("[data-console-type]");
+          if (!modal) return;
+          modal.hidden = false;
+          document.body.style.overflow = "hidden";
+          requestAnimationFrame(() => {
+            if (input) input.focus();
+          });
+        });
+      }
+
       function renderConfig(config) {
-        window.HUB_CONFIG = config;
+        lastRenderedConfig = config;
+        const nextConfig = {
+          ...config,
+          resources: [...createdConsoleResources, ...(config.resources || [])]
+        };
+        window.HUB_CONFIG = nextConfig;
         if (typeof window.renderWorkspaceResourceHub === "function") {
-          window.renderWorkspaceResourceHub(config);
+          window.renderWorkspaceResourceHub(nextConfig);
           attachActionHandlers();
+          wireConsoleCreateAction();
           if (typeof window.refreshConceptEndpointOverlay === "function") {
             requestAnimationFrame(() => {
               window.refreshConceptEndpointOverlay();
@@ -653,17 +1418,11 @@
         const healthPayload = results[5].status === "fulfilled" ? extractData(results[5].value, null) : null;
 
         const items = extractItems(consolesPayload).slice().sort((left, right) => {
-          const leftTime = new Date(left?.updatedAt || left?.createdAt || 0).getTime();
-          const rightTime = new Date(right?.updatedAt || right?.createdAt || 0).getTime();
+          const leftTime = new Date(left?.createdAt || left?.updatedAt || 0).getTime();
+          const rightTime = new Date(right?.createdAt || right?.updatedAt || 0).getTime();
           return rightTime - leftTime;
         });
         const total = extractPageTotal(consolesPayload, items.length);
-        const defaultConsoleIds = new Set(
-          items
-            .slice(0, 6)
-            .map(item => item?.id)
-            .filter(Boolean)
-        );
 
         const config = {
           ...FALLBACK_CONFIG,
@@ -676,7 +1435,7 @@
           resourceDescription: total > 0
             ? `${formatNumber(total)}개의 console 리소스를 실제 API 응답으로 렌더링합니다. 카드에서는 바인딩된 DB와 runtime 액션을 바로 확인할 수 있습니다.`
             : "조회 가능한 console 리소스가 없습니다. 권한 또는 바인딩 상태를 확인해 주세요.",
-          resources: items.map(item => toResource(item, defaultConsoleIds.has(item?.id))),
+          resources: items.map(item => toResource(item)),
           mainPanels: [
             buildTipsPanel(tipsPayload),
             buildGuidePanel(guidePayload)

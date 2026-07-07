@@ -9,6 +9,257 @@
   <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
   <link rel="stylesheet" href="ax_studio_topbar.css" />
   <style>
+    .chatbot-create-progress-track {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+    }
+    .hub-lite-create-progress-rail.is-hidden {
+      visibility: hidden;
+    }
+    .chatbot-create-stage[hidden] {
+      display: none !important;
+    }
+    .chatbot-create-stage {
+      width: min(100%, var(--hub-lite-create-wide-width, 920px));
+      margin: 0 auto;
+    }
+    .chatbot-create-stage.is-compact {
+      width: min(100%, var(--hub-lite-create-content-width, 680px));
+    }
+    .chatbot-create-type-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .chatbot-create-type-card {
+      min-width: 0;
+      display: grid;
+      gap: 12px;
+      padding: 18px;
+      border: 1px solid rgba(214, 216, 219, .94);
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at top left, rgba(8, 145, 178, .08), transparent 45%),
+        #fff;
+      text-align: left;
+      transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+    }
+    .chatbot-create-type-card:hover {
+      transform: translateY(-1px);
+      border-color: color-mix(in srgb, var(--brand) 24%, transparent);
+      box-shadow: 0 14px 26px rgba(15, 23, 42, .08);
+    }
+    .chatbot-create-type-card.is-selected {
+      border-color: var(--brand);
+      box-shadow: 0 18px 32px color-mix(in srgb, var(--brand) 14%, transparent);
+    }
+    .chatbot-create-type-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .chatbot-create-type-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border: 1px solid rgba(214, 216, 219, .92);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, .08);
+      color: var(--brand);
+      flex-shrink: 0;
+    }
+    .chatbot-create-type-icon .material-icons-round {
+      font-size: 24px;
+    }
+    .chatbot-create-type-radio {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      border: 2px solid #d2d7e0;
+      position: relative;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .chatbot-create-type-card.is-selected .chatbot-create-type-radio {
+      border-color: var(--brand);
+    }
+    .chatbot-create-type-card.is-selected .chatbot-create-type-radio::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: 999px;
+      background: var(--brand);
+    }
+    .chatbot-create-type-title {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.3;
+    }
+    .chatbot-create-type-meta {
+      color: var(--t2);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .chatbot-create-type-submeta {
+      color: var(--t3);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .chatbot-create-summary {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(214, 216, 219, .86);
+      background: #fbfcfe;
+    }
+    .chatbot-create-summary-pill {
+      width: max-content;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--brand-bg);
+      color: var(--brand);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .chatbot-create-summary-title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+    }
+    .chatbot-create-summary-copy {
+      color: var(--t2);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .chatbot-create-summary-hint {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chatbot-create-summary-chip {
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      background: #f4f6fa;
+      color: var(--t2);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .chatbot-create-check-grid {
+      display: grid;
+      gap: 14px;
+    }
+    .chatbot-create-check-card {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+      border-radius: 20px;
+      border: 1px solid rgba(214, 216, 219, .86);
+      background: linear-gradient(180deg, rgba(255, 255, 255, .98), rgba(248, 251, 255, .94));
+    }
+    .chatbot-create-check-list {
+      display: grid;
+      gap: 10px;
+    }
+    .chatbot-create-check-row {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(214, 216, 219, .82);
+      background: #fff;
+    }
+    .chatbot-create-check-row.is-running {
+      border-color: rgba(8, 145, 178, .22);
+      background: rgba(8, 145, 178, .05);
+    }
+    .chatbot-create-check-row.is-success {
+      border-color: rgba(16, 185, 129, .22);
+      background: rgba(236, 253, 245, .88);
+    }
+    .chatbot-create-check-row.is-failed {
+      border-color: rgba(239, 68, 68, .22);
+      background: rgba(254, 242, 242, .92);
+    }
+    .chatbot-create-check-dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #d7dbe2;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .chatbot-create-check-row.is-running .chatbot-create-check-dot {
+      background: var(--brand);
+    }
+    .chatbot-create-check-row.is-success .chatbot-create-check-dot {
+      background: #10b981;
+    }
+    .chatbot-create-check-row.is-failed .chatbot-create-check-dot {
+      background: #ef4444;
+    }
+    .chatbot-create-check-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--t1);
+      line-height: 1.5;
+    }
+    .chatbot-create-check-state {
+      color: var(--t3);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .chatbot-create-check-copy {
+      color: var(--t2);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .chatbot-create-inline-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .chatbot-create-inline-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-width: 160px;
+      height: 40px;
+      padding: 0 16px;
+      border: none;
+      border-radius: 12px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      font-size: 12px;
+      font-weight: 800;
+      transition: all .15s ease;
+    }
+    .chatbot-create-inline-btn:hover {
+      background: rgba(8, 145, 178, .12);
+    }
+    .chatbot-create-inline-btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
     .hub-invite-backdrop {
       position: fixed;
       inset: 0;
@@ -338,6 +589,13 @@
     }
 
     @media (max-width: 980px) {
+      .chatbot-create-progress-track {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .chatbot-create-type-grid {
+        grid-template-columns: 1fr;
+      }
       .hub-invite-layout {
         grid-template-columns: 1fr;
       }
@@ -407,8 +665,9 @@
       eyebrow: "AI · Chat Endpoints",
       title: "Chatbot Hub",
       description: "사용자가 실제로 접속하는 챗봇 endpoint와 채널을 모았습니다. Bot API와 Bot Web 두 방식으로 나누어 보고, API는 OpenAI-compatible 표준을 우선하며 Web은 실제 접속 URL을 중심으로 관리합니다.",
-      primaryAction: { href: "workspace_chatbot_register.html", icon: "add_circle", label: "새 Chatbot 등록" },
+      primaryAction: null,
       secondaryAction: { href: "workspace_agent_hub.html", icon: "smart_toy", label: "Agent Hub 보기" },
+      createAction: { href: "#chatbot-register", icon: "add_circle", label: "새 Chatbot 등록" },
       heroStats: [
         { icon: "chat", value: "6", label: "등록 Chatbot", note: "Live 4 · Review 2", color: "linear-gradient(135deg,#0891b2,#22d3ee)" },
         { icon: "api", value: "3", label: "API", note: "OpenAI-compatible 우선", color: "linear-gradient(135deg,#0e7490,#38bdf8)" },
@@ -609,6 +868,7 @@
       const buildCustomResource = (item) => {
         const type = String(item.type || "WEB").toUpperCase() === "API" ? "API" : "WEB";
         const isApi = type === "API";
+        const detailHref = `workspace_chatbot_detail.html?item=${encodeURIComponent(item.key || item.name || "chatbot")}`;
         return {
           categories: ["all", isApi ? "api" : "web"],
           status: { label: "Live", tone: "healthy" },
@@ -627,6 +887,12 @@
             }
           ],
           actions: [
+            {
+              label: "Detail",
+              icon: "arrow_outward",
+              kind: "open",
+              href: detailHref
+            },
             {
               label: "Open",
               icon: "open_in_new",
@@ -650,13 +916,6 @@
             }
           ]
         };
-      };
-
-      baseConfig.primaryAction = {
-        ...(baseConfig.primaryAction || {}),
-        href: "workspace_chatbot_register.html",
-        icon: "add_circle",
-        label: "새 Chatbot 등록"
       };
 
       const existingNames = new Set((baseConfig.resources || []).map((resource) => String(resource.name || "").toLowerCase()));
@@ -721,6 +980,32 @@
       const API_GRADIENT = "linear-gradient(135deg,#2563eb,#38bdf8)";
       const WEB_GRADIENT = "linear-gradient(135deg,#0f766e,#34d399)";
       const HYBRID_GRADIENT = "linear-gradient(135deg,#0f766e,#2563eb)";
+      const CHATBOT_CREATE_TYPES = [
+        {
+          id: "API",
+          title: "API 타입",
+          icon: "api",
+          desc: "OpenAI 표준 프로토콜을 따르는 chatbot API를 등록합니다.",
+          hint: "주소 등록 후 프로토콜 호환 여부를 점검합니다."
+        },
+        {
+          id: "WEB",
+          title: "Web 타입",
+          icon: "language",
+          desc: "직접 접근 가능한 chatbot web endpoint를 등록합니다.",
+          hint: "주소 등록 후 접근 가능 여부를 점검합니다."
+        }
+      ];
+      const chatbotCreateState = {
+        step: 1,
+        name: "",
+        type: "API",
+        url: "",
+        checkStatus: "idle",
+        checkRows: [],
+        timerIds: []
+      };
+      let lastResolvedConfig = fallbackConfig;
 
       const toArray = (value) => Array.isArray(value) ? value : [];
       const normalizeKey = (value) => String(value || "")
@@ -748,9 +1033,18 @@
         }
       };
 
+      const saveStoredChatbots = (items) => {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.isArray(items) ? items : []));
+        } catch (error) {
+          console.warn("Failed to store chatbots", error);
+        }
+      };
+
       const buildCustomResource = (item) => {
         const type = String(item.type || "WEB").toUpperCase() === "API" ? "API" : "WEB";
         const isApi = type === "API";
+        const detailHref = `workspace_chatbot_detail.html?item=${encodeURIComponent(item.key || normalizeKey(item.name))}`;
         return {
           categories: ["all", isApi ? "api" : "web"],
           status: { label: "Live", tone: "healthy" },
@@ -773,6 +1067,12 @@
             }
           ],
           actions: [
+            {
+              label: "Detail",
+              icon: "arrow_outward",
+              kind: "open",
+              href: detailHref
+            },
             {
               label: "Open",
               icon: "open_in_new",
@@ -877,7 +1177,7 @@
           .filter(Boolean)
           .join("|");
 
-        const detailHref = `workspace_chatbot_detail.html?item=${encodeURIComponent(item?.slug || item?.id || "chatbot")}`;
+        const detailHref = `workspace_chatbot_detail.html?item=${encodeURIComponent(item?.id || item?.name || item?.slug || "chatbot")}`;
         const openHref = item?.openUrl || detailHref;
         const openAttributes = item?.openUrl
           ? { target: "_blank", rel: "noopener noreferrer" }
@@ -1061,6 +1361,425 @@
         return panels;
       };
 
+      const getChatbotTypeMeta = (type) => CHATBOT_CREATE_TYPES.find((item) => item.id === type) || CHATBOT_CREATE_TYPES[0];
+
+      const clearChatbotCreateTimers = () => {
+        chatbotCreateState.timerIds.forEach((timerId) => window.clearTimeout(timerId));
+        chatbotCreateState.timerIds = [];
+      };
+
+      const resetChatbotCreateState = () => {
+        clearChatbotCreateTimers();
+        chatbotCreateState.step = 1;
+        chatbotCreateState.name = "";
+        chatbotCreateState.type = "API";
+        chatbotCreateState.url = "";
+        chatbotCreateState.checkStatus = "idle";
+        chatbotCreateState.checkRows = [];
+      };
+
+      const buildChatbotDraftRecord = () => ({
+        key: normalizeKey(chatbotCreateState.name),
+        name: chatbotCreateState.name,
+        type: chatbotCreateState.type,
+        currentUrl: chatbotCreateState.url,
+        createdAt: new Date().toISOString()
+      });
+
+      const getChatbotCheckTemplates = (type) => {
+        if (type === "API") {
+          return [
+            { label: "주소 형식을 확인하고 있습니다.", success: "입력한 API 주소 형식이 올바릅니다." },
+            { label: "OpenAI 표준 엔드포인트 구성을 점검하고 있습니다.", success: "표준 endpoint 구조에 맞게 노출된 것으로 표시됩니다." },
+            { label: "chat/completions 프로토콜 호환성을 점검하고 있습니다.", success: "OpenAI-compatible 응답 형식을 사용할 수 있는 상태입니다." }
+          ];
+        }
+        return [
+          { label: "접속 주소 형식을 확인하고 있습니다.", success: "입력한 web 주소 형식이 올바릅니다." },
+          { label: "브라우저에서 접근 가능한 경로인지 점검하고 있습니다.", success: "기본 진입 경로에 접근 가능한 상태로 표시됩니다." },
+          { label: "초기 로딩 화면이 열릴 수 있는지 점검하고 있습니다.", success: "사용자 접근 가능한 chatbot entry로 연결될 수 있습니다." }
+        ];
+      };
+
+      const ensureChatbotCreateModal = () => {
+        let modal = document.getElementById("chatbotCreateModal");
+        if (modal) return modal;
+
+        modal = document.createElement("div");
+        modal.className = "hub-lite-create-backdrop";
+        modal.id = "chatbotCreateModal";
+        modal.hidden = true;
+        modal.innerHTML = `
+          <div class="hub-lite-create-shell" role="dialog" aria-modal="true" aria-labelledby="chatbotCreateTitle">
+            <div class="hub-lite-create-head">
+              <div class="hub-lite-create-copy">
+                <div class="hub-lite-create-title-row">
+                  <span class="hub-lite-create-step-badge" id="chatbotCreateStepBadge">1</span>
+                  <h2 id="chatbotCreateTitle">Chatbot을 등록합니다</h2>
+                </div>
+                <p class="hub-lite-create-subtitle" id="chatbotCreateSubtitle">먼저 chatbot 이름을 입력해주세요.</p>
+              </div>
+              <div class="hub-lite-create-head-actions">
+                <div class="hub-lite-create-hero" aria-hidden="true"><span class="material-icons-round">chat</span></div>
+                <button class="hub-lite-create-close" type="button" id="chatbotCreateClose" aria-label="Chatbot 생성 닫기">
+                  <span class="material-icons-round">close</span>
+                </button>
+              </div>
+            </div>
+            <div class="hub-lite-create-progress">
+              <div class="hub-lite-create-progress-track chatbot-create-progress-track" id="chatbotCreateProgress"></div>
+            </div>
+            <form class="hub-lite-create-form" id="chatbotCreateForm">
+              <section class="chatbot-create-stage is-compact" data-chatbot-create-step="1">
+                <div class="hub-lite-create-panel">
+                  <div class="hub-lite-create-panel-title">Chatbot 이름을 입력해주세요.</div>
+                  <input class="hub-lite-create-input" id="chatbotCreateName" type="text" placeholder="예: workspace-support-bot" required />
+                  <div class="hub-lite-create-note"><span class="material-icons-round">info</span>등록 후 카드 목록과 상세 화면에서 연결 상태를 계속 관리할 수 있습니다.</div>
+                </div>
+              </section>
+              <section class="chatbot-create-stage is-compact" data-chatbot-create-step="2" hidden>
+                <div class="hub-lite-create-panel">
+                  <div class="hub-lite-create-panel-title">연결 방식을 선택해주세요.</div>
+                  <div class="chatbot-create-type-grid" id="chatbotCreateTypeGrid"></div>
+                </div>
+              </section>
+              <section class="chatbot-create-stage is-compact" data-chatbot-create-step="3" hidden>
+                <div class="hub-lite-create-panel">
+                  <div class="hub-lite-create-panel-title">주소를 입력하고 점검을 실행해주세요.</div>
+                  <div class="chatbot-create-summary" id="chatbotCreateSummary"></div>
+                  <input class="hub-lite-create-input" id="chatbotCreateUrl" type="url" placeholder="https://example.com" required />
+                  <div class="chatbot-create-check-grid">
+                    <div class="chatbot-create-check-card">
+                      <div class="chatbot-create-check-copy" id="chatbotCreateCheckCopy"></div>
+                      <div class="chatbot-create-check-list" id="chatbotCreateCheckList"></div>
+                      <div class="chatbot-create-inline-actions">
+                        <button class="chatbot-create-inline-btn" type="button" id="chatbotCreateRunCheck">
+                          <span class="material-icons-round">fact_check</span>점검 실행
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <div class="hub-lite-create-actions">
+                <button class="hub-lite-create-action ghost" type="button" id="chatbotCreateBack">취소</button>
+                <button class="hub-lite-create-action primary" type="button" id="chatbotCreateNext">다음</button>
+                <button class="hub-lite-create-action primary" type="submit" id="chatbotCreateSubmit" hidden disabled><span class="material-icons-round">check_circle</span>Chatbot 등록</button>
+              </div>
+            </form>
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        const form = modal.querySelector("#chatbotCreateForm");
+        const stepBadge = modal.querySelector("#chatbotCreateStepBadge");
+        const subtitle = modal.querySelector("#chatbotCreateSubtitle");
+        const progress = modal.querySelector("#chatbotCreateProgress");
+        const stages = Array.from(modal.querySelectorAll("[data-chatbot-create-step]"));
+        const nameInput = modal.querySelector("#chatbotCreateName");
+        const typeGrid = modal.querySelector("#chatbotCreateTypeGrid");
+        const summary = modal.querySelector("#chatbotCreateSummary");
+        const urlInput = modal.querySelector("#chatbotCreateUrl");
+        const checkCopy = modal.querySelector("#chatbotCreateCheckCopy");
+        const checkList = modal.querySelector("#chatbotCreateCheckList");
+        const runCheck = modal.querySelector("#chatbotCreateRunCheck");
+        const back = modal.querySelector("#chatbotCreateBack");
+        const next = modal.querySelector("#chatbotCreateNext");
+        const submit = modal.querySelector("#chatbotCreateSubmit");
+        const stepMeta = [
+          { label: "이름", subtitle: "먼저 chatbot 이름을 입력해주세요." },
+          { label: "타입", subtitle: "API 타입인지 Web 타입인지 선택해주세요." },
+          { label: "점검", subtitle: "주소를 입력하고 연결 가능 여부를 점검해주세요." }
+        ];
+
+        const renderProgress = () => {
+          progress.innerHTML = stepMeta.map((item, index) => {
+            const step = index + 1;
+            const isCurrent = step === chatbotCreateState.step;
+            const isComplete = step < chatbotCreateState.step;
+            const value = step === 1
+              ? chatbotCreateState.name
+              : step === 2
+                ? getChatbotTypeMeta(chatbotCreateState.type).title
+                : chatbotCreateState.url;
+            return `
+              <div class="hub-lite-create-progress-item ${isCurrent ? "is-current" : ""} ${isComplete ? "is-complete" : ""}">
+                <div class="hub-lite-create-progress-line">
+                  <span class="hub-lite-create-progress-rail ${index === 0 ? "is-hidden" : ""}"></span>
+                  <span class="hub-lite-create-progress-dot">${isComplete ? '<span class="material-icons-round" style="font-size:15px">done</span>' : step}</span>
+                  <span class="hub-lite-create-progress-rail ${index === stepMeta.length - 1 ? "is-hidden" : ""}"></span>
+                </div>
+                <div class="hub-lite-create-progress-label">${item.label}</div>
+                <div class="hub-lite-create-progress-value">${value || " "}</div>
+              </div>
+            `;
+          }).join("");
+        };
+
+        const renderTypeGrid = () => {
+          typeGrid.innerHTML = CHATBOT_CREATE_TYPES.map((item) => `
+            <button class="chatbot-create-type-card ${chatbotCreateState.type === item.id ? "is-selected" : ""}" type="button" data-chatbot-type="${item.id}">
+              <div class="chatbot-create-type-head">
+                <span class="chatbot-create-type-icon" aria-hidden="true"><span class="material-icons-round">${item.icon}</span></span>
+                <span class="chatbot-create-type-radio" aria-hidden="true"></span>
+              </div>
+              <div class="chatbot-create-type-title">${item.title}</div>
+              <div class="chatbot-create-type-meta">${item.desc}</div>
+              <div class="chatbot-create-type-submeta">${item.hint}</div>
+            </button>
+          `).join("");
+        };
+
+        const renderSummary = () => {
+          const typeMeta = getChatbotTypeMeta(chatbotCreateState.type);
+          summary.innerHTML = `
+            <div class="chatbot-create-summary-pill"><span class="material-icons-round" style="font-size:15px">${typeMeta.icon}</span>${typeMeta.title}</div>
+            <div class="chatbot-create-summary-title">${chatbotCreateState.name || "새 chatbot"}을 ${typeMeta.title}으로 등록합니다</div>
+            <div class="chatbot-create-summary-copy">${typeMeta.desc}</div>
+            <div class="chatbot-create-summary-hint">
+              <span class="chatbot-create-summary-chip">${typeMeta.title}</span>
+              <span class="chatbot-create-summary-chip">${typeMeta.hint}</span>
+            </div>
+          `;
+          urlInput.placeholder = chatbotCreateState.type === "API"
+            ? "예: https://api.example.com/v1"
+            : "예: https://bot.example.com";
+        };
+
+        const renderCheckState = () => {
+          checkCopy.textContent = chatbotCreateState.type === "API"
+            ? "OpenAI 표준 프로토콜을 따르는지 확인하기 위해 주소 형식과 endpoint 호환성을 순서대로 점검합니다."
+            : "사용자가 실제로 열 수 있는 chatbot web 주소인지 확인하기 위해 접근 가능 여부와 기본 진입 상태를 점검합니다.";
+
+          if (!chatbotCreateState.checkRows.length) {
+            checkList.innerHTML = '<div class="hub-invite-empty">아직 점검을 실행하지 않았습니다.</div>';
+            return;
+          }
+
+          checkList.innerHTML = chatbotCreateState.checkRows.map((row, index) => {
+            const statusClass = row.status === "running"
+              ? "is-running"
+              : row.status === "success"
+                ? "is-success"
+                : row.status === "failed"
+                  ? "is-failed"
+                  : "";
+            const icon = row.status === "success" ? "done" : row.status === "failed" ? "close" : row.status === "running" ? "sync" : String(index + 1);
+            const stateLabel = row.status === "success" ? "통과" : row.status === "failed" ? "실패" : row.status === "running" ? "점검 중" : "대기";
+            return `
+              <div class="chatbot-create-check-row ${statusClass}">
+                <span class="chatbot-create-check-dot"><span class="material-icons-round" style="font-size:15px">${icon}</span></span>
+                <div class="chatbot-create-check-label">${row.message}</div>
+                <div class="chatbot-create-check-state">${stateLabel}</div>
+              </div>
+            `;
+          }).join("");
+        };
+
+        const renderStages = () => {
+          stages.forEach((stage) => {
+            stage.hidden = Number(stage.dataset.chatbotCreateStep) !== chatbotCreateState.step;
+          });
+        };
+
+        const syncHeader = () => {
+          const meta = stepMeta[chatbotCreateState.step - 1];
+          stepBadge.textContent = String(chatbotCreateState.step);
+          subtitle.textContent = meta.subtitle;
+        };
+
+        const syncActions = () => {
+          back.textContent = chatbotCreateState.step === 1 ? "취소" : "뒤로";
+          next.hidden = chatbotCreateState.step === 3;
+          submit.hidden = chatbotCreateState.step !== 3;
+          next.disabled = (chatbotCreateState.step === 1 && !chatbotCreateState.name.trim());
+          submit.disabled = !(chatbotCreateState.url.trim() && chatbotCreateState.checkStatus === "success");
+          runCheck.disabled = !chatbotCreateState.url.trim() || chatbotCreateState.checkStatus === "running";
+        };
+
+        const rerender = () => {
+          syncHeader();
+          renderProgress();
+          renderTypeGrid();
+          renderSummary();
+          renderCheckState();
+          renderStages();
+          syncActions();
+        };
+
+        const setCheckFailed = (message) => {
+          clearChatbotCreateTimers();
+          chatbotCreateState.checkStatus = "failed";
+          chatbotCreateState.checkRows = [{ message, status: "failed" }];
+          rerender();
+        };
+
+        const runChatbotCheck = () => {
+          const trimmedUrl = chatbotCreateState.url.trim();
+          let parsedUrl;
+          try {
+            parsedUrl = new URL(trimmedUrl);
+          } catch (error) {
+            setCheckFailed("유효한 주소 형식이 아닙니다. http 또는 https 주소를 입력해주세요.");
+            return;
+          }
+
+          if (!/^https?:$/.test(parsedUrl.protocol)) {
+            setCheckFailed("http 또는 https 주소만 등록할 수 있습니다.");
+            return;
+          }
+
+          clearChatbotCreateTimers();
+          chatbotCreateState.checkStatus = "running";
+          chatbotCreateState.checkRows = getChatbotCheckTemplates(chatbotCreateState.type).map((item, index) => ({
+            message: item.label,
+            success: item.success,
+            status: index === 0 ? "running" : "pending"
+          }));
+          rerender();
+
+          chatbotCreateState.checkRows.forEach((row, index) => {
+            const timerId = window.setTimeout(() => {
+              const currentRow = chatbotCreateState.checkRows[index];
+              if (!currentRow) return;
+              currentRow.status = "success";
+              currentRow.message = currentRow.success || currentRow.message;
+              const nextRow = chatbotCreateState.checkRows[index + 1];
+              if (nextRow) {
+                nextRow.status = "running";
+              } else {
+                chatbotCreateState.checkStatus = "success";
+              }
+              rerender();
+            }, 550 * (index + 1));
+            chatbotCreateState.timerIds.push(timerId);
+          });
+        };
+
+        const close = () => {
+          modal.hidden = true;
+          document.body.style.overflow = "";
+          resetChatbotCreateState();
+          form.reset();
+          if (window.location.hash === "#chatbot-register") {
+            window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+          }
+          rerender();
+        };
+
+        modal.addEventListener("click", (event) => {
+          if (event.target === modal) close();
+        });
+
+        modal.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && !modal.hidden) close();
+        });
+
+        modal.querySelector("#chatbotCreateClose").addEventListener("click", close);
+
+        nameInput.addEventListener("input", () => {
+          chatbotCreateState.name = String(nameInput.value || "").trim();
+          renderProgress();
+          syncActions();
+          renderSummary();
+        });
+
+        typeGrid.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-chatbot-type]");
+          if (!button) return;
+          chatbotCreateState.type = button.dataset.chatbotType || "API";
+          chatbotCreateState.checkStatus = "idle";
+          chatbotCreateState.checkRows = [];
+          clearChatbotCreateTimers();
+          rerender();
+        });
+
+        urlInput.addEventListener("input", () => {
+          chatbotCreateState.url = String(urlInput.value || "").trim();
+          chatbotCreateState.checkStatus = "idle";
+          chatbotCreateState.checkRows = [];
+          clearChatbotCreateTimers();
+          renderProgress();
+          renderCheckState();
+          syncActions();
+        });
+
+        runCheck.addEventListener("click", runChatbotCheck);
+
+        back.addEventListener("click", () => {
+          if (chatbotCreateState.step === 1) {
+            close();
+            return;
+          }
+          chatbotCreateState.step -= 1;
+          rerender();
+        });
+
+        next.addEventListener("click", () => {
+          if (chatbotCreateState.step === 1 && !chatbotCreateState.name.trim()) return;
+          chatbotCreateState.step += 1;
+          rerender();
+          requestAnimationFrame(() => {
+            if (chatbotCreateState.step === 2) typeGrid.querySelector("[data-chatbot-type]")?.focus();
+            if (chatbotCreateState.step === 3) urlInput.focus();
+          });
+        });
+
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
+          if (!(chatbotCreateState.url.trim() && chatbotCreateState.checkStatus === "success")) {
+            syncActions();
+            return;
+          }
+          saveStoredChatbots([buildChatbotDraftRecord(), ...parseStoredChatbots()]);
+          close();
+          renderConfig(mergeCustomResources({
+            ...lastResolvedConfig,
+            resources: [...(lastResolvedConfig.resources || [])]
+          }));
+        });
+
+        rerender();
+        return modal;
+      };
+
+      const openChatbotCreateModal = () => {
+        resetChatbotCreateState();
+        const modal = ensureChatbotCreateModal();
+        modal.hidden = false;
+        document.body.style.overflow = "hidden";
+        requestAnimationFrame(() => {
+          modal.querySelector("#chatbotCreateName")?.focus();
+        });
+      };
+
+      const wireChatbotCreateAction = () => {
+        const button = document.querySelector(".control-actions .create-btn");
+        if (!button || button.dataset.chatbotCreateBound === "true") return;
+        button.dataset.chatbotCreateBound = "true";
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          openChatbotCreateModal();
+        });
+      };
+
+      const wireChatbotCreateHash = () => {
+        if (window.__chatbotCreateHashBound) return;
+        window.__chatbotCreateHashBound = true;
+        window.addEventListener("hashchange", () => {
+          if (window.location.hash === "#chatbot-register") {
+            openChatbotCreateModal();
+          }
+        });
+
+        if (window.location.hash === "#chatbot-register") {
+          openChatbotCreateModal();
+        }
+      };
+
+      wireChatbotCreateHash();
+
       const fetchJson = async (url) => {
         const response = await fetch(url, {
           method: "GET",
@@ -1080,8 +1799,10 @@
 
       const renderConfig = (config, retry = 30) => {
         window.HUB_CONFIG = config;
+        lastResolvedConfig = config;
         if (typeof window.renderWorkspaceResourceHub === "function") {
           window.renderWorkspaceResourceHub(config);
+          wireChatbotCreateAction();
           return;
         }
         if (retry > 0) {
@@ -1117,12 +1838,6 @@
         const linkedToolsCard = findCard(statsPayload, "linkedTools");
         const nextConfig = mergeCustomResources({
           ...fallbackConfig,
-          primaryAction: {
-            ...(fallbackConfig.primaryAction || {}),
-            href: "workspace_chatbot_register.html",
-            icon: "add_circle",
-            label: "새 Chatbot 등록"
-          },
           filters: buildFilters(items),
           resources: items.map(buildResource),
           mainPanels: (() => {

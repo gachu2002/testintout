@@ -436,6 +436,21 @@
     flex-shrink: 0;
 }
 
+[data-ax-topbar] .avatar-link {
+    text-decoration: none;
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+
+[data-ax-topbar] .avatar-link:hover {
+    filter: brightness(.96);
+    box-shadow: 0 10px 20px rgba(15, 23, 42, .14);
+}
+
+[data-ax-topbar] .avatar-link:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--ax-topbar-brand) 18%, white);
+}
+
 @media (max-width: 720px) {
     [data-ax-topbar] .service-groups {
         grid-template-columns: 1fr;

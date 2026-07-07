@@ -1,3 +1,4 @@
+import { Box, CircularProgress } from '@mui/material';
 import type { PropsWithChildren } from 'react';
 import { useEffect } from 'react';
 
@@ -12,7 +13,24 @@ export function AuthGate({ children }: PropsWithChildren) {
     }
   }, [accountSetting?.language]);
 
-  if (loading || !isAuthenticated) {
+  if (loading) {
+    return (
+      <Box
+        aria-label="Loading workspace"
+        role="status"
+        sx={{
+          alignItems: 'center',
+          display: 'grid',
+          minHeight: '100vh',
+          placeItems: 'center',
+        }}
+      >
+        <CircularProgress size={28} />
+      </Box>
+    );
+  }
+
+  if (!isAuthenticated) {
     return null;
   }
 

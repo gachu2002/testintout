@@ -931,6 +931,19 @@
       font-size:11px;
       font-weight:800;
     }
+    .console-mode-btn .material-icons-round,
+    .console-lifecycle-btn .material-icons-round,
+    .console-binding-action .material-icons-round {
+      width:18px;
+      min-width:18px;
+      height:18px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      line-height:1;
+      flex-shrink:0;
+    }
     .console-mode-btn.active {
       border-color:rgba(37,99,235,.28);
       background:var(--brand-bg);
@@ -965,6 +978,16 @@
       color:var(--muted);
       font-size:12px;
       line-height:1.55;
+    }
+    .console-lifecycle-btn,
+    .console-binding-action {
+      width:104px;
+      min-width:104px;
+      max-width:104px;
+      overflow:hidden;
+      justify-content:center;
+      flex-shrink:0;
+      white-space:nowrap;
     }
     .console-terminal {
       min-height:280px;
@@ -2394,7 +2417,27 @@
         });
 
         if (!response.ok) {
-          throw new Error(`${response.status} ${response.statusText}`);
+          let message = `${response.status} ${response.statusText}`;
+          try {
+            const payload = await response.json();
+            const apiMessage = payload?.message || payload?.error?.message || payload?.error || payload?.code;
+            if (apiMessage) {
+              message = `${response.status} ${apiMessage}`;
+            }
+          } catch {
+            try {
+              const text = await response.text();
+              if (text) {
+                message = `${response.status} ${text}`;
+              }
+            } catch {
+              // ignore body parsing failure
+            }
+          }
+
+          const error = new Error(message);
+          error.status = response.status;
+          throw error;
         }
 
         return response.json();
@@ -2847,7 +2890,9 @@
             status: "unknown",
             statusLabel: "Connected",
             statusTone: "warning",
-            openUrl: null
+            openUrl: null,
+            canOpen: false,
+            canStart: false
           }));
       }
 
@@ -2884,6 +2929,9 @@
                 status: "unknown",
                 statusLabel: "Unknown",
                 openUrl: null,
+                canOpen: false,
+                canStart: false,
+                canStop: false,
                 health: { severity: "unknown" }
               };
             }
@@ -2896,6 +2944,9 @@
               status: detail.status || "unknown",
               statusLabel: detail.statusLabel || "Unknown",
               openUrl: detail.openUrl || null,
+              canOpen: Boolean(detail.capabilities?.canOpen || detail.status === "running"),
+              canStart: Boolean(detail.capabilities?.canStart || detail.status === "stopped"),
+              canStop: Boolean(detail.capabilities?.canStop || detail.status === "running"),
               health: detail.health || null
             };
           } catch (error) {
@@ -2907,6 +2958,9 @@
               status: "unknown",
               statusLabel: "Unknown",
               openUrl: null,
+              canOpen: false,
+              canStart: false,
+              canStop: false,
               health: { severity: "unknown" }
             };
           }
@@ -3076,7 +3130,10 @@
               status: item.status,
               statusLabel: item.statusLabel,
               statusTone: toConsoleStatusTone(item),
-              openUrl: item.openUrl
+              openUrl: item.openUrl,
+              canOpen: Boolean(item.canOpen),
+              canStart: Boolean(item.canStart),
+              canStop: Boolean(item.canStop)
             }))
           : buildConsoleBindings(bindingItems);
         const endpointHost = normalizeText(detail?.endpoint?.host || detail?.account?.host, "N/A");
@@ -3458,71 +3515,104 @@
         return found ? found.value : "-";
       };
 
+      const buildConsolePreset = () => {
+        const endpointHost = getAccessValue(["Host", "Endpoint"]);
+        const endpointPort = getAccessValue(["Port"]);
+        const dbName = getAccessValue(["Database", "Keyspace", "Namespace", "Cluster"]);
+        const opsUser = db.access.credentials.find((item) => /Ops User|Reader User|App User|Username/i.test(item.key))?.value || "ops account";
+        const host = endpointHost && endpointHost !== "-" ? endpointHost : "db-host";
+        const portSuffix = endpointPort && endpointPort !== "-" ? `:${endpointPort}` : "";
+        const target = dbName && dbName !== "-" ? dbName : db.title;
+
+        return {
+          bash: [
+            `$ kubectl exec -it ${db.title}-0 -n ${db.namespace || "workspace"} -- bash`,
+            `$ export DB_TARGET=${host}${portSuffix}`,
+            "$ ./connect.sh"
+          ].join("\n"),
+          dbcli: [
+            `endpoint: ${host}${portSuffix}`,
+            `target: ${target}`,
+            `user: ${opsUser}`,
+            "",
+            "> status"
+          ].join("\n")
+        };
+      };
+
+      const consolePreset = buildConsolePreset();
+
+      const renderConsoleTerminal = (mode, connected) => {
+        const title = mode === "bash" ? "Bash 선택됨" : "DB CLI 선택됨";
+        const body = mode === "bash" ? consolePreset.bash : consolePreset.dbcli;
+        const suffix = connected ? "\n\nsession status: connected" : "";
+        return `${title}\n\n${body}${suffix}`;
+      };
+
       const renderConsoleWorkbench = () => {
         const connectedConsoles = Array.isArray(db.access.consoles) ? db.access.consoles : [];
         const primaryConsole = connectedConsoles.find((item) => item.status === "running") || connectedConsoles[0] || null;
-
-        if (!primaryConsole) {
-          return `
-            <article class="console-launch-card">
-              <div class="console-launch-top">
-                <div>
-                  <div class="console-launch-title">연결된 콘솔 없음</div>
-                  <div class="console-launch-meta">아직 이 데이터베이스에 연결된 콘솔이 없습니다. Consoles Hub에서 콘솔을 생성하거나 바인딩해 주세요.</div>
-                </div>
-              </div>
-              <div class="console-open-buttons">
-                <a class="inline-btn" href="workspace_tools_hub.html" style="height:36px; padding:0 14px; font-size:12px;">
-                  <span class="material-icons-round">web</span>
-                  Consoles Hub 보기
-                </a>
-              </div>
-            </article>
-          `;
-        }
-
-        const statusToneClass = pillToneMap[primaryConsole.statusTone] || "status-warning";
-        const statusIcon = statusToneClass === "status-healthy"
-          ? "check_circle"
-          : statusToneClass === "status-warning"
-            ? "schedule"
-            : "error";
+        const statusToneClass = primaryConsole ? (pillToneMap[primaryConsole.statusTone] || "status-warning") : "status-warning";
+        const statusIcon = !primaryConsole
+          ? "link_off"
+          : statusToneClass === "status-healthy"
+            ? "check_circle"
+            : statusToneClass === "status-warning"
+              ? "schedule"
+              : "error";
+        const title = primaryConsole ? primaryConsole.name : "웹 콘솔 예제";
+        const meta = primaryConsole
+          ? (primaryConsole.meta || "이 데이터베이스와 연결된 콘솔입니다. 실제 open API와 예제 세션 프리뷰를 함께 확인할 수 있습니다.")
+          : "실제 연결된 콘솔이 없어도 DB CLI/Bash 예제 흐름은 확인할 수 있습니다.";
+        const liveNote = primaryConsole
+          ? primaryConsole.canOpen
+            ? "모드를 누르면 프리뷰가 바뀝니다. 실제 콘솔 열기는 아래 연결 카드에서 별도로 할 수 있습니다."
+            : primaryConsole.canStart
+              ? "아직 콘솔이 올라오지 않았습니다. Run으로 기동한 뒤 Bash 또는 DB CLI로 바로 들어갈 수 있습니다."
+              : primaryConsole.canStop
+                ? "현재 콘솔을 사용할 수 있습니다. 필요하면 Stop으로 중지할 수 있습니다."
+              : "현재 상태에서는 실제 콘솔 열기가 불가합니다."
+          : "연결된 콘솔이 없어서 프리뷰만 제공합니다.";
+        const launchId = primaryConsole?.canOpen && primaryConsole?.id ? primaryConsole.id : "";
+        const lifecycleAction = primaryConsole?.canStart && primaryConsole?.id
+          ? `
+              <button class="inline-btn secondary console-lifecycle-btn" type="button" data-console-primary-action="${primaryConsole.id}" data-start-console-id="${primaryConsole.id}" style="height:36px; padding:0 14px; font-size:12px;">
+                <span class="material-icons-round">play_arrow</span>
+                Run
+              </button>
+            `
+          : primaryConsole?.canStop && primaryConsole?.id
+            ? `
+              <button class="inline-btn secondary console-lifecycle-btn" type="button" data-console-primary-action="${primaryConsole.id}" data-stop-console-id="${primaryConsole.id}" style="height:36px; padding:0 14px; font-size:12px;">
+                <span class="material-icons-round">stop_circle</span>
+                Stop
+              </button>
+            `
+          : "";
 
         return `
           <article class="console-launch-card">
             <div class="console-launch-top">
               <div>
-                <div class="console-launch-title">${primaryConsole.name}</div>
-                <div class="console-launch-meta">${primaryConsole.meta || "이 데이터베이스와 연결된 콘솔입니다."}</div>
+                <div class="console-launch-title">${title}</div>
+                <div class="console-launch-meta">${meta}</div>
               </div>
             </div>
             <div class="console-launch-actions">
-              <div class="console-mode-group">
-                <span class="console-mode-btn active">
+              <div class="console-mode-group" id="consoleModeGroup">
+                <button class="console-mode-btn" type="button" data-console-mode="bash" data-open-console-id="${launchId}">
+                  <span class="material-icons-round">terminal</span>
+                  Bash
+                </button>
+                <button class="console-mode-btn active" type="button" data-console-mode="dbcli" data-open-console-id="${launchId}">
                   <span class="material-icons-round">web</span>
-                  ${primaryConsole.typeLabel || "Console"}
-                </span>
-                <span class="console-mode-btn">
-                  <span class="material-icons-round">link</span>
-                  Connected
-                </span>
+                  DB CLI
+                </button>
               </div>
-              <div class="console-launch-status" data-console-open-status="${primaryConsole.id || ""}">
-                <span class="material-icons-round">${statusIcon}</span>
-                ${primaryConsole.statusLabel || "Unknown"}
-              </div>
+              ${lifecycleAction}
             </div>
-            <div class="console-open-note">열기 버튼은 연결된 콘솔의 open API를 호출한 뒤 새 탭으로 이동합니다.</div>
-            <div class="console-open-buttons">
-              <button class="inline-btn" type="button" data-open-console-id="${primaryConsole.id || ""}" style="height:36px; padding:0 14px; font-size:12px;" ${primaryConsole.id ? "" : "disabled"}>
-                <span class="material-icons-round">open_in_new</span>
-                콘솔 열기
-              </button>
-              <a class="inline-btn secondary" href="workspace_tools_hub.html" style="height:36px; padding:0 14px; font-size:12px;">
-                <span class="material-icons-round">dashboard_customize</span>
-                Consoles Hub
-              </a>
-            </div>
+            <div class="console-open-note" id="consoleLiveNote">${liveNote}</div>
+            <pre class="console-terminal" id="consoleTerminal">${renderConsoleTerminal("dbcli", Boolean(launchId))}</pre>
           </article>
         `;
       };
@@ -3536,21 +3626,16 @@
               <div class="project-top">
                 <div class="project-name">${item.name}</div>
                 <span class="pill engine">${item.typeLabel || (index === 0 ? "기본 콘솔" : "연결 콘솔")}</span>
-                <span class="pill ${pillToneMap[item.statusTone] || "status-warning"}">${item.statusLabel || "Connected"}</span>
               </div>
               <div class="project-meta">${item.meta}</div>
               <div class="project-tags">
                 <span class="tag">접근 계정 ${accessUser}</span>
-                <span class="tag">${item.openUrl ? "open url 연결됨" : "open url 없음"}</span>
+                <span class="tag">${item.canStop ? "Stop 가능" : item.canOpen ? "즉시 열기 가능" : item.canStart ? "Run 가능" : "실행 중 아님"}</span>
               </div>
             </div>
             <div class="console-binding-side">
-              <div>
-                <div class="tiny-label">Binding</div>
-                <div class="console-binding-status">${item.statusLabel || "연결됨"}</div>
-              </div>
-              <button class="project-link" type="button" data-open-console-id="${item.id || ""}" ${item.id ? "" : "disabled"}>
-                콘솔 열기<span class="material-icons-round">chevron_right</span>
+              <button class="project-link console-binding-action" type="button" data-console-binding-action="${item.id || ""}" data-open-console-id="${item.canOpen && item.id ? item.id : ""}" data-start-console-id="${!item.canOpen && item.canStart && item.id ? item.id : ""}" ${item.canOpen || item.canStart || item.canStop ? "" : "disabled"}>
+                ${item.canOpen ? "바로 열기" : item.canStart ? "Run" : item.canStop ? "Stop" : "열기 불가"}<span class="material-icons-round">chevron_right</span>
               </button>
             </div>
           </article>
@@ -3749,7 +3834,7 @@
             </div>
             <div class="tb-spacer"></div>
             <div class="tb-icon"><span class="material-icons-round">notifications_none</span><div class="dot"></div></div>
-            <div class="avatar">TN</div>
+            <a class="avatar" href="workspace_settings.html" aria-label="설정 페이지 열기">TN</a>
           </div>
       </template>
 
@@ -3971,9 +4056,13 @@
       const snapshotRotationCountEl = document.getElementById("snapshotRotationCount");
       const detailTabButtons = Array.from(document.querySelectorAll("[data-detail-tab]"));
       const detailPanels = Array.from(document.querySelectorAll("[data-detail-panel]"));
-      const consoleOpenButtons = Array.from(document.querySelectorAll("[data-open-console-id]"));
+      const consoleModeButtons = Array.from(document.querySelectorAll("[data-console-mode]"));
+      const consoleTerminalEl = document.getElementById("consoleTerminal");
+      const consoleConnectStatusEl = document.getElementById("consoleConnectStatus");
+      const consoleLiveNoteEl = document.getElementById("consoleLiveNote");
       const secretToggleButtons = Array.from(document.querySelectorAll("[data-secret-toggle]"));
       const secretCopyButtons = Array.from(document.querySelectorAll("[data-secret-copy]"));
+      let selectedConsoleMode = "dbcli";
 
       const setActiveDetailPanel = (panelName) => {
         const nextPanel = panelName || "overview";
@@ -3997,6 +4086,409 @@
         });
 
         setActiveDetailPanel("overview");
+      }
+
+      const setConsoleStatusMarkup = (node, icon, text = "") => {
+        if (!node) {
+          return;
+        }
+        node.innerHTML = `<span class="material-icons-round" aria-label="${text || ""}">${icon}</span>${text ? ` ${text}` : ""}`;
+      };
+
+      const setConsoleLiveNote = (text) => {
+        if (consoleLiveNoteEl) {
+          consoleLiveNoteEl.textContent = text;
+        }
+      };
+
+      const setConsoleModeDisabled = (disabled) => {
+        consoleModeButtons.forEach((button) => {
+          button.disabled = false;
+          button.dataset.consolePreviewOnly = disabled ? "true" : "false";
+        });
+      };
+
+      const setConsoleModeConsoleId = (consoleId) => {
+        consoleModeButtons.forEach((button) => {
+          button.dataset.openConsoleId = consoleId || "";
+        });
+      };
+
+      const setConsoleTerminalConnected = (connected) => {
+        if (consoleTerminalEl) {
+          consoleTerminalEl.textContent = renderConsoleTerminal(selectedConsoleMode, connected);
+        }
+      };
+
+      const setConsolePrimaryButton = (consoleId, {
+        action = "start",
+        icon = "play_arrow",
+        label = "Run",
+        disabled = false
+      } = {}) => {
+        if (!consoleId) {
+          return;
+        }
+
+        document.querySelectorAll(`[data-console-primary-action="${consoleId}"]`).forEach((button) => {
+          button.disabled = disabled;
+          button.dataset.startConsoleId = action === "start" ? consoleId : "";
+          button.dataset.stopConsoleId = action === "stop" ? consoleId : "";
+          button.innerHTML = `<span class="material-icons-round">${icon}</span>${label}`;
+        });
+      };
+
+      const setConsoleBindingAction = (consoleId, {
+        action = "disabled",
+        label = "열기 불가",
+        disabled = false
+      } = {}) => {
+        if (!consoleId) {
+          return;
+        }
+
+        document.querySelectorAll(`[data-console-binding-action="${consoleId}"]`).forEach((button) => {
+          button.disabled = disabled || action === "disabled";
+          button.dataset.openConsoleId = action === "open" ? consoleId : "";
+          button.dataset.startConsoleId = action === "start" ? consoleId : "";
+          button.dataset.stopConsoleId = action === "stop" ? consoleId : "";
+          button.innerHTML = `${label}<span class="material-icons-round">chevron_right</span>`;
+        });
+      };
+
+      const applyConsoleRunningState = (consoleId, statusNode, statusLabel = "사용 가능") => {
+        setConsoleOpenStatus(consoleId, "check_circle", statusLabel);
+        setConsoleStatusMarkup(statusNode, "check_circle", statusLabel);
+        setConsolePrimaryButton(consoleId, {
+          action: "stop",
+          icon: "stop_circle",
+          label: "Stop",
+          disabled: false
+        });
+        setConsoleBindingAction(consoleId, {
+          action: "open",
+          label: "바로 열기",
+          disabled: false
+        });
+        setConsoleModeConsoleId(consoleId);
+        setConsoleModeDisabled(false);
+        setConsoleTerminalConnected(true);
+        setConsoleLiveNote("현재 콘솔을 사용할 수 있습니다. 필요하면 Stop으로 중지할 수 있습니다.");
+      };
+
+      const applyConsoleStoppedState = (consoleId, statusNode, statusLabel = "중지") => {
+        setConsoleOpenStatus(consoleId, "pause_circle", statusLabel);
+        setConsoleStatusMarkup(statusNode, "pause_circle", statusLabel);
+        setConsolePrimaryButton(consoleId, {
+          action: "start",
+          icon: "play_arrow",
+          label: "Run",
+          disabled: false
+        });
+        setConsoleBindingAction(consoleId, {
+          action: "start",
+          label: "Run",
+          disabled: false
+        });
+        setConsoleModeConsoleId("");
+        setConsoleModeDisabled(true);
+        setConsoleTerminalConnected(false);
+        setConsoleLiveNote("현재 콘솔이 중지되어 있습니다. Run으로 기동한 뒤 Bash 또는 DB CLI로 바로 들어갈 수 있습니다.");
+      };
+
+      const setConsoleStartButtonsState = (consoleId, {
+        disabled = true,
+        icon = "schedule",
+        label = "시작 중"
+      } = {}) => {
+        if (!consoleId) {
+          return;
+        }
+
+        document.querySelectorAll(`[data-start-console-id="${consoleId}"]`).forEach((button) => {
+          button.disabled = disabled;
+          button.innerHTML = `<span class="material-icons-round">${icon}</span>${label}`;
+        });
+      };
+
+      const setConsoleStopButtonsState = (consoleId, {
+        disabled = true,
+        icon = "schedule",
+        label = "중지 중"
+      } = {}) => {
+        if (!consoleId) {
+          return;
+        }
+
+        document.querySelectorAll(`[data-stop-console-id="${consoleId}"]`).forEach((button) => {
+          button.disabled = disabled;
+          button.innerHTML = `<span class="material-icons-round">${icon}</span>${label}`;
+        });
+      };
+
+      const wait = (ms) => new Promise((resolve) => {
+        window.setTimeout(resolve, ms);
+      });
+
+      const pollConsoleUntilReady = async (consoleId, statusNode) => {
+        if (!consoleId) {
+          return;
+        }
+
+        const maxAttempts = 30;
+        const intervalMs = 2000;
+
+        for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+          try {
+            const payload = await fetchJson(`/consoles/${encodeURIComponent(consoleId)}`);
+            const detail = extractData(payload, null);
+            const status = String(detail?.status || "").toLowerCase();
+            const statusLabel = detail?.statusLabel || "Unknown";
+            const canOpen = Boolean(detail?.capabilities?.canOpen || status === "running");
+
+            if (canOpen) {
+              applyConsoleRunningState(consoleId, statusNode, "사용 가능");
+              return;
+            }
+
+            if (status === "error") {
+              setConsoleOpenStatus(consoleId, "error", statusLabel);
+              setConsoleStatusMarkup(statusNode, "error", statusLabel);
+              setConsoleStartButtonsState(consoleId, {
+                disabled: false,
+                icon: "play_arrow",
+                label: "Run"
+              });
+              setConsoleModeDisabled(false);
+              setConsoleLiveNote("콘솔 시작 중 오류가 발생했습니다.");
+              return;
+            }
+
+            setConsoleOpenStatus(consoleId, "schedule", statusLabel);
+            setConsoleStatusMarkup(statusNode, "schedule", statusLabel);
+          } catch {
+            // ignore transient polling failures
+          }
+
+          await wait(intervalMs);
+        }
+
+        setConsoleOpenStatus(consoleId, "schedule", "준비 중");
+        setConsoleStatusMarkup(statusNode, "schedule", "준비 중");
+        setConsoleStartButtonsState(consoleId, {
+          disabled: false,
+          icon: "refresh",
+          label: "다시 시도"
+        });
+        setConsoleModeDisabled(false);
+        setConsoleLiveNote("콘솔 준비 확인이 지연되고 있습니다. 잠시 후 다시 확인해 주세요.");
+      };
+
+      const pollConsoleUntilStopped = async (consoleId, statusNode) => {
+        if (!consoleId) {
+          return;
+        }
+
+        const maxAttempts = 30;
+        const intervalMs = 2000;
+
+        for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+          try {
+            const payload = await fetchJson(`/consoles/${encodeURIComponent(consoleId)}`);
+            const detail = extractData(payload, null);
+            const status = String(detail?.status || "").toLowerCase();
+            const statusLabel = detail?.statusLabel || "Unknown";
+
+            if (status === "stopped") {
+              applyConsoleStoppedState(consoleId, statusNode, "중지");
+              return;
+            }
+
+            if (status === "error") {
+              setConsoleOpenStatus(consoleId, "error", statusLabel);
+              setConsoleStatusMarkup(statusNode, "error", statusLabel);
+              setConsoleStopButtonsState(consoleId, {
+                disabled: false,
+                icon: "stop_circle",
+                label: "Stop"
+              });
+              setConsoleLiveNote("콘솔 중지 중 오류가 발생했습니다.");
+              return;
+            }
+
+            setConsoleOpenStatus(consoleId, "schedule", statusLabel);
+            setConsoleStatusMarkup(statusNode, "schedule", statusLabel);
+          } catch {
+            // ignore transient polling failures
+          }
+
+          await wait(intervalMs);
+        }
+
+        setConsoleOpenStatus(consoleId, "schedule", "중지 중");
+        setConsoleStatusMarkup(statusNode, "schedule", "중지 중");
+        setConsoleStopButtonsState(consoleId, {
+          disabled: false,
+          icon: "stop_circle",
+          label: "Stop"
+        });
+        setConsoleLiveNote("콘솔 중지 확인이 지연되고 있습니다. 잠시 후 다시 확인해 주세요.");
+      };
+
+      const openConsoleInNewTab = async (consoleId, statusNode) => {
+        if (!consoleId) {
+          return;
+        }
+
+        setConsoleStatusMarkup(statusNode, "progress_activity", "Opening");
+
+        try {
+          const payload = await requestJson(`/consoles/${encodeURIComponent(consoleId)}/open`, {
+            method: "POST"
+          });
+          const result = extractData(payload, payload);
+          const targetUrl = result?.url;
+
+          if (!targetUrl) {
+            throw new Error("Console open URL is missing");
+          }
+
+          window.open(targetUrl, "_blank", "noopener");
+          setConsoleStatusMarkup(statusNode, "check_circle", "Opened");
+          if (consoleConnectStatusEl && statusNode === consoleConnectStatusEl) {
+            setConsoleLiveNote("새 탭에서 콘솔을 열었습니다.");
+          }
+        } catch (error) {
+          const rawMessage = String(error?.message || "Open failed").replace(/^\d+\s*/, "").trim();
+          const shortMessage = rawMessage.length > 42 ? `${rawMessage.slice(0, 42)}...` : rawMessage;
+          setConsoleStatusMarkup(statusNode, "error", shortMessage || "Open failed");
+          if (consoleConnectStatusEl && statusNode === consoleConnectStatusEl) {
+            setConsoleLiveNote(shortMessage || "Open failed");
+          }
+        }
+      };
+
+      const startConsoleRuntime = async (consoleId, button, statusNode) => {
+        if (!consoleId) {
+          return;
+        }
+
+        const originalHtml = button ? button.innerHTML : "";
+        if (button) {
+          button.disabled = true;
+          button.innerHTML = '<span class="material-icons-round">progress_activity</span>시작 중';
+        }
+        setConsoleOpenStatus(consoleId, "progress_activity", "시작 중");
+        setConsoleStatusMarkup(statusNode, "progress_activity", "시작 중");
+        setConsoleStartButtonsState(consoleId, {
+          disabled: true,
+          icon: "progress_activity",
+          label: "시작 중"
+        });
+        setConsoleModeDisabled(true);
+        setConsoleLiveNote("시작 요청을 보냈습니다. 콘솔이 준비되면 Bash 또는 DB CLI로 열 수 있습니다.");
+
+        try {
+          await requestJson(`/consoles/${encodeURIComponent(consoleId)}/start`, {
+            method: "POST"
+          });
+          setConsoleOpenStatus(consoleId, "schedule", "시작 중");
+          setConsoleStatusMarkup(statusNode, "schedule", "시작 중");
+          setConsoleStartButtonsState(consoleId, {
+            disabled: true,
+            icon: "schedule",
+            label: "시작 중"
+          });
+          await pollConsoleUntilReady(consoleId, statusNode);
+        } catch (error) {
+          const rawMessage = String(error?.message || "Start failed").replace(/^\d+\s*/, "").trim();
+          const shortMessage = rawMessage.length > 42 ? `${rawMessage.slice(0, 42)}...` : rawMessage;
+          setConsoleOpenStatus(consoleId, "error", shortMessage || "Start failed");
+          setConsoleStatusMarkup(statusNode, "error", shortMessage || "Start failed");
+          setConsoleStartButtonsState(consoleId, {
+            disabled: false,
+            icon: "play_arrow",
+            label: "Run"
+          });
+          if (button) {
+            button.disabled = false;
+            button.innerHTML = originalHtml;
+          }
+          setConsoleModeDisabled(false);
+          setConsoleLiveNote(shortMessage || "Start failed");
+        }
+      };
+
+      const stopConsoleRuntime = async (consoleId, button, statusNode) => {
+        if (!consoleId) {
+          return;
+        }
+
+        if (button) {
+          button.disabled = true;
+          button.innerHTML = '<span class="material-icons-round">progress_activity</span>중지 중';
+        }
+
+        setConsoleOpenStatus(consoleId, "progress_activity", "중지 중");
+        setConsoleStatusMarkup(statusNode, "progress_activity", "중지 중");
+        setConsoleStopButtonsState(consoleId, {
+          disabled: true,
+          icon: "progress_activity",
+          label: "중지 중"
+        });
+        setConsoleModeDisabled(true);
+        setConsoleLiveNote("중지 요청을 보냈습니다. 콘솔 중지 여부를 확인하는 중입니다.");
+
+        try {
+          await requestJson(`/consoles/${encodeURIComponent(consoleId)}/stop`, {
+            method: "POST"
+          });
+          setConsoleOpenStatus(consoleId, "schedule", "중지 중");
+          setConsoleStatusMarkup(statusNode, "schedule", "중지 중");
+          setConsoleStopButtonsState(consoleId, {
+            disabled: true,
+            icon: "schedule",
+            label: "중지 중"
+          });
+          await pollConsoleUntilStopped(consoleId, statusNode);
+        } catch (error) {
+          const rawMessage = String(error?.message || "Stop failed").replace(/^\d+\s*/, "").trim();
+          const shortMessage = rawMessage.length > 42 ? `${rawMessage.slice(0, 42)}...` : rawMessage;
+          setConsoleOpenStatus(consoleId, "error", shortMessage || "Stop failed");
+          setConsoleStatusMarkup(statusNode, "error", shortMessage || "Stop failed");
+          setConsoleStopButtonsState(consoleId, {
+            disabled: false,
+            icon: "stop_circle",
+            label: "Stop"
+          });
+          setConsoleModeDisabled(false);
+          setConsoleLiveNote(shortMessage || "Stop failed");
+        }
+      };
+
+      if (consoleModeButtons.length && consoleTerminalEl) {
+        consoleModeButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedConsoleMode = button.dataset.consoleMode || "dbcli";
+            consoleModeButtons.forEach((item) => item.classList.toggle("active", item === button));
+            const consoleId = button.dataset.openConsoleId;
+            const connected = Boolean(consoleId);
+            consoleTerminalEl.textContent = renderConsoleTerminal(selectedConsoleMode, connected);
+
+            if (!consoleId && consoleConnectStatusEl && !consoleConnectStatusEl.dataset.consoleOpenStatus) {
+              setConsoleStatusMarkup(consoleConnectStatusEl, "check_circle", selectedConsoleMode === "bash" ? "Bash 연결됨" : "DB CLI 연결됨");
+            }
+            if (consoleId) {
+              setConsoleLiveNote(selectedConsoleMode === "bash"
+                ? "Bash 프리뷰를 보고 있습니다. 실제 콘솔 열기는 아래 연결 카드에서 할 수 있습니다."
+                : "DB CLI 프리뷰를 보고 있습니다. 실제 콘솔 열기는 아래 연결 카드에서 할 수 있습니다.");
+            } else {
+              setConsoleLiveNote(selectedConsoleMode === "bash"
+                ? "Bash 예제 프리뷰를 보고 있습니다. 콘솔이 준비되면 실제로 열 수 있습니다."
+                : "DB CLI 예제 프리뷰를 보고 있습니다. 콘솔이 준비되면 실제로 열 수 있습니다.");
+            }
+          });
+        });
       }
 
       if (snapshotListEl && manualSnapshotButton) {
@@ -4097,47 +4589,76 @@
         });
       }
 
-      const setConsoleOpenStatus = (consoleId, icon, text) => {
+      const setConsoleOpenStatus = (consoleId, icon, text = "") => {
         document.querySelectorAll(`[data-console-open-status="${consoleId}"]`).forEach((node) => {
-          node.innerHTML = `<span class="material-icons-round">${icon}</span>${text}`;
+          node.innerHTML = `<span class="material-icons-round" aria-label="${text || ""}">${icon}</span>${text ? ` ${text}` : ""}`;
         });
       };
 
-      if (consoleOpenButtons.length) {
-        consoleOpenButtons.forEach((button) => {
-          button.addEventListener("click", async () => {
-            const consoleId = button.dataset.openConsoleId;
-            if (!consoleId) {
-              return;
-            }
+      document.addEventListener("click", async (event) => {
+        const primaryButton = event.target.closest("[data-console-primary-action]");
+        if (primaryButton) {
+          const startConsoleId = primaryButton.dataset.startConsoleId;
+          const stopConsoleId = primaryButton.dataset.stopConsoleId;
 
-            const originalHtml = button.innerHTML;
-            button.disabled = true;
-            button.innerHTML = '<span class="material-icons-round">progress_activity</span>열기 중';
-            setConsoleOpenStatus(consoleId, "progress_activity", "Opening");
+          if (startConsoleId) {
+            await startConsoleRuntime(startConsoleId, primaryButton, consoleConnectStatusEl);
+          } else if (stopConsoleId) {
+            await stopConsoleRuntime(stopConsoleId, primaryButton, consoleConnectStatusEl);
+          }
+          return;
+        }
 
-            try {
-              const payload = await requestJson(`/consoles/${encodeURIComponent(consoleId)}/open`, {
-                method: "POST"
-              });
-              const result = extractData(payload, payload);
-              const targetUrl = result?.url;
+        const bindingButton = event.target.closest("[data-console-binding-action]");
+        if (!bindingButton) {
+          return;
+        }
 
-              if (!targetUrl) {
-                throw new Error("Console open URL is missing");
-              }
+        const statusNode = bindingButton
+          .closest(".console-binding-side")
+          ?.querySelector("[data-console-open-status]");
+        const consoleId = bindingButton.dataset.openConsoleId;
+        const startConsoleId = bindingButton.dataset.startConsoleId;
+        const stopConsoleId = bindingButton.dataset.stopConsoleId;
 
-              window.open(targetUrl, "_blank", "noopener");
-              setConsoleOpenStatus(consoleId, "check_circle", "Opened");
-            } catch (error) {
-              setConsoleOpenStatus(consoleId, "error", "Open failed");
-            } finally {
-              button.disabled = false;
-              button.innerHTML = originalHtml;
-            }
+        if (startConsoleId) {
+          await startConsoleRuntime(startConsoleId, bindingButton, statusNode || consoleConnectStatusEl);
+          return;
+        }
+
+        if (stopConsoleId) {
+          await stopConsoleRuntime(stopConsoleId, bindingButton, statusNode || consoleConnectStatusEl);
+          return;
+        }
+
+        if (!consoleId) {
+          return;
+        }
+
+        bindingButton.disabled = true;
+        setConsoleOpenStatus(consoleId, "progress_activity", "Opening");
+
+        try {
+          const payload = await requestJson(`/consoles/${encodeURIComponent(consoleId)}/open`, {
+            method: "POST"
           });
-        });
-      }
+          const result = extractData(payload, payload);
+          const targetUrl = result?.url;
+
+          if (!targetUrl) {
+            throw new Error("Console open URL is missing");
+          }
+
+          window.open(targetUrl, "_blank", "noopener");
+          setConsoleOpenStatus(consoleId, "check_circle", "Opened");
+        } catch (error) {
+          const rawMessage = String(error?.message || "Open failed").replace(/^\d+\s*/, "").trim();
+          const shortMessage = rawMessage.length > 42 ? `${rawMessage.slice(0, 42)}...` : rawMessage;
+          setConsoleOpenStatus(consoleId, "error", shortMessage || "Open failed");
+        } finally {
+          bindingButton.disabled = false;
+        }
+      });
     })();
   </script>
   <script src="ax_studio_topbar.js"></script>

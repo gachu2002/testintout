@@ -23,8 +23,6 @@ import {
 } from '@/features/domain-hub/hooks/useDomainHubQueries';
 import type { DomainStatusFilter } from '@/features/domain-hub/types';
 
-const railDomainId = '67b7f67ddefef46bea926e61';
-
 export function DomainHubPageContent() {
   const [activeStatus, setActiveStatus] = useState<DomainStatusFilter>('all');
   const domainsQuery = useDomainHubDomainsQuery(6, '');
@@ -33,10 +31,11 @@ export function DomainHubPageContent() {
   const tipsQuery = useDomainHubTipsQuery();
   const guideLinksQuery = useDomainHubGuideLinksQuery();
   const certificatePanelQuery = useDomainCertificatePanelQuery();
+  const domains = domainsQuery.data?.items ?? [];
+  const railDomainId = domains[0]?.id ?? '';
   const certificateDetailQuery = useDomainCertificateDetailQuery(railDomainId);
   const connectionPanelQuery = useDomainConnectionPanelQuery();
   const connectionDetailQuery = useDomainConnectionDetailQuery(railDomainId);
-  const domains = domainsQuery.data?.items ?? [];
   const visibleDomains = domains.filter((domain) => {
     if (activeStatus === 'all') return true;
     if (activeStatus === 'certificate') return domain.certificate.status !== 'none';

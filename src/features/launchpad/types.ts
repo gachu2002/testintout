@@ -52,6 +52,49 @@ export type LaunchpadAnnouncement = {
   type: string;
 };
 
+export type LaunchpadBannerAction = {
+  href: string;
+  icon: string;
+  label: string;
+};
+
+export type LaunchpadBannerSnapshotRow = {
+  description: string;
+  icon: string;
+  title: string;
+};
+
+export type LaunchpadBanner = {
+  chips: string[];
+  created: string;
+  endAt: string | null;
+  eyebrow: string;
+  eyebrowIcon: string;
+  href: string;
+  id: string;
+  lastModified: string;
+  message: string;
+  name: string;
+  pinned: boolean;
+  primaryAction: LaunchpadBannerAction;
+  priority: number;
+  publishedAt: string | null;
+  secondaryAction: LaunchpadBannerAction;
+  showBackdrop: boolean;
+  snapshotRows: LaunchpadBannerSnapshotRow[];
+  snapshotTitle: string;
+  startAt: string | null;
+  status: string;
+  theme: string;
+  title: string;
+  type: string;
+  updatedAt?: string;
+  visualIcon: string;
+  visualMeta: string;
+  visualMode: string;
+  visualTitle: string;
+};
+
 export type ArticleTab = {
   id: string;
   label: string;
@@ -272,6 +315,7 @@ export type AiGallerySpotlightResponseData = AiGallerySpotlight;
 export type LaunchpadOverview = {
   announcements: AnnouncementsResponseData;
   articles: ArticlesResponseData;
+  banners: LaunchpadBanner[];
   guides: GuideLinksPanel;
   hero: LaunchpadHero;
   serviceMenu: {

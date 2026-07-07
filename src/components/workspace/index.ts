@@ -6,6 +6,7 @@ export * from '@/components/workspace/HubHeroStyles';
 export * from '@/components/workspace/InfoPanels';
 export * from '@/components/workspace/layout';
 export * from '@/components/workspace/patterns';
+export * from '@/components/workspace/Progress';
 export * from '@/components/workspace/QueryErrorAlerts';
 export * from '@/components/workspace/ResourceCardPrimitives';
 export * from '@/components/workspace/ResourceCards';

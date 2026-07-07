@@ -87,10 +87,12 @@ function buildFilterOptions(
   const allCount =
     stats?.totalRealms ?? [...counts.values()].reduce((sum, count) => sum + count, 0);
 
-  return referenceKindOrder.map((kind) => ({
-    count: kind === 'all' ? allCount : (counts.get(kind) ?? 0),
-    kind,
-  }));
+  return referenceKindOrder
+    .map((kind) => ({
+      count: kind === 'all' ? allCount : (counts.get(kind) ?? 0),
+      kind,
+    }))
+    .filter((option) => option.kind === 'all' || option.count > 0);
 }
 
 function buildResultCopy(loadedCount: number, total: number | undefined) {

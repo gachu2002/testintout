@@ -1,6 +1,7 @@
 (function () {
-  const config = window.DETAIL_PAGE_CONFIG;
-  if (!config || !config.items || !Object.keys(config.items).length) return;
+  function renderWorkspaceDetailPage(nextConfig) {
+  const config = nextConfig || window.DETAIL_PAGE_CONFIG;
+  if (!config || !config.items || !Object.keys(config.items).length) return null;
 
   const escapeAttribute = (value) => String(value || "")
     .replace(/&/g, "&amp;")
@@ -209,4 +210,10 @@
       button.addEventListener("click", () => setActivePod(button.dataset.logPodButton));
     });
   }
+
+  return { config, currentKey, item };
+  }
+
+  window.renderWorkspaceDetailPage = renderWorkspaceDetailPage;
+  renderWorkspaceDetailPage();
 })();

@@ -14,7 +14,7 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import type { ReactNode } from 'react';
 
-import { Badge, IconTile, Metric } from '@/components/workspace';
+import { Badge, buildResourceResultCopy, IconTile, Metric } from '@/components/workspace';
 import {
   ResourceCardFooter,
   ResourceCardRoot,
@@ -35,7 +35,7 @@ import {
 } from '@/components/workspace/ResourceCards';
 import { consoleHubSectionStatus } from '@/features/console-hub/sectionStatus';
 import type { ConsoleBinding, ConsoleResource } from '@/features/console-hub/types';
-import { formatLabel } from '@/lib/formatters';
+import { formatLabel, getInitials } from '@/lib/formatters';
 import type { ToneName } from '@/styles/tokens';
 
 const panelCopy = {
@@ -90,7 +90,13 @@ export function ConsoleCardsPanel({
       isEmpty={consoles.length === 0}
       isLoading={isLoading}
       label={panelCopy.label}
-      resultCopy={buildResultCopy(activeType, consoles.length, loadedCount, total)}
+      resultCopy={buildResourceResultCopy({
+        filterLabel: formatLabel(activeType).toLowerCase(),
+        isDefault: activeType === 'all',
+        loadedCount,
+        total,
+        visibleCount: consoles.length,
+      })}
       skeletonHeight={318}
       status={consoleHubSectionStatus.cards}
       title={panelCopy.title}
@@ -153,7 +159,7 @@ function ConsoleCard({ consoleItem }: { consoleItem: ConsoleResource }) {
       <ResourceInfoBlock>
         <ResourceInfoCard>
           <ResourceInfoBadge hub="consoles" tileSize={30}>
-            {getInitials(consoleItem.owner.displayName)}
+            {getInitials(consoleItem.owner.displayName, 'OW')}
           </ResourceInfoBadge>
           <ResourceInfoText meta={consoleItem.owner.email} title={consoleItem.owner.displayName} />
         </ResourceInfoCard>
@@ -191,20 +197,6 @@ function BindingRows({ bindings, typeColor }: { bindings: ConsoleBinding[]; type
       ))}
     </Stack>
   );
-}
-
-function buildResultCopy(
-  activeType: string,
-  visibleCount: number,
-  loadedCount: number,
-  total?: number,
-) {
-  const totalCopy = typeof total === 'number' ? `${total.toLocaleString()} total` : 'total unknown';
-  const loadedCopy = `${loadedCount.toLocaleString()} loaded`;
-
-  if (activeType === 'all') return `${loadedCopy} · ${totalCopy}`;
-
-  return `${visibleCount.toLocaleString()} ${formatLabel(activeType).toLowerCase()} · ${loadedCopy}`;
 }
 
 function getTypeMeta(
@@ -277,16 +269,4 @@ function getEngineAbbr(engine: string) {
   if (normalized.length <= 2) return normalized || 'DB';
 
   return normalized.slice(0, 2);
-}
-
-function getInitials(name: string) {
-  const initials = name
-    .split(/[-_\s.]+/)
-    .map((part) => part.at(0))
-    .filter((part): part is string => Boolean(part))
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
-
-  return initials || 'OW';
 }

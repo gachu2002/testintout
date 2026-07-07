@@ -10,16 +10,20 @@ import CodeRoundedIcon from '@mui/icons-material/CodeRounded';
 import DataObjectRoundedIcon from '@mui/icons-material/DataObjectRounded';
 import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 import DeveloperBoardRoundedIcon from '@mui/icons-material/DeveloperBoardRounded';
+import FactCheckRoundedIcon from '@mui/icons-material/FactCheckRounded';
 import FolderRoundedIcon from '@mui/icons-material/FolderRounded';
 import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
+import InsightsRoundedIcon from '@mui/icons-material/InsightsRounded';
 import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded';
 import KeyRoundedIcon from '@mui/icons-material/KeyRounded';
 import LocalFireDepartmentRoundedIcon from '@mui/icons-material/LocalFireDepartmentRounded';
 import MenuBookRoundedIcon from '@mui/icons-material/MenuBookRounded';
+import PlayCircleRoundedIcon from '@mui/icons-material/PlayCircleRounded';
 import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
 import QueryStatsRoundedIcon from '@mui/icons-material/QueryStatsRounded';
 import RocketLaunchRoundedIcon from '@mui/icons-material/RocketLaunchRounded';
 import SavingsRoundedIcon from '@mui/icons-material/SavingsRounded';
+import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
 import ScienceRoundedIcon from '@mui/icons-material/ScienceRounded';
 import SecurityRoundedIcon from '@mui/icons-material/SecurityRounded';
 import SmartToyRoundedIcon from '@mui/icons-material/SmartToyRounded';
@@ -74,8 +78,12 @@ export function WorkspaceIcon({ name, ...props }: WorkspaceIconProps) {
       return <CampaignRoundedIcon {...props} />;
     case 'description':
       return <DescriptionRoundedIcon {...props} />;
+    case 'fact_check':
+      return <FactCheckRoundedIcon {...props} />;
     case 'inventory':
       return <Inventory2RoundedIcon {...props} />;
+    case 'insights':
+      return <InsightsRoundedIcon {...props} />;
     case 'keycenter':
     case 'vpn_key':
       return <KeyRoundedIcon {...props} />;
@@ -84,6 +92,8 @@ export function WorkspaceIcon({ name, ...props }: WorkspaceIconProps) {
       return <ArticleRoundedIcon {...props} />;
     case 'local_fire_department':
       return <LocalFireDepartmentRoundedIcon {...props} />;
+    case 'play_circle':
+      return <PlayCircleRoundedIcon {...props} />;
     case 'monitoring':
     case 'query_stats':
       return <QueryStatsRoundedIcon {...props} />;
@@ -93,6 +103,8 @@ export function WorkspaceIcon({ name, ...props }: WorkspaceIconProps) {
       return <RocketLaunchRoundedIcon {...props} />;
     case 'savings':
       return <SavingsRoundedIcon {...props} />;
+    case 'school':
+      return <SchoolRoundedIcon {...props} />;
     case 'science':
       return <ScienceRoundedIcon {...props} />;
     case 'timeline':

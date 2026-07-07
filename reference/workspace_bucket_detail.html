@@ -17,7 +17,7 @@
     }
     .usage-strip {
       display:grid;
-      grid-template-columns:repeat(3, minmax(0, 1fr));
+      grid-template-columns:minmax(0, 1fr);
       gap:16px;
     }
     .usage-card {
@@ -38,7 +38,28 @@
       font-size:28px;
       font-weight:800;
       letter-spacing:-.04em;
-      margin-bottom:6px;
+      margin-bottom:0;
+    }
+    .usage-split {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .usage-summary {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:30px;
+      padding:0 12px;
+      border-radius:999px;
+      background:var(--brand-bg);
+      color:var(--brand);
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
     }
     .usage-meta {
       font-size:13px;
@@ -114,6 +135,17 @@
       color:var(--brand);
       border-color:rgba(37,99,235,.18);
     }
+    .mini-btn:disabled {
+      opacity:.48;
+      cursor:not-allowed;
+      color:var(--muted);
+      border-color:var(--border);
+    }
+    .mini-btn.is-danger:not(:disabled) {
+      color:#b91c1c;
+      border-color:rgba(185,28,28,.18);
+      background:#fff5f5;
+    }
     .key-value {
       display:flex;
       align-items:center;
@@ -144,6 +176,8 @@
       align-items:center;
       gap:10px;
       flex-wrap:wrap;
+      justify-content:flex-end;
+      flex:1 1 420px;
     }
     .browse-summary {
       display:inline-flex;
@@ -156,6 +190,50 @@
       font-size:12px;
       font-weight:700;
       white-space:nowrap;
+    }
+    .browse-action-group {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .browse-toolbar {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    .browse-breadcrumbs {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .browse-crumb {
+      height:34px;
+      padding:0 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--text);
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:12px;
+      font-weight:700;
+    }
+    .browse-crumb.is-current {
+      border-color:rgba(37,99,235,.18);
+      background:var(--brand-bg);
+      color:var(--brand);
+    }
+    .browse-separator {
+      color:var(--muted);
+      font-size:16px;
+      line-height:1;
     }
     .browse-table-wrap {
       border:1px solid var(--border);
@@ -182,19 +260,147 @@
       vertical-align:top;
       border-bottom:1px solid var(--border);
     }
+    .browse-row.is-selected td {
+      background:rgba(15,118,110,.08);
+    }
     .browse-table tr:last-child td {
       border-bottom:0;
+    }
+    .browse-entry {
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+    }
+    .browse-select {
+      margin-top:1px;
+      padding:0;
+      border:0;
+      background:transparent;
+      color:#94a3b8;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+    }
+    .browse-select:hover {
+      color:var(--brand);
+    }
+    .browse-select .material-icons-round {
+      font-size:18px;
+    }
+    .browse-entry-copy {
+      min-width:0;
+      flex:1 1 auto;
     }
     .browse-name {
       font-weight:700;
       margin-bottom:4px;
       word-break:break-all;
     }
+    .browse-link {
+      padding:0;
+      border:0;
+      background:transparent;
+      color:inherit;
+      font:inherit;
+      font-weight:700;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      text-align:left;
+      cursor:pointer;
+      word-break:break-all;
+    }
+    .browse-link:hover {
+      color:var(--brand);
+    }
+    .browse-name a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .browse-name a:hover {
+      color: var(--brand);
+      text-decoration: underline;
+    }
     .browse-path {
       color:var(--muted);
       font-size:12px;
       line-height:1.5;
       word-break:break-all;
+    }
+    .browse-empty {
+      display:grid;
+      gap:6px;
+      justify-items:center;
+      padding:26px 20px 30px;
+      color:var(--muted);
+      text-align:center;
+    }
+    .browse-empty[hidden] {
+      display:none;
+    }
+    .browse-empty .material-icons-round {
+      font-size:28px;
+      color:#94a3b8;
+    }
+    .access-notice {
+      display:grid;
+      gap:18px;
+    }
+    .access-notice-card {
+      padding:22px;
+      border-radius:20px;
+      border:1px solid rgba(245,158,11,.24);
+      background:linear-gradient(180deg, #fffbeb 0%, #fff7ed 100%);
+    }
+    .access-notice-title {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:-.02em;
+      margin-bottom:10px;
+      color:#9a3412;
+    }
+    .access-notice-copy {
+      color:#7c2d12;
+      font-size:14px;
+      line-height:1.7;
+    }
+    .access-notice-meta {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+    .access-notice-chip {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      min-height:34px;
+      padding:0 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.72);
+      border:1px solid rgba(245,158,11,.24);
+      color:#9a3412;
+      font-size:12px;
+      font-weight:700;
+    }
+    .browse-status {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .browse-selection {
+      min-height:18px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
     }
     .browse-type {
       display:inline-flex;
@@ -217,10 +423,20 @@
     .feedback-line.is-success {
       color:var(--good);
     }
+    .feedback-line.is-error {
+      color:#b91c1c;
+    }
     @media (max-width: 960px) {
       .usage-strip,
       .key-grid {
         grid-template-columns:1fr;
+      }
+      .browse-head-actions,
+      .browse-action-group {
+        justify-content:flex-start;
+      }
+      .browse-status {
+        flex-direction:column;
       }
     }
   </style>
@@ -232,21 +448,78 @@
       return rows.map((row) => `
         <article class="usage-card">
           <div class="usage-label">${row.label}</div>
-          <div class="usage-value">${row.value}</div>
-          <div class="usage-meta">${row.meta}</div>
+          <div class="usage-split">
+            <div class="usage-value">${row.value}</div>
+            ${row.summary ? `<div class="usage-summary">${row.summary}</div>` : ""}
+          </div>
+          ${row.meta ? `<div class="usage-meta">${row.meta}</div>` : ""}
           <div class="usage-bar"><div class="usage-fill" style="width:${row.percent}%;"></div></div>
           <div class="usage-foot">${row.foot}</div>
         </article>
       `).join("");
     }
 
+    function getUsagePercent(usedBytes, quotaBytes) {
+      const normalizedUsedBytes = Number.isFinite(Number(usedBytes)) ? Math.max(0, Number(usedBytes)) : 0;
+      const normalizedQuotaBytes = Number.isFinite(Number(quotaBytes)) ? Math.max(0, Number(quotaBytes)) : 0;
+      if (normalizedQuotaBytes <= 0) {
+        return 0;
+      }
+
+      return formatPercent((normalizedUsedBytes / normalizedQuotaBytes) * 100);
+    }
+
+    function buildUsagePresentation({ usedBytes, quotaBytes, quotaLabel, usageMeta }) {
+      const normalizedUsedBytes = Number.isFinite(Number(usedBytes)) ? Math.max(0, Number(usedBytes)) : 0;
+      const normalizedQuotaBytes = Number.isFinite(Number(quotaBytes))
+        ? Math.max(0, Number(quotaBytes))
+        : normalizeStorageBytes(undefined, quotaLabel) || 0;
+      const resolvedUsedLabel = formatStorageLabel(normalizedUsedBytes);
+      const resolvedQuotaLabel = normalizeText(quotaLabel) || formatStorageLabel(normalizedQuotaBytes);
+      const usagePercent = getUsagePercent(normalizedUsedBytes, normalizedQuotaBytes);
+
+      return {
+        usedBytes: normalizedUsedBytes,
+        quotaBytes: normalizedQuotaBytes,
+        usedLabel: resolvedUsedLabel,
+        quotaLabel: resolvedQuotaLabel,
+        usageMeta: normalizeText(usageMeta) && normalizedUsedBytes === 0 && !resolvedQuotaLabel
+          ? usageMeta
+          : (resolvedQuotaLabel
+          ? `${resolvedUsedLabel} used / ${resolvedQuotaLabel} quota`
+          : `${resolvedUsedLabel} used`),
+        usagePercent
+      };
+    }
+
+    function createUsageCard({ usedLabel, quotaLabel, usageMeta, usagePercent, foot }) {
+      const value = quotaLabel ? `${usedLabel} / ${quotaLabel}` : usedLabel;
+      const summary = `${usagePercent}% used`;
+      return {
+        label: "Bucket Usage",
+        value,
+        summary,
+        meta: usageMeta,
+        percent: usagePercent,
+        foot: foot || (quotaLabel ? `이 버킷은 quota의 ${usagePercent}%를 사용하고 있습니다.` : "현재 버킷 사용량을 표시합니다.")
+      };
+    }
+
     function renderKeyCard(key, item) {
-      const toggleButton = key.revealable ? `
+      const isSecretKey = key.id === "secret";
+      const displayValue = isSecretKey ? "*****" : key.masked;
+      const toggleButton = key.revealable && !isSecretKey ? `
         <button class="mini-btn" type="button" data-key-toggle="${key.id}">
           <span class="material-icons-round">visibility</span>
           보기
         </button>
       ` : "";
+      const copyButton = key.copyable === false ? "" : `
+        <button class="mini-btn" type="button" data-key-copy="${key.id}">
+          <span class="material-icons-round">content_copy</span>
+          복사
+        </button>
+      `;
 
       return `
         <article class="key-card">
@@ -255,29 +528,39 @@
               <div class="key-title">${key.title}</div>
               <div class="key-desc">${key.desc}</div>
             </div>
-            <div class="key-actions">
+          <div class="key-actions">
               ${toggleButton}
-              <button class="mini-btn" type="button" data-key-copy="${key.id}">
-                <span class="material-icons-round">content_copy</span>
-                복사
-              </button>
+              ${copyButton}
             </div>
           </div>
           <div class="key-value" data-key-value="${key.id}" data-masked="${key.masked}" data-plain="${key.value}">
             <span class="material-icons-round">${key.icon}</span>
-            <span>${key.masked}</span>
+            <span>${displayValue}</span>
           </div>
-          <div class="key-note">${item.keyNote}</div>
         </article>
       `;
     }
 
-    function renderBrowseRows(rows) {
+    function renderBrowseRows(rows, selectedKeys = []) {
+      const selectedSet = new Set(Array.isArray(selectedKeys) ? selectedKeys : [selectedKeys].filter(Boolean));
       return rows.map((row) => `
-        <tr>
+        <tr class="browse-row${selectedSet.has(row.objectKey) ? " is-selected" : ""}">
           <td>
-            <div class="browse-name">${row.name}</div>
-            <div class="browse-path">${row.path}</div>
+            <div class="browse-entry">
+              <button
+                class="browse-select"
+                type="button"
+                data-browse-select="${row.objectKey}"
+                data-browse-select-kind="${row.isFolder ? "folder" : "file"}"
+                aria-label="${selectedSet.has(row.objectKey) ? "선택 해제" : "선택"}"
+              >
+                <span class="material-icons-round">${selectedSet.has(row.objectKey) ? "check_box" : "check_box_outline_blank"}</span>
+              </button>
+              <div class="browse-entry-copy">
+                <div class="browse-name">${row.isFolder ? `<button class="browse-link" type="button" data-browse-path="${row.browsePath || ""}"><span class="material-icons-round" style="font-size:16px;">${row.icon || "folder"}</span><span>${row.name}</span></button>` : (row.href ? `<a href="${row.href}">${row.name}</a>` : row.name)}</div>
+                <div class="browse-path">${row.path}</div>
+              </div>
+            </div>
           </td>
           <td><span class="browse-type"><span class="material-icons-round" style="font-size:14px;">${row.icon}</span>${row.type}</span></td>
           <td>${row.size}</td>
@@ -287,20 +570,17 @@
     }
 
     function buildItem(item) {
+      const browseState = item.browseState || buildBrowseStateFromRows(item.browseRows || []);
+      const initialBrowseRows = listBrowseRows(browseState, "");
+      const browseHeaders = Array.isArray(item.browseHeaders) && item.browseHeaders.length === 4
+        ? item.browseHeaders
+        : ["Name", "Type", "Size", "Updated"];
+
       return {
         ...item,
+        bucketName: item.bucketName || item.key,
+        browseState,
         mainHtml: `
-          <section class="panel section" id="browse">
-            <div class="section-head">
-              <div>
-                <div class="section-kicker"><span class="material-icons-round">donut_large</span>Usage</div>
-                <h2 class="section-title">용량 현황</h2>
-                <p class="section-desc">전체 사용량, 이 버킷의 사용량, quota를 함께 확인할 수 있습니다.</p>
-              </div>
-            </div>
-            <div class="usage-strip">${renderUsageCards(item.usageCards)}</div>
-          </section>
-
           <section class="panel section">
             <div class="section-head">
               <div>
@@ -315,34 +595,83 @@
             <div class="feedback-line" data-key-feedback aria-live="polite"></div>
           </section>
 
-          <section class="panel section">
+          <section class="panel section" id="browse">
             <div class="section-head">
               <div>
-                <div class="section-kicker"><span class="material-icons-round">folder_open</span>Browse</div>
-                <h2 class="section-title">버킷 내용</h2>
-                <p class="section-desc">이 버킷 안에 있는 폴더와 파일을 바로 살펴볼 수 있습니다.</p>
+                <div class="section-kicker"><span class="material-icons-round">donut_large</span>Usage</div>
+                <h2 class="section-title">용량 현황</h2>
+                <p class="section-desc">이 버킷의 사용량과 quota를 함께 확인할 수 있습니다.</p>
+              </div>
+            </div>
+            <div class="usage-strip" data-usage-strip>${renderUsageCards(item.usageCards)}</div>
+          </section>
+
+          <section class="panel section" data-browse-root>
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">folder_open</span>${item.browseSectionKicker || "Browse"}</div>
+                <h2 class="section-title">${item.browseSectionTitle || "버킷 내용"}</h2>
+                <p class="section-desc">${item.browseSectionDescription || "이 버킷 안에 있는 폴더와 파일을 바로 살펴볼 수 있습니다."}</p>
               </div>
               <div class="browse-head-actions">
-                <div class="browse-summary">
+                <div class="browse-summary" data-browse-summary>
                   <span class="material-icons-round">inventory_2</span>
-                  ${item.browseRows.length}개 항목
+                  ${item.browseSummaryLabel || formatBrowseSummary(browseState, "")}
+                </div>
+                <div class="browse-action-group">
+                  <button class="mini-btn" type="button" data-browse-action="refresh">
+                    <span class="material-icons-round">refresh</span>
+                    새로고침
+                  </button>
+                  <button class="mini-btn" type="button" data-browse-action="create-folder">
+                    <span class="material-icons-round">create_new_folder</span>
+                    폴더 생성
+                  </button>
+                  <button class="mini-btn" type="button" data-browse-action="upload">
+                    <span class="material-icons-round">upload_file</span>
+                    파일 업로드
+                  </button>
+                  <button class="mini-btn" type="button" data-browse-action="download" disabled>
+                    <span class="material-icons-round">download</span>
+                    다운로드
+                  </button>
+                  <button class="mini-btn" type="button" data-browse-action="rename" disabled>
+                    <span class="material-icons-round">drive_file_rename_outline</span>
+                    이름 변경
+                  </button>
+                  <button class="mini-btn is-danger" type="button" data-browse-action="delete" disabled>
+                    <span class="material-icons-round">delete</span>
+                    삭제
+                  </button>
                 </div>
               </div>
             </div>
+            <div class="browse-toolbar">
+              <div class="browse-breadcrumbs" data-browse-breadcrumbs></div>
+            </div>
+            <input type="file" data-browse-upload-input hidden multiple />
             <div class="browse-table-wrap">
               <table class="browse-table">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Size</th>
-                    <th>Updated</th>
+                    <th>${browseHeaders[0]}</th>
+                    <th>${browseHeaders[1]}</th>
+                    <th>${browseHeaders[2]}</th>
+                    <th>${browseHeaders[3]}</th>
                   </tr>
                 </thead>
-                <tbody>
-                  ${renderBrowseRows(item.browseRows)}
+                <tbody data-browse-body>
+                  ${renderBrowseRows(initialBrowseRows)}
                 </tbody>
               </table>
+              <div class="browse-empty" data-browse-empty hidden>
+                <span class="material-icons-round">folder_off</span>
+                <div>이 경로에는 표시할 파일이나 폴더가 없습니다.</div>
+              </div>
+            </div>
+            <div class="browse-status">
+              <div class="browse-selection" data-browse-selection>선택된 파일이나 폴더가 없습니다.</div>
+              <div class="feedback-line" data-browse-feedback aria-live="polite"></div>
             </div>
           </section>
         `,
@@ -365,15 +694,12 @@
           { label: "Project Hub", icon: "inventory_2", variant: "primary", href: "workspace_projects_hub.html" }
         ],
         heroStats: [
-          { label: "Total Usage", value: "11.8TB", meta: "workspace object storage 전체 사용량" },
           { label: "Bucket Usage", value: "3.8TB", meta: "artifact 번들 사용량" },
           { label: "Bucket Quota", value: "6TB", meta: "allocated quota" },
           { label: "Objects", value: "124k", meta: "bundle / checksum / manifest" }
         ],
         usageCards: [
-          { label: "Total Usage", value: "11.8TB", meta: "workspace object storage 전체 사용량", percent: 67, foot: "총 17.5TB 중 11.8TB를 사용하고 있습니다." },
-          { label: "Bucket Usage", value: "3.8TB", meta: "artifact 번들 사용량", percent: 63, foot: "이 버킷은 quota의 63%를 사용하고 있습니다." },
-          { label: "Bucket Quota", value: "6TB", meta: "현재 버킷에 할당된 quota", percent: 100, foot: "quota를 기준으로 lifecycle 정리를 진행할 수 있습니다." }
+          createUsageCard({ usedLabel: "3.8TB", quotaLabel: "6TB", usageMeta: "artifact 번들 사용량", usagePercent: 63, foot: "이 버킷은 quota의 63%를 사용하고 있습니다. quota를 기준으로 lifecycle 정리를 진행할 수 있습니다." })
         ],
         keyNote: "키는 배포 파이프라인과 운영 자동화에서 사용할 수 있습니다.",
         keys: [
@@ -401,15 +727,12 @@
           { label: "Domain Hub", icon: "apartment", variant: "primary", href: "workspace_domain_hub.html" }
         ],
         heroStats: [
-          { label: "Total Usage", value: "11.8TB", meta: "workspace object storage 전체 사용량" },
           { label: "Bucket Usage", value: "5.2TB", meta: "public image / campaign asset" },
           { label: "Bucket Quota", value: "9TB", meta: "allocated quota" },
           { label: "Objects", value: "412k", meta: "image / campaign / thumbnail" }
         ],
         usageCards: [
-          { label: "Total Usage", value: "11.8TB", meta: "workspace object storage 전체 사용량", percent: 67, foot: "전체 object storage 사용량을 함께 볼 수 있습니다." },
-          { label: "Bucket Usage", value: "5.2TB", meta: "public image / campaign asset", percent: 58, foot: "이 버킷은 quota의 58%를 사용하고 있습니다." },
-          { label: "Bucket Quota", value: "9TB", meta: "현재 버킷에 할당된 quota", percent: 100, foot: "캠페인 피크 기간을 고려해 여유 quota를 유지할 수 있습니다." }
+          createUsageCard({ usedLabel: "5.2TB", quotaLabel: "9TB", usageMeta: "public image / campaign asset", usagePercent: 58, foot: "이 버킷은 quota의 58%를 사용하고 있습니다. 캠페인 피크 기간을 고려해 여유 quota를 유지할 수 있습니다." })
         ],
         keyNote: "퍼블릭 노출 버킷이지만 쓰기 권한은 운영 경로에서만 사용할 수 있습니다.",
         keys: [
@@ -437,15 +760,12 @@
           { label: "Permission Hub", icon: "groups", variant: "primary", href: "workspace_permission_hub.html" }
         ],
         heroStats: [
-          { label: "Total Usage", value: "11.8TB", meta: "workspace object storage 전체 사용량" },
           { label: "Bucket Usage", value: "0.9TB", meta: "prompt bundle / snapshot" },
           { label: "Bucket Quota", value: "3.2TB", meta: "allocated quota" },
           { label: "Objects", value: "38k", meta: "bundle / eval snapshot" }
         ],
         usageCards: [
-          { label: "Total Usage", value: "11.8TB", meta: "workspace object storage 전체 사용량", percent: 67, foot: "전체 사용량과 함께 이 버킷의 비중을 볼 수 있습니다." },
-          { label: "Bucket Usage", value: "0.9TB", meta: "prompt bundle / snapshot", percent: 27, foot: "이 버킷은 quota의 27%를 사용하고 있습니다." },
-          { label: "Bucket Quota", value: "3.2TB", meta: "현재 버킷에 할당된 quota", percent: 100, foot: "평가 스냅샷 확장에 대비한 여유를 유지하고 있습니다." }
+          createUsageCard({ usedLabel: "0.9TB", quotaLabel: "3.2TB", usageMeta: "prompt bundle / snapshot", usagePercent: 27, foot: "이 버킷은 quota의 27%를 사용하고 있습니다. 평가 스냅샷 확장에 대비한 여유를 유지하고 있습니다." })
         ],
         keyNote: "민감한 프롬프트 자산을 다루므로 키 노출 범위를 제한할 수 있습니다.",
         keys: [
@@ -473,15 +793,12 @@
           { label: "Permission Hub", icon: "groups", variant: "primary", href: "workspace_permission_hub.html" }
         ],
         heroStats: [
-          { label: "Total Usage", value: "11.8TB", meta: "workspace object storage 전체 사용량" },
           { label: "Bucket Usage", value: "8.1TB", meta: "archive / compliance bundle" },
           { label: "Bucket Quota", value: "10TB", meta: "allocated quota" },
           { label: "Objects", value: "910k", meta: "audit / legal / secops archive" }
         ],
         usageCards: [
-          { label: "Total Usage", value: "11.8TB", meta: "workspace object storage 전체 사용량", percent: 67, foot: "전체 object storage에서 archive 비중이 큽니다." },
-          { label: "Bucket Usage", value: "8.1TB", meta: "archive / compliance bundle", percent: 81, foot: "이 버킷은 quota의 81%를 사용하고 있습니다." },
-          { label: "Bucket Quota", value: "10TB", meta: "현재 버킷에 할당된 quota", percent: 100, foot: "증설 전 장기 보관 비용과 quota를 함께 검토할 수 있습니다." }
+          createUsageCard({ usedLabel: "8.1TB", quotaLabel: "10TB", usageMeta: "archive / compliance bundle", usagePercent: 81, foot: "이 버킷은 quota의 81%를 사용하고 있습니다. 증설 전 장기 보관 비용과 quota를 함께 검토할 수 있습니다." })
         ],
         keyNote: "archive retrieval은 승인된 워크플로우에서만 키를 사용할 수 있습니다.",
         keys: [
@@ -509,15 +826,12 @@
           { label: "Project Hub", icon: "inventory_2", variant: "primary", href: "workspace_projects_hub.html" }
         ],
         heroStats: [
-          { label: "Total Usage", value: "11.8TB", meta: "workspace object storage 전체 사용량" },
           { label: "Bucket Usage", value: "1.7TB", meta: "upload intake / pending asset" },
           { label: "Bucket Quota", value: "5TB", meta: "allocated quota" },
           { label: "Objects", value: "87k", meta: "raw upload / processing queue" }
         ],
         usageCards: [
-          { label: "Total Usage", value: "11.8TB", meta: "workspace object storage 전체 사용량", percent: 67, foot: "전체 사용량과 인입 버킷 증가량을 함께 볼 수 있습니다." },
-          { label: "Bucket Usage", value: "1.7TB", meta: "upload intake / pending asset", percent: 34, foot: "이 버킷은 quota의 34%를 사용하고 있습니다." },
-          { label: "Bucket Quota", value: "5TB", meta: "현재 버킷에 할당된 quota", percent: 100, foot: "burst upload에도 대응할 수 있도록 quota를 유지하고 있습니다." }
+          createUsageCard({ usedLabel: "1.7TB", quotaLabel: "5TB", usageMeta: "upload intake / pending asset", usagePercent: 34, foot: "이 버킷은 quota의 34%를 사용하고 있습니다. burst upload에도 대응할 수 있도록 quota를 유지하고 있습니다." })
         ],
         keyNote: "signed upload와 후처리 워커가 동일한 버킷을 참조할 수 있습니다.",
         keys: [
@@ -545,15 +859,12 @@
           { label: "Domain Hub", icon: "apartment", variant: "primary", href: "workspace_domain_hub.html" }
         ],
         heroStats: [
-          { label: "Total Usage", value: "11.8TB", meta: "workspace object storage 전체 사용량" },
           { label: "Bucket Usage", value: "0.6TB", meta: "report export / bundle" },
           { label: "Bucket Quota", value: "2.7TB", meta: "allocated quota" },
           { label: "Objects", value: "14k", meta: "scheduled export bundle" }
         ],
         usageCards: [
-          { label: "Total Usage", value: "11.8TB", meta: "workspace object storage 전체 사용량", percent: 67, foot: "전체 사용량과 export 버킷 점유율을 함께 볼 수 있습니다." },
-          { label: "Bucket Usage", value: "0.6TB", meta: "report export / bundle", percent: 22, foot: "이 버킷은 quota의 22%를 사용하고 있습니다." },
-          { label: "Bucket Quota", value: "2.7TB", meta: "현재 버킷에 할당된 quota", percent: 100, foot: "정기 리포트 증가량에 맞춰 quota를 조정할 수 있습니다." }
+          createUsageCard({ usedLabel: "0.6TB", quotaLabel: "2.7TB", usageMeta: "report export / bundle", usagePercent: 22, foot: "이 버킷은 quota의 22%를 사용하고 있습니다. 정기 리포트 증가량에 맞춰 quota를 조정할 수 있습니다." })
         ],
         keyNote: "리포트 다운로드와 배포 자동화에서 키를 사용할 수 있습니다.",
         keys: [
@@ -569,21 +880,827 @@
       }
     ];
 
-    window.DETAIL_PAGE_CONFIG = {
+    const API_BASE = "/api/v2";
+    const LEGACY_BUCKET_API_BASE = "/api/bucket";
+    const FETCH_LIMIT = 100;
+    const FALLBACK_DETAIL_CONFIG = {
       paramName: "item",
       pageTitle: "Bucket Detail",
       hubLabel: "Bucket Hub",
       hubHref: "workspace_s3_hub.html",
       activeHubKey: "s3",
       eyebrow: "Storage · Object Plane",
-      searchPlaceholder: "버킷 이름, 키 정보, browse 항목을 검색하세요...",
+      searchPlaceholder: "버킷 이름, 키 정보, 바인딩 프로젝트를 검색하세요...",
       items: Object.fromEntries(rawItems.map((item) => [item.key, buildItem(item)]))
     };
-  </script>
-  <script src="workspace_detail_shared.js"></script>
-  <script src="ax_studio_topbar.js"></script>
-  <script>
-    (function () {
+    const TYPE_PRESENTATION = {
+      private: {
+        label: "Private Bucket",
+        icon: "lock",
+        theme: { bg: "#e8f8f4", brand: "#0f766e", brandH: "#115e59", brandBg: "#ccfbf1", brandSoft: "rgba(15,118,110,.14)", accent: "#2dd4bf" }
+      },
+      public: {
+        label: "Public Bucket",
+        icon: "language",
+        theme: { bg: "#e8f8f4", brand: "#0ea5e9", brandH: "#0284c7", brandBg: "#dff6ff", brandSoft: "rgba(14,165,233,.14)", accent: "#22d3ee" }
+      },
+      shared: {
+        label: "Shared Bucket",
+        icon: "hub",
+        theme: { bg: "#e8f8f4", brand: "#0891b2", brandH: "#0e7490", brandBg: "#d9f5ff", brandSoft: "rgba(8,145,178,.14)", accent: "#5eead4" }
+      },
+      archive: {
+        label: "Archive Bucket",
+        icon: "archive",
+        theme: { bg: "#e8f8f4", brand: "#f59e0b", brandH: "#d97706", brandBg: "#fef3c7", brandSoft: "rgba(245,158,11,.14)", accent: "#fbbf24" }
+      },
+      unknown: {
+        label: "Bucket",
+        icon: "folder",
+        theme: { bg: "#e8f8f4", brand: "#14b8a6", brandH: "#0f766e", brandBg: "#d5fbf5", brandSoft: "rgba(20,184,166,.14)", accent: "#60a5fa" }
+      }
+    };
+    const STATUS_PRESENTATION = {
+      active: { label: "Active", tone: "healthy" },
+      archived: { label: "Archived", tone: "muted" },
+      review: { label: "Review", tone: "review" },
+      error: { label: "Error", tone: "incident" },
+      pending: { label: "Pending", tone: "pending" },
+      unknown: { label: "Unknown", tone: "info" }
+    };
+    function buildQuery(params) {
+      const searchParams = new URLSearchParams();
+      Object.entries(params || {}).forEach(([key, value]) => {
+        if (value === undefined || value === null || value === "") {
+          return;
+        }
+        searchParams.set(key, String(value));
+      });
+
+      const query = searchParams.toString();
+      return query ? `?${query}` : "";
+    }
+
+    async function requestJson(path, options) {
+      const requestOptions = options || {};
+      const requestHeaders = requestOptions.headers || {};
+      const response = await fetch(`${API_BASE}${path}`, {
+        credentials: "same-origin",
+        headers: {
+          Accept: "application/json",
+          ...requestHeaders
+        },
+        ...requestOptions,
+        headers: {
+          Accept: "application/json",
+          ...requestHeaders
+        }
+      });
+
+      if (!response.ok) {
+        let message = `${response.status} ${response.statusText}`;
+        let payload = null;
+        try {
+          payload = await response.json();
+          message = payload?.message || payload?.error?.message || message;
+        } catch {
+          // keep default status text when error payload is not JSON
+        }
+        const error = new Error(message);
+        error.status = response.status;
+        error.payload = payload;
+        throw error;
+      }
+
+      return response.json();
+    }
+
+    async function fetchJson(path, params) {
+      return requestJson(`${path}${buildQuery(params)}`);
+    }
+
+    function extractData(payload, fallback) {
+      if (payload && typeof payload === "object" && "data" in payload) {
+        return payload.data;
+      }
+      return payload ?? fallback;
+    }
+
+    function extractItems(payload) {
+      if (payload && Array.isArray(payload.items)) {
+        return payload.items;
+      }
+      if (payload && payload.data && Array.isArray(payload.data.items)) {
+        return payload.data.items;
+      }
+      return [];
+    }
+
+    function extractNextCursor(payload) {
+      if (payload && payload.page && typeof payload.page.nextCursor === "string") {
+        return payload.page.nextCursor;
+      }
+      if (payload && payload.data && payload.data.page && typeof payload.data.page.nextCursor === "string") {
+        return payload.data.page.nextCursor;
+      }
+      return null;
+    }
+
+    async function fetchAllBuckets(limit = FETCH_LIMIT) {
+      const items = [];
+      let cursor = null;
+
+      while (true) {
+        const payload = await fetchJson("/buckets", {
+          limit,
+          ...(cursor ? { cursor } : {})
+        });
+        const pageItems = extractItems(payload);
+        const nextCursor = extractNextCursor(payload);
+        items.push(...pageItems);
+
+        if (!nextCursor || !pageItems.length) {
+          break;
+        }
+
+        cursor = nextCursor;
+      }
+
+      return items;
+    }
+
+    function normalizeText(value) {
+      return String(value || "").trim();
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function normalizeKey(value) {
+      return normalizeText(value).toLowerCase();
+    }
+
+    function formatNumber(value) {
+      const amount = Number(value);
+      if (!Number.isFinite(amount)) {
+        return "-";
+      }
+
+      return new Intl.NumberFormat("ko-KR").format(amount);
+    }
+
+    function formatStorageLabel(bytes, fallbackLabel = "") {
+      const amount = Number(bytes);
+      if (Number.isFinite(amount) && amount > 0) {
+        const units = ["B", "KB", "MB", "GB", "TB", "PB"];
+        let size = amount;
+        let unitIndex = 0;
+
+        while (size >= 1024 && unitIndex < units.length - 1) {
+          size /= 1024;
+          unitIndex += 1;
+        }
+
+        const digits = size >= 100 || unitIndex === 0 ? 0 : size >= 10 ? 1 : 2;
+        return `${size.toFixed(digits)}${units[unitIndex]}`;
+      }
+
+      return normalizeText(fallbackLabel) || "0B";
+    }
+
+    function parseStorageLabelBytes(value) {
+      const raw = normalizeText(value).replace(/,/g, "").trim();
+      if (!raw) {
+        return null;
+      }
+
+      const matched = raw.match(/^([0-9]+(?:\.[0-9]+)?)\s*(B|KB|MB|GB|TB|PB)$/iu);
+      if (!matched) {
+        return null;
+      }
+
+      const amount = Number(matched[1]);
+      const unit = matched[2].toUpperCase();
+      const units = ["B", "KB", "MB", "GB", "TB", "PB"];
+      const unitIndex = units.indexOf(unit);
+      if (!Number.isFinite(amount) || unitIndex < 0) {
+        return null;
+      }
+
+      return Math.round(amount * (1024 ** unitIndex));
+    }
+
+    function normalizeStorageBytes(value, fallbackValue = null) {
+      const amount = Number(value);
+      if (Number.isFinite(amount) && amount >= 0) {
+        return amount;
+      }
+
+      return parseStorageLabelBytes(fallbackValue);
+    }
+
+    function formatPercent(value) {
+      const amount = Number(value);
+      if (!Number.isFinite(amount) || amount < 0) {
+        return 0;
+      }
+
+      return Math.max(0, Math.min(100, Math.round(amount)));
+    }
+
+    function formatDateTimeLabel(value) {
+      const raw = normalizeText(value);
+      if (!raw) {
+        return "-";
+      }
+
+      const date = new Date(raw);
+      if (Number.isNaN(date.getTime())) {
+        return raw;
+      }
+
+      return new Intl.DateTimeFormat("sv-SE", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+        timeZone: "Asia/Seoul"
+      }).format(date).replace(",", "");
+    }
+
+    function normalizeBrowsePath(value) {
+      return normalizeText(value).replace(/^\/+/, "").replace(/\/+$/, "");
+    }
+
+    function splitBrowsePath(value) {
+      return normalizeBrowsePath(value).split("/").filter(Boolean);
+    }
+
+    function normalizeObjectKey(value, { isFolder = false } = {}) {
+      const normalizedPath = normalizeBrowsePath(value);
+      if (!normalizedPath) {
+        return "";
+      }
+
+      return isFolder ? `${normalizedPath}/` : normalizedPath;
+    }
+
+    function buildObjectPath(parentPath, leafName, { isFolder = false } = {}) {
+      const parent = normalizeBrowsePath(parentPath);
+      const child = normalizeBrowsePath(leafName);
+      if (!child) {
+        return "";
+      }
+
+      return normalizeObjectKey(parent ? `${parent}/${child}` : child, { isFolder });
+    }
+
+    function createBrowseNode(name = "", path = "") {
+      return {
+        name,
+        path,
+        updated: "-",
+        folders: new Map(),
+        files: [],
+        totalFileBytes: 0,
+        totalFileCount: 0
+      };
+    }
+
+    function ensureBrowseFolder(root, segments, metadata = {}) {
+      let node = root;
+      const pathParts = [];
+
+      segments.forEach((segment) => {
+        pathParts.push(segment);
+        if (!node.folders.has(segment)) {
+          node.folders.set(segment, createBrowseNode(segment, pathParts.join("/")));
+        }
+        node = node.folders.get(segment);
+      });
+
+      if (metadata.updated && metadata.updated !== "-") {
+        node.updated = metadata.updated;
+      }
+
+      return node;
+    }
+
+    function inferBrowseFilePresentation(name) {
+      const lowerName = normalizeText(name).toLowerCase();
+
+      if (/\.(png|jpe?g|gif|webp|svg)$/u.test(lowerName)) {
+        return { type: "Image", icon: "image" };
+      }
+      if (/\.(mp4|mov|avi|mkv)$/u.test(lowerName)) {
+        return { type: "Video", icon: "movie" };
+      }
+      if (/\.(zip|tar|gz|tgz|7z)$/u.test(lowerName)) {
+        return { type: "Archive", icon: "inventory_2" };
+      }
+      if (/\.json$/u.test(lowerName)) {
+        return { type: "JSON", icon: "data_object" };
+      }
+      if (/\.pdf$/u.test(lowerName)) {
+        return { type: "PDF", icon: "picture_as_pdf" };
+      }
+      if (/\.(csv|tsv|parquet|xlsx?)$/u.test(lowerName)) {
+        return { type: "Data", icon: "table_chart" };
+      }
+
+      return { type: "File", icon: "description" };
+    }
+
+    function isFolderBrowseRow(row) {
+      return normalizeKey(row?.type) === "folder"
+        || normalizeKey(row?.icon) === "folder"
+        || /\/$/u.test(normalizeText(row?.name))
+        || /\/$/u.test(normalizeText(row?.path));
+    }
+
+    function summarizeBrowseNode(node) {
+      const folderNodes = [...node.folders.values()];
+      folderNodes.forEach((folderNode) => summarizeBrowseNode(folderNode));
+
+      const ownFileBytes = node.files.reduce((sum, file) => sum + (Number.isFinite(file.sizeBytes) ? file.sizeBytes : 0), 0);
+      const childFileBytes = folderNodes.reduce((sum, folderNode) => sum + (Number.isFinite(folderNode.totalFileBytes) ? folderNode.totalFileBytes : 0), 0);
+      const childFileCount = folderNodes.reduce((sum, folderNode) => sum + (Number.isFinite(folderNode.totalFileCount) ? folderNode.totalFileCount : 0), 0);
+
+      node.totalFileBytes = ownFileBytes + childFileBytes;
+      node.totalFileCount = node.files.length + childFileCount;
+      return node;
+    }
+
+    function buildBrowseStateFromRows(rows) {
+      const root = createBrowseNode();
+      let totalFolders = 0;
+      let totalFiles = 0;
+      let totalFileBytes = 0;
+
+      (Array.isArray(rows) ? rows : []).forEach((row) => {
+        const isFolder = isFolderBrowseRow(row);
+        const normalizedPath = normalizeBrowsePath(row?.path || row?.name);
+        const segments = splitBrowsePath(normalizedPath);
+
+        if (!segments.length) {
+          return;
+        }
+
+        if (isFolder) {
+          ensureBrowseFolder(root, segments, { updated: row.updated });
+          totalFolders += 1;
+          return;
+        }
+
+        const parentSegments = segments.slice(0, -1);
+        const fileName = normalizeText(row?.name) || segments[segments.length - 1];
+        const parentNode = ensureBrowseFolder(root, parentSegments);
+        const sizeBytes = normalizeStorageBytes(row?.sizeBytes ?? row?.bytes, row?.size);
+        parentNode.files.push({
+          ...row,
+          name: fileName,
+          path: row?.path || `/${normalizedPath}`,
+          type: row?.type || inferBrowseFilePresentation(fileName).type,
+          icon: row?.icon || inferBrowseFilePresentation(fileName).icon,
+          size: row?.size || (Number.isFinite(sizeBytes) ? formatStorageLabel(sizeBytes) : "-"),
+          sizeBytes,
+          updated: row?.updated || "-"
+        });
+        totalFiles += 1;
+        totalFileBytes += Number.isFinite(sizeBytes) ? sizeBytes : 0;
+      });
+
+      summarizeBrowseNode(root);
+
+      return {
+        root,
+        totalFolders,
+        totalFiles,
+        totalFileBytes
+      };
+    }
+
+    function buildBrowseStateFromObjects(objects) {
+      const rows = (Array.isArray(objects) ? objects : []).map((entry) => {
+        const key = normalizeText(entry?.name || entry?.objectName || entry?.prefix || entry?.path || entry?.key);
+        if (!key) {
+          return null;
+        }
+
+        const isFolder = Boolean(entry?.prefix)
+          || Boolean(entry?.isDir)
+          || /\/$/u.test(key);
+        const normalizedPath = normalizeBrowsePath(key);
+        const leafName = splitBrowsePath(normalizedPath).slice(-1)[0] || normalizedPath;
+        const presentation = isFolder ? { type: "Folder", icon: "folder" } : inferBrowseFilePresentation(leafName);
+
+        return {
+          name: isFolder ? `${leafName}/` : leafName,
+          path: isFolder ? `/${normalizedPath}/` : `/${normalizedPath}`,
+          type: presentation.type,
+          icon: presentation.icon,
+          sizeBytes: isFolder ? 0 : normalizeStorageBytes(entry?.size ?? entry?.bytes ?? entry?.sizeBytes),
+          size: isFolder ? "-" : formatStorageLabel(entry?.size ?? entry?.bytes ?? entry?.sizeBytes),
+          updated: formatDateTimeLabel(entry?.lastModified || entry?.updatedAt || entry?.modified || entry?.last_modified)
+        };
+      }).filter(Boolean);
+
+      return buildBrowseStateFromRows(rows);
+    }
+
+    function getBrowseNode(browseState, currentPath) {
+      const segments = splitBrowsePath(currentPath);
+      let node = browseState?.root;
+
+      for (const segment of segments) {
+        node = node?.folders?.get(segment);
+        if (!node) {
+          return null;
+        }
+      }
+
+      return node || null;
+    }
+
+    function listBrowseRows(browseState, currentPath) {
+      const node = getBrowseNode(browseState, currentPath);
+      if (!node) {
+        return [];
+      }
+
+      const folders = [...node.folders.values()]
+        .map((folder) => ({
+          name: `${folder.name}/`,
+          path: `/${folder.path}/`,
+          type: "Folder",
+          icon: "folder",
+          size: formatStorageLabel(folder.totalFileBytes),
+          sizeBytes: folder.totalFileBytes,
+          updated: folder.updated || "-",
+          isFolder: true,
+          browsePath: folder.path,
+          objectKey: normalizeObjectKey(folder.path, { isFolder: true })
+        }))
+        .sort((left, right) => left.name.localeCompare(right.name));
+
+      const files = [...node.files]
+        .map((file) => ({
+          ...file,
+          isFolder: false,
+          browsePath: normalizeBrowsePath(file.path),
+          objectKey: normalizeObjectKey(file.path)
+        }))
+        .sort((left, right) => left.name.localeCompare(right.name));
+
+      return [...folders, ...files];
+    }
+
+    function formatBrowseSummary(browseState, currentPath) {
+      const node = getBrowseNode(browseState, currentPath);
+      if (!node) {
+        return "0개 항목";
+      }
+
+      const folderCount = node.folders.size;
+      const fileCount = node.files.length;
+      const parts = [];
+
+      if (folderCount > 0) {
+        parts.push(`${folderCount}개 폴더`);
+      }
+      if (fileCount > 0) {
+        parts.push(`${fileCount}개 파일`);
+      }
+      parts.push(`파일 용량 ${formatStorageLabel(node.totalFileBytes)}`);
+
+      return parts.length > 0 ? parts.join(" · ") : `비어 있는 폴더 · 파일 용량 ${formatStorageLabel(node.totalFileBytes)}`;
+    }
+
+    function renderBrowseBreadcrumbs(currentPath) {
+      const segments = splitBrowsePath(currentPath);
+      const items = [{ label: "Root", path: "" }];
+      let accumulated = "";
+
+      segments.forEach((segment) => {
+        accumulated = accumulated ? `${accumulated}/${segment}` : segment;
+        items.push({ label: segment, path: accumulated });
+      });
+
+      return items.map((item, index) => `
+        <button class="browse-crumb${index === items.length - 1 ? " is-current" : ""}" type="button" data-browse-path="${item.path}">
+          <span class="material-icons-round" style="font-size:14px;">${index === 0 ? "home" : "folder_open"}</span>
+          ${item.label}
+        </button>
+      `).join('<span class="material-icons-round browse-separator">chevron_right</span>');
+    }
+
+    function findFallbackItemByName(name) {
+      return rawItems.find((item) => normalizeText(item.key) === normalizeText(name)) || null;
+    }
+
+    function getTypePresentation(type, fallbackItem) {
+      const fallbackType = normalizeKey(fallbackItem?.typeLabel).split(" ")[0];
+      return TYPE_PRESENTATION[normalizeKey(type)] || TYPE_PRESENTATION[fallbackType] || TYPE_PRESENTATION.unknown;
+    }
+
+    function getStatusPresentation(status) {
+      return STATUS_PRESENTATION[normalizeKey(status)] || STATUS_PRESENTATION.unknown;
+    }
+
+    function buildProjectHref(projectName) {
+      if (!normalizeText(projectName)) {
+        return "workspace_projects_hub.html";
+      }
+
+      return `workspace_project_detail.html?project=${encodeURIComponent(projectName)}&menu=settings&section=config`;
+    }
+
+    async function requestJsonAbsolute(path, options) {
+      const requestOptions = options || {};
+      const requestHeaders = requestOptions.headers || {};
+      const response = await fetch(path, {
+        credentials: "same-origin",
+        headers: {
+          Accept: "application/json",
+          ...requestHeaders
+        },
+        ...requestOptions,
+        headers: {
+          Accept: "application/json",
+          ...requestHeaders
+        }
+      });
+
+      if (!response.ok) {
+        let message = `${response.status} ${response.statusText}`;
+        let payload = null;
+        try {
+          payload = await response.json();
+          message = payload?.message || payload?.error?.message || message;
+        } catch {
+          // keep default status text when error payload is not JSON
+        }
+        const error = new Error(message);
+        error.status = response.status;
+        error.payload = payload;
+        throw error;
+      }
+
+      return response.json();
+    }
+
+    async function fetchBucketObjects(bucketName) {
+      if (!normalizeText(bucketName)) {
+        return [];
+      }
+
+      const payload = await requestJsonAbsolute(`${LEGACY_BUCKET_API_BASE}/${encodeURIComponent(bucketName)}`);
+      return Array.isArray(payload?.objects) ? payload.objects : [];
+    }
+
+    async function mutateBucketObject(bucketName, path, options) {
+      return requestJsonAbsolute(`${LEGACY_BUCKET_API_BASE}/${encodeURIComponent(bucketName)}${path}`, options);
+    }
+
+    function buildBucketDownloadHref(bucketName, objectPath) {
+      if (!normalizeText(bucketName) || !normalizeText(objectPath)) {
+        return "";
+      }
+
+      const params = new URLSearchParams({ path: objectPath });
+      return `${LEGACY_BUCKET_API_BASE}/${encodeURIComponent(bucketName)}/objects/download?${params.toString()}`;
+    }
+
+    function buildLiveItem(detail, browseState = null) {
+      const fallbackItem = findFallbackItemByName(detail?.name);
+      const typePresentation = getTypePresentation(detail?.type, fallbackItem);
+      const statusPresentation = getStatusPresentation(detail?.status);
+      const boundProjects = Array.isArray(detail?.boundProjects) ? detail.boundProjects : [];
+      const boundProjectCount = boundProjects.length || Number(detail?.boundProjectCount || 0);
+      const accessKey = normalizeText(detail?.account?.accessKey);
+      const secretKey = normalizeText(detail?.account?.secretKey);
+      const usageMeta = normalizeText(detail?.usage?.meta);
+      const resolvedBrowseState = browseState || buildBrowseStateFromRows(fallbackItem?.browseRows || []);
+      const usagePresentation = buildUsagePresentation({
+        usedBytes: Number.isFinite(Number(resolvedBrowseState?.root?.totalFileBytes))
+          ? resolvedBrowseState.root.totalFileBytes
+          : detail?.usage?.usedBytes,
+        quotaBytes: detail?.usage?.quotaBytes,
+        quotaLabel: normalizeText(detail?.usage?.quotaLabel) || normalizeText(detail?.capacity?.label),
+        usageMeta
+      });
+      const initialBrowseRows = listBrowseRows(resolvedBrowseState, "");
+      const browseDescription = resolvedBrowseState.totalFolders + resolvedBrowseState.totalFiles > 0
+        ? "이 버킷 안에 있는 폴더와 파일을 경로별로 바로 살펴볼 수 있습니다."
+        : "현재 확인 가능한 object 목록이 없어 기본 Browse 상태만 표시합니다.";
+
+      return {
+        id: normalizeText(detail?.id),
+        key: normalizeText(detail?.name) || "bucket",
+        bucketName: normalizeText(detail?.name) || "bucket",
+        title: normalizeText(detail?.name) || "Bucket",
+        description: fallbackItem?.description || `${normalizeText(detail?.name) || "Bucket"}의 실제 사용량, quota, 바인딩 프로젝트를 확인할 수 있습니다.`,
+        heroIcon: typePresentation.icon,
+        typeLabel: typePresentation.label,
+        statusLabel: statusPresentation.label,
+        statusTone: statusPresentation.tone,
+        theme: typePresentation.theme,
+        actions: [
+          {
+            label: FALLBACK_DETAIL_CONFIG.hubLabel,
+            icon: "hub",
+            href: FALLBACK_DETAIL_CONFIG.hubHref
+          },
+          {
+            label: boundProjectCount > 0 ? "Project Settings" : "Project Hub",
+            icon: "inventory_2",
+            variant: "primary",
+            href: boundProjects.length > 0 ? buildProjectHref(boundProjects[0]?.name) : "workspace_projects_hub.html"
+          }
+        ],
+        heroStats: [
+          { label: "Bucket Usage", value: usagePresentation.usedLabel, meta: usagePresentation.usageMeta },
+          { label: "Bucket Quota", value: usagePresentation.quotaLabel, meta: "현재 bucket에 할당된 quota" },
+          { label: "Bindings", value: formatNumber(boundProjectCount), meta: "연결된 프로젝트 수" }
+        ],
+        usageCards: [
+          createUsageCard({
+            usedLabel: usagePresentation.usedLabel,
+            quotaLabel: usagePresentation.quotaLabel,
+            usageMeta: usagePresentation.usageMeta,
+            usagePercent: usagePresentation.usagePercent,
+            foot: usagePresentation.quotaLabel
+              ? `이 bucket은 quota의 ${usagePresentation.usagePercent}%를 사용하고 있습니다. quota 변경은 별도 운영 액션으로 관리합니다.`
+              : "현재 bucket 사용량을 표시합니다."
+          })
+        ],
+        keyNote: accessKey
+          ? "실제 API에서는 access key만 노출하고 secret key는 응답에 포함하지 않습니다."
+          : "이 bucket에는 아직 확인 가능한 access key가 없습니다.",
+        keys: [
+          {
+            id: "access",
+            title: "Access Key",
+            desc: "현재 bucket에 발급된 access key입니다.",
+            icon: "key",
+            value: accessKey || "Not issued",
+            masked: accessKey || "Not issued",
+            revealable: false,
+            copyable: Boolean(accessKey)
+          },
+          {
+            id: "secret",
+            title: "Secret Key",
+            desc: secretKey
+              ? "현재 bucket에 발급된 secret key입니다."
+              : "현재 bucket에 확인 가능한 secret key가 없습니다.",
+            icon: "lock",
+            value: secretKey || "Not exposed",
+            masked: secretKey ? "*****" : "Not exposed",
+            revealable: false,
+            copyable: Boolean(secretKey)
+          }
+        ],
+        usageContext: {
+          quotaBytes: usagePresentation.quotaBytes,
+          quotaLabel: usagePresentation.quotaLabel,
+          usageMeta: usagePresentation.usageMeta
+        },
+        browseState: resolvedBrowseState,
+        browseSectionKicker: "Browse",
+        browseSectionTitle: "버킷 내용",
+        browseSectionDescription: browseDescription,
+        browseSummaryLabel: formatBrowseSummary(resolvedBrowseState, ""),
+        browseHeaders: ["Name", "Type", "Size", "Updated"],
+        browseRows: initialBrowseRows
+      };
+    }
+
+    function buildRestrictedDetailItem(requestedId, requestedName, error = null) {
+      const requestedLabel = normalizeText(requestedName) || normalizeText(requestedId) || "requested bucket";
+      const safeRequestedLabel = escapeHtml(requestedLabel);
+      const statusCode = Number(error?.status);
+      const reasonLabel = statusCode === 403 || statusCode === 404
+        ? "owner 또는 author 권한이 있는 사용자만 bucket 상세를 열 수 있습니다."
+        : "bucket 상세 정보를 지금 불러오지 못했습니다. 접근 권한 또는 연결 상태를 확인해 주세요.";
+      const errorLabel = escapeHtml(normalizeText(error?.message));
+
+      return {
+        key: requestedLabel,
+        title: "Bucket Access Required",
+        description: "요청한 bucket 상세 페이지에 접근할 수 없습니다.",
+        documentTitle: `Bucket Access Required · ${requestedLabel}`,
+        heroIcon: "lock",
+        typeLabel: "Restricted",
+        statusLabel: statusCode === 404 ? "Unavailable" : "Access Required",
+        statusTone: "review",
+        theme: {
+          bg: "#fff7ed",
+          brand: "#ea580c",
+          brandH: "#c2410c",
+          brandBg: "#ffedd5",
+          brandSoft: "rgba(234,88,12,.14)",
+          accent: "#f59e0b"
+        },
+        actions: [
+          {
+            label: FALLBACK_DETAIL_CONFIG.hubLabel,
+            icon: "hub",
+            href: FALLBACK_DETAIL_CONFIG.hubHref
+          },
+          {
+            label: "Project Hub",
+            icon: "inventory_2",
+            variant: "primary",
+            href: "workspace_projects_hub.html"
+          }
+        ],
+        heroStats: [
+          { label: "Requested Bucket", value: safeRequestedLabel, meta: "detail page access request" },
+          { label: "Required Role", value: "owner / author", meta: "admin은 예외적으로 접근 가능" },
+          { label: "Status", value: statusCode === 404 ? "Unavailable" : "Restricted", meta: reasonLabel }
+        ],
+        layoutMode: "full-width",
+        mainHtml: `
+          <section class="panel section">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker"><span class="material-icons-round">lock</span>Access</div>
+                <h2 class="section-title">이 bucket detail은 현재 사용자에게 열려 있지 않습니다.</h2>
+                <p class="section-desc">관련 프로젝트에서 bucket 이름을 볼 수 있어도, bucket 상세는 bucket owner 또는 author 권한이 있을 때만 접근할 수 있습니다.</p>
+              </div>
+            </div>
+            <div class="access-notice">
+              <article class="access-notice-card">
+                <div class="access-notice-title">
+                  <span class="material-icons-round">shield_locked</span>
+                  접근 제약이 적용된 bucket입니다.
+                </div>
+                <div class="access-notice-copy">
+                  ${reasonLabel}
+                </div>
+                <div class="access-notice-meta">
+                  <span class="access-notice-chip">
+                    <span class="material-icons-round" style="font-size:16px;">inventory_2</span>
+                    ${safeRequestedLabel}
+                  </span>
+                  <span class="access-notice-chip">
+                    <span class="material-icons-round" style="font-size:16px;">badge</span>
+                    owner / author required
+                  </span>
+                  ${errorLabel ? `
+                  <span class="access-notice-chip">
+                    <span class="material-icons-round" style="font-size:16px;">info</span>
+                    ${errorLabel}
+                  </span>
+                  ` : ""}
+                </div>
+              </article>
+            </div>
+          </section>
+        `
+      };
+    }
+
+    async function resolveBucketDetail(requestedId, requestedName) {
+      if (normalizeText(requestedId)) {
+        const detailPayload = await fetchJson(`/buckets/${encodeURIComponent(requestedId)}`);
+        return extractData(detailPayload, null);
+      }
+
+      if (!normalizeText(requestedName)) {
+        return null;
+      }
+
+      const bucketItems = await fetchAllBuckets();
+      const matched = bucketItems.find((item) => normalizeText(item?.name) === normalizeText(requestedName));
+      if (!matched?.id) {
+        return null;
+      }
+
+      const detailPayload = await fetchJson(`/buckets/${encodeURIComponent(matched.id)}`);
+      return extractData(detailPayload, null);
+    }
+
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.body.appendChild(script);
+      });
+    }
+
+    function initializeKeyInteractions() {
       const feedbackNode = document.querySelector("[data-key-feedback]");
       const toggleButtons = Array.from(document.querySelectorAll("[data-key-toggle]"));
       const copyButtons = Array.from(document.querySelectorAll("[data-key-copy]"));
@@ -625,7 +1742,532 @@
           }
         });
       });
-    })();
+    }
+
+    async function initializeDetailPage() {
+      const params = new URLSearchParams(window.location.search);
+      const requestedId = normalizeText(params.get("id"));
+      const requestedName = normalizeText(params.get("item"));
+      let config = { ...FALLBACK_DETAIL_CONFIG };
+
+      if (requestedId || requestedName) {
+        try {
+          const detail = await resolveBucketDetail(requestedId, requestedName);
+
+          if (detail) {
+            let browseState = null;
+
+            try {
+              const objects = await fetchBucketObjects(detail.name);
+              browseState = buildBrowseStateFromObjects(objects);
+            } catch (error) {
+              console.warn("[workspace_bucket_detail] Failed to load bucket objects", error);
+            }
+
+            const liveItem = buildLiveItem(detail, browseState);
+            config = {
+              ...FALLBACK_DETAIL_CONFIG,
+              paramName: requestedId ? "id" : "item",
+              items: {
+                ...FALLBACK_DETAIL_CONFIG.items,
+                [requestedId || requestedName || liveItem.key]: buildItem(liveItem)
+              }
+            };
+          } else {
+            const restrictedItem = buildRestrictedDetailItem(requestedId, requestedName);
+            config = {
+              ...FALLBACK_DETAIL_CONFIG,
+              paramName: requestedId ? "id" : "item",
+              items: {
+                [requestedId || requestedName || restrictedItem.key]: restrictedItem
+              }
+            };
+          }
+        } catch (error) {
+          console.warn("[workspace_bucket_detail] Failed to load live bucket detail", error);
+          const restrictedItem = buildRestrictedDetailItem(requestedId, requestedName, error);
+          config = {
+            ...FALLBACK_DETAIL_CONFIG,
+            paramName: requestedId ? "id" : "item",
+            items: {
+              [requestedId || requestedName || restrictedItem.key]: restrictedItem
+            }
+          };
+        }
+      }
+
+      window.DETAIL_PAGE_CONFIG = config;
+
+      await loadScript("workspace_detail_shared.js");
+      await loadScript("ax_studio_topbar.js");
+      initializeKeyInteractions();
+      initializeBrowseInteractions();
+    }
+
+    function getCurrentDetailItem(config) {
+      if (!config || !config.items) {
+        return null;
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const itemParam = config.paramName || "item";
+      const requestedKey = params.get(itemParam);
+      const keys = Object.keys(config.items);
+      const currentKey = Object.prototype.hasOwnProperty.call(config.items, requestedKey) ? requestedKey : keys[0];
+      return config.items[currentKey] || null;
+    }
+
+    function initializeBrowseInteractions() {
+      const item = getCurrentDetailItem(window.DETAIL_PAGE_CONFIG);
+      const browseRoot = document.querySelector("[data-browse-root]");
+      if (!item || !browseRoot) {
+        return;
+      }
+
+      item.browseState = item.browseState || buildBrowseStateFromRows(item.browseRows || []);
+      const bodyNode = browseRoot.querySelector("[data-browse-body]");
+      const summaryNode = browseRoot.querySelector("[data-browse-summary]");
+      const breadcrumbsNode = browseRoot.querySelector("[data-browse-breadcrumbs]");
+      const emptyNode = browseRoot.querySelector("[data-browse-empty]");
+      const selectionNode = browseRoot.querySelector("[data-browse-selection]");
+      const feedbackNode = browseRoot.querySelector("[data-browse-feedback]");
+      const uploadInput = browseRoot.querySelector("[data-browse-upload-input]");
+      const actionButtons = Array.from(browseRoot.querySelectorAll("[data-browse-action]"));
+      const usageStripNode = document.querySelector("[data-usage-strip]");
+      const heroUsageCard = document.querySelector('[data-stat-card="Bucket Usage"]');
+      const heroQuotaCard = document.querySelector('[data-stat-card="Bucket Quota"]');
+
+      if (!bodyNode || !summaryNode || !breadcrumbsNode || !emptyNode || !selectionNode || !feedbackNode || !uploadInput) {
+        return;
+      }
+
+      const browseState = {
+        busy: false,
+        currentPath: "",
+        selectedKeys: [],
+        rows: []
+      };
+      const bucketName = normalizeText(item.bucketName || item.key);
+
+      function updateStatCard(cardNode, value, meta) {
+        if (!cardNode) {
+          return;
+        }
+
+        const valueNode = cardNode.querySelector(".stat-value");
+        const metaNode = cardNode.querySelector(".stat-meta");
+        if (valueNode) {
+          valueNode.textContent = value || "";
+        }
+        if (metaNode) {
+          metaNode.textContent = meta || "";
+        }
+      }
+
+      function syncUsagePresentation() {
+        const usageContext = item.usageContext || null;
+        if (!usageContext || !usageStripNode) {
+          return;
+        }
+
+        const usagePresentation = buildUsagePresentation({
+          usedBytes: item.browseState?.root?.totalFileBytes,
+          quotaBytes: usageContext.quotaBytes,
+          quotaLabel: usageContext.quotaLabel,
+          usageMeta: usageContext.usageMeta
+        });
+
+        item.usageCards = [
+          createUsageCard({
+            usedLabel: usagePresentation.usedLabel,
+            quotaLabel: usagePresentation.quotaLabel,
+            usageMeta: usagePresentation.usageMeta,
+            usagePercent: usagePresentation.usagePercent,
+            foot: usagePresentation.quotaLabel
+              ? `이 bucket은 quota의 ${usagePresentation.usagePercent}%를 사용하고 있습니다. quota 변경은 별도 운영 액션으로 관리합니다.`
+              : "현재 bucket 사용량을 표시합니다."
+          })
+        ];
+        usageStripNode.innerHTML = renderUsageCards(item.usageCards);
+        updateStatCard(heroUsageCard, usagePresentation.usedLabel, usagePresentation.usageMeta);
+        updateStatCard(heroQuotaCard, usagePresentation.quotaLabel, "현재 bucket에 할당된 quota");
+      }
+
+      function setFeedback(message, tone = "success") {
+        feedbackNode.textContent = message || "";
+        feedbackNode.classList.remove("is-success", "is-error");
+        if (!message) {
+          return;
+        }
+        feedbackNode.classList.add(tone === "error" ? "is-error" : "is-success");
+      }
+
+      function getSelectedRows() {
+        const selectedSet = new Set(browseState.selectedKeys);
+        return browseState.rows.filter((row) => selectedSet.has(row.objectKey));
+      }
+
+      function getEffectiveSelectedRows() {
+        const selectedRows = getSelectedRows();
+        const selectedFolderKeys = selectedRows
+          .filter((row) => row.isFolder)
+          .map((row) => row.objectKey)
+          .sort((left, right) => left.length - right.length);
+
+        return selectedRows
+          .filter((row) => !selectedFolderKeys.some((folderKey) => folderKey !== row.objectKey && row.objectKey.startsWith(folderKey)))
+          .sort((left, right) => right.objectKey.length - left.objectKey.length);
+      }
+
+      function syncActionState() {
+        const selectedRows = getSelectedRows();
+        const selectedRow = selectedRows[0] || null;
+        const selectedFileCount = selectedRows.filter((row) => !row.isFolder).length;
+        const selectedFolderCount = selectedRows.length - selectedFileCount;
+        const effectiveSelectedRows = getEffectiveSelectedRows();
+        const effectiveSelectedBytes = effectiveSelectedRows.reduce((sum, row) => sum + (Number.isFinite(row.sizeBytes) ? row.sizeBytes : 0), 0);
+
+        actionButtons.forEach((button) => {
+          const action = button.getAttribute("data-browse-action");
+          if (action === "download") {
+            button.disabled = browseState.busy || selectedRows.length === 0 || selectedRows.some((row) => row.isFolder);
+            return;
+          }
+          if (action === "rename") {
+            button.disabled = browseState.busy || selectedRows.length !== 1;
+            return;
+          }
+          if (action === "delete") {
+            button.disabled = browseState.busy || selectedRows.length === 0;
+            return;
+          }
+          button.disabled = browseState.busy;
+        });
+        if (!selectedRow) {
+          selectionNode.textContent = "선택된 파일이나 폴더가 없습니다.";
+          return;
+        }
+
+        if (selectedRows.length === 1) {
+          selectionNode.textContent = `${selectedRow.isFolder ? "선택 폴더" : "선택 파일"}: ${selectedRow.path} · 파일 용량 ${formatStorageLabel(selectedRow.sizeBytes)}`;
+          return;
+        }
+
+        const selectionParts = [`${selectedRows.length}개 항목 선택됨`];
+        if (selectedFileCount > 0) {
+          selectionParts.push(`파일 ${selectedFileCount}개`);
+        }
+        if (selectedFolderCount > 0) {
+          selectionParts.push(`폴더 ${selectedFolderCount}개`);
+        }
+        selectionParts.push(`용량 ${formatStorageLabel(effectiveSelectedBytes)}`);
+        selectionNode.textContent = selectionParts.join(" · ");
+      }
+
+      const render = (currentPath = browseState.currentPath) => {
+        browseState.currentPath = normalizeBrowsePath(currentPath);
+        browseState.rows = listBrowseRows(item.browseState, browseState.currentPath);
+        const visibleKeys = new Set(browseState.rows.map((row) => row.objectKey));
+        browseState.selectedKeys = browseState.selectedKeys.filter((key) => visibleKeys.has(key));
+
+        bodyNode.innerHTML = renderBrowseRows(browseState.rows, browseState.selectedKeys);
+        summaryNode.innerHTML = `
+          <span class="material-icons-round">inventory_2</span>
+          ${formatBrowseSummary(item.browseState, browseState.currentPath)}
+        `;
+        breadcrumbsNode.innerHTML = renderBrowseBreadcrumbs(browseState.currentPath);
+        emptyNode.hidden = browseState.rows.length > 0;
+        syncUsagePresentation();
+        syncActionState();
+      };
+
+      async function refreshBrowseState(successMessage = "최신 object 목록을 불러왔습니다.") {
+        if (!bucketName) {
+          setFeedback("연결된 bucket 이름이 없어 browse를 새로고침할 수 없습니다.", "error");
+          return;
+        }
+
+        browseState.busy = true;
+        syncActionState();
+
+        try {
+          const objects = await fetchBucketObjects(bucketName);
+          item.browseState = buildBrowseStateFromObjects(objects);
+          if (!getBrowseNode(item.browseState, browseState.currentPath)) {
+            browseState.currentPath = "";
+          }
+          browseState.selectedKeys = [];
+          setFeedback(successMessage);
+        } catch (error) {
+          console.warn("[workspace_bucket_detail] Failed to refresh browse objects", error);
+          setFeedback("버킷 object 목록을 불러오지 못했습니다.", "error");
+        } finally {
+          browseState.busy = false;
+          render(browseState.currentPath);
+        }
+      }
+
+      async function createFolder() {
+        const folderName = normalizeText(window.prompt("생성할 폴더 이름을 입력하세요.", ""));
+        if (!folderName) {
+          return;
+        }
+
+        browseState.busy = true;
+        syncActionState();
+        try {
+          await mutateBucketObject(bucketName, "/objects/folder", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              path: buildObjectPath(browseState.currentPath, folderName, { isFolder: true })
+            })
+          });
+          await refreshBrowseState(`폴더 "${folderName}"를 생성했습니다.`);
+        } catch (error) {
+          console.warn("[workspace_bucket_detail] Failed to create folder", error);
+          browseState.busy = false;
+          setFeedback(error?.message || "폴더를 생성하지 못했습니다.", "error");
+          syncActionState();
+        }
+      }
+
+      async function renameSelection() {
+        const selectedRow = getSelectedRows()[0] || null;
+        if (!selectedRow) {
+          return;
+        }
+
+        const defaultName = selectedRow.isFolder ? selectedRow.name.replace(/\/$/u, "") : selectedRow.name;
+        const nextName = normalizeText(window.prompt("새 이름을 입력하세요.", defaultName));
+        if (!nextName || nextName === defaultName) {
+          return;
+        }
+
+        const parentPath = splitBrowsePath(selectedRow.objectKey).slice(0, -1).join("/");
+        browseState.busy = true;
+        syncActionState();
+
+        try {
+          await mutateBucketObject(bucketName, "/objects/rename", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              fromPath: selectedRow.objectKey,
+              toPath: buildObjectPath(parentPath, nextName, { isFolder: selectedRow.isFolder }),
+              isFolder: selectedRow.isFolder
+            })
+          });
+          await refreshBrowseState(`"${defaultName}" 이름을 변경했습니다.`);
+        } catch (error) {
+          console.warn("[workspace_bucket_detail] Failed to rename object", error);
+          browseState.busy = false;
+          setFeedback(error?.message || "이름을 변경하지 못했습니다.", "error");
+          syncActionState();
+        }
+      }
+
+      async function deleteSelection() {
+        const selectedRows = getSelectedRows();
+        if (selectedRows.length === 0) {
+          return;
+        }
+
+        const effectiveSelectedRows = getEffectiveSelectedRows();
+        const confirmed = window.confirm(
+          selectedRows.length === 1
+            ? `"${selectedRows[0].name}" 항목을 삭제할까요?`
+            : `${selectedRows.length}개 항목을 삭제할까요?`
+        );
+        if (!confirmed) {
+          return;
+        }
+
+        browseState.busy = true;
+        syncActionState();
+        try {
+          for (const selectedRow of effectiveSelectedRows) {
+            await mutateBucketObject(bucketName, "/objects", {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                path: selectedRow.objectKey,
+                isFolder: selectedRow.isFolder
+              })
+            });
+          }
+          await refreshBrowseState(
+            selectedRows.length === 1
+              ? `"${selectedRows[0].name}" 항목을 삭제했습니다.`
+              : `${selectedRows.length}개 항목을 삭제했습니다.`
+          );
+        } catch (error) {
+          console.warn("[workspace_bucket_detail] Failed to delete object", error);
+          browseState.busy = false;
+          setFeedback(error?.message || "항목을 삭제하지 못했습니다.", "error");
+          syncActionState();
+        }
+      }
+
+      async function uploadFiles(fileList) {
+        const files = Array.from(fileList || []).filter(Boolean);
+        if (files.length === 0) {
+          return;
+        }
+
+        browseState.busy = true;
+        syncActionState();
+        try {
+          const formData = new FormData();
+          formData.append("path", browseState.currentPath);
+          files.forEach((file) => {
+            formData.append("files", file, file.name);
+          });
+          await mutateBucketObject(bucketName, "/objects/upload", {
+            method: "POST",
+            body: formData
+          });
+          await refreshBrowseState(`${files.length}개 파일을 업로드했습니다.`);
+        } catch (error) {
+          console.warn("[workspace_bucket_detail] Failed to upload files", error);
+          browseState.busy = false;
+          setFeedback(error?.message || "파일을 업로드하지 못했습니다.", "error");
+          syncActionState();
+        } finally {
+          uploadInput.value = "";
+        }
+      }
+
+      async function downloadSelection() {
+        const selectedRows = getSelectedRows();
+        const selectedFiles = selectedRows.filter((row) => !row.isFolder);
+        if (selectedFiles.length === 0) {
+          setFeedback("다운로드할 파일을 먼저 선택하세요.", "error");
+          return;
+        }
+
+        browseState.busy = true;
+        syncActionState();
+
+        try {
+          for (const selectedRow of selectedFiles) {
+            const downloadHref = buildBucketDownloadHref(bucketName, selectedRow.objectKey);
+            if (!downloadHref) {
+              throw new Error("다운로드 경로를 만들지 못했습니다.");
+            }
+
+            const response = await fetch(downloadHref, {
+              credentials: "same-origin"
+            });
+            if (!response.ok) {
+              let message = `${response.status} ${response.statusText}`;
+              try {
+                const payload = await response.json();
+                message = payload?.message || payload?.error?.message || message;
+              } catch {
+                // keep response status text when error payload is not JSON
+              }
+              throw new Error(message);
+            }
+
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = blobUrl;
+            link.download = selectedRow.name || "download";
+            link.style.display = "none";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+          }
+          setFeedback(
+            selectedFiles.length === 1
+              ? `"${selectedFiles[0].name}" 다운로드를 시작했습니다.`
+              : `${selectedFiles.length}개 파일 다운로드를 시작했습니다.`
+          );
+        } catch (error) {
+          console.warn("[workspace_bucket_detail] Failed to download object", error);
+          setFeedback(error?.message || "파일을 다운로드하지 못했습니다.", "error");
+        } finally {
+          browseState.busy = false;
+          syncActionState();
+        }
+      }
+
+      browseRoot.addEventListener("click", (event) => {
+        const selectTarget = event.target.closest("[data-browse-select]");
+        if (selectTarget) {
+          event.preventDefault();
+          const objectKey = selectTarget.getAttribute("data-browse-select") || "";
+          if (!objectKey) {
+            return;
+          }
+          if (browseState.selectedKeys.includes(objectKey)) {
+            browseState.selectedKeys = browseState.selectedKeys.filter((key) => key !== objectKey);
+          } else {
+            browseState.selectedKeys = [...browseState.selectedKeys, objectKey];
+          }
+          render(browseState.currentPath);
+          return;
+        }
+
+        const actionTarget = event.target.closest("[data-browse-action]");
+        if (actionTarget) {
+          event.preventDefault();
+          const action = actionTarget.getAttribute("data-browse-action");
+          if (action === "refresh") {
+            refreshBrowseState();
+          } else if (action === "create-folder") {
+            createFolder();
+          } else if (action === "upload") {
+            uploadInput.click();
+          } else if (action === "download") {
+            downloadSelection();
+          } else if (action === "rename") {
+            renameSelection();
+          } else if (action === "delete") {
+            deleteSelection();
+          }
+          return;
+        }
+
+        const target = event.target.closest("[data-browse-path]");
+        if (!target) {
+          return;
+        }
+
+        event.preventDefault();
+        browseState.selectedKeys = [];
+        render(target.getAttribute("data-browse-path") || "");
+      });
+
+      uploadInput.addEventListener("change", (event) => {
+        uploadFiles(event.target.files);
+      });
+
+      render("");
+    }
+
+    initializeDetailPage().catch((error) => {
+      console.warn("[workspace_bucket_detail] Failed to initialize detail page", error);
+      window.DETAIL_PAGE_CONFIG = { ...FALLBACK_DETAIL_CONFIG };
+      loadScript("workspace_detail_shared.js")
+        .then(() => loadScript("ax_studio_topbar.js"))
+        .then(() => {
+          initializeKeyInteractions();
+          initializeBrowseInteractions();
+        })
+        .catch((scriptError) => {
+          console.error("[workspace_bucket_detail] Failed to load fallback scripts", scriptError);
+        });
+    });
   </script>
 </body>
 </html>

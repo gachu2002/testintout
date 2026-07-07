@@ -6,7 +6,7 @@ import ShieldRoundedIcon from '@mui/icons-material/ShieldRounded';
 import { Box, Button, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-import { Badge, IconTile, Metric } from '@/components/workspace';
+import { Badge, buildResourceResultCopy, IconTile, Metric } from '@/components/workspace';
 import {
   ResourceCardFooter,
   ResourceCardRoot,
@@ -78,7 +78,13 @@ export function DomainCardsPanel({
       isEmpty={domains.length === 0}
       isLoading={isLoading}
       label={panelCopy.label}
-      resultCopy={buildResultCopy(activeStatus, domains.length, loadedCount, total)}
+      resultCopy={buildResourceResultCopy({
+        filterLabel: getStatusLabel(activeStatus).toLowerCase(),
+        isDefault: activeStatus === 'all',
+        loadedCount,
+        total,
+        visibleCount: domains.length,
+      })}
       skeletonHeight={260}
       status={domainHubSectionStatus.cards}
       title={panelCopy.title}
@@ -151,20 +157,6 @@ function DomainCard({ domain }: { domain: DomainResource }) {
       </ResourceCardFooter>
     </ResourceCardRoot>
   );
-}
-
-function buildResultCopy(
-  activeStatus: DomainStatusFilter,
-  visibleCount: number,
-  loadedCount: number,
-  total?: number,
-) {
-  const totalCopy = typeof total === 'number' ? `${total.toLocaleString()} total` : 'total unknown';
-  const loadedCopy = `${loadedCount.toLocaleString()} loaded`;
-
-  if (activeStatus === 'all') return `${loadedCopy} · ${totalCopy}`;
-
-  return `${visibleCount.toLocaleString()} ${getStatusLabel(activeStatus).toLowerCase()} · ${loadedCopy}`;
 }
 
 function getCertificateCopy(status: string, expiresAt: string | null) {

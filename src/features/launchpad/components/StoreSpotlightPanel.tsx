@@ -445,6 +445,7 @@ function getStoreIcon(name: string, fontSize: number) {
 
   switch (name) {
     case 'dashboard':
+    case 'dashboard_customize':
       return <DashboardRoundedIcon sx={sx} />;
     case 'hub':
       return <HubRoundedIcon sx={sx} />;

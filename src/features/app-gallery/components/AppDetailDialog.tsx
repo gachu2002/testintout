@@ -43,7 +43,7 @@ export function AppDetailDialog({ detail, error, isLoading, onClose, open }: App
   const handleInstall = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!detail || projectId.trim().length === 0) {
+    if (!detail || detail.install.method !== 'POST' || projectId.trim().length === 0) {
       return;
     }
 
@@ -61,7 +61,7 @@ export function AppDetailDialog({ detail, error, isLoading, onClose, open }: App
               fontWeight={800}
               letterSpacing="0.08em"
             >
-              APP DETAIL CONTRACT
+              APP DETAIL
             </Typography>
             <Typography component="span" fontSize={24} fontWeight={800} letterSpacing="-0.04em">
               {detail?.title ?? 'App Detail'}
@@ -96,6 +96,7 @@ export function AppDetailDialog({ detail, error, isLoading, onClose, open }: App
             <Stack direction="row" flexWrap="wrap" gap={1}>
               <Chip label={detail.categoryLabel} size="small" />
               <Chip label={detail.installTargetLabel} size="small" />
+              <Chip label={detail.lifecycleLabel} size="small" />
               <Chip label="GET /apps/:slug" size="small" />
               {detail.tags.slice(0, 3).map((tag) => (
                 <Chip key={tag} label={tag} size="small" variant="outlined" />
@@ -122,7 +123,7 @@ export function AppDetailDialog({ detail, error, isLoading, onClose, open }: App
               <Stack spacing={1.75}>
                 <Box>
                   <Typography fontSize={16} fontWeight={800} letterSpacing="-0.02em">
-                    설치 계약
+                    연결 정보
                   </Typography>
                   <Typography
                     color="text.secondary"
@@ -130,39 +131,54 @@ export function AppDetailDialog({ detail, error, isLoading, onClose, open }: App
                     fontSize={12}
                     sx={{ mt: 0.75 }}
                   >
-                    {detail.install.method} {detail.install.path}
+                    {detail.action.label || `${detail.install.method} ${detail.install.path}`}
                   </Typography>
                   <Typography color="text.secondary" fontSize={12} sx={{ mt: 0.5 }}>
-                    필수 필드: {detail.install.requiredFields.join(', ')} · target:{' '}
-                    {detail.install.targetType}
+                    {detail.action.note ||
+                      `필수 필드: ${detail.install.requiredFields.join(', ') || '없음'} · target: ${detail.install.targetType}`}
                   </Typography>
                 </Box>
 
-                <Box component="form" onSubmit={handleInstall}>
-                  <Stack direction={{ sm: 'row', xs: 'column' }} spacing={1.25}>
-                    <TextField
-                      fullWidth
-                      label="projectId"
-                      onChange={(event) => setProjectId(event.target.value)}
-                      placeholder="설치 대상 프로젝트 ID"
-                      size="small"
-                      value={projectId}
-                    />
+                {detail.action.href ? (
+                  <Box>
                     <Button
-                      disabled={
-                        projectId.trim().length === 0 ||
-                        installMutation.isPending ||
-                        !detail.capabilities.canInstall
-                      }
-                      startIcon={<RocketLaunchRoundedIcon />}
-                      sx={{ minWidth: 150 }}
-                      type="submit"
+                      component={SmartLink}
+                      href={detail.action.href}
+                      startIcon={<OpenInNewRoundedIcon />}
                       variant="contained"
                     >
-                      설치 요청
+                      {detail.action.label}
                     </Button>
-                  </Stack>
-                </Box>
+                  </Box>
+                ) : null}
+
+                {detail.capabilities.canInstall && detail.install.method === 'POST' ? (
+                  <Box component="form" onSubmit={handleInstall}>
+                    <Stack direction={{ sm: 'row', xs: 'column' }} spacing={1.25}>
+                      <TextField
+                        fullWidth
+                        label="projectId"
+                        onChange={(event) => setProjectId(event.target.value)}
+                        placeholder="설치 대상 프로젝트 ID"
+                        size="small"
+                        value={projectId}
+                      />
+                      <Button
+                        disabled={
+                          projectId.trim().length === 0 ||
+                          installMutation.isPending ||
+                          !detail.capabilities.canInstall
+                        }
+                        startIcon={<RocketLaunchRoundedIcon />}
+                        sx={{ minWidth: 150 }}
+                        type="submit"
+                        variant="contained"
+                      >
+                        설치 요청
+                      </Button>
+                    </Stack>
+                  </Box>
+                ) : null}
 
                 {installMutation.isError ? (
                   <Alert severity="error">

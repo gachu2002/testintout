@@ -4,7 +4,7 @@ import { Box, Chip, CircularProgress, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 
 import { SectionStatusBadge } from '@/components/reference-status';
-import { IconTile } from '@/components/workspace';
+import { focusVisibleStyles, IconTile } from '@/components/workspace';
 import { WorkspaceIcon } from '@/components/WorkspaceIcon';
 import {
   CardGrid,
@@ -31,7 +31,7 @@ export function RegisteredAppsPanel({
       <Stack spacing={1} sx={{ mb: 2.25 }}>
         <SectionLabel>
           <Inventory2RoundedIcon sx={{ color: 'primary.main', fontSize: 15 }} />
-          Registered Apps
+          Recommended Apps
           <SectionStatusBadge status={appGallerySectionStatus.registeredApps} />
         </SectionLabel>
         <Typography
@@ -41,11 +41,10 @@ export function RegisteredAppsPanel({
           letterSpacing="-0.04em"
           lineHeight={1.18}
         >
-          실제 App Gallery 카탈로그를 확인해 보세요
+          추천된 배포 앱을 확인해 보세요
         </Typography>
         <Typography color="text.secondary" fontSize={13} lineHeight={1.7} maxWidth={760}>
-          카테고리와 검색 조건에 맞는 앱을 실시간으로 조회합니다. 카드에서 상세를 열면 실제
-          /api/v2/app-gallery/apps/:slug 계약까지 이어집니다.
+          카테고리와 검색 조건에 맞는 앱을 골라 살펴보세요.
         </Typography>
       </Stack>
 
@@ -77,6 +76,10 @@ function AppCard({
   app: AppGalleryApp;
   onOpenAppDetail: (slug: string) => void;
 }) {
+  const cardStats = [app.categoryLabel, app.recommendationReason, ...app.tags]
+    .filter(Boolean)
+    .slice(0, 3);
+
   return (
     <StoreCard>
       <Stack
@@ -110,10 +113,10 @@ function AppCard({
         {app.summary}
       </Typography>
       <TagRow sx={{ mb: 1.75 }}>
-        {app.tags.slice(0, 3).map((tag) => (
+        {cardStats.map((stat) => (
           <Chip
-            key={tag}
-            label={tag}
+            key={stat}
+            label={stat}
             size="small"
             sx={{
               bgcolor: 'background.default',
@@ -136,12 +139,12 @@ function AppCard({
           fontWeight={800}
           sx={(theme) => ({ color: theme.workspace.colors.green })}
         >
-          {app.capabilities.canInstall ? '설치 API 연결 가능' : '조회 전용'}
+          {app.lifecycleLabel || (app.capabilities.canInstall ? '설치 가능' : '둘러보기')}
         </Typography>
         <Box
           component="button"
           onClick={() => onOpenAppDetail(app.slug)}
-          sx={{
+          sx={(theme) => ({
             alignItems: 'center',
             background: 'transparent',
             border: 0,
@@ -153,7 +156,8 @@ function AppCard({
             gap: 0.5,
             p: 0,
             textDecoration: 'none',
-          }}
+            ...focusVisibleStyles(theme),
+          })}
           type="button"
         >
           상세 보기

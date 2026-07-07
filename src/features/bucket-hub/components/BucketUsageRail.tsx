@@ -10,7 +10,6 @@ import {
   HeadCopy,
   Kicker,
   ListRow,
-  Meter,
   Panel,
   RowCopy,
   RowList,
@@ -21,10 +20,11 @@ import {
   SummaryLabel,
   SummaryValue,
   Title,
+  WorkspaceUsageMeter,
 } from '@/components/workspace';
 import { bucketHubSectionStatus } from '@/features/bucket-hub/sectionStatus';
 import type { BucketUsagePanel, BucketUsagePanelItem } from '@/features/bucket-hub/types';
-import { clampPercent, formatBytes, formatPercent } from '@/features/bucket-hub/utils/format';
+import { formatBytes, formatPercent } from '@/features/bucket-hub/utils/format';
 import type { ToneName } from '@/styles/tokens';
 
 const railCopy = {
@@ -89,11 +89,10 @@ function UsageRow({ item }: { item: BucketUsagePanelItem }) {
         <RowMeta>
           {formatBytes(item.usedBytes)} used · {formatBytes(item.quotaBytes)} quota
         </RowMeta>
-        <Meter
-          aria-label={`${item.name} usage`}
+        <WorkspaceUsageMeter
           fill="linear-gradient(90deg,#0f766e,#2dd4bf)"
-          value={clampPercent(item.usagePercent)}
-          variant="determinate"
+          label={`${item.name} usage`}
+          value={item.usagePercent}
         />
       </RowCopy>
       <Badge tone={getUsageTone(item.usagePercent)}>{formatPercent(item.usagePercent)}</Badge>

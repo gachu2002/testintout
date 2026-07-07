@@ -10,13 +10,8 @@ import type {
   DomainTipsPanel,
 } from '@/features/domain-hub/types';
 import { apiClient } from '@/lib/api/axios';
-import type { ApiDataResponse, PaginatedResponse } from '@/lib/api/types';
-
-type CursorParams = {
-  cursor: string;
-  limit: number;
-  q?: string;
-};
+import type { ApiDataResponse, CursorParams, PaginatedResponse } from '@/lib/api/types';
+import { unwrapApiData } from '@/lib/api/types';
 
 export async function getDomainHubDomains(
   { cursor, limit, q }: CursorParams = { cursor: '', limit: 6 },
@@ -30,12 +25,12 @@ export async function getDomainHubDomains(
 
 export async function getDomainHubStats(): Promise<DomainHubStats> {
   const response = await apiClient.get<ApiDataResponse<DomainHubStats>>('/v2/domains/stats');
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getDomainHubFilters(): Promise<DomainHubFilters> {
   const response = await apiClient.get<ApiDataResponse<DomainHubFilters>>('/v2/domains/filters');
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getDomainHubTipsPanel(): Promise<DomainTipsPanel> {
@@ -43,7 +38,7 @@ export async function getDomainHubTipsPanel(): Promise<DomainTipsPanel> {
     params: { surface: 'domains' },
   });
 
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getDomainHubGuideLinksPanel(): Promise<DomainGuideLinksPanel> {
@@ -54,7 +49,7 @@ export async function getDomainHubGuideLinksPanel(): Promise<DomainGuideLinksPan
     },
   );
 
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getDomainCertificatePanel(): Promise<DomainCertificatePanel> {
@@ -62,7 +57,7 @@ export async function getDomainCertificatePanel(): Promise<DomainCertificatePane
     '/v2/domains/panels/certificates',
   );
 
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getDomainCertificateDetail(
@@ -72,7 +67,7 @@ export async function getDomainCertificateDetail(
     `/v2/domains/${domainId}/certificate`,
   );
 
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getDomainConnectionPanel(): Promise<DomainConnectionPanel> {
@@ -80,7 +75,7 @@ export async function getDomainConnectionPanel(): Promise<DomainConnectionPanel>
     '/v2/domains/panels/connections',
   );
 
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getDomainConnectionDetail(domainId: string): Promise<DomainConnectionDetail> {
@@ -88,5 +83,5 @@ export async function getDomainConnectionDetail(domainId: string): Promise<Domai
     `/v2/domains/${domainId}/connection`,
   );
 
-  return response.data.data;
+  return unwrapApiData(response);
 }

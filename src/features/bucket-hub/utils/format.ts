@@ -1,31 +1,7 @@
 import { formatLabel } from '@/lib/formatters';
 import type { ToneName } from '@/styles/tokens';
 
-const byteUnits = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'] as const;
-
-export function formatBytes(value: number) {
-  if (!Number.isFinite(value) || value <= 0) return '0 B';
-
-  const exponent = Math.min(Math.floor(Math.log(value) / Math.log(1024)), byteUnits.length - 1);
-  const scaledValue = value / 1024 ** exponent;
-  const formatter = new Intl.NumberFormat('en-US', {
-    maximumFractionDigits: scaledValue < 10 && exponent > 0 ? 1 : 0,
-  });
-
-  return `${formatter.format(scaledValue)} ${byteUnits[exponent]}`;
-}
-
-export function formatPercent(value: number | null | undefined) {
-  if (typeof value !== 'number' || !Number.isFinite(value)) return '—';
-
-  return `${Math.max(0, Math.min(100, value)).toLocaleString()}%`;
-}
-
-export function clampPercent(value: number | null | undefined) {
-  if (typeof value !== 'number' || !Number.isFinite(value)) return 0;
-
-  return Math.max(0, Math.min(100, value));
-}
+export { clampPercent, formatBytes, formatPercent, getInitials } from '@/lib/formatters';
 
 export function getBucketTypeLabel(type: string) {
   if (type === 'private') return '프라이빗';
@@ -57,16 +33,4 @@ export function getBucketIconBackground(type: string) {
   if (type === 'public') return 'linear-gradient(135deg,#0ea5e9,#22d3ee)';
 
   return 'linear-gradient(135deg,#0f766e,#2dd4bf)';
-}
-
-export function getInitials(value: string | undefined) {
-  if (!value) return 'NA';
-
-  return value
-    .split(/[-_\s.]+/)
-    .map((part) => part[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
 }

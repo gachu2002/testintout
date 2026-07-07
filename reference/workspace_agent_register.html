@@ -78,9 +78,23 @@
       font-size: 12px;
       line-height: 1.55;
     }
+    .type-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
     .type-card {
       position: relative;
       padding: 18px;
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+    .type-card:hover {
+      transform: translateY(-1px);
+      border-color: rgba(124, 58, 237, .26);
+      box-shadow: 0 16px 30px rgba(15, 23, 42, .08);
+    }
+    .type-card.is-selected {
       border-color: rgba(124, 58, 237, .3);
       box-shadow: 0 16px 30px rgba(15, 23, 42, .08), inset 0 0 0 1px rgba(124, 58, 237, .1);
       background: linear-gradient(180deg, #ffffff 0%, #f7f3ff 100%);
@@ -90,6 +104,63 @@
       inset: 0;
       opacity: 0;
       pointer-events: none;
+    }
+    .type-card-copy {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+    }
+    .type-card-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .type-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 24px;
+      padding: 0 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .01em;
+      white-space: nowrap;
+    }
+    .type-badge.default {
+      color: var(--good);
+      background: var(--good-bg);
+    }
+    .type-radio {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 2px solid rgba(124, 58, 237, .24);
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: border-color .18s ease, transform .18s ease;
+    }
+    .type-card.is-selected .type-radio {
+      border-color: #7c3aed;
+      transform: scale(1.02);
+    }
+    .type-card.is-selected .type-radio::after {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #7c3aed, #22d3ee);
+    }
+    .type-card-note {
+      padding-top: 12px;
+      border-top: 1px dashed rgba(124, 58, 237, .18);
+      color: var(--subtle);
+      font-size: 12px;
+      line-height: 1.55;
     }
     .type-top,
     .preview-top,
@@ -187,6 +258,21 @@
         "repo-review-guard",
         "incident-triage-bot"
       ];
+      const AGENT_TYPE_OPTIONS = [
+        {
+          value: "Dify",
+          title: "Dify",
+          badge: "Default",
+          icon: "hub",
+          description: "현재 제공되는 기본 runtime으로, Dify 기반 agent를 바로 생성합니다.",
+          note: "추후 n8n이나 custom Agent를 추가하려면 이 배열에 객체만 더 넣으면 카드, 미리보기, 저장 값이 함께 확장됩니다.",
+          heroDescription: "현재는 기본 유형인 Dify를 선택한 상태로 draft agent를 생성합니다. 이후 runtime 옵션이 늘어나도 같은 카드 레이아웃을 그대로 확장할 수 있게 구성했습니다.",
+          previewLabel: "사용자 등록 Dify agent",
+          summaryPlaceholder: "사용자 등록 Dify agent 설명이 여기에 표시됩니다.",
+          requestPlaceholder: "예: 고객 문의 자동 분류 PoC를 위해 Dify agent가 필요합니다.",
+          isDefault: true
+        }
+      ];
 
       const parseStoredAgents = () => {
         try {
@@ -230,9 +316,9 @@
                 <div class="eyebrow"><span class="material-icons-round" style="font-size:16px;">smart_toy</span>AI · Automation Runtimes</div>
                 <div class="hero-title-row">
                   <h1 class="hero-title">새 Agent 생성</h1>
-                  <span class="pill engine">Dify</span>
+                  <span class="pill engine" id="heroAgentType">Dify</span>
                 </div>
-                <p class="hero-desc">Chatbot 등록 화면과 같은 패턴으로, Agent 이름과 설명만 입력하면 Dify 유형의 draft agent를 생성해 Agent Hub에 바로 반영합니다.</p>
+                <p class="hero-desc" id="heroAgentDescription">현재는 기본 유형인 Dify를 선택한 상태로 draft agent를 생성합니다. 이후 runtime 옵션이 늘어나도 같은 카드 레이아웃을 그대로 확장할 수 있게 구성했습니다.</p>
               </div>
               <div class="hero-actions">
                 <a class="action-btn secondary" href="workspace_agent_hub.html"><span class="material-icons-round">arrow_back</span>Agent Hub</a>
@@ -265,16 +351,8 @@
 
                   <article class="field-card">
                     <div class="field-label"><span class="material-icons-round" style="font-size:16px;">category</span>Agent 유형</div>
-                    <label class="type-card" data-type="Dify">
-                      <input type="radio" name="type" value="Dify" checked />
-                      <div class="type-top">
-                        <div>
-                          <div class="type-title">Dify</div>
-                          <div class="type-desc">Dify runtime 기반으로 동작하는 agent 유형으로 고정 생성됩니다.</div>
-                        </div>
-                        <div class="type-icon"><span class="material-icons-round">hub</span></div>
-                      </div>
-                    </label>
+                    <div class="type-grid" id="agentTypeOptions"></div>
+                    <div class="field-help">현재는 Dify만 기본 선택으로 제공되며, 새 유형은 스크립트의 <strong>AGENT_TYPE_OPTIONS</strong>에 추가하면 같은 디자인으로 확장됩니다.</div>
                   </article>
                 </div>
               </section>
@@ -301,7 +379,7 @@
                     <div class="preview-item">
                       <div>
                         <div class="mini-kicker"><span class="material-icons-round" style="font-size:16px;">sell</span>Agent 유형</div>
-                        <div class="preview-value"><strong>Dify</strong></div>
+                        <div class="preview-value"><strong id="previewType">Dify</strong></div>
                       </div>
                       <div class="status-chip"><span class="material-icons-round" style="font-size:16px;">edit_note</span>Draft</div>
                     </div>
@@ -341,19 +419,60 @@
       `;
 
       const form = document.getElementById("agentRegisterForm");
+      const typeOptions = document.getElementById("agentTypeOptions");
+      const heroAgentType = document.getElementById("heroAgentType");
+      const heroAgentDescription = document.getElementById("heroAgentDescription");
       const nameInput = document.getElementById("agentName");
       const summaryInput = document.getElementById("agentSummary");
       const requestReasonInput = document.getElementById("agentRequestReason");
       const previewName = document.getElementById("previewName");
       const previewMeta = document.getElementById("previewMeta");
+      const previewType = document.getElementById("previewType");
       const previewSummary = document.getElementById("previewSummary");
 
+      const getAgentType = (value) => AGENT_TYPE_OPTIONS.find((item) => item.value === value) || AGENT_TYPE_OPTIONS[0];
+      const getSelectedTypeValue = () => form.elements.type?.value || AGENT_TYPE_OPTIONS[0].value;
+
+      const renderTypeOptions = () => {
+        const selectedValue = getSelectedTypeValue();
+        typeOptions.innerHTML = AGENT_TYPE_OPTIONS.map((type) => {
+          const badgeMarkup = type.badge ? `<span class="type-badge ${type.isDefault ? "default" : ""}">${type.badge}</span>` : "";
+          return `
+            <label class="type-card ${selectedValue === type.value ? "is-selected" : ""}" data-type="${type.value}">
+              <input type="radio" name="type" value="${type.value}" ${selectedValue === type.value ? "checked" : ""} />
+              <div class="type-top">
+                <div class="type-card-copy">
+                  <div class="type-card-title-row">
+                    <div class="type-title">${type.title}</div>
+                    ${badgeMarkup}
+                  </div>
+                  <div class="type-desc">${type.description}</div>
+                </div>
+                <div class="type-top">
+                  <div class="type-radio" aria-hidden="true"></div>
+                  <div class="type-icon"><span class="material-icons-round">${type.icon}</span></div>
+                </div>
+              </div>
+              <div class="type-card-note">${type.note}</div>
+            </label>
+          `;
+        }).join("");
+      };
+
       const updatePreview = () => {
+        const selectedType = getAgentType(getSelectedTypeValue());
         const name = nameInput.value.trim();
         const summary = summaryInput.value.trim();
+
+        heroAgentType.textContent = selectedType.title;
+        heroAgentDescription.textContent = selectedType.heroDescription;
+        requestReasonInput.placeholder = selectedType.requestPlaceholder;
         previewName.textContent = name || "새 agent";
-        previewMeta.textContent = name ? `${name} · 사용자 등록 Dify agent` : "사용자 등록 Dify agent";
-        previewSummary.textContent = summary || "사용자 등록 Dify agent 설명이 여기에 표시됩니다.";
+        previewMeta.textContent = name ? `${name} · ${selectedType.previewLabel}` : selectedType.previewLabel;
+        previewType.textContent = selectedType.title;
+        previewSummary.textContent = summary || selectedType.summaryPlaceholder;
+
+        renderTypeOptions();
       };
 
       [nameInput, summaryInput].forEach((input) => {
@@ -363,6 +482,12 @@
         });
       });
 
+      typeOptions.addEventListener("change", (event) => {
+        if (event.target && event.target.name === "type") {
+          updatePreview();
+        }
+      });
+
       form.addEventListener("submit", (event) => {
         event.preventDefault();
 
@@ -370,6 +495,7 @@
         summaryInput.setCustomValidity("");
         requestReasonInput.setCustomValidity("");
 
+        const selectedType = getAgentType(getSelectedTypeValue());
         const name = nameInput.value.trim();
         const summary = summaryInput.value.trim();
         const requestReason = requestReasonInput.value.trim();
@@ -399,7 +525,7 @@
           name,
           summary,
           requestReason,
-          type: "Dify",
+          type: selectedType.value,
           createdAt: new Date().toISOString()
         });
 
@@ -407,6 +533,7 @@
         window.location.href = "workspace_agent_hub.html";
       });
 
+      renderTypeOptions();
       updatePreview();
     })();
   </script>

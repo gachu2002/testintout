@@ -12,7 +12,13 @@ import { Box, Button, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import type { ReactNode } from 'react';
 
-import { Badge, IconTile, Meter, Metric } from '@/components/workspace';
+import {
+  Badge,
+  buildResourceResultCopy,
+  IconTile,
+  Metric,
+  WorkspaceUsageMeter,
+} from '@/components/workspace';
 import {
   ResourceCardFooter,
   ResourceCardRoot,
@@ -33,7 +39,7 @@ import {
 } from '@/components/workspace/ResourceCards';
 import { databaseHubSectionStatus } from '@/features/database-hub/sectionStatus';
 import type { DatabaseResource } from '@/features/database-hub/types';
-import { formatLabel } from '@/lib/formatters';
+import { formatLabel, getInitials } from '@/lib/formatters';
 import type { ToneName } from '@/styles/tokens';
 
 const panelCopy = {
@@ -97,7 +103,13 @@ export function DatabaseCardsPanel({
       isEmpty={databases.length === 0}
       isLoading={isLoading}
       label={panelCopy.label}
-      resultCopy={buildResultCopy(activeEngine, databases.length, loadedCount, total)}
+      resultCopy={buildResourceResultCopy({
+        filterLabel: formatLabel(activeEngine).toLowerCase(),
+        isDefault: activeEngine === 'all',
+        loadedCount,
+        total,
+        visibleCount: databases.length,
+      })}
       status={databaseHubSectionStatus.cards}
       title={panelCopy.title}
     >
@@ -110,7 +122,6 @@ export function DatabaseCardsPanel({
 
 function DatabaseCard({ database }: { database: DatabaseResource }) {
   const engineMeta = getEngineMeta(database.engine);
-  const usagePercent = clampPercent(database.usage.usagePercent);
   const endpoint = database.endpoint
     ? `${database.endpoint.host}:${database.endpoint.port}`
     : 'No endpoint exposed';
@@ -160,13 +171,17 @@ function DatabaseCard({ database }: { database: DatabaseResource }) {
           <BlockLabel>Storage Usage</BlockLabel>
           <UsageValue>{database.usage.storageLabel}</UsageValue>
         </UsageHead>
-        <Meter fill={engineMeta.color} value={usagePercent} variant="determinate" />
+        <WorkspaceUsageMeter
+          fill={engineMeta.color}
+          label={`${database.name} storage usage`}
+          value={database.usage.usagePercent}
+        />
       </UsageBlock>
 
       <ResourceInfoBlock>
         <ResourceInfoCard>
           <ResourceInfoBadge hub="database" tileSize={30}>
-            {getInitials(database.owner.displayName)}
+            {getInitials(database.owner.displayName, 'OW')}
           </ResourceInfoBadge>
           <ResourceInfoText meta={database.owner.email} title={database.owner.displayName} />
         </ResourceInfoCard>
@@ -188,25 +203,6 @@ function DatabaseCard({ database }: { database: DatabaseResource }) {
       </ResourceCardFooter>
     </ResourceCardRoot>
   );
-}
-
-function buildResultCopy(
-  activeEngine: string,
-  visibleCount: number,
-  loadedCount: number,
-  total?: number,
-) {
-  const totalCopy = typeof total === 'number' ? `${total.toLocaleString()} total` : 'total unknown';
-  const loadedCopy = `${loadedCount.toLocaleString()} loaded`;
-
-  if (activeEngine === 'all') return `${loadedCopy} · ${totalCopy}`;
-
-  return `${visibleCount.toLocaleString()} ${formatLabel(activeEngine).toLowerCase()} · ${loadedCopy}`;
-}
-
-function clampPercent(value: number) {
-  if (!Number.isFinite(value)) return 0;
-  return Math.min(100, Math.max(0, value));
 }
 
 function getEngineMeta(engine: string): {
@@ -283,16 +279,4 @@ function getStatusLabel(status: string) {
   if (status === 'unknown') return 'Unknown';
 
   return formatLabel(status);
-}
-
-function getInitials(name: string) {
-  const initials = name
-    .split(/[-_\s.]+/)
-    .map((part) => part.at(0))
-    .filter((part): part is string => Boolean(part))
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
-
-  return initials || 'OW';
 }

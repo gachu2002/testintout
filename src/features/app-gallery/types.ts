@@ -29,17 +29,31 @@ export type AppGalleryCategories = {
 
 export type AppGalleryCapabilities = {
   canInstall: boolean;
+  canOpen: boolean;
   canPreview: boolean;
 };
 
+export type AppGalleryAction = {
+  href: string;
+  label: string;
+  note: string;
+};
+
 export type AppGalleryApp = {
+  action: AppGalleryAction;
   capabilities: AppGalleryCapabilities;
   category: string;
   categoryLabel: string;
   icon: string;
   iconColor: string;
   installTargetLabel: string;
+  lifecycleLabel: string;
+  projectId: string;
+  projectSlug: string;
+  recommendationReason: string;
   slug: string;
+  sourceLabel: string;
+  sourceType: string;
   subtitle: string;
   summary: string;
   tags: string[];

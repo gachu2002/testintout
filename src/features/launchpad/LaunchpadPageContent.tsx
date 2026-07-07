@@ -42,11 +42,16 @@ export function LaunchpadPageContent() {
 
   return (
     <Stack spacing={2.5}>
-      <HeroSummary hero={overview?.hero} isLoading={overviewQuery.isLoading} />
+      <HeroSummary
+        hero={overview?.hero}
+        isLoading={overviewQuery.isLoading}
+        myWorkSummary={myWork?.summary}
+      />
 
       <BannerPanel
         activeIndex={bannerIndex}
         announcements={overview?.announcements.items ?? []}
+        banners={overview?.banners ?? []}
         hero={overview?.hero}
         isLoading={overviewQuery.isLoading}
         onSelect={setBannerIndex}
@@ -134,14 +139,17 @@ export function LaunchpadPageContent() {
           />
           <ProjectsJobsPanel
             hasError={myWorkQuery.isError}
+            ideCount={myWork?.ides.items.length ?? 0}
             isLoading={myWorkQuery.isLoading}
             jobs={myWork?.jobs.items ?? []}
             projects={myWork?.projects.items ?? []}
+            summary={myWork?.summary}
           />
           <ResourcesPanel
             hasError={resourcesQuery.isError}
             isLoading={resourcesQuery.isLoading}
             resources={resourceItems}
+            summary={resources?.summary}
           />
         </Stack>
       </Box>

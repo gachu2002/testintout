@@ -1,5 +1,6 @@
 export const routes = {
   aboutDej: '/docs/about-dej',
+  accountSettings: '/workspace/settings',
   aiGallery: '/workspace/ai-gallery',
   agents: '/workspace/agents',
   appGallery: '/workspace/app-gallery',

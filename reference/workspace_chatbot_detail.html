@@ -143,6 +143,43 @@
     .section-card-spacer {
       margin-top:18px;
     }
+    .section-tabs {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:-2px;
+    }
+    .section-tab {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      height:40px;
+      padding:0 14px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.82);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+      transition:.16s ease;
+    }
+    .section-tab:hover {
+      border-color:var(--border);
+      background:#fff;
+      color:var(--text);
+    }
+    .section-tab.is-active {
+      color:var(--brand);
+      border-color:rgba(37,99,235,.24);
+      background:var(--brand-bg);
+      box-shadow:inset 0 0 0 1px rgba(37,99,235,.08);
+    }
+    .section-tab .material-icons-round {
+      font-size:16px;
+    }
+    [data-detail-panel][hidden] {
+      display:none;
+    }
     @media (max-width: 920px) {
       .mini-stats,
       .access-grid {
@@ -168,6 +205,19 @@
 <body>
   <div id="app"></div>
   <script>
+    function escapeHtml(value) {
+      return String(value == null ? "" : value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+    function formatDateLabel(value) {
+      if (!value) return "N/A";
+      const date = new Date(value);
+      return Number.isNaN(date.valueOf()) ? "N/A" : date.toLocaleString("ko-KR", { hour12: false });
+    }
     function list(rows) {
       return rows.map((row) => `<div class="list-row"><div class="list-main"><div class="list-title">${row.title}</div><div class="list-meta">${row.meta}</div></div>${row.side ? `<div class="list-side">${row.side}</div>` : ""}</div>`).join("");
     }
@@ -219,7 +269,7 @@
       const accessRows = item.botType === "api" ? item.apiInfo : item.webInfo;
 
       return `
-        <section class="panel section">
+        <section class="panel section" data-detail-panel="access" hidden>
           <div class="section-head">
             <div>
               <div class="section-kicker"><span class="material-icons-round">vpn_key</span>Access</div>
@@ -251,11 +301,18 @@
         ...item,
         layoutMode: "full-width",
         mainHtml: `
-          <section class="panel section">
+          <section class="section-tabs" aria-label="Chatbot detail sections">
+            <button class="section-tab is-active" type="button" data-detail-tab="overview"><span class="material-icons-round">stacked_bar_chart</span>Overview</button>
+            <button class="section-tab" type="button" data-detail-tab="access"><span class="material-icons-round">vpn_key</span>Access</button>
+            <button class="section-tab" type="button" data-detail-tab="connected"><span class="material-icons-round">link</span>Connected</button>
+            <button class="section-tab" type="button" data-detail-tab="checks"><span class="material-icons-round">monitor_heart</span>Checks</button>
+            <button class="section-tab" type="button" data-detail-tab="guide"><span class="material-icons-round">lightbulb</span>Guide</button>
+          </section>
+          <section class="panel section" data-detail-panel="overview">
             <div class="section-head">
               <div>
                 <div class="section-kicker"><span class="material-icons-round">stacked_bar_chart</span>Usage Overview</div>
-                <h2 class="section-title">사용 현황</h2>
+                <h2 class="section-title">운영 개요</h2>
                 <p class="section-desc">최근 사용량과 핵심 상태를 먼저 확인할 수 있습니다.</p>
               </div>
             </div>
@@ -276,18 +333,18 @@
             </article>
           </section>
           ${buildAccessSection(item)}
-          <section class="panel section">
+          <section class="panel section" data-detail-panel="connected" hidden>
             <div class="section-head">
               <div>
-                <div class="section-kicker"><span class="material-icons-round">link</span>Connection Status</div>
-                <h2 class="section-title">연결 상태</h2>
+                <div class="section-kicker"><span class="material-icons-round">link</span>Connected</div>
+                <h2 class="section-title">연결된 리소스</h2>
                 <p class="section-desc">이 챗봇이 어떤 채널과 자산에 연결되어 있는지 함께 볼 수 있습니다.</p>
               </div>
               <a class="section-link" href="workspace_chatbot_hub.html">Chatbot Hub 보기<span class="material-icons-round">chevron_right</span></a>
             </div>
             ${connectionCards(item.connectedItems)}
           </section>
-          <section class="panel section">
+          <section class="panel section" data-detail-panel="checks" hidden>
             <div class="section-head">
               <div>
                 <div class="section-kicker"><span class="material-icons-round">monitor_heart</span>Checks</div>
@@ -297,11 +354,11 @@
             </div>
             <div class="info-list">${list(item.healthChecks)}</div>
           </section>
-          <section class="panel section">
+          <section class="panel section" data-detail-panel="guide" hidden>
             <div class="section-head">
               <div>
-                <div class="section-kicker"><span class="material-icons-round">lightbulb</span>Usage Tips</div>
-                <h2 class="section-title">사용 팁</h2>
+                <div class="section-kicker"><span class="material-icons-round">lightbulb</span>Guide</div>
+                <h2 class="section-title">운영 가이드</h2>
                 <p class="section-desc">연결 전 확인하면 좋은 항목을 빠르게 볼 수 있습니다.</p>
               </div>
             </div>
@@ -309,6 +366,242 @@
           </section>
         `,
         sidebarHtml: ""
+      };
+    }
+    function mountChatbotDetailTabs(defaultPanel) {
+      const detailTabButtons = Array.from(document.querySelectorAll("[data-detail-tab]"));
+      const detailPanels = Array.from(document.querySelectorAll("[data-detail-panel]"));
+
+      if (!detailTabButtons.length || !detailPanels.length) return;
+
+      const setActiveDetailPanel = (panelName) => {
+        const nextPanel = panelName || window.__chatbotDetailActivePanel || "overview";
+        window.__chatbotDetailActivePanel = nextPanel;
+
+        detailTabButtons.forEach((button) => {
+          const isActive = button.dataset.detailTab === nextPanel;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-pressed", String(isActive));
+        });
+
+        detailPanels.forEach((panel) => {
+          panel.hidden = panel.dataset.detailPanel !== nextPanel;
+        });
+      };
+
+      detailTabButtons.forEach((button) => {
+        if (button.dataset.detailTabBound === "true") return;
+        button.dataset.detailTabBound = "true";
+        button.addEventListener("click", () => {
+          setActiveDetailPanel(button.dataset.detailTab);
+        });
+      });
+
+      setActiveDetailPanel(defaultPanel || window.__chatbotDetailActivePanel || "overview");
+    }
+    function createChatbotDetailPlaceholder(key, overrides = {}) {
+      return {
+        key,
+        title: overrides.title || key,
+        description: overrides.description || "Chatbot 상세 정보를 불러오는 중입니다.",
+        heroIcon: "chat",
+        botType: overrides.botType || "api",
+        typeLabel: overrides.typeLabel || "Chatbot",
+        statusLabel: overrides.statusLabel || "Loading",
+        statusTone: overrides.statusTone || "review",
+        theme: { bg: "#e9f8ff", brand: "#0891b2", brandH: "#0e7490", brandBg: "#cbeeff", brandSoft: "rgba(8,145,178,.18)", accent: "#22d3ee" },
+        accessLink: { href: "workspace_chatbot_hub.html", label: "Chatbot Hub 보기" },
+        actions: [
+          { label: "Chatbot Hub", icon: "chat", href: "workspace_chatbot_hub.html" }
+        ],
+        heroStats: [
+          { label: "Type", value: overrides.typeLabel || "Chatbot", meta: "detail fetch" },
+          { label: "Status", value: overrides.statusLabel || "Loading", meta: "API 확인 중" },
+          { label: "Channels", value: "-", meta: "API 확인 중" },
+          { label: "Endpoints", value: "-", meta: "API 확인 중" }
+        ],
+        registration: [
+          { label: "챗봇 이름", value: key, meta: "requested item" },
+          { label: "담당 조직", value: "확인 중", meta: "owner" },
+          { label: "등록자", value: "확인 중", meta: "author" },
+          { label: "공개 범위", value: "확인 중", meta: "visibility" }
+        ],
+        apiInfo: [
+          { key: "Base URL", value: '<span class="mono">N/A</span>' },
+          { key: "Endpoint", value: '<span class="mono">GET /api/v2/chatbots/:id</span>' },
+          { key: "Method", value: '<span class="mono">GET</span>' },
+          { key: "인증", value: "API 확인 중" },
+          { key: "Capabilities", value: "API 확인 중" }
+        ],
+        webInfo: [
+          { key: "접속 URL", value: '<span class="mono">N/A</span>' },
+          { key: "도메인", value: '<span class="mono">N/A</span>' },
+          { key: "로그인 필요", value: "API 확인 중" },
+          { key: "노출 방식", value: "API 확인 중" },
+          { key: "새 창 열기", value: "API 확인 중" }
+        ],
+        connectionChecks: [
+          { title: "API 연결 준비", meta: `/api/v2/chatbots/${key} 응답을 기다리는 중입니다.`, side: "Fetch" },
+          { title: "레이아웃 유지", meta: "기존 detail 화면 구조를 유지한 채 데이터를 교체합니다.", side: "Layout" }
+        ],
+        statusCards: [
+          { title: "상태", meta: "detail fetch", value: overrides.statusLabel || "Loading" },
+          { title: "최근 호출", meta: "API 미제공", value: "N/A" },
+          { title: "오류", meta: "API 미제공", value: "N/A" }
+        ],
+        usageSummary: [
+          { label: "Status", value: overrides.statusLabel || "Loading", meta: "detail 응답 대기 중입니다." },
+          { label: "Visibility", value: "확인 중", meta: "owner/author 기준 접근 제어를 확인합니다." },
+          { label: "Channels", value: "-", meta: "연결된 채널 정보를 확인 중입니다." },
+          { label: "Endpoints", value: "-", meta: "등록된 endpoint 정보를 확인 중입니다." }
+        ],
+        connectedItems: [
+          { title: "Chatbot Hub", meta: "목록으로 돌아가 다른 chatbot을 확인합니다.", badge: "Hub", tags: ["sample", "fallback"], sideLabel: "Route", sideValue: "List", href: "workspace_chatbot_hub.html", linkLabel: "챗봇 허브 보기" }
+        ],
+        healthChecks: [
+          { title: "Detail API", meta: "실시간 metric/usage API는 아직 연결되지 않았습니다.", side: "Pending" }
+        ],
+        guideTips: [
+          { title: "상세 기본 정보는 /api/v2/chatbots/:id 에서 읽습니다", meta: "endpoint, channel, owner, author 정보가 우선 반영됩니다.", side: "API" },
+          { title: "사용량/운영 metric은 현재 sample fallback으로 유지합니다", meta: "별도 usage 계약이 없으면 N/A 로 보여줍니다.", side: "Fallback" }
+        ],
+        __isLoading: overrides.isLoading !== undefined ? Boolean(overrides.isLoading) : true
+      };
+    }
+    function buildApiItem(chatbot) {
+      const chatbotId = String(chatbot?.id || chatbot?.name || "chatbot").trim() || "chatbot";
+      const title = String(chatbot?.name || chatbotId).trim() || chatbotId;
+      const endpoints = Array.isArray(chatbot?.endpoints) ? chatbot.endpoints : [];
+      const apiEndpoints = endpoints.filter((endpoint) => endpoint?.baseUrl);
+      const webEndpoints = endpoints.filter((endpoint) => endpoint?.frontendUrl);
+      const primaryApiEndpoint = apiEndpoints[0] || null;
+      const primaryWebEndpoint = webEndpoints[0] || null;
+      const botType = chatbot?.type === "frontendUrl" ? "web" : (chatbot?.type === "hybrid" ? (primaryWebEndpoint ? "web" : "api") : "api");
+      const ownerName = chatbot?.owner?.name || chatbot?.owner?.id || "미지정";
+      const authors = Array.isArray(chatbot?.authors) ? chatbot.authors.map((author) => author?.name || author?.id).filter(Boolean) : [];
+      const channels = Array.isArray(chatbot?.channelTypes) ? chatbot.channelTypes.filter(Boolean) : [];
+      const toolRefs = Array.isArray(chatbot?.toolInventoryRefs) ? chatbot.toolInventoryRefs.filter(Boolean) : [];
+      const linkedAgents = Array.isArray(chatbot?.linkedAgentRefs) ? chatbot.linkedAgentRefs.filter(Boolean) : [];
+      const statusTone = chatbot?.status === "live" ? "healthy" : "review";
+      const statusLabel = chatbot?.statusLabel || chatbot?.status || "Unknown";
+      const typeLabel = chatbot?.type === "hybrid" ? "Hybrid" : (chatbot?.typeLabel || chatbot?.type || "Chatbot");
+      const openUrl = chatbot?.openUrl || primaryWebEndpoint?.frontendUrl || primaryApiEndpoint?.baseUrl || "";
+      const capabilityTokens = [
+        chatbot?.api?.openAiCompatible ? "OpenAI-compatible" : null,
+        chatbot?.api?.streaming ? "Streaming" : null,
+        chatbot?.api?.toolCalling ? "Tool Calling" : null,
+        chatbot?.api?.adapterRequired ? "Adapter Required" : null
+      ].filter(Boolean);
+      const registrationAuthorMeta = chatbot?.updatedAt ? `${formatDateLabel(chatbot.updatedAt)} 수정` : "최근 수정 정보 없음";
+      const accessLink = primaryWebEndpoint?.frontendUrl
+        ? { href: primaryWebEndpoint.frontendUrl, label: "Bot Web 열기" }
+        : primaryApiEndpoint?.baseUrl
+          ? { href: primaryApiEndpoint.baseUrl, label: "Endpoint 열기" }
+          : { href: "workspace_chatbot_hub.html", label: "Chatbot Hub 보기" };
+      const connectedItems = [
+        ...channels.map((channel) => ({
+          title: channel,
+          meta: "이 chatbot에 연결된 channel type 입니다.",
+          badge: "Channel",
+          tags: [typeLabel, statusLabel],
+          sideLabel: "Type",
+          sideValue: "Connected",
+          href: "workspace_chatbot_hub.html",
+          linkLabel: "챗봇 허브 보기"
+        })),
+        ...linkedAgents.map((agentRef) => ({
+          title: agentRef,
+          meta: "이 chatbot을 참조하는 agent 연결입니다.",
+          badge: "Agent",
+          tags: ["Linked Agent"],
+          sideLabel: "Ref",
+          sideValue: "Agent",
+          href: `workspace_agent_detail.html?item=${encodeURIComponent(agentRef)}`,
+          linkLabel: "Agent 보기"
+        })),
+        ...toolRefs.map((toolRef) => ({
+          title: toolRef,
+          meta: "연결된 Tool Inventory 참조입니다.",
+          badge: "Tool",
+          tags: ["Tool Inventory"],
+          sideLabel: "Ref",
+          sideValue: "Tool",
+          href: "workspace_tool_inventory_hub.html",
+          linkLabel: "Tool Hub 보기"
+        }))
+      ].slice(0, 6);
+
+      return {
+        key: chatbotId,
+        title,
+        description: chatbot?.summary || "등록된 chatbot 상세 정보입니다.",
+        heroIcon: botType === "api" ? "api" : "language",
+        botType,
+        typeLabel,
+        statusLabel,
+        statusTone,
+        theme: { bg: "#e9f8ff", brand: "#0891b2", brandH: "#0e7490", brandBg: "#cbeeff", brandSoft: "rgba(8,145,178,.18)", accent: "#22d3ee" },
+        accessLink,
+        actions: [
+          { label: "Chatbot Hub", icon: "chat", href: "workspace_chatbot_hub.html" },
+          ...(openUrl ? [{ label: botType === "api" ? "Endpoint 열기" : "Bot Web 열기", icon: "arrow_outward", variant: "primary", href: openUrl }] : [])
+        ],
+        heroStats: [
+          { label: "Type", value: typeLabel, meta: chatbot?.authMode || "workspace" },
+          { label: "Status", value: statusLabel, meta: channels.length ? `${channels.length} channels` : "channel 없음" },
+          { label: "Endpoints", value: String(Number(chatbot?.endpointCount || endpoints.length || 0)), meta: openUrl ? "open route ready" : "open route 없음" },
+          { label: "Updated", value: formatDateLabel(chatbot?.updatedAt), meta: ownerName }
+        ],
+        registration: [
+          { label: "챗봇 이름", value: title, meta: `ID ${chatbotId}` },
+          { label: "담당 조직", value: ownerName, meta: "owner" },
+          { label: "등록자", value: authors[0] || ownerName, meta: registrationAuthorMeta },
+          { label: "공개 범위", value: chatbot?.authMode || "workspace", meta: authors.length ? `Authors ${authors.length}` : "owner only" }
+        ],
+        apiInfo: [
+          { key: "Base URL", value: `<span class="mono">${escapeHtml(primaryApiEndpoint?.baseUrl || openUrl || "N/A")}</span>` },
+          { key: "Endpoint", value: `<span class="mono">${escapeHtml(primaryApiEndpoint?.label || primaryApiEndpoint?.id || "primary")}</span>` },
+          { key: "Method", value: '<span class="mono">POST</span>' },
+          { key: "인증", value: escapeHtml(chatbot?.authMode || "workspace") },
+          { key: "Capabilities", value: escapeHtml(capabilityTokens.join(", ") || "등록 정보 없음") }
+        ],
+        webInfo: [
+          { key: "접속 URL", value: `<span class="mono">${escapeHtml(primaryWebEndpoint?.frontendUrl || openUrl || "N/A")}</span>` },
+          { key: "도메인", value: `<span class="mono">${escapeHtml((primaryWebEndpoint?.frontendUrl || openUrl || "N/A").replace(/^https?:\/\//, "").split("/")[0] || "N/A")}</span>` },
+          { key: "로그인 필요", value: escapeHtml(chatbot?.authMode === "workspace" ? "예" : "확인 필요") },
+          { key: "노출 방식", value: escapeHtml(channels.join(", ") || "등록 정보 없음") },
+          { key: "새 창 열기", value: openUrl ? "지원" : "미지원" }
+        ],
+        connectionChecks: [
+          { title: "Detail API", meta: `/api/v2/chatbots/${chatbotId} 응답을 반영했습니다.`, side: "Connected" },
+          { title: "Open Route", meta: openUrl || "열 수 있는 경로가 등록되지 않았습니다.", side: openUrl ? "Ready" : "Missing" },
+          { title: "Endpoint Summary", meta: endpoints.map((endpoint) => endpoint?.label || endpoint?.id).filter(Boolean).join(", ") || "등록된 endpoint 없음", side: `${endpoints.length} endpoints` }
+        ],
+        statusCards: [
+          { title: "연결 상태", meta: "detail API 기준", value: statusLabel },
+          { title: "Endpoints", meta: "등록 수", value: String(endpoints.length) },
+          { title: "Channels", meta: "연결 수", value: String(channels.length) }
+        ],
+        usageSummary: [
+          { label: "Status", value: statusLabel, meta: chatbot?.summary || "상세 설명이 없습니다." },
+          { label: "Visibility", value: chatbot?.authMode || "workspace", meta: ownerName },
+          { label: "Channels", value: String(channels.length), meta: channels.join(", ") || "등록 정보 없음" },
+          { label: "Tools", value: String(toolRefs.length), meta: linkedAgents.length ? `Linked agents ${linkedAgents.length}` : "linked agent 없음" }
+        ],
+        connectedItems: connectedItems.length ? connectedItems : [
+          { title: "Chatbot Hub", meta: "연결된 channel/tool/agent 정보가 없어 허브 이동 링크만 표시합니다.", badge: "Hub", tags: ["fallback"], sideLabel: "Route", sideValue: "List", href: "workspace_chatbot_hub.html", linkLabel: "챗봇 허브 보기" }
+        ],
+        healthChecks: [
+          { title: "Owner", meta: ownerName, side: "Owner" },
+          { title: "Authors", meta: authors.join(", ") || "추가 author 없음", side: "Access" },
+          { title: "Last Updated", meta: formatDateLabel(chatbot?.updatedAt), side: "Sync" }
+        ],
+        guideTips: [
+          { title: "endpoint label과 실제 open route를 함께 확인합니다", meta: endpoints.length ? endpoints.map((endpoint) => endpoint.label).filter(Boolean).join(", ") : "endpoint 정보가 없습니다.", side: "Endpoint" },
+          { title: "channel type은 노출 경로를 빠르게 읽는 기준입니다", meta: channels.join(", ") || "등록된 channel type이 없습니다.", side: "Channel" },
+          { title: "tool/agent ref는 운영 연결 관계를 보여줍니다", meta: toolRefs.length || linkedAgents.length ? `Tools ${toolRefs.length} · Agents ${linkedAgents.length}` : "연결 ref가 없습니다.", side: "Link" }
+        ],
+        __isLoading: false
       };
     }
 
@@ -575,6 +868,14 @@
       }
     ];
 
+    const configuredItems = Object.fromEntries(rawItems.map((item) => [item.key, buildItem(item)]));
+    const detailParams = new URLSearchParams(window.location.search);
+    const requestedItemKey = detailParams.get("item");
+
+    if (requestedItemKey && !Object.prototype.hasOwnProperty.call(configuredItems, requestedItemKey)) {
+      configuredItems[requestedItemKey] = buildItem(createChatbotDetailPlaceholder(requestedItemKey));
+    }
+
     window.DETAIL_PAGE_CONFIG = {
       paramName: "item",
       pageTitle: "Chatbot Detail",
@@ -583,10 +884,172 @@
       activeHubKey: "chatbot-hub",
       eyebrow: "AI · User Registered Chatbots",
       searchPlaceholder: "챗봇 이름, 타입, url, endpoint를 검색하세요...",
-      items: Object.fromEntries(rawItems.map((item) => [item.key, buildItem(item)]))
+      items: configuredItems
     };
   </script>
   <script src="workspace_detail_shared.js"></script>
   <script src="ax_studio_topbar.js"></script>
+  <script>
+    (function () {
+      const STORAGE_KEY = "workspace.chatbotHub.customResources";
+      const API_THEME = { bg: "#eaf4ff", brand: "#2563eb", brandH: "#1d4ed8", brandBg: "#dbeafe", brandSoft: "rgba(37,99,235,.16)", accent: "#38bdf8" };
+      const WEB_THEME = { bg: "#ecfdf5", brand: "#0f766e", brandH: "#115e59", brandBg: "#d1fae5", brandSoft: "rgba(15,118,110,.16)", accent: "#34d399" };
+      const normalizeKey = (value) => String(value || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "") || "chatbot";
+      const parseStoredChatbots = () => {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          console.warn("Failed to parse stored chatbots", error);
+          return [];
+        }
+      };
+      const buildStoredChatbotDetail = (item) => {
+        const type = String(item?.type || "WEB").toUpperCase() === "API" ? "API" : "WEB";
+        const isApi = type === "API";
+        const chatbotKey = String(item?.key || normalizeKey(item?.name)).trim() || "chatbot";
+        const chatbotName = String(item?.name || chatbotKey).trim() || chatbotKey;
+        const currentUrl = String(item?.currentUrl || "").trim();
+        const registeredAt = formatDateLabel(item?.createdAt);
+        return {
+          key: chatbotKey,
+          title: chatbotName,
+          description: isApi ? "사용자가 등록한 OpenAI-compatible chatbot API입니다." : "사용자가 등록한 chatbot web endpoint입니다.",
+          heroIcon: isApi ? "api" : "language",
+          botType: isApi ? "api" : "web",
+          typeLabel: isApi ? "API Chatbot" : "Web Chatbot",
+          statusLabel: "Live",
+          statusTone: "healthy",
+          theme: isApi ? API_THEME : WEB_THEME,
+          accessLink: currentUrl
+            ? { href: currentUrl, label: isApi ? "Endpoint 열기" : "Bot Web 열기" }
+            : { href: "workspace_chatbot_hub.html", label: "Chatbot Hub 보기" },
+          actions: [
+            { label: "Chatbot Hub", icon: "chat", href: "workspace_chatbot_hub.html" },
+            ...(currentUrl ? [{ label: isApi ? "Endpoint 열기" : "Bot Web 열기", icon: "open_in_new", href: currentUrl }] : [])
+          ],
+          heroStats: [
+            { label: "Type", value: type, meta: "user registered" },
+            { label: "Status", value: "Live", meta: "local storage" },
+            { label: "URL", value: currentUrl ? "1" : "0", meta: currentUrl || "등록된 URL 없음" },
+            { label: "Registered", value: registeredAt === "N/A" ? "N/A" : "Saved", meta: registeredAt }
+          ],
+          registration: [
+            { label: "챗봇 이름", value: chatbotName, meta: "local storage" },
+            { label: "등록 타입", value: type, meta: isApi ? "OpenAI-compatible API" : "Web endpoint" },
+            { label: "저장 키", value: chatbotKey, meta: "detail lookup key" },
+            { label: "등록 일시", value: registeredAt, meta: item?.createdAt || "timestamp unavailable" }
+          ],
+          apiInfo: [
+            { key: "Base URL", value: currentUrl ? `<span class="mono">${escapeHtml(currentUrl)}</span>` : '<span class="mono">N/A</span>' },
+            { key: "Endpoint", value: currentUrl ? '<span class="mono">등록된 URL 사용</span>' : '<span class="mono">N/A</span>' },
+            { key: "Method", value: '<span class="mono">Unknown</span>' },
+            { key: "인증", value: "등록 정보 없음" },
+            { key: "Capabilities", value: "사용자 등록 정보 기준" }
+          ],
+          webInfo: [
+            { key: "접속 URL", value: currentUrl ? `<span class="mono">${escapeHtml(currentUrl)}</span>` : '<span class="mono">N/A</span>' },
+            { key: "도메인", value: currentUrl ? `<span class="mono">${escapeHtml(currentUrl)}</span>` : '<span class="mono">N/A</span>' },
+            { key: "로그인 필요", value: "등록 정보 없음" },
+            { key: "노출 방식", value: "사용자 등록 URL" },
+            { key: "새 창 열기", value: currentUrl ? "가능" : "URL 없음" }
+          ],
+          connectionChecks: [
+            { title: "로컬 등록 정보 확인", meta: "이 chatbot 상세는 브라우저 localStorage에 저장된 값을 사용합니다.", side: "Local" },
+            { title: "Current URL", meta: currentUrl || "등록된 URL이 없습니다.", side: currentUrl ? type : "N/A" }
+          ],
+          statusCards: [
+            { title: "상태", meta: "local storage", value: "Live" },
+            { title: "등록 타입", meta: "user registered", value: type },
+            { title: "등록 일시", meta: "browser saved", value: registeredAt }
+          ],
+          usageSummary: [
+            { label: "Source", value: "Browser", meta: "workspace.chatbotHub.customResources" },
+            { label: "URL", value: currentUrl ? "Configured" : "Missing", meta: currentUrl || "등록된 URL 없음" },
+            { label: "Owner", value: "N/A", meta: "local storage schema does not include owner" },
+            { label: "Channels", value: "N/A", meta: "local storage schema does not include channel data" }
+          ],
+          connectedItems: [
+            { title: "Chatbot Hub", meta: "목록으로 돌아가 다른 chatbot을 확인합니다.", badge: "Hub", tags: [type, "Local"], sideLabel: "Route", sideValue: "List", href: "workspace_chatbot_hub.html", linkLabel: "챗봇 허브 보기" },
+            ...(currentUrl ? [{ title: currentUrl, meta: isApi ? "등록된 API endpoint 입니다." : "등록된 bot web URL 입니다.", badge: type, tags: ["User Registered"], sideLabel: "Open", sideValue: type, href: currentUrl, linkLabel: isApi ? "endpoint 열기" : "웹 열기" }] : [])
+          ],
+          healthChecks: [
+            { title: "Detail Source", meta: "API 응답이 없어 localStorage 데이터를 표시합니다.", side: "Fallback" }
+          ],
+          guideTips: [
+            { title: "이 상세 화면은 브라우저에 저장된 등록 정보만 표시합니다", meta: "owner, author, metric 같은 운영 정보는 포함되지 않습니다.", side: "Local" },
+            { title: "실제 연결 확인은 Open 버튼으로 직접 점검합니다", meta: "등록 URL이 바뀌면 허브에서 다시 수정하거나 재등록해야 합니다.", side: "Check" }
+          ],
+          __isLoading: false
+        };
+      };
+      const config = window.DETAIL_PAGE_CONFIG;
+      const params = new URLSearchParams(window.location.search);
+      const requestedKey = params.get(config?.paramName || "item");
+
+      mountChatbotDetailTabs();
+
+      if (!requestedKey) return;
+
+      const currentItem = config?.items?.[requestedKey];
+      if (!currentItem || !currentItem.__isLoading) return;
+
+      const rerender = (nextItem) => {
+        window.DETAIL_PAGE_CONFIG.items[requestedKey] = buildItem(nextItem);
+        window.renderWorkspaceDetailPage?.();
+        mountChatbotDetailTabs();
+
+        const topbarHost = document.querySelector("[data-ax-topbar]");
+        if (topbarHost && window.mountAxStudioTopbar) {
+          window.mountAxStudioTopbar(topbarHost);
+        }
+      };
+
+      const renderError = (message) => {
+        rerender(createChatbotDetailPlaceholder(requestedKey, {
+          title: requestedKey,
+          description: message,
+          statusLabel: "Unavailable",
+          isLoading: false
+        }));
+      };
+
+      const storedChatbot = parseStoredChatbots().find((item) => {
+        const candidateKey = String(item?.key || normalizeKey(item?.name)).trim();
+        return candidateKey === requestedKey;
+      });
+
+      if (storedChatbot) {
+        rerender(buildStoredChatbotDetail(storedChatbot));
+        return;
+      }
+
+      fetch(`/api/v2/chatbots/${encodeURIComponent(requestedKey)}`, { credentials: "same-origin" })
+        .then((response) => {
+          if (response.ok) return response.json();
+
+          return response.json()
+            .catch(() => null)
+            .then((body) => {
+              throw new Error(body?.error?.message || `Request failed (${response.status})`);
+            });
+        })
+        .then((body) => {
+          if (!body?.data) {
+            throw new Error("Chatbot detail payload is empty");
+          }
+
+          rerender(buildApiItem(body.data));
+        })
+        .catch((error) => {
+          console.error("Failed to load chatbot detail", error);
+          renderError(`요청한 chatbot 정보를 불러오지 못했습니다. ${error.message || "Unknown error"}`);
+        });
+    })();
+  </script>
 </body>
 </html>

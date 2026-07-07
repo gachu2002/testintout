@@ -3,7 +3,7 @@ import { Box, Chip, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 
 import { SectionStatusBadge } from '@/components/reference-status';
-import { IconTile } from '@/components/workspace';
+import { focusVisibleStyles, IconTile } from '@/components/workspace';
 import { WorkspaceIcon } from '@/components/WorkspaceIcon';
 import {
   CollectionCard,
@@ -51,26 +51,26 @@ export function CollectionsPanel({
           letterSpacing="-0.04em"
           lineHeight={1.18}
         >
-          목적에 따라 가볍게 모아본 앱 묶음
+          목적에 따라 다시 묶어본 추천 앱
         </Typography>
         <Typography color="text.secondary" fontSize={13} lineHeight={1.7} maxWidth={760}>
-          Featured, 카테고리, 관련 AI 큐레이션을 바탕으로 실제 카탈로그를 다시 묶어 보여줍니다.
+          추천 앱을 추천 흐름에 맞춰 다시 묶어 보여드립니다.
         </Typography>
       </Stack>
       <CollectionGrid>
         <CollectionGroup
           apps={featuredApps.slice(0, 3)}
-          description="백엔드의 /api/v2/app-gallery/featured 결과를 기준으로 지금 바로 살펴볼 앱을 모았습니다."
+          description="배포된 앱 중 먼저 살펴보면 좋은 앱을 모았습니다."
           label={`${featuredApps.slice(0, 3).length} Apps`}
           onOpenAppDetail={onOpenAppDetail}
-          title="Featured App 묶음"
+          title="지금 먼저 볼 앱"
         />
         <CollectionGroup
           apps={categoryPicks}
           description="각 카테고리에서 가장 먼저 볼 만한 앱을 골라 비교할 수 있게 묶었습니다."
           label={`${categoryPicks.length} Picks`}
           onOpenAppDetail={onOpenAppDetail}
-          title="카테고리별 첫 진입점"
+          title="카테고리별 추천 앱"
         />
       </CollectionGrid>
     </PanelCard>
@@ -131,6 +131,7 @@ function CollectionGroup({
               gridTemplateColumns: 'auto minmax(0, 1fr) auto',
               p: 1.25,
               textAlign: 'left',
+              ...focusVisibleStyles(theme),
             })}
             type="button"
           >

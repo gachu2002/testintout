@@ -2603,6 +2603,128 @@
     .publish-action.primary:hover {
       background:var(--brand-h);
     }
+    .resource-picker-backdrop {
+      position:fixed;
+      inset:0;
+      z-index:430;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background:rgba(15,23,42,.42);
+      backdrop-filter:blur(8px);
+    }
+    .resource-picker-backdrop[hidden] {
+      display:none !important;
+    }
+    .resource-picker-shell {
+      width:min(720px, 100%);
+      max-height:calc(100vh - 48px);
+      overflow:auto;
+      padding:24px;
+      border-radius:26px;
+      background:
+        radial-gradient(circle at top right, rgba(79,140,255,.08), transparent 30%),
+        linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border:1px solid rgba(214,216,219,.88);
+      box-shadow:0 28px 72px rgba(15,23,42,.22);
+    }
+    .resource-picker-head {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:18px;
+    }
+    .resource-picker-kicker {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-bottom:10px;
+      color:var(--brand);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+    .resource-picker-kicker .material-icons-round { font-size:15px; }
+    .resource-picker-copy h2 {
+      font-size:28px;
+      line-height:1.08;
+      letter-spacing:-.03em;
+      margin-bottom:8px;
+    }
+    .resource-picker-copy p {
+      color:var(--t2);
+      font-size:14px;
+      line-height:1.6;
+    }
+    .resource-picker-list {
+      display:grid;
+      gap:12px;
+    }
+    .resource-picker-item {
+      width:100%;
+      padding:16px 18px;
+      border:1px solid rgba(214,216,219,.86);
+      border-radius:18px;
+      background:#fbfcfe;
+      text-align:left;
+      transition:border .15s ease, box-shadow .15s ease, transform .15s ease;
+    }
+    .resource-picker-item:hover {
+      border-color:rgba(76,106,136,.2);
+      box-shadow:0 12px 22px rgba(76,106,136,.08);
+      transform:translateY(-1px);
+    }
+    .resource-picker-item-top {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:8px;
+    }
+    .resource-picker-item-title {
+      font-size:15px;
+      font-weight:800;
+      color:var(--t1);
+      letter-spacing:-.02em;
+    }
+    .resource-picker-item-badge {
+      display:inline-flex;
+      align-items:center;
+      height:24px;
+      padding:0 10px;
+      border-radius:999px;
+      background:var(--brand-bg);
+      color:var(--brand);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.02em;
+      white-space:nowrap;
+    }
+    .resource-picker-item-meta {
+      color:var(--t2);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .resource-picker-empty {
+      padding:18px;
+      border-radius:18px;
+      border:1px dashed rgba(214,216,219,.96);
+      background:#fbfcfe;
+      color:var(--t2);
+      font-size:13px;
+      line-height:1.6;
+      text-align:center;
+    }
+    .resource-picker-actions {
+      display:flex;
+      justify-content:flex-end;
+      margin-top:18px;
+      padding-top:18px;
+      border-top:1px solid rgba(214,216,219,.74);
+    }
 
     @media (max-width:1120px) {
       .service-groups { grid-template-columns:repeat(2, minmax(0, 1fr)); }
@@ -2634,9 +2756,12 @@
       .hero-tag-strip { padding-top:0; }
       .service-groups { grid-template-columns:1fr; }
       .publish-modal-shell { padding:22px; border-radius:24px; }
+      .resource-picker-shell { padding:20px; border-radius:22px; }
       .publish-modal-copy h2 { font-size:28px; }
+      .resource-picker-copy h2 { font-size:24px; }
       .publish-modal-head,
-      .publish-section-head { flex-direction:column; }
+      .publish-section-head,
+      .resource-picker-head { flex-direction:column; }
       .publish-section-meta { text-align:left; max-width:none; }
       .service-group {
         padding:16px 18px;
@@ -2667,6 +2792,8 @@
       .page { padding:18px 16px 64px; }
       .publish-modal-backdrop { padding:16px; }
       .publish-modal-shell { max-height:calc(100vh - 24px); padding:18px; border-radius:22px; }
+      .resource-picker-backdrop { padding:16px; }
+      .resource-picker-shell { max-height:calc(100vh - 24px); padding:18px; border-radius:20px; }
       .publish-mode-switch,
       .publish-modal-actions { width:100%; }
       .publish-mode-tab,
@@ -2785,7 +2912,7 @@
       </div>
       <div class="tb-spacer"></div>
       <div class="tb-icon"><span class="material-icons-round">notifications_none</span><div class="dot"></div></div>
-      <div class="avatar">TN</div>
+      <a class="avatar" href="workspace_settings.html" aria-label="설정 페이지 열기">TN</a>
     </div>
   </template>
 
@@ -3139,6 +3266,25 @@
         <button class="publish-action primary" type="button" id="publishPrimaryAction">
           <span class="material-icons-round">rocket_launch</span>신규 버전 배포
         </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="resource-picker-backdrop" id="resourcePickerModal" hidden>
+    <div class="resource-picker-shell" role="dialog" aria-modal="true" aria-labelledby="resourcePickerTitle">
+      <div class="resource-picker-head">
+        <div class="resource-picker-copy">
+          <div class="resource-picker-kicker"><span class="material-icons-round">account_tree</span>Connected Resource</div>
+          <h2 id="resourcePickerTitle">리소스 선택</h2>
+          <p id="resourcePickerSubtitle">프로젝트에 연결할 리소스를 선택해 주세요.</p>
+        </div>
+        <button class="publish-close-btn" type="button" id="resourcePickerClose" aria-label="리소스 선택 모달 닫기">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="resource-picker-list" id="resourcePickerList"></div>
+      <div class="resource-picker-actions">
+        <button class="publish-action ghost" type="button" id="resourcePickerCancel">취소</button>
       </div>
     </div>
   </div>
@@ -3737,10 +3883,453 @@
       });
     })();
 
-    (() => {
+    (async () => {
+      const slugify = (value) => String(value || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "hermes-be";
+      const normalizeToken = (value) => String(value || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "");
+      const toArray = (value) => Array.isArray(value) ? value.filter(Boolean) : [];
+      const cloneValue = (value) => JSON.parse(JSON.stringify(value || {}));
+      const formatDisplayDate = (value) => {
+        if (!value) return "";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return String(value);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        const meridiem = hours >= 12 ? "PM" : "AM";
+        const hour12 = hours % 12 || 12;
+        return `${year}.${month}.${day} ${hour12}:${minutes} ${meridiem}`;
+      };
+      const findMockProjectKey = (value) => {
+        const normalized = normalizeToken(value);
+        if (!normalized) return "hermes-be";
+        return Object.keys(PROJECTS).find((key) => {
+          const candidate = PROJECTS[key];
+          return normalizeToken(key) === normalized || normalizeToken(candidate?.name) === normalized;
+        }) || "hermes-be";
+      };
+      const unwrapEnvelope = (payload) => (
+        payload && typeof payload === "object" && Object.prototype.hasOwnProperty.call(payload, "data")
+          ? payload.data
+          : payload
+      );
+      const unwrapTextPayload = (payload) => {
+        const unwrapped = unwrapEnvelope(payload);
+        if (typeof unwrapped === "string") return unwrapped;
+        if (typeof payload === "string") return payload;
+        if (typeof unwrapped?.message === "string") return unwrapped.message;
+        if (typeof payload?.message === "string") return payload.message;
+        return "";
+      };
+      const extractReadmeHighlights = (readmeText) => {
+        const lines = String(readmeText || "")
+          .split(/\r?\n/)
+          .map((line) => line.trim())
+          .filter(Boolean);
+        const highlights = [];
+
+        lines.forEach((line) => {
+          if (highlights.length >= 4) return;
+          if (/^#{1,6}\s+/.test(line)) {
+            highlights.push(line.replace(/^#{1,6}\s+/, "").trim());
+            return;
+          }
+          if (/^[-*]\s+/.test(line) && line.length > 6) {
+            highlights.push(line.replace(/^[-*]\s+/, "").trim());
+          }
+        });
+
+        return highlights.filter(Boolean);
+      };
+      const requestJson = async (url, options = {}) => {
+        const response = await fetch(url, {
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            ...(options.headers || {})
+          },
+          ...options
+        });
+        const text = await response.text();
+        let data = null;
+        if (text) {
+          try {
+            data = JSON.parse(text);
+          } catch (error) {
+            data = { message: text };
+          }
+        }
+        if (!response.ok) {
+          throw new Error(data?.message || data?.error || `Request failed (${response.status})`);
+        }
+        return data;
+      };
+      const getErrorMessage = (error, fallback = "요청 처리 중 문제가 발생했습니다.") => {
+        if (!error) return fallback;
+        if (typeof error === "string") return error;
+        if (error instanceof Error) return error.message || fallback;
+        return error?.message || fallback;
+      };
       const params = new URLSearchParams(window.location.search);
-      const projectKey = params.get("project") || "hermes-be";
-      const project = PROJECTS[projectKey] || PROJECTS["hermes-be"];
+      const requestedProjectId = (params.get("projectId") || "").trim();
+      const requestedProjectName = (params.get("project") || "").trim();
+      const requestedMenu = (params.get("menu") || "").trim().toLowerCase();
+      const requestedSection = (params.get("section") || "").trim().toLowerCase();
+      const requestedView = (params.get("view") || "").trim().toLowerCase();
+      const fallbackProjectKey = findMockProjectKey(requestedProjectName || requestedProjectId);
+      const fallbackProject = cloneValue(PROJECTS[fallbackProjectKey] || PROJECTS["hermes-be"]);
+      const resolveProjectId = async () => {
+        if (requestedProjectId) return requestedProjectId;
+        if (!requestedProjectName) return "";
+        if (/^[a-f0-9]{24}$/i.test(requestedProjectName)) return requestedProjectName;
+        try {
+          const listing = await requestJson("/api/v2/projects?itemsInPage=100&page=1");
+          const items = Array.isArray(listing?.items) ? listing.items : [];
+          const normalizedRequested = normalizeToken(requestedProjectName);
+          const matched = items.find((item) => {
+            const itemId = String(item?._id || item?.id || "");
+            const itemName = String(item?.name || "");
+            return itemId === requestedProjectName
+              || normalizeToken(itemId) === normalizedRequested
+              || normalizeToken(itemName) === normalizedRequested
+              || normalizeToken(slugify(itemName)) === normalizedRequested;
+          });
+          return String(matched?._id || matched?.id || "");
+        } catch (error) {
+          return "";
+        }
+      };
+      const resolvedProjectId = await resolveProjectId();
+      const reloadCurrentView = () => {
+        window.location.href = `${window.location.pathname}${window.location.search}`;
+      };
+      const ensureLiveProjectId = () => {
+        if (resolvedProjectId) return true;
+        window.alert("실제 projectId를 찾지 못해 이 샘플 화면에서는 해당 작업을 바로 실행할 수 없습니다.");
+        return false;
+      };
+      const requestProjectAction = async (path, options = {}) => {
+        if (!ensureLiveProjectId()) {
+          throw new Error("projectId is unavailable");
+        }
+        const normalizedPath = String(path || "");
+        const url = !normalizedPath
+          ? `/api/v2/projects/${encodeURIComponent(resolvedProjectId)}`
+          : normalizedPath.startsWith("/")
+            ? `/api/v2/projects/${encodeURIComponent(resolvedProjectId)}${normalizedPath}`
+            : `/api/v2/projects/${encodeURIComponent(resolvedProjectId)}/${normalizedPath}`;
+        return requestJson(url, options);
+      };
+      const loadLiveProject = async (projectId) => {
+        if (!projectId) return null;
+        const [detailResult, summaryResult, precheckResult, runtimeResult, publishesResult, readmeResult] = await Promise.allSettled([
+          requestJson(`/api/v2/projects/${encodeURIComponent(projectId)}`),
+          requestJson(`/api/v2/projects/${encodeURIComponent(projectId)}/summary`),
+          requestJson(`/api/v2/projects/${encodeURIComponent(projectId)}/precheck`),
+          requestJson(`/api/v2/publishes/projects/${encodeURIComponent(projectId)}/runtime`),
+          requestJson(`/api/v2/publishes/projects/${encodeURIComponent(projectId)}?sort=-created&limit=20`),
+          requestJson(`/api/v2/projects/${encodeURIComponent(projectId)}/readme`)
+        ]);
+        if (detailResult.status !== "fulfilled" || !detailResult.value) {
+          return null;
+        }
+        return {
+          detail: unwrapEnvelope(detailResult.value),
+          summary: summaryResult.status === "fulfilled" ? unwrapEnvelope(summaryResult.value) : null,
+          precheck: precheckResult.status === "fulfilled" ? unwrapEnvelope(precheckResult.value) : null,
+          runtime: runtimeResult.status === "fulfilled" ? unwrapEnvelope(runtimeResult.value) : null,
+          readme: readmeResult.status === "fulfilled" ? unwrapTextPayload(readmeResult.value) : "",
+          publishes: publishesResult.status === "fulfilled" && Array.isArray(publishesResult.value?.items)
+            ? publishesResult.value.items
+            : []
+        };
+      };
+      const toBindingArray = (value) => Array.isArray(value) ? value : value ? [value] : [];
+      const normalizeDatabaseBindings = (value) => {
+        return toBindingArray(value).map((item) => {
+          const id = String(item?._id || item?.id || item || "").trim();
+          const label = String(item?.name || item?.databaseId || item?.id || item || "").trim();
+          return {
+            id,
+            label: label || id
+          };
+        }).filter((item) => item.id);
+      };
+      const normalizeBucketBindings = (value) => {
+        return toBindingArray(value).map((item) => {
+          const id = String(item?._id || item?.id || "").trim();
+          const name = String(item?.name || item || "").trim();
+          return {
+            id,
+            name: name || id
+          };
+        }).filter((item) => item.name || item.id);
+      };
+      const getProjectPermissionBindings = (detail) => {
+        const permissionName = String(detail?.permissionName || "").trim();
+        if (!permissionName) return [];
+        return [{
+          name: permissionName,
+          meta: "bound permission realm"
+        }];
+      };
+      const getPagedItems = async (path) => {
+        const result = await requestJson(path);
+        return Array.isArray(result?.items) ? result.items : [];
+      };
+      const buildBucketRouteMap = async () => {
+        const buckets = await getPagedItems("/api/v2/buckets?limit=100");
+        return new Map(
+          buckets
+            .map((item) => [String(item?.name || "").trim(), String(item?.id || item?._id || "").trim()])
+            .filter(([name, id]) => name && id)
+        );
+      };
+      const toRuntimeKey = (value, fallback) => {
+        const normalized = String(value || "").toLowerCase();
+        if (normalized.includes("react")) return "react";
+        if (normalized.includes("streamlit")) return "streamlit";
+        if (normalized.includes("next")) return "next";
+        if (normalized.includes("flask")) return "flask";
+        if (normalized.includes("node")) return "nodejs";
+        if (normalized.includes("static")) return "static";
+        return fallback || "fastapi";
+      };
+      const parsePodCount = (detail, runtime) => {
+        const currentRuntime = toArray(runtime?.publishes).find((item) => item?.isCurrent) || toArray(runtime?.publishes)[0] || null;
+        const ready = Number(currentRuntime?.runtime?.ready ?? currentRuntime?.runtime?.counts?.ready ?? currentRuntime?.runtime?.count?.active ?? 0);
+        const desired = Number(currentRuntime?.runtime?.desired ?? currentRuntime?.runtime?.counts?.desired ?? currentRuntime?.runtime?.count?.desired ?? 0);
+        const runningUsers = Array.isArray(detail?.status?.["running-users"])
+          ? detail.status["running-users"].length
+          : Number(detail?.status?.["running-users"] || 0);
+        return Math.max(ready, desired, runningUsers, 0);
+      };
+      const buildLiveProject = (bundle) => {
+        if (!bundle?.detail) return fallbackProject;
+        const detail = bundle.detail;
+        const hasLiveDetail = Boolean(bundle?.detail);
+        const summary = bundle.summary || {};
+        const precheck = bundle.precheck || {};
+        const runtime = bundle.runtime || {};
+        const readme = String(bundle.readme || "");
+        const publishes = toArray(bundle.publishes);
+        const currentPublish = toArray(runtime?.publishes).find((item) => item?.isCurrent) || publishes.find((item) => item?.isCurrent) || publishes[0] || null;
+        const ownerName = detail?.owner?.name || detail?.owner?.preferred_username || detail?.owner?.email || detail?.owner?.sub || fallbackProject.owner;
+        const runtimeLabel = detail?.templateRef?.name || detail?.ide || detail?.projectType || fallbackProject.runtimeVersion;
+        const runtimeKey = toRuntimeKey(runtimeLabel, fallbackProject.runtime);
+        const podCount = parsePodCount(detail, runtime);
+        const liveStatus = detail?.statusInfo?.status;
+        const status = currentPublish?.status === "running" || podCount > 0
+          ? "Running"
+          : liveStatus === "building" || liveStatus === "deploying" || currentPublish?.status === "idle"
+            ? "Preparing"
+            : "Inactive";
+        const domainValue = detail?.domain?.url || detail?.domain || fallbackProject.domain || "Not connected";
+        const currentVersion = currentPublish?.containerVersion || currentPublish?.version || detail?.version || fallbackProject.runtimeVersion;
+        const tags = Array.from(new Set([
+          ...toArray(detail?.hashtag),
+          ...toArray(detail?.cejCategory),
+          ...toArray(detail?.dejCategory),
+          ...toArray(summary?.mainTechStack),
+          ...toArray(fallbackProject.tags)
+        ].map((item) => String(item || "").trim()).filter(Boolean))).slice(0, 6);
+        const ports = toArray(detail?.ports).map((port) => {
+          if (typeof port === "object") {
+            return {
+              name: String(port.port || port.targetPort || port.containerPort || port.name || "").trim() || "custom",
+              meta: String(port.description || port.protocol || port.targetPort || "project port")
+            };
+          }
+          return { name: String(port), meta: "project port" };
+        });
+        const teamMembers = [
+          detail?.owner,
+          ...toArray(detail?.author)
+        ].filter(Boolean).map((member, index) => {
+          const name = member?.name || member?.preferred_username || member?.email || member?.sub || `Member ${index + 1}`;
+          const palette = [
+            "linear-gradient(135deg,#4f8cff,#22d3ee)",
+            "linear-gradient(135deg,#34d399,#0d9488)",
+            "linear-gradient(135deg,#a78bfa,#7c5fcf)",
+            "linear-gradient(135deg,#fbbf24,#e07020)"
+          ];
+          return {
+            name,
+            role: index === 0 ? "Owner" : "Author",
+            meta: index === 0 ? "project owner" : "project collaborator",
+            color: palette[index % palette.length]
+          };
+        });
+        const resources = [];
+        normalizeDatabaseBindings(detail?.databaseId).forEach((database) => {
+          resources.push({ icon: "storage", name: "Database", meta: database.label, color: "linear-gradient(135deg,#4f8cff,#3b6fcf)" });
+        });
+        normalizeBucketBindings(detail?.bucketId).forEach((bucket) => {
+          resources.push({ icon: "folder", name: "Bucket", meta: bucket.name, color: "linear-gradient(135deg,#fbbf24,#e07020)" });
+        });
+        if (detail?.gitlabId) {
+          resources.push({ icon: "account_tree", name: "GitLab", meta: `GitLab #${detail.gitlabId}`, color: "linear-gradient(135deg,#111827,#4b5563)" });
+        }
+        if (detail?.matomoId) {
+          resources.push({ icon: "analytics", name: "Analytics", meta: String(detail.matomoId), color: "linear-gradient(135deg,#34d399,#0d9488)" });
+        }
+        if (detail?.llmKeyId) {
+          resources.push({ icon: "vpn_key", name: "LLM Key", meta: String(detail.llmKeyId), color: "linear-gradient(135deg,#a78bfa,#7c5fcf)" });
+        }
+        if (domainValue && domainValue !== "Not connected") {
+          resources.unshift({ icon: "dns", name: "Domain", meta: domainValue, color: "linear-gradient(135deg,#4f8cff,#22d3ee)" });
+        }
+        const summarySources = toArray(summary?.sources).slice(0, 3).map((source, index) => {
+          const label = typeof source === "string"
+            ? source
+            : source?.title || source?.path || source?.file || `summary-source-${index + 1}`;
+          return {
+            keyword: label,
+            url: typeof source === "string" ? source : source?.path || source?.url || "#",
+            created: formatDisplayDate(detail?.created || detail?.lastModified || detail?.updatedAt) || fallbackProject.updatedAt,
+            updated: formatDisplayDate(detail?.lastModified || detail?.updatedAt || detail?.created) || fallbackProject.updatedAt
+          };
+        });
+        const readmeHighlights = extractReadmeHighlights(readme);
+        const activityTimeline = [];
+        publishes.slice(0, 4).forEach((item) => {
+          activityTimeline.push({
+            title: `${item.version || item.containerVersion || "publish"} ${item.isCurrent ? "current" : "recorded"}`,
+            meta: `${formatDisplayDate(item.createdAt || detail?.lastModified) || fallbackProject.updatedAt} · ${item.status || "ready"} · ${item.containerName || runtime?.appName || detail?.name || "publish"}`
+          });
+        });
+        summarySources.slice(0, 2).forEach((item) => {
+          activityTimeline.push({
+            title: `Summary synced: ${item.keyword}`,
+            meta: `${item.updated || item.created || fallbackProject.updatedAt} · summary-source · ${item.url}`
+          });
+        });
+        readmeHighlights.slice(0, 3).forEach((item, index) => {
+          activityTimeline.push({
+            title: index === 0 ? `README overview: ${item}` : `README note: ${item}`,
+            meta: `${formatDisplayDate(detail?.lastModified || detail?.updatedAt || detail?.created) || fallbackProject.updatedAt} · readme · project documentation`
+          });
+        });
+        activityTimeline.push({
+          title: "Project detail loaded from v2",
+          meta: `${formatDisplayDate(detail?.lastModified || detail?.updatedAt || detail?.created) || fallbackProject.updatedAt} · ${ownerName}`
+        });
+        const liveLogs = [
+          currentPublish
+            ? {
+              title: `${currentPublish.version || currentPublish.containerVersion || "latest"} publish runtime ${currentPublish.status || "ready"}`,
+              meta: `${formatDisplayDate(currentPublish.createdAt || detail?.lastModified) || fallbackProject.updatedAt} · publish-runtime · info`
+            }
+            : null,
+          liveStatus
+            ? {
+              title: `project status ${liveStatus}`,
+              meta: `${formatDisplayDate(detail?.lastModified || detail?.updatedAt) || fallbackProject.updatedAt} · project-detail · info`
+            }
+            : null,
+          precheck && Object.keys(precheck).length
+            ? {
+              title: precheck?.message || precheck?.result || "precheck synced",
+              meta: `${formatDisplayDate(detail?.lastModified || detail?.updatedAt) || fallbackProject.updatedAt} · precheck · ${precheck?.authority === false ? "warn" : "info"}`
+            }
+            : null
+        ].filter(Boolean);
+        const nextProject = {
+          ...fallbackProject,
+          name: detail?.name || fallbackProject.name,
+          runtime: runtimeKey,
+          status,
+          privacy: detail?.visibility ? "Shared" : "Private",
+          owner: ownerName,
+          updatedAt: formatDisplayDate(detail?.lastModified || detail?.updatedAt || detail?.created) || fallbackProject.updatedAt,
+          description: detail?.description || summary?.overview || fallbackProject.description,
+          domain: domainValue,
+          repo: detail?.gitlabId ? `GitLab #${detail.gitlabId}` : fallbackProject.repo || "Not connected",
+          memory: runtime?.podMetrics?.memory || fallbackProject.memory,
+          cpu: runtime?.podMetrics?.cpu || fallbackProject.cpu,
+          pods: podCount > 0 ? `${podCount} Pod${podCount > 1 ? "s" : ""}` : fallbackProject.pods,
+          instance: podCount > 1 ? "Multi Dev Instance" : "Single Dev Instance",
+          devMode: status === "Running" ? "Always on" : fallbackProject.devMode,
+          projectType: detail?.projectType || fallbackProject.projectType || "Workspace Project",
+          runtimeVersion: runtimeLabel,
+          tags: tags.length ? tags : fallbackProject.tags,
+          steps: [
+            {
+              title: "Project detail synced",
+              meta: `${runtimeLabel} · ${status}`
+            },
+            {
+              title: "Publish runtime synced",
+              meta: currentVersion ? `${currentVersion} · ${currentPublish?.status || "ready"}` : "등록된 publish 버전이 아직 없습니다."
+            }
+          ],
+          overview: [
+            ["Project Type", detail?.projectType || fallbackProject.projectType || "Workspace Project", summary?.businessValue || "프로젝트 메타데이터 기준"],
+            ["Runtime", runtimeLabel, (toArray(summary?.mainTechStack).join(", ") || "runtime metadata synced")],
+            ["Current Version", currentVersion || "-", currentPublish?.containerName || runtime?.appName || "publish runtime summary"],
+            ["Precheck", precheck?.authority === false ? "Blocked" : precheck?.deployable === false ? "Check required" : "Ready", precheck?.message || "latest precheck state"]
+          ],
+          team: teamMembers.length ? teamMembers : fallbackProject.team,
+          domains: [
+            ["Primary Domain", domainValue, "현재 연결된 대표 도메인"],
+            ["IDE Route", detail?.uri || fallbackProject.ideUrl || "-", "개발 IDE 진입 경로"],
+            ["Publish Route", runtime?.appName || currentPublish?.containerName || detail?.name || "-", "현재 publish runtime 기준"],
+            ["Visibility", detail?.visibility ? "Shared" : "Private", "프로젝트 접근 범위"]
+          ],
+          ports: ports.length ? ports : fallbackProject.ports,
+          variables: fallbackProject.variables || [],
+          permissions: hasLiveDetail ? getProjectPermissionBindings(detail) : [
+            { name: "workspace.development.read", meta: "Owner, authors, admin" },
+            { name: "workspace.development.run", meta: status === "Running" ? "현재 runtime 사용 가능" : "실행 후 사용 가능" },
+            { name: "workspace.publish.precheck", meta: precheck?.authority === false ? "권한 확인 필요" : "precheck 연결됨" }
+          ],
+          metrics: [
+            ["Publishes", String(publishes.length), "등록된 publish 이력 수"],
+            ["Current Version", currentVersion || "-", "runtime summary 기준"],
+            ["App Runtime", runtime?.appName || detail?.name || "-", runtime?.projectType || detail?.projectType || "project app"],
+            ["Precheck", precheck?.authority === false ? "Blocked" : precheck?.deployable === false ? "Check" : "Ready", precheck?.message || "최근 실행 결과"]
+          ],
+          trend: publishes.length
+            ? publishes.slice(0, 7).map((item, index) => 20 + (publishes.length - index) * 7)
+            : fallbackProject.trend,
+          logs: liveLogs.length ? liveLogs : fallbackProject.logs,
+          harvest: summarySources.length ? summarySources : fallbackProject.harvest,
+          security: fallbackProject.security || [],
+          quick: [
+            {
+              icon: "deployed_code",
+              name: "Publish status",
+              meta: currentPublish?.status || (publishes.length ? "history synced" : "no publish yet"),
+              color: "linear-gradient(135deg,#34d399,#0d9488)"
+            },
+            {
+              icon: "view_in_ar",
+              name: "Runtime pods",
+              meta: podCount > 0 ? `${podCount} pods visible` : "no active pod",
+              color: "linear-gradient(135deg,#4f8cff,#22d3ee)"
+            },
+            {
+              icon: "shield",
+              name: "Precheck",
+              meta: precheck?.authority === false ? "permission needed" : precheck?.deployable === false ? "check required" : "ready to review",
+              color: "linear-gradient(135deg,#fbbf24,#e07020)"
+            }
+          ],
+          resources: hasLiveDetail ? resources : fallbackProject.resources,
+          timeline: activityTimeline
+        };
+        return nextProject;
+      };
+      const liveProjectBundle = await loadLiveProject(resolvedProjectId);
+      const project = buildLiveProject(liveProjectBundle);
       const defaultPrefix = project.runtime === "react" ? "REACT_APP_" : project.runtime === "fastapi" ? "APP_" : "";
       const domainOptions = [
         {
@@ -3774,42 +4363,6 @@
       }));
       let resourceState = project.resources.map(item => ({ ...item, eventAt: null }));
       let permissionState = project.permissions.map(item => ({ ...item, eventAt: null }));
-      const resourceTemplates = {
-        db: {
-          icon: "storage",
-          name: "Database",
-          meta: "new-db-cluster / connected",
-          color: "linear-gradient(135deg,#4f8cff,#3b6fcf)"
-        },
-        bucket: {
-          icon: "folder",
-          name: "Bucket",
-          meta: "new-bucket / empty",
-          color: "linear-gradient(135deg,#fbbf24,#e07020)"
-        },
-        gitlab: {
-          icon: "account_tree",
-          name: "GitLab",
-          meta: "new repository binding",
-          color: "linear-gradient(135deg,#111827,#4b5563)"
-        },
-        llm: {
-          icon: "vpn_key",
-          name: "LLM Key",
-          meta: "new-llm-key / connected",
-          color: "linear-gradient(135deg,#a78bfa,#7c5fcf)"
-        },
-        analytics: {
-          icon: "analytics",
-          name: "Analytics",
-          meta: "tracking source connected",
-          color: "linear-gradient(135deg,#34d399,#0d9488)"
-        }
-      };
-      const permissionTemplate = {
-        name: "workspace.resource.manage",
-        meta: "Owner, invited members"
-      };
 
       const renderInfoGrid = (targetId, rows) => {
         const container = document.getElementById(targetId);
@@ -3901,6 +4454,7 @@
             </div>
           `).join("");
         }
+        syncResourceActionLabels();
       };
 
       const DAY_MS = 24 * 60 * 60 * 1000;
@@ -4327,6 +4881,28 @@
         });
       };
 
+      const resolveInitialDetailView = () => {
+        if (requestedView === "observability" || requestedView === "governance" || requestedView === "setup") {
+          return requestedView;
+        }
+        if (requestedMenu === "settings" || requestedSection === "config") {
+          return "setup";
+        }
+        return "setup";
+      };
+
+      const focusInitialSection = () => {
+        const shouldFocusConfig = requestedMenu === "settings" || requestedSection === "config";
+        if (!shouldFocusConfig) return;
+
+        const configPanel = document.getElementById("config");
+        if (!configPanel) return;
+
+        requestAnimationFrame(() => {
+          configPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      };
+
       const renderHeroMembers = () => {
         const heroMembers = document.getElementById("heroMembers");
         if (!heroMembers) return;
@@ -4404,6 +4980,15 @@
       const publishPrimaryAction = document.getElementById("publishPrimaryAction");
       const publishSecondaryAction = document.getElementById("publishSecondaryAction");
       const publishModalSubtitle = document.getElementById("publishModalSubtitle");
+      const resourcePickerModal = document.getElementById("resourcePickerModal");
+      const resourcePickerTitle = document.getElementById("resourcePickerTitle");
+      const resourcePickerSubtitle = document.getElementById("resourcePickerSubtitle");
+      const resourcePickerList = document.getElementById("resourcePickerList");
+      const resourcePickerClose = document.getElementById("resourcePickerClose");
+      const resourcePickerCancel = document.getElementById("resourcePickerCancel");
+      let resourcePickerResolver = null;
+      let resourcePickerItems = [];
+      let resourcePickerFocusTarget = null;
       const liveVersionInfo = getLatestVersionInfo(project);
       const laneLabels = {
         canary: "Canary 10%",
@@ -4433,39 +5018,76 @@
       };
       const liveVersionMatch = String(liveVersionInfo.version || "").match(/\bv\d+(?:\.\d+){0,2}\b/i);
       const liveVersion = liveVersionMatch ? liveVersionMatch[0] : "v2.4.1";
-      const versionHistory = [
-        {
-          version: liveVersion,
-          label: "현재 운영",
-          meta: `${project.updatedAt} · Production 100%`,
-          note: liveVersionInfo.summary,
-          tone: "live"
-        },
-        {
-          version: bumpVersion(liveVersion, "patch", -1),
-          label: "직전 안정 버전",
-          meta: "2일 전 · rollback ready",
-          note: "Smoke test 통과, artifact 보관 완료",
-          tone: "stable"
-        },
-        {
-          version: bumpVersion(liveVersion, "minor", -1),
-          label: "지난 주 릴리스",
-          meta: "7일 전 · stable lane",
-          note: "트래픽 100% 반영 이력과 운영 메모 유지",
-          tone: "stable"
-        },
-        {
-          version: bumpVersion(liveVersion, "minor", -2),
-          label: "장기 보관 버전",
-          meta: "14일 전 · archived",
-          note: "문서와 롤백 가이드가 함께 저장된 기준 버전",
-          tone: "archive"
+      const buildVersionHistory = () => {
+        const publishes = toArray(liveProjectBundle?.publishes);
+        const mapped = publishes.reduce((acc, item, index) => {
+          const version = String(item?.version || item?.containerVersion || "").trim();
+          if (!version || acc.some((entry) => entry.version === version)) return acc;
+          acc.push({
+            version,
+            label: item?.isCurrent ? "현재 운영" : index === 1 ? "직전 안정 버전" : "배포 이력",
+            meta: `${formatDisplayDate(item?.createdAt) || project.updatedAt} · ${item?.isCurrent ? "Production 100%" : item?.status || "publish recorded"}`,
+            note: item?.summary || item?.containerName || item?.status || "publish 이력에서 불러온 버전입니다.",
+            tone: item?.isCurrent ? "live" : index <= 1 ? "stable" : "archive",
+            publishId: String(item?._id || item?.id || "")
+          });
+          return acc;
+        }, []);
+
+        if (!mapped.some((entry) => entry.version === liveVersion)) {
+          mapped.unshift({
+            version: liveVersion,
+            label: "현재 운영",
+            meta: `${project.updatedAt} · Production 100%`,
+            note: liveVersionInfo.summary,
+            tone: "live",
+            publishId: String(publishes.find((item) => item?.isCurrent)?._id || publishes.find((item) => item?.isCurrent)?.id || "")
+          });
         }
-      ];
+
+        const fallbackEntries = [
+          {
+            version: bumpVersion(liveVersion, "patch", -1),
+            label: "직전 안정 버전",
+            meta: "2일 전 · rollback ready",
+            note: "Smoke test 통과, artifact 보관 완료",
+            tone: "stable",
+            publishId: ""
+          },
+          {
+            version: bumpVersion(liveVersion, "minor", -1),
+            label: "지난 주 릴리스",
+            meta: "7일 전 · stable lane",
+            note: "트래픽 100% 반영 이력과 운영 메모 유지",
+            tone: "stable",
+            publishId: ""
+          },
+          {
+            version: bumpVersion(liveVersion, "minor", -2),
+            label: "장기 보관 버전",
+            meta: "14일 전 · archived",
+            note: "문서와 롤백 가이드가 함께 저장된 기준 버전",
+            tone: "archive",
+            publishId: ""
+          }
+        ];
+
+        fallbackEntries.forEach((entry) => {
+          if (!mapped.some((item) => item.version === entry.version)) {
+            mapped.push(entry);
+          }
+        });
+
+        return mapped.slice(0, 6);
+      };
+      const versionHistory = buildVersionHistory();
       let publishMode = "release";
-      let selectedRollbackVersion = versionHistory[1]?.version || versionHistory[0].version;
+      let selectedRollbackVersion = versionHistory.find((item) => item.version !== liveVersion && item.publishId)?.version
+        || versionHistory.find((item) => item.version !== liveVersion)?.version
+        || versionHistory[0].version;
       let publishToast = "";
+      let publishActionPending = false;
+      let releaseDraftAttributes = [];
       const releaseDraft = {
         version: bumpVersion(liveVersion, "minor", 1),
         lane: "production",
@@ -4714,11 +5336,196 @@
         renderVersionHistory();
         renderPublishSummary();
       };
+      const hydratePublishDraft = async () => {
+        if (!resolvedProjectId || publishActionPending) return;
+        try {
+          const draft = unwrapEnvelope(await requestProjectAction("/publish/draft"));
+          if (!draft || typeof draft !== "object") return;
+          if (draft.version) {
+            releaseDraft.version = String(draft.version).trim() || releaseDraft.version;
+          }
+          if (draft.summary) {
+            releaseDraft.notes = String(draft.summary);
+          }
+          if (draft.appAttributes !== undefined) {
+            releaseDraftAttributes = draft.appAttributes;
+          }
+          if (!publishModal?.hidden) {
+            renderPublishModal();
+          }
+        } catch (error) {
+          console.warn("Failed to load publish draft", error);
+        }
+      };
+      const setActionButtonBusy = (button, busy, busyHtml) => {
+        if (!button) return "";
+        const originalHtml = button.dataset.originalHtml || button.innerHTML;
+        button.dataset.originalHtml = originalHtml;
+        button.disabled = busy;
+        if (busy && busyHtml) {
+          button.innerHTML = busyHtml;
+        } else {
+          button.innerHTML = originalHtml;
+        }
+        return originalHtml;
+      };
+      const hasConnectedResource = (type) => {
+        if (type === "db") {
+          return resourceState.some((item) => item.name === "Database");
+        }
+        if (type === "bucket") {
+          return resourceState.some((item) => item.name === "Bucket");
+        }
+        if (type === "gitlab") {
+          return resourceState.some((item) => item.name === "GitLab");
+        }
+        if (type === "permission") {
+          return permissionState.length > 0;
+        }
+        if (type === "llm") {
+          return resourceState.some((item) => item.name === "LLM Key");
+        }
+        if (type === "analytics") {
+          return resourceState.some((item) => item.name === "Analytics");
+        }
+        return false;
+      };
+      const syncResourceActionLabels = () => {
+        document.querySelectorAll("#resourceActions [data-resource-type]").forEach((button) => {
+          const type = button.dataset.resourceType;
+          if (type === "db") {
+            button.innerHTML = hasConnectedResource("db")
+              ? '<span class="material-icons-round">link_off</span>DB 해제'
+              : '<span class="material-icons-round">add_circle</span>DB 추가';
+          }
+          if (type === "bucket") {
+            button.innerHTML = hasConnectedResource("bucket")
+              ? '<span class="material-icons-round">link_off</span>Bucket 해제'
+              : '<span class="material-icons-round">add_circle</span>Bucket 추가';
+          }
+          if (type === "gitlab") {
+            button.innerHTML = hasConnectedResource("gitlab")
+              ? '<span class="material-icons-round">link_off</span>GitLab 해제'
+              : '<span class="material-icons-round">add_circle</span>GitLab 추가';
+          }
+          if (type === "permission") {
+            button.innerHTML = hasConnectedResource("permission")
+              ? '<span class="material-icons-round">link_off</span>Permission 해제'
+              : '<span class="material-icons-round">add_circle</span>Permission 추가';
+          }
+          if (type === "llm") {
+            button.innerHTML = hasConnectedResource("llm")
+              ? '<span class="material-icons-round">link_off</span>LLM Key 해제'
+              : '<span class="material-icons-round">add_circle</span>LLM Key 추가';
+          }
+          if (type === "analytics") {
+            button.innerHTML = hasConnectedResource("analytics")
+              ? '<span class="material-icons-round">analytics_off</span>Analytics 해제'
+              : '<span class="material-icons-round">add_circle</span>Analytics 추가';
+          }
+        });
+      };
+      const syncOverlayScrollLock = () => {
+        const hasOpenOverlay = Boolean(
+          (publishModal && !publishModal.hidden) ||
+          (resourcePickerModal && !resourcePickerModal.hidden)
+        );
+        document.body.style.overflow = hasOpenOverlay ? "hidden" : "";
+      };
+      const setResourcePickerOpen = (isOpen) => {
+        if (!resourcePickerModal) return;
+        resourcePickerModal.hidden = !isOpen;
+        syncOverlayScrollLock();
+        if (isOpen) {
+          window.setTimeout(() => resourcePickerCancel?.focus(), 0);
+        }
+      };
+      const resolveResourcePicker = (selectedItem) => {
+        const resolver = resourcePickerResolver;
+        const focusTarget = resourcePickerFocusTarget;
+        resourcePickerResolver = null;
+        resourcePickerItems = [];
+        resourcePickerFocusTarget = null;
+        if (resourcePickerList) {
+          resourcePickerList.innerHTML = "";
+        }
+        setResourcePickerOpen(false);
+        if (resolver) {
+          resolver(selectedItem || null);
+        }
+        if (focusTarget && typeof focusTarget.focus === "function") {
+          window.setTimeout(() => focusTarget.focus(), 0);
+        }
+      };
+      const renderResourcePickerItems = (actionLabel, items, titleResolver, metaResolver) => {
+        if (!resourcePickerList) return;
+        resourcePickerList.innerHTML = "";
+        if (!Array.isArray(items) || !items.length) {
+          const emptyState = document.createElement("div");
+          emptyState.className = "resource-picker-empty";
+          emptyState.textContent = "선택 가능한 리소스가 없습니다.";
+          resourcePickerList.appendChild(emptyState);
+          return;
+        }
+        items.forEach((item, index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "resource-picker-item";
+          button.dataset.resourcePickerIndex = String(index);
+
+          const top = document.createElement("div");
+          top.className = "resource-picker-item-top";
+
+          const title = document.createElement("div");
+          title.className = "resource-picker-item-title";
+          title.textContent = titleResolver(item, index);
+
+          const badge = document.createElement("span");
+          badge.className = "resource-picker-item-badge";
+          badge.textContent = actionLabel;
+
+          top.append(title, badge);
+
+          const meta = document.createElement("div");
+          meta.className = "resource-picker-item-meta";
+          meta.textContent = metaResolver(item, index);
+
+          button.append(top, meta);
+          resourcePickerList.appendChild(button);
+        });
+      };
+      const openResourcePicker = ({
+        title,
+        subtitle,
+        items,
+        actionLabel,
+        titleResolver,
+        metaResolver
+      }) => {
+        if (!Array.isArray(items) || !items.length) {
+          return Promise.resolve(null);
+        }
+        if (!resourcePickerModal || !resourcePickerTitle || !resourcePickerSubtitle || !resourcePickerList) {
+          return Promise.resolve(items[0]);
+        }
+        if (resourcePickerResolver) {
+          resolveResourcePicker(null);
+        }
+        resourcePickerItems = items.slice();
+        resourcePickerFocusTarget = document.activeElement;
+        resourcePickerTitle.textContent = title;
+        resourcePickerSubtitle.textContent = subtitle;
+        renderResourcePickerItems(actionLabel, resourcePickerItems, titleResolver, metaResolver);
+        setResourcePickerOpen(true);
+        return new Promise((resolve) => {
+          resourcePickerResolver = resolve;
+        });
+      };
 
       const setPublishModalOpen = (isOpen) => {
         if (!publishModal) return;
         publishModal.hidden = !isOpen;
-        document.body.style.overflow = isOpen ? "hidden" : "";
+        syncOverlayScrollLock();
         if (isOpen) {
           renderPublishModal();
           window.setTimeout(() => publishPrimaryAction?.focus(), 0);
@@ -4741,10 +5548,11 @@
 
       const publishButton = document.getElementById("publishButton");
       if (publishButton) {
-        publishButton.addEventListener("click", () => {
+        publishButton.addEventListener("click", async () => {
           publishMode = "release";
           publishToast = "";
           setPublishModalOpen(true);
+          await hydratePublishDraft();
         });
       }
 
@@ -4752,6 +5560,14 @@
         publishModal.addEventListener("click", (event) => {
           if (event.target === publishModal) {
             setPublishModalOpen(false);
+          }
+        });
+      }
+
+      if (resourcePickerModal) {
+        resourcePickerModal.addEventListener("click", (event) => {
+          if (event.target === resourcePickerModal) {
+            resolveResourcePicker(null);
           }
         });
       }
@@ -4764,13 +5580,33 @@
         });
       });
 
+      [resourcePickerClose, resourcePickerCancel].forEach((button) => {
+        if (!button) return;
+        button.addEventListener("click", () => {
+          resolveResourcePicker(null);
+        });
+      });
+
+      if (resourcePickerList) {
+        resourcePickerList.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-resource-picker-index]");
+          if (!button) return;
+          const index = Number(button.dataset.resourcePickerIndex);
+          if (!Number.isInteger(index) || index < 0 || index >= resourcePickerItems.length) return;
+          resolveResourcePicker(resourcePickerItems[index]);
+        });
+      }
+
       if (publishModeTabs) {
-        publishModeTabs.addEventListener("click", (event) => {
+        publishModeTabs.addEventListener("click", async (event) => {
           const button = event.target.closest("[data-publish-mode]");
           if (!button) return;
           publishMode = button.dataset.publishMode;
           publishToast = "";
           renderPublishModal();
+          if (publishMode === "release") {
+            await hydratePublishDraft();
+          }
         });
       }
 
@@ -4823,15 +5659,54 @@
       }
 
       if (publishPrimaryAction) {
-        publishPrimaryAction.addEventListener("click", () => {
-          publishToast = publishMode === "release"
-            ? `${releaseDraft.version} 신규 배포 요청이 Publish Queue에 추가되었습니다. ${laneLabels[releaseDraft.lane]} 기준으로 진행됩니다.`
-            : `${selectedRollbackVersion} 롤백 준비가 완료되었습니다. 영향 범위를 다시 확인한 뒤 바로 실행할 수 있습니다.`;
-          renderPublishBanner();
+        publishPrimaryAction.addEventListener("click", async () => {
+          if (!ensureLiveProjectId() || publishActionPending) return;
+          publishActionPending = true;
+          setActionButtonBusy(
+            publishPrimaryAction,
+            true,
+            publishMode === "release"
+              ? '<span class="material-icons-round">hourglass_top</span>배포 요청 중'
+              : '<span class="material-icons-round">hourglass_top</span>롤백 요청 중'
+          );
+          try {
+            if (publishMode === "release") {
+              await requestProjectAction("/publish", {
+                method: "PUT",
+                body: JSON.stringify({
+                  version: releaseDraft.version,
+                  summary: releaseDraft.notes,
+                  appAttributes: releaseDraftAttributes
+                })
+              });
+              publishToast = `${releaseDraft.version} 신규 배포 요청이 Publish Queue에 추가되었습니다. ${laneLabels[releaseDraft.lane]} 기준으로 진행됩니다.`;
+            } else {
+              const rollbackTarget = versionHistory.find((item) => item.version === selectedRollbackVersion);
+              if (!rollbackTarget?.publishId) {
+                throw new Error("선택한 버전의 publishId를 찾지 못했습니다. 실제 publish 이력이 있는 버전을 선택해 주세요.");
+              }
+              await requestProjectAction(`/rollback/${encodeURIComponent(rollbackTarget.publishId)}`, {
+                method: "PUT"
+              });
+              publishToast = `${selectedRollbackVersion} 롤백 요청이 등록되었습니다. 최신 상태를 다시 불러옵니다.`;
+            }
+            renderPublishBanner();
+            window.setTimeout(reloadCurrentView, 900);
+          } catch (error) {
+            publishToast = getErrorMessage(error);
+            renderPublishBanner();
+          } finally {
+            publishActionPending = false;
+            setActionButtonBusy(publishPrimaryAction, false);
+          }
         });
       }
 
       document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && resourcePickerModal && !resourcePickerModal.hidden) {
+          resolveResourcePicker(null);
+          return;
+        }
         if (event.key === "Escape" && publishModal && !publishModal.hidden) {
           setPublishModalOpen(false);
         }
@@ -4844,6 +5719,25 @@
           ? '<span class="material-icons-round">stop_circle</span>Stop'
           : '<span class="material-icons-round">play_circle</span>Run';
         runButton.className = `hero-btn ${isRunning ? "ghost" : "green"}`;
+        runButton.addEventListener("click", async () => {
+          if (!ensureLiveProjectId() || runButton.disabled) return;
+          const nextAction = project.status === "Running" ? "stop" : "run";
+          setActionButtonBusy(
+            runButton,
+            true,
+            nextAction === "run"
+              ? '<span class="material-icons-round">hourglass_top</span>Running...'
+              : '<span class="material-icons-round">hourglass_top</span>Stopping...'
+          );
+          try {
+            await requestProjectAction(`/${nextAction}`, { method: "POST" });
+            window.alert(nextAction === "run" ? "프로젝트 실행 요청을 보냈습니다." : "프로젝트 중지 요청을 보냈습니다.");
+            reloadCurrentView();
+          } catch (error) {
+            window.alert(getErrorMessage(error));
+            setActionButtonBusy(runButton, false);
+          }
+        });
       }
 
       const deploymentType = deriveDeploymentType(project);
@@ -5043,7 +5937,8 @@
           window.scrollTo({ top: 0, behavior: "smooth" });
         });
       }
-      setDetailView("setup");
+      setDetailView(resolveInitialDetailView());
+      focusInitialSection();
 
       document.getElementById("harvestCountChip").textContent = `${project.harvest.length} Docs`;
       document.getElementById("harvestList").innerHTML = project.harvest.map(item => `
@@ -5073,23 +5968,257 @@
 
       const resourceActions = document.getElementById("resourceActions");
       if (resourceActions) {
-        resourceActions.addEventListener("click", (event) => {
+        resourceActions.addEventListener("click", async (event) => {
           const button = event.target.closest("[data-resource-type]");
           if (!button) return;
           const type = button.dataset.resourceType;
-          if (type === "permission") {
-            permissionState.unshift({ ...permissionTemplate, eventAt: formatTimelineStamp(new Date()) });
-          } else if (resourceTemplates[type]) {
-            resourceState.unshift({ ...resourceTemplates[type], eventAt: formatTimelineStamp(new Date()) });
+          if (["db", "bucket", "gitlab", "permission", "llm", "analytics"].includes(type)) {
+            if (!ensureLiveProjectId() || button.disabled) return;
+            const isConnected = hasConnectedResource(type);
+            const busyLabelMap = {
+              db: isConnected ? "DB 해제 중" : "DB 연결 중",
+              bucket: isConnected ? "Bucket 해제 중" : "Bucket 연결 중",
+              gitlab: isConnected ? "GitLab 해제 중" : "GitLab 연결 중",
+              permission: isConnected ? "Permission 해제 중" : "Permission 연결 중",
+              llm: isConnected ? "LLM Key 해제 중" : "LLM Key 연결 중",
+              analytics: isConnected ? "Analytics 해제 중" : "Analytics 연결 중"
+            };
+            const connectedDatabases = normalizeDatabaseBindings(liveProjectBundle?.detail?.databaseId);
+            const connectedBuckets = normalizeBucketBindings(liveProjectBundle?.detail?.bucketId);
+            const connectedPermissionName = String(liveProjectBundle?.detail?.permissionName || "").trim();
+            const connectedKeyId = String(liveProjectBundle?.detail?.llmKeyId || "").trim();
+            const busyHtml = `<span class="material-icons-round">hourglass_top</span>${busyLabelMap[type]}`;
+            setActionButtonBusy(button, true, busyHtml);
+            try {
+              if (type === "db") {
+                if (isConnected) {
+                  if (!connectedDatabases.length) {
+                    throw new Error("해제할 DB 바인딩을 찾지 못했습니다.");
+                  }
+                  const target = connectedDatabases.length > 1
+                    ? await openResourcePicker({
+                      title: "해제할 DB 선택",
+                      subtitle: `${project.name} 프로젝트에서 분리할 DB를 선택해 주세요.`,
+                      items: connectedDatabases,
+                      actionLabel: "연결 해제",
+                      titleResolver: (item) => item.label,
+                      metaResolver: (item) => `${item.id} 바인딩을 프로젝트에서 해제합니다.`
+                    })
+                    : connectedDatabases[0];
+                  if (!target) {
+                    setActionButtonBusy(button, false);
+                    return;
+                  }
+                  await requestJson(`/api/v2/databases/${encodeURIComponent(target.id)}/bindings/${encodeURIComponent(`project:${resolvedProjectId}`)}`, {
+                    method: "DELETE"
+                  });
+                } else {
+                  const items = await getPagedItems("/api/v2/databases?limit=100");
+                  const existingIds = new Set(connectedDatabases.map((item) => item.id));
+                  const candidates = items.filter((item) => {
+                    const id = String(item?.id || item?._id || "").trim();
+                    return id && !existingIds.has(id) && item?.capabilities?.canBind !== false;
+                  });
+                  const candidate = await openResourcePicker({
+                    title: "연결할 DB 선택",
+                    subtitle: `${project.name} 프로젝트에 바인딩할 데이터베이스를 선택해 주세요.`,
+                    items: candidates,
+                    actionLabel: "연결",
+                    titleResolver: (item) => String(item?.name || item?.id || "Database"),
+                    metaResolver: (item) => `${item?.engine || item?.status || "database"} · ${item?.id || item?._id || ""}`
+                  });
+                  if (!candidate) {
+                    if (!candidates.length) {
+                      throw new Error("연결 가능한 DB를 찾지 못했습니다.");
+                    }
+                    setActionButtonBusy(button, false);
+                    return;
+                  }
+                  await requestJson(`/api/v2/databases/${encodeURIComponent(candidate.id)}/bindings`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                      targetType: "project",
+                      targetId: resolvedProjectId
+                    })
+                  });
+                }
+              } else if (type === "bucket") {
+                if (isConnected) {
+                  if (!connectedBuckets.length) {
+                    throw new Error("해제할 Bucket 바인딩을 찾지 못했습니다.");
+                  }
+                  const bucketRouteMap = await buildBucketRouteMap();
+                  const target = connectedBuckets.length > 1
+                    ? await openResourcePicker({
+                      title: "해제할 Bucket 선택",
+                      subtitle: `${project.name} 프로젝트에서 분리할 Bucket을 선택해 주세요.`,
+                      items: connectedBuckets,
+                      actionLabel: "연결 해제",
+                      titleResolver: (item) => item.name,
+                      metaResolver: (item) => `${item.id || item.name} 연결을 프로젝트에서 해제합니다.`
+                    })
+                    : connectedBuckets[0];
+                  if (!target) {
+                    setActionButtonBusy(button, false);
+                    return;
+                  }
+                  const bucketId = target.id || bucketRouteMap.get(target.name);
+                  if (!bucketId) {
+                    throw new Error(`Bucket '${target.name}'의 실제 id를 찾지 못했습니다.`);
+                  }
+                  await requestJson(`/api/v2/buckets/${encodeURIComponent(bucketId)}/bind/${encodeURIComponent(resolvedProjectId)}`, {
+                    method: "DELETE"
+                  });
+                } else {
+                  const items = await getPagedItems("/api/v2/buckets?limit=100");
+                  const existingNames = new Set(connectedBuckets.map((item) => item.name));
+                  const candidates = items.filter((item) => {
+                    const name = String(item?.name || "").trim();
+                    return name && !existingNames.has(name);
+                  });
+                  const candidate = await openResourcePicker({
+                    title: "연결할 Bucket 선택",
+                    subtitle: `${project.name} 프로젝트에서 사용할 Bucket을 선택해 주세요.`,
+                    items: candidates,
+                    actionLabel: "연결",
+                    titleResolver: (item) => String(item?.name || "Bucket"),
+                    metaResolver: (item) => `${item?.type || item?.status || "bucket"} · ${item?.id || item?._id || ""}`
+                  });
+                  if (!candidate?.id) {
+                    if (!candidates.length) {
+                      throw new Error("연결 가능한 Bucket을 찾지 못했습니다.");
+                    }
+                    setActionButtonBusy(button, false);
+                    return;
+                  }
+                  await requestJson(`/api/v2/buckets/${encodeURIComponent(candidate.id)}/bind`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                      projectId: resolvedProjectId
+                    })
+                  });
+                }
+              } else if (type === "gitlab") {
+                await requestProjectAction(isConnected ? "/gitlab" : "/connectGitlab", {
+                  method: isConnected ? "DELETE" : "POST",
+                  body: isConnected ? undefined : JSON.stringify({})
+                });
+              } else if (type === "permission") {
+                if (isConnected) {
+                  if (!connectedPermissionName) {
+                    throw new Error("해제할 Permission realm을 찾지 못했습니다.");
+                  }
+                  const realms = await getPagedItems("/api/v2/permissions/realms?limit=100");
+                  const boundRealm = realms.find((item) => String(item?.name || "").trim() === connectedPermissionName);
+                  if (!boundRealm?.id) {
+                    throw new Error(`Permission realm '${connectedPermissionName}'의 id를 찾지 못했습니다.`);
+                  }
+                  await requestJson(`/api/v2/permissions/realms/${encodeURIComponent(boundRealm.id)}/bindings/${encodeURIComponent(resolvedProjectId)}`, {
+                    method: "DELETE"
+                  });
+                } else {
+                  const realms = await getPagedItems("/api/v2/permissions/realms?limit=100");
+                  const candidates = realms.filter((item) => {
+                    const name = String(item?.name || "").trim();
+                    return item?.id && name && name !== connectedPermissionName && item?.capabilities?.canBind !== false;
+                  });
+                  const candidate = await openResourcePicker({
+                    title: "연결할 Permission 선택",
+                    subtitle: `${project.name} 프로젝트에 연결할 permission realm을 선택해 주세요.`,
+                    items: candidates,
+                    actionLabel: "연결",
+                    titleResolver: (item) => String(item?.name || "Permission Realm"),
+                    metaResolver: (item) => `${item?.description || item?.kind || "permission realm"} · ${item?.id || ""}`
+                  });
+                  if (!candidate?.id) {
+                    if (!candidates.length) {
+                      throw new Error("연결 가능한 Permission realm을 찾지 못했습니다.");
+                    }
+                    setActionButtonBusy(button, false);
+                    return;
+                  }
+                  await requestJson(`/api/v2/permissions/realms/${encodeURIComponent(candidate.id)}/bindings`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                      projectId: resolvedProjectId
+                    })
+                  });
+                }
+              } else if (type === "llm") {
+                if (isConnected) {
+                  await requestProjectAction("", {
+                    method: "POST",
+                    body: JSON.stringify({
+                      llmKeyId: null
+                    })
+                  });
+                } else {
+                  const items = await getPagedItems("/api/v2/keycenter/keys?limit=100");
+                  const candidates = items.filter((item) => {
+                    const id = String(item?.id || item?._id || "").trim();
+                    return id && id !== connectedKeyId;
+                  });
+                  const candidate = await openResourcePicker({
+                    title: "연결할 LLM Key 선택",
+                    subtitle: `${project.name} 프로젝트에 저장할 LLM Key를 선택해 주세요.`,
+                    items: candidates,
+                    actionLabel: "연결",
+                    titleResolver: (item) => String(item?.name || item?.accountIdentifier || item?.id || "LLM Key"),
+                    metaResolver: (item) => `${item?.tier?.label || item?.tier?.code || "key"} · ${item?.id || item?._id || ""}`
+                  });
+                  if (!candidate?.id) {
+                    if (!candidates.length) {
+                      throw new Error("연결 가능한 LLM Key를 찾지 못했습니다.");
+                    }
+                    setActionButtonBusy(button, false);
+                    return;
+                  }
+                  await requestProjectAction("", {
+                    method: "POST",
+                    body: JSON.stringify({
+                      llmKeyId: candidate.id
+                    })
+                  });
+                }
+              } else {
+                await requestProjectAction(isConnected ? "/disconnectMatomo" : "/connectMatomo", {
+                  method: isConnected ? "DELETE" : "POST"
+                });
+              }
+              const completeMessageMap = {
+                db: isConnected ? "DB 연결을 해제했습니다." : "DB 연결 요청을 보냈습니다.",
+                bucket: isConnected ? "Bucket 연결을 해제했습니다." : "Bucket 연결 요청을 보냈습니다.",
+                gitlab: isConnected ? "GitLab 연결을 해제했습니다." : "GitLab 연결 요청을 보냈습니다.",
+                permission: isConnected ? "Permission 연결을 해제했습니다." : "Permission 연결 요청을 보냈습니다.",
+                llm: isConnected ? "LLM Key 연결을 해제했습니다." : "LLM Key 연결 요청을 보냈습니다.",
+                analytics: isConnected ? "Analytics 연결을 해제했습니다." : "Analytics 연결 요청을 보냈습니다."
+              };
+              window.alert(completeMessageMap[type] || "리소스 연결 상태를 갱신했습니다.");
+              reloadCurrentView();
+            } catch (error) {
+              window.alert(getErrorMessage(error));
+              setActionButtonBusy(button, false);
+            }
+            return;
           }
-          renderResourceState();
-          renderTimeline();
+        });
+      }
 
-          const originalHtml = button.innerHTML;
-          button.innerHTML = '<span class="material-icons-round">check_circle</span>추가됨';
-          window.setTimeout(() => {
-            button.innerHTML = originalHtml;
-          }, 900);
+      const dangerButton = document.querySelector(".danger-btn");
+      if (dangerButton) {
+        dangerButton.addEventListener("click", async () => {
+          if (!ensureLiveProjectId() || dangerButton.disabled) return;
+          const confirmed = window.confirm(`${project.name} 프로젝트를 정말 삭제할까요? 이 작업은 되돌릴 수 없습니다.`);
+          if (!confirmed) return;
+          setActionButtonBusy(dangerButton, true, '<span class="material-icons-round">hourglass_top</span>삭제 중');
+          try {
+            await requestProjectAction("", { method: "DELETE" });
+            window.alert("프로젝트 삭제가 완료되었습니다.");
+            window.location.href = "workspace_projects_hub.html";
+          } catch (error) {
+            window.alert(getErrorMessage(error));
+            setActionButtonBusy(dangerButton, false);
+          }
         });
       }
 

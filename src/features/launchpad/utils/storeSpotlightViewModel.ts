@@ -3,7 +3,11 @@ import type {
   AppGalleryFeaturedItem,
   StoreSpotlightItem,
 } from '@/features/launchpad/types';
-import { formatDate } from '@/lib/formatters';
+
+const APP_SECTION_DESCRIPTION =
+  '자주 쓰는 개발 앱과 운영 도구를 한곳에서 열어볼 수 있습니다. 필요한 앱을 찾아 바로 실행해 보세요.';
+const AI_SECTION_DESCRIPTION =
+  '업무에 바로 쓸 수 있는 AI Assistant와 Skills를 모아 두었습니다. 필요한 도우미를 찾아 바로 사용해 보세요.';
 
 export type StoreTileTone = 'blue' | 'brand' | 'green' | 'neutral' | 'orange' | 'purple';
 
@@ -50,7 +54,7 @@ export function buildAppSection(
   const firstItem = appItems[0];
 
   return {
-    description: item?.description ?? '',
+    description: APP_SECTION_DESCRIPTION,
     hasError: state.hasError,
     href,
     isLoading: state.isLoading,
@@ -69,12 +73,12 @@ export function buildAiSection(
   const href = item?.href ?? '/workspace/ai-gallery';
 
   return {
-    description: item?.description ?? '',
+    description: AI_SECTION_DESCRIPTION,
     hasError: state.hasError,
     href,
     isLoading: state.isLoading,
     spotlight: aiSpotlight ? mapAiSpotlight(aiSpotlight, href) : null,
-    tiles: aiSpotlight ? [mapAiTile(aiSpotlight, href)] : [],
+    tiles: aiSpotlight ? mapAiTiles(aiSpotlight, href) : [],
     title: `DEJ ${item?.title ?? 'AI Gallery'}`,
     variant: 'ai',
   };
@@ -133,15 +137,7 @@ function mapAiSpotlight(item: AiGallerySpotlight, sectionHref: string): StoreSpo
     href: item.openUrl || sectionHref,
     icon: 'smart_toy',
     iconBackground: getIconBackground(item.iconColor, '#7c5fcf'),
-    points: [
-      { icon: 'smart_toy', text: `${item.provider} · ${item.subtitle}` },
-      { icon: 'hub', text: `${item.toolCount} connected tools · ${item.statusLabel}` },
-      { icon: 'vpn_key', text: `Updated ${formatDate(item.updatedAt)}` },
-      {
-        icon: 'link',
-        text: item.capabilities.canOpen ? 'Open link available' : 'Available after install',
-      },
-    ],
+    points: [],
     stateLabel: 'AI Gallery Preview',
     tags: item.tags,
     title: item.title,
@@ -161,17 +157,20 @@ function mapAppTile(item: AppGalleryFeaturedItem, sectionHref: string): StoreTil
   };
 }
 
-function mapAiTile(item: AiGallerySpotlight, sectionHref: string): StoreTileViewModel {
-  return {
-    description: item.summary,
-    href: item.openUrl || sectionHref,
-    icon: 'smart_toy',
-    iconBackground: getIconBackground(item.iconColor, '#7c5fcf'),
-    id: item.slug,
-    name: item.title,
-    tag: item.statusLabel,
+function mapAiTiles(item: AiGallerySpotlight, sectionHref: string): StoreTileViewModel[] {
+  return item.tags.slice(0, 4).map((tag, index) => ({
+    description: 'Connected chatbot',
+    href: sectionHref,
+    icon: index % 2 === 0 ? 'hub' : 'chat',
+    iconBackground:
+      index % 2 === 0
+        ? 'linear-gradient(135deg,#b40e4d,#7c5fcf)'
+        : 'linear-gradient(135deg,#4f8cff,#0086cc)',
+    id: `${item.slug}-${tag}`,
+    name: tag,
+    tag: item.statusLabel || 'Preview',
     tagTone: getAiTone(item.status),
-  };
+  }));
 }
 
 function getIconBackground(color: string, accent: string) {

@@ -6,17 +6,15 @@ import type {
   PermissionTipsPanel,
 } from '@/features/permission-hub/types';
 import { apiClient } from '@/lib/api/axios';
-import type { ApiDataResponse, PaginatedResponse } from '@/lib/api/types';
-
-type RealmQueryParams = {
-  cursor: string;
-  limit: number;
-  q: string;
-  sort: string;
-};
+import type { ApiDataResponse, CursorParams, PaginatedResponse } from '@/lib/api/types';
+import { unwrapApiData } from '@/lib/api/types';
 
 export async function getPermissionRealms(
-  { cursor, limit, q, sort }: RealmQueryParams = { cursor: '', limit: 6, q: '', sort: '' },
+  { cursor, limit, q = '', sort = '' }: CursorParams = {
+    cursor: '',
+    limit: 100,
+    sort: '-updatedAt',
+  },
 ): Promise<PaginatedResponse<PermissionRealm>> {
   const response = await apiClient.get<PaginatedResponse<PermissionRealm>>(
     '/v2/permissions/realms',
@@ -32,14 +30,14 @@ export async function getPermissionHubStats(): Promise<PermissionHubStats> {
   const response = await apiClient.get<ApiDataResponse<PermissionHubStats>>(
     '/v2/permissions/realms/stats',
   );
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getPermissionHubFilters(): Promise<PermissionHubFilters> {
   const response = await apiClient.get<ApiDataResponse<PermissionHubFilters>>(
     '/v2/permissions/realms/filters',
   );
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getPermissionHubTipsPanel(): Promise<PermissionTipsPanel> {
@@ -47,7 +45,7 @@ export async function getPermissionHubTipsPanel(): Promise<PermissionTipsPanel> 
     params: { surface: 'permissions' },
   });
 
-  return response.data.data;
+  return unwrapApiData(response);
 }
 
 export async function getPermissionHubGuideLinksPanel(): Promise<PermissionGuideLinksPanel> {
@@ -58,5 +56,5 @@ export async function getPermissionHubGuideLinksPanel(): Promise<PermissionGuide
     },
   );
 
-  return response.data.data;
+  return unwrapApiData(response);
 }

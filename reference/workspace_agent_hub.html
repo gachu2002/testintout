@@ -9,6 +9,169 @@
   <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
   <link rel="stylesheet" href="ax_studio_topbar.css" />
   <style>
+    .agent-create-progress-track {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0;
+    }
+    .hub-lite-create-progress-rail.is-hidden {
+      visibility: hidden;
+    }
+    .agent-create-stage[hidden] {
+      display: none !important;
+    }
+    .agent-create-stage {
+      width: min(100%, var(--hub-lite-create-wide-width, 920px));
+      margin: 0 auto;
+    }
+    .agent-create-stage.is-compact {
+      width: min(100%, var(--hub-lite-create-content-width, 680px));
+    }
+    .agent-create-reason-input {
+      min-height: 120px;
+      padding: 14px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+    .agent-create-option-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .agent-create-option-card {
+      min-width: 0;
+      display: grid;
+      gap: 12px;
+      padding: 18px;
+      border: 1px solid rgba(214, 216, 219, .94);
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at top left, rgba(124, 58, 237, .10), transparent 45%),
+        #fff;
+      text-align: left;
+      transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+    }
+    .agent-create-option-card:hover {
+      transform: translateY(-1px);
+      border-color: color-mix(in srgb, var(--brand) 24%, transparent);
+      box-shadow: 0 14px 26px rgba(15, 23, 42, .08);
+    }
+    .agent-create-option-card.is-selected {
+      border-color: var(--brand);
+      box-shadow: 0 18px 32px color-mix(in srgb, var(--brand) 14%, transparent);
+    }
+    .agent-create-option-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .agent-create-option-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border: 1px solid rgba(214, 216, 219, .92);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, .08);
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .agent-create-option-icon svg,
+    .agent-create-summary-pill svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .agent-create-option-radio {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      border: 2px solid #d2d7e0;
+      position: relative;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .agent-create-option-card.is-selected .agent-create-option-radio {
+      border-color: var(--brand);
+    }
+    .agent-create-option-card.is-selected .agent-create-option-radio::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: 999px;
+      background: var(--brand);
+    }
+    .agent-create-option-title {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.3;
+    }
+    .agent-create-option-meta {
+      color: var(--t2);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .agent-create-option-submeta {
+      color: var(--t3);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .agent-create-summary {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(214, 216, 219, .86);
+      background: #fbfcfe;
+    }
+    .agent-create-summary-pill {
+      width: max-content;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--brand-bg);
+      color: var(--brand);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .agent-create-summary-pill svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+    .agent-create-summary-title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+    }
+    .agent-create-summary-copy {
+      color: var(--t2);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .agent-create-summary-hint {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .agent-create-summary-chip {
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      background: #f4f6fa;
+      color: var(--t2);
+      font-size: 12px;
+      font-weight: 700;
+    }
     .hub-invite-backdrop {
       position: fixed;
       inset: 0;
@@ -329,6 +492,13 @@
     }
 
     @media (max-width: 980px) {
+      .agent-create-option-grid {
+        grid-template-columns: 1fr;
+      }
+      .agent-create-progress-track {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
       .hub-invite-layout {
         grid-template-columns: 1fr;
       }
@@ -397,6 +567,28 @@
     (() => {
       const API_BASE = "/api/v2/agents";
       const STORAGE_KEY = "workspace.agentHub.customResources";
+      const AGENT_CREATE_OPTIONS = [
+        {
+          id: "dify",
+          title: "Dify",
+          meta: "Workflow Agent",
+          desc: "Dify 기반 workflow agent를 빠르게 생성합니다.",
+          hint: "워크플로우, 승인 흐름, LLM orchestration"
+        }
+      ];
+      const DIFY_LOGO = `
+        <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="agentCreateDifyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#7c3aed"/>
+              <stop offset="100%" stop-color="#22d3ee"/>
+            </linearGradient>
+          </defs>
+          <rect x="5" y="5" width="9" height="9" rx="4" fill="url(#agentCreateDifyGrad)"/>
+          <rect x="18" y="5" width="9" height="9" rx="4" fill="#c4b5fd"/>
+          <rect x="5" y="18" width="9" height="9" rx="4" fill="#a78bfa"/>
+          <rect x="18" y="18" width="9" height="9" rx="4" fill="#22d3ee"/>
+        </svg>`;
       const typeIcons = {
         all: "apps",
         workflow: "account_tree",
@@ -442,7 +634,8 @@
         eyebrow: "AI · Automation Runtimes",
         title: "Agent Hub",
         description: "실제로 업무를 실행하는 Dify agent를 모았습니다. 최신 카드 구조를 유지하면서 현재 API가 제공하는 model, runtime, tool 연결 상태를 함께 확인합니다.",
-        primaryAction: { href: "workspace_agent_register.html", icon: "add_circle", label: "새 Agent 생성" },
+        primaryAction: null,
+        createAction: { href: "#", icon: "add_circle", label: "새 Agent 생성" },
         resourceSectionIcon: "smart_toy",
         resourceSectionLabel: "Agent Fleet",
         resourceTitle: "Agents",
@@ -493,6 +686,15 @@
       };
 
       const toArray = (value) => Array.isArray(value) ? value.filter(Boolean) : [];
+      let lastHubPayloads = {
+        listPayload: { items: [] },
+        filtersPayload: {},
+        statsPayload: {},
+        modelsPayload: {},
+        runtimePayload: {},
+        tipsPayload: {},
+        guideLinksPayload: {}
+      };
 
       const parseStoredAgents = () => {
         try {
@@ -501,6 +703,14 @@
         } catch (error) {
           console.warn("Failed to parse stored agents", error);
           return [];
+        }
+      };
+
+      const saveStoredAgents = (items) => {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.isArray(items) ? items : []));
+        } catch (error) {
+          console.warn("Failed to store agents", error);
         }
       };
 
@@ -548,6 +758,25 @@
         return payload;
       };
 
+      const getAgentCreateOption = () => AGENT_CREATE_OPTIONS[0];
+
+      const getAgentCreateLogo = () => DIFY_LOGO;
+
+      const createAgentDraftRecord = (name, reason) => {
+        const normalizedName = String(name || "").trim();
+        const normalizedReason = String(reason || "").trim();
+        const key = normalizedName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || `agent-${Date.now()}`;
+        return {
+          key,
+          name: normalizedName,
+          summary: normalizedReason || "사용자 등록 Dify agent",
+          requestReason: normalizedReason,
+          type: "workflow",
+          runtime: { provider: "dify" },
+          createdAt: new Date().toISOString()
+        };
+      };
+
       const fetchJson = async (url) => {
         const response = await fetch(url, {
           method: "GET",
@@ -593,6 +822,7 @@
         window.HUB_CONFIG = config;
         if (typeof window.renderWorkspaceResourceHub === "function") {
           window.renderWorkspaceResourceHub(config);
+          wireAgentCreateAction();
           window.setTimeout(() => {
             if (typeof window.refreshConceptEndpointOverlay === "function") {
               window.refreshConceptEndpointOverlay();
@@ -730,22 +960,8 @@
 
       const buildActions = (item) => {
         const actions = [];
-        const detailHref = `workspace_agent_detail.html?item=${encodeURIComponent(item.id || item.slug || item.name || "agent")}`;
-        const openHref = item.openUrl || item.runtime?.url || detailHref;
-        const hasRuntimeOpenUrl = Boolean(item.openUrl || item.runtime?.url);
-        const openAction = {
-          label: hasRuntimeOpenUrl ? "Open Agent" : "Open",
-          icon: "open_in_new",
-          kind: "open",
-          href: openHref
-        };
-
-        if (hasRuntimeOpenUrl) {
-          openAction.attributes = {
-            target: "_blank",
-            rel: "noopener noreferrer"
-          };
-        }
+        const detailHref = `/api/v2/sample/workspace_agent_detail.html?item=${encodeURIComponent(item.id || item.slug || item.name || "agent")}`;
+        const openUrl = item.openUrl || item.runtime?.url || "";
 
         actions.push({
           label: "Detail",
@@ -753,7 +969,18 @@
           kind: "open",
           href: detailHref
         });
-        actions.push(openAction);
+        if (openUrl) {
+          actions.push({
+            label: "Open Agent",
+            icon: "open_in_new",
+            kind: "open",
+            href: openUrl,
+            attributes: {
+              target: "_blank",
+              rel: "noopener noreferrer"
+            }
+          });
+        }
 
         const inviteNames = toArray(item.authors)
           .map((author) => author?.name)
@@ -789,7 +1016,6 @@
         name: item.name,
         meta: item.summary || [
           item.typeLabel || "Agent",
-          item.triggerChannel ? `Trigger ${item.triggerChannel}` : "",
           item.runtime?.statusLabel || item.statusLabel || item.status || "Review"
         ].filter(Boolean).join(" · "),
         color: typeColors[item.type] || getOwnerColor(item.id || item.name),
@@ -799,10 +1025,7 @@
         connections: buildModelConnections(item),
         secondaryConnections: buildToolConnections(item),
         actions: buildActions(item),
-        footer: [
-          item.triggerChannel ? `Trigger ${item.triggerChannel}` : "",
-          item.updatedAt ? `Updated ${formatDate(item.updatedAt)}` : ""
-        ].filter(Boolean).join(" · ")
+        footer: item.updatedAt ? `Updated ${formatDate(item.updatedAt)}` : ""
       });
 
       const buildMainPanels = ({ tipsPanel, guideLinksPanel }) => {
@@ -875,6 +1098,255 @@
         }];
       };
 
+      const agentCreateState = {
+        step: 1,
+        type: "dify",
+        name: "",
+        reason: ""
+      };
+
+      const resetAgentCreateState = () => {
+        agentCreateState.step = 1;
+        agentCreateState.type = "dify";
+        agentCreateState.name = "";
+        agentCreateState.reason = "";
+      };
+
+      const ensureAgentCreateModal = () => {
+        let modal = document.getElementById("agentCreateModal");
+        if (modal) return modal;
+
+        modal = document.createElement("div");
+        modal.className = "hub-lite-create-backdrop";
+        modal.id = "agentCreateModal";
+        modal.hidden = true;
+        modal.innerHTML = `
+          <div class="hub-lite-create-shell" role="dialog" aria-modal="true" aria-labelledby="agentCreateTitle">
+            <div class="hub-lite-create-head">
+              <div class="hub-lite-create-copy">
+                <div class="hub-lite-create-title-row">
+                  <span class="hub-lite-create-step-badge" id="agentCreateStepBadge">1</span>
+                  <h2 id="agentCreateTitle">Agent를 생성합니다</h2>
+                </div>
+                <p class="hub-lite-create-subtitle" id="agentCreateSubtitle">먼저 사용할 Agent 종류를 선택해주세요.</p>
+              </div>
+              <div class="hub-lite-create-head-actions">
+                <div class="hub-lite-create-hero" aria-hidden="true"><span class="material-icons-round">smart_toy</span></div>
+                <button class="hub-lite-create-close" type="button" id="agentCreateClose" aria-label="Agent 생성 닫기">
+                  <span class="material-icons-round">close</span>
+                </button>
+              </div>
+            </div>
+            <div class="hub-lite-create-progress">
+              <div class="hub-lite-create-progress-track agent-create-progress-track" id="agentCreateProgress"></div>
+            </div>
+            <form class="hub-lite-create-form" id="agentCreateForm">
+              <section class="agent-create-stage" data-agent-create-step="1">
+                <div class="hub-lite-create-panel">
+                  <div class="hub-lite-create-panel-title">Agent 종류를 선택해주세요.</div>
+                  <div class="agent-create-option-grid" id="agentCreateOptionGrid"></div>
+                </div>
+              </section>
+              <section class="agent-create-stage is-compact" data-agent-create-step="2" hidden>
+                <div class="hub-lite-create-panel">
+                  <div class="hub-lite-create-panel-title">Agent 이름과 생성 요청 사유를 입력해주세요.</div>
+                  <div class="agent-create-summary" id="agentCreateSummary"></div>
+                  <input class="hub-lite-create-input" id="agentCreateName" type="text" placeholder="예: workspace-approval-agent" required />
+                  <textarea class="hub-lite-create-input agent-create-reason-input" id="agentCreateReason" placeholder="예: 승인형 장애 대응 workflow를 새로 운영하기 위해 생성이 필요합니다." required></textarea>
+                  <div class="hub-lite-create-note"><span class="material-icons-round">info</span>현재 화면에서는 이름과 생성 요청 사유를 먼저 정합니다. 세부 workflow와 도구 연결은 상세 화면에서 이어서 구성할 수 있습니다.</div>
+                </div>
+              </section>
+              <div class="hub-lite-create-actions">
+                <button class="hub-lite-create-action ghost" type="button" id="agentCreateBack">취소</button>
+                <button class="hub-lite-create-action primary" type="button" id="agentCreateNext">다음</button>
+                <button class="hub-lite-create-action primary" type="submit" id="agentCreateSubmit" hidden disabled><span class="material-icons-round">check_circle</span>Agent 생성</button>
+              </div>
+            </form>
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        const form = modal.querySelector("#agentCreateForm");
+        const stepBadge = modal.querySelector("#agentCreateStepBadge");
+        const subtitle = modal.querySelector("#agentCreateSubtitle");
+        const progress = modal.querySelector("#agentCreateProgress");
+        const stages = Array.from(modal.querySelectorAll("[data-agent-create-step]"));
+        const optionGrid = modal.querySelector("#agentCreateOptionGrid");
+        const summary = modal.querySelector("#agentCreateSummary");
+        const input = modal.querySelector("#agentCreateName");
+        const reasonInput = modal.querySelector("#agentCreateReason");
+        const submit = modal.querySelector("#agentCreateSubmit");
+        const next = modal.querySelector("#agentCreateNext");
+        const back = modal.querySelector("#agentCreateBack");
+        const stepMeta = [
+          { label: "Agent 종류", subtitle: "먼저 사용할 Agent 종류를 선택해주세요." },
+          { label: "Agent 이름", subtitle: "이제 Agent 이름을 입력해주세요." }
+        ];
+
+        const renderProgress = () => {
+          progress.innerHTML = stepMeta.map((item, index) => {
+            const step = index + 1;
+            const isCurrent = step === agentCreateState.step;
+            const isComplete = step < agentCreateState.step;
+            const value = step === 1 ? getAgentCreateOption().title : String(agentCreateState.name || "").trim();
+            return `
+              <div class="hub-lite-create-progress-item ${isCurrent ? "is-current" : ""} ${isComplete ? "is-complete" : ""}">
+                <div class="hub-lite-create-progress-line">
+                  <span class="hub-lite-create-progress-rail ${index === 0 ? "is-hidden" : ""}"></span>
+                  <span class="hub-lite-create-progress-dot">${isComplete ? '<span class="material-icons-round" style="font-size:15px">done</span>' : step}</span>
+                  <span class="hub-lite-create-progress-rail ${index === stepMeta.length - 1 ? "is-hidden" : ""}"></span>
+                </div>
+                <div class="hub-lite-create-progress-label">${item.label}</div>
+                <div class="hub-lite-create-progress-value">${value || " "}</div>
+              </div>
+            `;
+          }).join("");
+        };
+
+        const renderOptionGrid = () => {
+          const option = getAgentCreateOption();
+          optionGrid.innerHTML = `
+            <button class="agent-create-option-card is-selected" type="button" data-agent-type="${option.id}">
+              <div class="agent-create-option-head">
+                <span class="agent-create-option-icon" aria-hidden="true">${getAgentCreateLogo()}</span>
+                <span class="agent-create-option-radio" aria-hidden="true"></span>
+              </div>
+              <div class="agent-create-option-title">${option.title}</div>
+              <div class="agent-create-option-meta">${option.meta}</div>
+              <div class="agent-create-option-submeta">${option.desc}</div>
+            </button>
+          `;
+        };
+
+        const renderSummary = () => {
+          const option = getAgentCreateOption();
+          summary.innerHTML = `
+            <div class="agent-create-summary-pill">${getAgentCreateLogo()}${option.title}</div>
+            <div class="agent-create-summary-title">${option.title} 기반 Agent를 만듭니다</div>
+            <div class="agent-create-summary-copy">${option.desc}</div>
+            <div class="agent-create-summary-hint">
+              <span class="agent-create-summary-chip">${option.meta}</span>
+              <span class="agent-create-summary-chip">${option.hint}</span>
+            </div>
+          `;
+          input.value = agentCreateState.name;
+          reasonInput.value = agentCreateState.reason;
+        };
+
+        const renderStages = () => {
+          stages.forEach((stage) => {
+            stage.hidden = Number(stage.dataset.agentCreateStep) !== agentCreateState.step;
+          });
+        };
+
+        const syncHeader = () => {
+          const meta = stepMeta[agentCreateState.step - 1];
+          stepBadge.textContent = String(agentCreateState.step);
+          subtitle.textContent = meta.subtitle;
+        };
+
+        const syncActions = () => {
+          back.textContent = agentCreateState.step === 1 ? "취소" : "뒤로";
+          next.hidden = agentCreateState.step === 2;
+          submit.hidden = agentCreateState.step !== 2;
+          submit.disabled = !String(agentCreateState.name || "").trim() || !String(agentCreateState.reason || "").trim();
+        };
+
+        const rerender = () => {
+          syncHeader();
+          renderProgress();
+          renderStages();
+          renderOptionGrid();
+          renderSummary();
+          syncActions();
+        };
+
+        const close = () => {
+          modal.hidden = true;
+          document.body.style.overflow = "";
+          resetAgentCreateState();
+          form.reset();
+          rerender();
+        };
+
+        modal.addEventListener("click", (event) => {
+          if (event.target === modal) close();
+        });
+
+        modal.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && !modal.hidden) close();
+        });
+
+        modal.querySelector("#agentCreateClose").addEventListener("click", close);
+
+        optionGrid.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-agent-type]");
+          if (!button) return;
+          agentCreateState.type = button.dataset.agentType || "dify";
+          rerender();
+        });
+
+        input.addEventListener("input", () => {
+          agentCreateState.name = String(input.value || "").trim();
+          renderProgress();
+          syncActions();
+        });
+
+        reasonInput.addEventListener("input", () => {
+          agentCreateState.reason = String(reasonInput.value || "").trim();
+          syncActions();
+        });
+
+        back.addEventListener("click", () => {
+          if (agentCreateState.step === 1) {
+            close();
+            return;
+          }
+          agentCreateState.step = 1;
+          rerender();
+        });
+
+        next.addEventListener("click", () => {
+          agentCreateState.step = 2;
+          rerender();
+          requestAnimationFrame(() => input.focus());
+        });
+
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
+          const name = String(input.value || "").trim();
+          const reason = String(reasonInput.value || "").trim();
+          if (!name || !reason) {
+            syncActions();
+            return;
+          }
+          saveStoredAgents([createAgentDraftRecord(name, reason), ...parseStoredAgents()]);
+          close();
+          renderConfig(buildHubConfig(lastHubPayloads));
+        });
+
+        rerender();
+        return modal;
+      };
+
+      const wireAgentCreateAction = () => {
+        const button = document.querySelector(".control-actions .create-btn");
+        if (!button || button.dataset.agentCreateBound === "true") return;
+        button.dataset.agentCreateBound = "true";
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          resetAgentCreateState();
+          const modal = ensureAgentCreateModal();
+          const target = modal.querySelector("[data-agent-type]");
+          modal.hidden = false;
+          document.body.style.overflow = "hidden";
+          requestAnimationFrame(() => {
+            if (target) target.focus();
+          });
+        });
+      };
+
       const buildHubConfig = ({ listPayload, filtersPayload = {}, statsPayload = {}, modelsPayload = {}, runtimePayload = {}, tipsPayload = {}, guideLinksPayload = {} }) => {
         const items = [...parseStoredAgents().map(buildStoredAgent).filter(Boolean), ...toArray(listPayload.items)];
         return {
@@ -907,6 +1379,10 @@
         const guideLinksPromise = withTimeout(fetchJson("/api/v2/panels/guide-links?surface=agents"), 5000, "GET /api/v2/panels/guide-links?surface=agents");
 
         const listPayload = getPayloadData(await listPromise);
+        lastHubPayloads = {
+          ...lastHubPayloads,
+          listPayload
+        };
         renderConfig(buildHubConfig({ listPayload }));
 
         Promise.allSettled([
@@ -917,7 +1393,7 @@
           tipsPromise,
           guideLinksPromise
         ]).then(([filtersResult, statsResult, modelsResult, runtimeResult, tipsResult, guideLinksResult]) => {
-          renderConfig(buildHubConfig({
+          lastHubPayloads = {
             listPayload,
             filtersPayload: resolveSettledData(filtersResult),
             statsPayload: resolveSettledData(statsResult),
@@ -925,6 +1401,15 @@
             runtimePayload: resolveSettledData(runtimeResult),
             tipsPayload: resolveSettledData(tipsResult),
             guideLinksPayload: resolveSettledData(guideLinksResult)
+          };
+          renderConfig(buildHubConfig({
+            listPayload,
+            filtersPayload: lastHubPayloads.filtersPayload,
+            statsPayload: lastHubPayloads.statsPayload,
+            modelsPayload: lastHubPayloads.modelsPayload,
+            runtimePayload: lastHubPayloads.runtimePayload,
+            tipsPayload: lastHubPayloads.tipsPayload,
+            guideLinksPayload: lastHubPayloads.guideLinksPayload
           }));
         });
       };
@@ -933,6 +1418,10 @@
       bootstrap().catch((error) => {
         console.warn("Failed to load /api/v2/agents hub data", error);
         const storedFallback = buildHubConfig({ listPayload: { items: [] } });
+        lastHubPayloads = {
+          ...lastHubPayloads,
+          listPayload: { items: [] }
+        };
         renderConfig({
           ...storedFallback,
           heroStats: [],

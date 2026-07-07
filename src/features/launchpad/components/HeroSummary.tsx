@@ -9,7 +9,7 @@ import { WorkspaceIcon } from '@/components/WorkspaceIcon';
 import { routes } from '@/config/routes';
 import type { CurrentUser } from '@/features/app-shell/types';
 import { launchpadSectionStatus } from '@/features/launchpad/sectionStatus';
-import type { HeroStat, LaunchpadHero } from '@/features/launchpad/types';
+import type { HeroStat, LaunchpadHero, LaunchpadMyWork } from '@/features/launchpad/types';
 
 const LoadingPanel = styled(Panel)(({ theme }) => ({
   borderRadius: theme.workspace.radii.sm,
@@ -101,10 +101,12 @@ const StatLabel = styled(Typography)(({ theme }) => ({
 export function HeroSummary({
   hero,
   isLoading,
+  myWorkSummary,
   user,
 }: {
   hero?: LaunchpadHero;
   isLoading: boolean;
+  myWorkSummary?: LaunchpadMyWork['summary'];
   user?: CurrentUser;
 }) {
   if (isLoading) {
@@ -122,10 +124,8 @@ export function HeroSummary({
   }
 
   const fallbackDisplayName = user?.givenName || user?.fullname || hero?.userName || 'AX Studio';
-  const title = hero?.title ?? `Hello, ${fallbackDisplayName}`;
-  const subtitle =
-    hero?.subtitle ??
-    `Keep building today. You have ${user?.summary.unreadNotificationCount ?? 0} unread notifications.`;
+  const title = hero?.title ?? `${getHeroGreetingName(fallbackDisplayName)} 님, 반갑습니다 👋`;
+  const subtitle = getHeroSubtitle(myWorkSummary, hero, user?.summary.unreadNotificationCount ?? 0);
   const stats = hero?.heroStats ?? [];
 
   return (
@@ -145,6 +145,50 @@ export function HeroSummary({
       </StatsList>
     </HeroRoot>
   );
+}
+
+function getHeroGreetingName(value: string) {
+  const raw = value.trim();
+  const local = raw.split('@')[0]?.trim() ?? '';
+
+  if (!local) return 'Workspace User';
+
+  if (/[._-]/.test(local) && !/\s/.test(local)) {
+    return local
+      .split(/[._-]+/)
+      .filter(Boolean)
+      .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+      .join(' ');
+  }
+
+  return local;
+}
+
+function getHeroSubtitle(
+  summary: LaunchpadMyWork['summary'] | undefined,
+  hero: LaunchpadHero | undefined,
+  unreadFallback: number,
+) {
+  if (!summary) {
+    return hero?.subtitle ?? `읽지 않은 알림 ${unreadFallback}건을 먼저 확인해 보세요.`;
+  }
+
+  const unreadCount = Number(summary.unreadNotificationCount || 0);
+  const runningCount = Number(summary.recentJobStatus?.running || 0);
+
+  if (unreadCount > 0 && runningCount > 0) {
+    return `읽지 않은 알림 ${unreadCount}건과 진행 중인 작업 ${runningCount}건이 있습니다.`;
+  }
+
+  if (unreadCount > 0) {
+    return `읽지 않은 알림 ${unreadCount}건을 먼저 확인해 보세요.`;
+  }
+
+  if (runningCount > 0) {
+    return `진행 중인 작업 ${runningCount}건을 여기에서 바로 확인할 수 있습니다.`;
+  }
+
+  return '새 알림 없이 작업을 바로 시작할 수 있습니다.';
 }
 
 function StatItem({ stat }: { stat: HeroStat }) {

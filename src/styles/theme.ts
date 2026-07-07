@@ -120,7 +120,7 @@ export const workspaceTheme = createTheme({
       },
       styleOverrides: {
         root: {
-          borderRadius: 11,
+          borderRadius: workspaceTokens.radii.button,
           boxShadow: 'none',
           fontSize: 13,
           fontWeight: workspaceTokens.typography.weights.bold,
@@ -207,8 +207,8 @@ export const workspaceTheme = createTheme({
         paper: {
           backgroundImage: 'none',
           border: `1px solid ${alpha(colors.borderStrong, 0.8)}`,
-          borderRadius: workspaceTokens.radii.xl,
-          boxShadow: workspaceTokens.shadows.raised,
+          borderRadius: workspaceTokens.radii.dialog,
+          boxShadow: workspaceTokens.shadows.dialog,
         },
       },
     },

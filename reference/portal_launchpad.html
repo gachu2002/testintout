@@ -1927,6 +1927,13 @@
               </div>
             </div>
             <div class="service-links">
+              <a class="service-link" href="workspace_message_hub.html">
+                <span class="material-icons-round service-link-icon">mark_email_unread</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">Message Center</span>
+                  <span class="service-link-desc">수신, 발신, 요청, 승인 메시지를 한 화면에서 관리합니다</span>
+                </span>
+              </a>
               <a class="service-link" href="#">
                 <span class="material-icons-round service-link-icon">description</span>
                 <span class="service-link-copy">
@@ -1948,11 +1955,11 @@
                   <span class="service-link-desc">지원 챗봇으로 빠르게 문의합니다</span>
                 </span>
               </a>
-              <a class="service-link" href="#">
+              <a class="service-link" href="workspace_message_hub.html?box=requests">
                 <span class="material-icons-round service-link-icon">campaign</span>
                 <span class="service-link-copy">
                   <span class="service-link-title">요청하기</span>
-                  <span class="service-link-desc">기능 요청이나 지원 요청을 등록합니다</span>
+                  <span class="service-link-desc">기능 요청이나 승인 요청을 바로 등록합니다</span>
                 </span>
               </a>
             </div>
@@ -1983,7 +1990,7 @@
     </form>
     <div class="tb-spacer"></div>
     <div class="tb-icon"><span class="material-icons-round">notifications_none</span><div class="dot"></div></div>
-    <div class="avatar">TN</div>
+    <a class="avatar" href="workspace_settings.html" aria-label="설정 페이지 열기">TN</a>
   </div>
 </header>
 
@@ -2253,6 +2260,13 @@
               <span class="resource-rail-title-item">workspace.fe</span>
             </span>
           </a>
+          <a class="resource-rail-item" href="workspace_message_hub.html">
+            <span class="resource-rail-icon" style="background:linear-gradient(135deg,#2563eb,#7c3aed)"><span class="material-icons-round">mark_email_unread</span></span>
+            <span class="resource-rail-copy-item">
+              <span class="resource-rail-type">Message</span>
+              <span class="resource-rail-title-item">message-center inbox</span>
+            </span>
+          </a>
           <a class="resource-rail-item" href="workspace_tools_hub.html">
             <span class="resource-rail-icon" style="background:linear-gradient(135deg,#2563eb,#06b6d4)"><span class="material-icons-round">database</span></span>
             <span class="resource-rail-copy-item">
@@ -2353,12 +2367,15 @@
       '/workspace/buckets': 'workspace_s3_hub.html',
       '/workspace/consoles': 'workspace_tools_hub.html',
       '/workspace/projects': 'workspace_projects_hub.html',
+      '/workspace/messages': 'workspace_message_hub.html',
       '/workspace/jupyter': 'workspace_projects_hub.html',
       '/workspace/agents': 'workspace_agent_hub.html',
       '/workspace/chatbots': 'workspace_chatbot_hub.html',
       '/workspace/tool-inventory': 'workspace_tool_inventory_hub.html',
       '/workspace/keycenter': 'workspace_keycenter_hub.html',
       '/docs/about-dej': 'about_dej.html',
+      '/support/messages': 'workspace_message_hub.html',
+      '/support/requests': 'workspace_message_hub.html?box=requests',
       '/support/chatbot': 'dej_chatbot_trial.html',
     };
 

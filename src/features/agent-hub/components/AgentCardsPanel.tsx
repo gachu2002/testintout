@@ -6,7 +6,7 @@ import SchemaRoundedIcon from '@mui/icons-material/SchemaRounded';
 import SmartToyRoundedIcon from '@mui/icons-material/SmartToyRounded';
 import { Box, Button } from '@mui/material';
 
-import { Badge, IconTile, Metric } from '@/components/workspace';
+import { Badge, buildResourceResultCopy, IconTile, Metric } from '@/components/workspace';
 import {
   ResourceCardFooter,
   ResourceCardRoot,
@@ -61,7 +61,12 @@ export function AgentCardsPanel({
       isEmpty={agents.length === 0}
       isLoading={isLoading}
       label={panelCopy.label}
-      resultCopy={buildResultCopy(filterState, agents.length, loadedCount, total)}
+      resultCopy={buildResourceResultCopy({
+        isDefault: filterState.type === 'all' && filterState.status === 'all',
+        loadedCount,
+        total,
+        visibleCount: agents.length,
+      })}
       skeletonCount={2}
       status={agentHubSectionStatus.cards}
       title={panelCopy.title}
@@ -151,22 +156,6 @@ function AgentCard({ agent }: { agent: AgentResource }) {
       </ResourceCardFooter>
     </ResourceCardRoot>
   );
-}
-
-function buildResultCopy(
-  filterState: AgentFilterState,
-  visibleCount: number,
-  loadedCount: number,
-  total?: number,
-) {
-  const totalCopy = typeof total === 'number' ? `${total.toLocaleString()} total` : 'total unknown';
-  const loadedCopy = `${loadedCount.toLocaleString()} loaded`;
-
-  if (filterState.type === 'all' && filterState.status === 'all') {
-    return `${loadedCopy} · ${totalCopy}`;
-  }
-
-  return `${visibleCount.toLocaleString()} visible · ${loadedCopy}`;
 }
 
 function getStatusTone(status: string): ToneName {

@@ -1131,6 +1131,10 @@
       display:grid;
       place-items:center;
     }
+    .icon-action:disabled {
+      cursor:not-allowed;
+      opacity:.48;
+    }
     .editor-note {
       color:var(--subtle);
       font-size:12px;
@@ -1353,6 +1357,27 @@
       border-color:transparent;
       background:linear-gradient(135deg,var(--brand),var(--brand-strong));
     }
+    .mini-btn.is-active-action {
+      color:#fff;
+      border-color:transparent;
+      background:linear-gradient(135deg,var(--brand),var(--brand-strong));
+      box-shadow:0 10px 24px rgba(190,24,93,.18);
+    }
+    .mini-btn.success {
+      color:var(--good);
+      border-color:rgba(15,118,110,.18);
+      background:var(--good-bg);
+    }
+    .mini-btn.danger {
+      color:var(--danger);
+      border-color:rgba(185,28,28,.16);
+      background:var(--danger-bg);
+    }
+    .mini-btn.muted {
+      color:var(--muted);
+      border-color:var(--border);
+      background:var(--surface-soft);
+    }
     .mini-btn:disabled {
       cursor:not-allowed;
       opacity:.48;
@@ -1370,6 +1395,338 @@
     .tone-pill.pending { color:var(--warn); background:var(--warn-bg); }
     .tone-pill.review { color:var(--brand); background:var(--brand-bg); }
     .tone-pill.done { color:var(--good); background:var(--good-bg); }
+    .request-modal[hidden] {
+      display:none;
+    }
+    .request-modal {
+      position:fixed;
+      inset:0;
+      z-index:320;
+      display:grid;
+      place-items:center;
+      padding:24px;
+      background:rgba(31,22,50,.44);
+      backdrop-filter:blur(8px);
+    }
+    .request-modal-card {
+      width:min(100%, 520px);
+      padding:22px;
+      border-radius:24px;
+      border:1px solid rgba(236,231,244,.96);
+      background:linear-gradient(180deg, rgba(255,255,255,.99), rgba(255,247,251,.98));
+      box-shadow:0 24px 52px rgba(31,22,50,.18);
+      display:grid;
+      gap:16px;
+    }
+    .request-modal-head {
+      display:grid;
+      gap:6px;
+    }
+    .request-modal-kicker {
+      color:var(--brand);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .request-modal-title {
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      color:var(--text);
+    }
+    .request-modal-desc,
+    .request-modal-target {
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.65;
+    }
+    .request-modal-target.is-boxed {
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:var(--surface-soft);
+    }
+    .request-modal-target.is-plain {
+      color:var(--text);
+      font-size:15px;
+      line-height:1.7;
+    }
+    .request-modal-target.is-plain strong {
+      color:var(--text);
+      font-weight:800;
+    }
+    #accessActionModal.is-compact #accessActionTarget {
+      padding:0 !important;
+      border:0 !important;
+      border-radius:0 !important;
+      background:transparent !important;
+      box-shadow:none !important;
+      color:var(--text) !important;
+      font-size:15px !important;
+      line-height:1.7 !important;
+    }
+    #accessActionModal.is-compact #accessActionField {
+      display:none !important;
+    }
+    .request-modal-field {
+      display:grid;
+      gap:8px;
+    }
+    .request-modal-label {
+      font-size:12px;
+      font-weight:800;
+      color:var(--text);
+    }
+    .request-modal-textarea {
+      width:100%;
+      min-height:140px;
+      resize:vertical;
+      border:1.5px solid var(--border);
+      border-radius:16px;
+      padding:14px 16px;
+      background:#fff;
+      color:var(--text);
+      font:inherit;
+      font-size:13px;
+      line-height:1.65;
+      outline:none;
+      transition:border .16s ease, box-shadow .16s ease;
+    }
+    .request-modal-textarea:focus {
+      border-color:var(--brand);
+      box-shadow:0 0 0 3px rgba(190,24,93,.10);
+    }
+    .request-modal-input {
+      width:100%;
+      height:46px;
+      border:1.5px solid var(--border);
+      border-radius:16px;
+      padding:0 16px;
+      background:#fff;
+      color:var(--text);
+      font:inherit;
+      font-size:13px;
+      outline:none;
+      transition:border .16s ease, box-shadow .16s ease;
+    }
+    .request-modal-input:focus {
+      border-color:var(--brand);
+      box-shadow:0 0 0 3px rgba(190,24,93,.10);
+    }
+    .request-modal-inline-results {
+      display:grid;
+      gap:6px;
+      margin-top:-2px;
+      padding:8px;
+      border:1.5px solid var(--border);
+      border-radius:16px;
+      background:#fff;
+      box-shadow:0 18px 36px rgba(15,23,42,.10);
+      max-height:220px;
+      overflow:auto;
+    }
+    .request-modal-inline-results[hidden] {
+      display:none !important;
+    }
+    .request-modal-inline-results::-webkit-scrollbar {
+      width:8px;
+    }
+    .request-modal-inline-results::-webkit-scrollbar-thumb {
+      background:rgba(148,163,184,.42);
+      border-radius:999px;
+    }
+    .request-modal-inline-option {
+      width:100%;
+      border:none;
+      display:grid;
+      gap:3px;
+      padding:10px 12px;
+      border-radius:12px;
+      background:#fff;
+      text-align:left;
+      color:var(--text);
+      transition:background .16s ease, transform .16s ease;
+    }
+    .request-modal-inline-option:hover {
+      background:#fff1f2;
+      transform:translateY(-1px);
+    }
+    .request-modal-inline-option-name {
+      font-size:13px;
+      font-weight:800;
+      line-height:1.35;
+    }
+    .request-modal-inline-option-meta {
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+    .request-modal-inline-empty {
+      padding:10px 12px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .request-modal-actions {
+      display:flex;
+      justify-content:flex-end;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .policy-overlay[hidden] {
+      display:none;
+    }
+    .policy-overlay {
+      position:fixed;
+      inset:0;
+      z-index:315;
+      display:grid;
+      place-items:center;
+      padding:24px;
+      background:rgba(31,22,50,.18);
+      backdrop-filter:blur(4px);
+    }
+    .policy-overlay-panel {
+      position:relative;
+      width:min(100%, 700px);
+      max-height:min(88vh, 760px);
+      overflow:auto;
+      padding:30px 30px 26px;
+      border-radius:28px;
+      background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,247,251,.97));
+      box-shadow:0 24px 52px rgba(31,22,50,.14);
+      display:grid;
+      gap:18px;
+    }
+    .policy-overlay-close {
+      position:absolute;
+      top:14px;
+      right:14px;
+      width:36px;
+      height:36px;
+      border:none;
+      border-radius:999px;
+      background:rgba(190,24,93,.08);
+      color:var(--brand);
+      display:grid;
+      place-items:center;
+    }
+    .policy-overlay-close:hover {
+      background:rgba(190,24,93,.14);
+    }
+    .policy-overlay-kicker {
+      color:var(--brand);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .policy-overlay-title {
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      color:var(--text);
+    }
+    .policy-overlay-body {
+      display:grid;
+      gap:16px;
+    }
+    .policy-overlay-summary {
+      display:grid;
+      grid-template-columns:auto minmax(0, 1fr);
+      gap:14px;
+      align-items:start;
+      padding:16px 18px;
+      border:1px solid rgba(190,24,93,.12);
+      border-radius:20px;
+      background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,240,247,.92));
+    }
+    .policy-overlay-summary-icon {
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:rgba(190,24,93,.10);
+      color:var(--brand);
+    }
+    .policy-overlay-summary-icon .material-icons-round {
+      font-size:22px;
+    }
+    .policy-overlay-summary-copy {
+      display:grid;
+      gap:10px;
+      color:var(--text);
+      font-size:15px;
+      line-height:1.72;
+    }
+    .policy-overlay-summary-copy strong {
+      font-weight:800;
+    }
+    .policy-overlay-grid {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:14px;
+    }
+    .policy-overlay-section {
+      display:grid;
+      gap:12px;
+      padding:18px;
+      border:1px solid var(--border);
+      border-radius:20px;
+      background:rgba(255,255,255,.88);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+    }
+    .policy-overlay-section-title {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.02em;
+      color:var(--text);
+    }
+    .policy-overlay-section-title .material-icons-round {
+      width:34px;
+      height:34px;
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      font-size:18px;
+      color:var(--brand);
+      background:rgba(190,24,93,.10);
+    }
+    .policy-overlay-list {
+      display:grid;
+      gap:9px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.62;
+    }
+    .policy-overlay-item {
+      display:grid;
+      grid-template-columns:auto minmax(0, 1fr);
+      gap:10px;
+      align-items:start;
+    }
+    .policy-overlay-item::before {
+      content:"";
+      width:7px;
+      height:7px;
+      margin-top:8px;
+      border-radius:999px;
+      background:var(--accent);
+      box-shadow:0 0 0 4px rgba(251,113,133,.14);
+    }
+    .policy-overlay-footnote {
+      padding:14px 16px;
+      border-radius:18px;
+      background:rgba(36,31,49,.04);
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.6;
+    }
 
     .target-row {
       grid-template-columns:minmax(0,1fr) auto;
@@ -1450,6 +1807,27 @@
       }
       .request-actions {
         justify-content:flex-start;
+      }
+      .request-modal {
+        padding:16px;
+      }
+      .request-modal-card {
+        padding:18px;
+        border-radius:20px;
+      }
+      .policy-overlay {
+        padding:16px;
+      }
+      .policy-overlay-panel {
+        width:min(100%, 100%);
+        padding:24px 20px 20px;
+        border-radius:24px;
+      }
+      .policy-overlay-grid {
+        grid-template-columns:minmax(0, 1fr);
+      }
+      .policy-overlay-summary {
+        grid-template-columns:minmax(0, 1fr);
       }
       .editor-toolbar,
       .editor-block-head,
@@ -1938,6 +2316,17 @@
     const params = new URLSearchParams(window.location.search);
     const realmKey = (params.get("realm") || "").trim();
     const app = document.getElementById("app");
+    const pageState = {
+      detail: null,
+      oidcAccess: null,
+      roles: [],
+      membersResult: { items: [], status: 200 },
+      groupsResult: { items: [], status: 200 },
+      bindings: null,
+      requestsResult: { items: [], status: 200 },
+      model: null,
+      preferredActiveRole: ""
+    };
 
     function escapeHtml(value) {
       return String(value)
@@ -1999,12 +2388,23 @@
     }
 
     async function requestJson(path, options = {}) {
-      const { allowStatus = [] } = options;
+      const {
+        allowStatus = [],
+        method = "GET",
+        body
+      } = options;
+      const headers = {
+        Accept: "application/json"
+      };
+      if (body !== undefined) {
+        headers["Content-Type"] = "application/json";
+      }
+
       const response = await fetch(`${API_BASE}${path}`, {
+        method,
         credentials: "same-origin",
-        headers: {
-          Accept: "application/json"
-        }
+        headers,
+        body: body !== undefined ? JSON.stringify(body) : undefined
       });
 
       if (!response.ok) {
@@ -2092,6 +2492,15 @@
 
     function normalizeText(value) {
       return String(value || "").trim();
+    }
+
+    function extractDisplayName(value) {
+      const source = normalizeText(value);
+      if (!source) {
+        return "";
+      }
+
+      return source.split("/")[0].trim();
     }
 
     function formatNumber(value) {
@@ -2189,8 +2598,8 @@
     }
 
     function normalizeRequestStatus(status) {
-      if (status === "approved") return "approved";
-      if (status === "rejected" || status === "cancelled") return "rejected";
+      if (status === "approved" || status === "done" || status === "succeeded") return "approved";
+      if (status === "rejected" || status === "cancelled" || status === "declined" || status === "failed") return "rejected";
       return "pending";
     }
 
@@ -2203,41 +2612,68 @@
 
     function requestLabel(status) {
       const normalized = normalizeRequestStatus(status);
-      if (normalized === "approved") return "승인";
+      if (normalized === "approved") return "승인 완료";
       if (normalized === "rejected") return "거절";
-      return "대기";
+      return "대기중";
     }
 
-    function renderRequests(items) {
+    function renderRequestActions(item, canApprove) {
+      const normalized = normalizeRequestStatus(item.status);
+
+      if (canApprove && normalized === "pending") {
+        return `
+          <button class="mini-btn" type="button" data-request-action="approve">승인</button>
+          <button class="mini-btn" type="button" data-request-action="reject">거절</button>
+        `;
+      }
+
+      const toneClass = normalized === "approved"
+        ? "success"
+        : (normalized === "rejected" ? "danger" : "muted");
+
+      return `<button class="mini-btn ${toneClass}" type="button" disabled>${escapeHtml(requestLabel(item.status))}</button>`;
+    }
+
+    function renderRequests(items, canApprove, emptyMessage = "표시할 권한 요청이 없습니다.", emptyDescription = "현재 realm 기준으로 조회 가능한 요청이 없습니다.") {
       if (!items.length) {
         return `
           <article class="request-row">
             <div class="request-main">
               <div class="request-top">
-                <div class="request-title">표시할 권한 요청이 없습니다.</div>
+                <div class="request-title">${escapeHtml(emptyMessage)}</div>
               </div>
-              <div class="request-meta">현재 realm 기준으로 조회 가능한 요청이 없습니다.</div>
+              <div class="request-meta">${escapeHtml(emptyDescription)}</div>
             </div>
           </article>
         `;
       }
 
       return items.map((item) => `
-        <article class="request-row" data-request-status="${escapeHtml(normalizeRequestStatus(item.status))}">
+        <article
+          class="request-row"
+          data-request-id="${escapeHtml(item.id || "")}"
+          data-request-status="${escapeHtml(normalizeRequestStatus(item.status))}"
+        >
           <div class="request-main">
             <div class="request-top">
               <div class="request-title">${escapeHtml(item.title)}</div>
               <span class="tone-pill ${requestTone(item.status)}">${requestLabel(item.status)}</span>
             </div>
-            <div class="request-meta">${escapeHtml(item.meta)}</div>
-            <div class="request-submeta">${escapeHtml(item.submeta)}</div>
+            <div class="request-meta">요청인: ${escapeHtml(item.requester)}</div>
+            <div class="request-submeta">요청 내용: ${escapeHtml(item.reason)}</div>
+            ${item.rejectReason ? `<div class="request-submeta">거절 사유: ${escapeHtml(item.rejectReason)}</div>` : ""}
+            <div class="request-submeta">날짜: ${escapeHtml(item.date)}</div>
           </div>
-          <div class="request-actions">
-            <button class="mini-btn primary" type="button">${item.status === "pending" ? "대기 중" : "상세 보기"}</button>
-            <button class="mini-btn" type="button">${escapeHtml(item.actionLabel || "요청 확인")}</button>
-          </div>
+          <div class="request-actions">${renderRequestActions(item, canApprove)}</div>
         </article>
       `).join("");
+    }
+
+    function renderRequestFilterLabel(type, count) {
+      const prefix = type === "pending"
+        ? "대기"
+        : (type === "approved" ? "승인" : (type === "rejected" ? "거절" : "전체"));
+      return `${prefix} ${formatNumber(count)}`;
     }
 
     function renderTargets(items) {
@@ -2283,7 +2719,7 @@
       `).join("");
     }
 
-    function renderUserRows(items, { restricted = false } = {}) {
+    function renderUserRows(items, { restricted = false, canManage = false } = {}) {
       if (restricted) {
         return `<tr><td colspan="4">이 Role의 사용자 목록은 현재 계정으로 조회할 수 없습니다.</td></tr>`;
       }
@@ -2293,14 +2729,21 @@
       }
       return items.map((item) => `
         <tr>
-          <td>
-            <div class="table-user">${escapeHtml(item.name)}</div>
-            <div class="table-subtle">${escapeHtml(item.meta)}</div>
-          </td>
+          <td>${escapeHtml(item.name)}</td>
           <td>${escapeHtml(item.email)}</td>
           <td>${escapeHtml(item.lastLogin)}</td>
           <td>
-            <button class="icon-action" type="button" aria-label="${escapeHtml(item.name)} 제거">
+            <button
+              class="icon-action"
+              type="button"
+              data-access-row-action="remove-user"
+              data-user-id="${escapeHtml(item.id || item.userId || item.email)}"
+              data-user-name="${escapeHtml(item.name)}"
+              data-user-email="${escapeHtml(item.email)}"
+              aria-label="${escapeHtml(item.name)} 제거"
+              ${canManage ? "" : "disabled"}
+              title="${canManage ? "사용자 제거" : "조회 전용"}"
+            >
               <span class="material-icons-round" style="font-size:16px;">delete</span>
             </button>
           </td>
@@ -2308,23 +2751,29 @@
       `).join("");
     }
 
-    function renderGroupRows(items, { restricted = false } = {}) {
+    function renderGroupRows(items, { restricted = false, canManage = false } = {}) {
       if (restricted) {
-        return `<tr><td colspan="4">이 Role의 그룹 목록은 현재 계정으로 조회할 수 없습니다.</td></tr>`;
+        return `<tr><td colspan="3">이 Role의 그룹 목록은 현재 계정으로 조회할 수 없습니다.</td></tr>`;
       }
 
       if (!items.length) {
-        return `<tr><td colspan="4">연결된 그룹이 없습니다.</td></tr>`;
+        return `<tr><td colspan="3">연결된 그룹이 없습니다.</td></tr>`;
       }
       return items.map((item) => `
         <tr>
-          <td>
-            <div class="table-user">${escapeHtml(item.name)}</div>
-          </td>
-          <td>${escapeHtml(item.description)}</td>
+          <td>${escapeHtml(item.name)}</td>
           <td>${escapeHtml(item.members)}</td>
           <td>
-            <button class="icon-action" type="button" aria-label="${escapeHtml(item.name)} 제거">
+            <button
+              class="icon-action"
+              type="button"
+              data-access-row-action="remove-group"
+              data-group-id="${escapeHtml(item.id || item.name)}"
+              data-group-name="${escapeHtml(item.name)}"
+              aria-label="${escapeHtml(item.name)} 제거"
+              ${canManage ? "" : "disabled"}
+              title="${canManage ? "그룹 제거" : "조회 전용"}"
+            >
               <span class="material-icons-round" style="font-size:16px;">delete</span>
             </button>
           </td>
@@ -2378,7 +2827,7 @@
             <div class="person-name">${escapeHtml(item.name)}</div>
             <div class="person-meta">${escapeHtml(item.meta)}</div>
           </div>
-          <div class="owner-role">${escapeHtml(item.role)}</div>
+          <div class="owner-role">${escapeHtml(item.role || "owner")}</div>
         </article>
       `).join("");
     }
@@ -2523,32 +2972,37 @@
       return "조회 전용";
     }
 
-    function buildRoleAccessMeta({ roleName, memberCount, directUserCount, groupCount, canInspectMembers, canInspectGroups, approvalLabel, currentUserRoles }) {
-      const items = [
-        `role:${roleName}`,
-        `유효 멤버 ${formatNumber(memberCount)}명`
-      ];
-
-      items.push(
-        canInspectMembers
-          ? `직접 사용자 ${formatNumber(directUserCount)}명`
-          : "사용자 상세 제한"
-      );
-      items.push(
-        canInspectGroups
-          ? `연결 그룹 ${formatNumber(groupCount)}개`
-          : "그룹 상세 제한"
+    function buildAccessControl({ access, currentUserRoles }) {
+      const isSystemAdmin = Boolean(access && access.isSystemAdmin);
+      const isRealmOwner = Boolean(access && access.isOwner);
+      const isRealmAdmin = Array.isArray(currentUserRoles) && currentUserRoles.includes("admin");
+      const canManage = Boolean(
+        (access && access.canManage)
+        || (access && access.accessLevel === "manage")
+        || isSystemAdmin
+        || isRealmOwner
+        || isRealmAdmin
       );
 
-      if (approvalLabel) {
-        items.push(`현재 사용자 ${approvalLabel}`);
+      let reason = "Role 조회만 가능합니다.";
+      if (isSystemAdmin) {
+        reason = "System admin 권한으로 Role 관리가 가능합니다.";
+      } else if (isRealmOwner) {
+        reason = "Realm owner 권한으로 Role 관리가 가능합니다.";
+      } else if (isRealmAdmin) {
+        reason = "Realm admin role/group 멤버로 Role 관리가 가능합니다.";
       }
 
-      if (Array.isArray(currentUserRoles) && currentUserRoles.includes(roleName)) {
-        items.push("현재 사용자 보유 role");
-      }
-
-      return items;
+      return {
+        canManage,
+        isSystemAdmin,
+        isRealmOwner,
+        isRealmAdmin,
+        reason,
+        description: canManage
+          ? `${reason} 역할 추가, Role 편집, 사용자 추가, 그룹 추가, 삭제 액션을 사용할 수 있습니다.`
+          : "현재 계정은 이 Realm에서 조회 전용입니다. 역할 추가, Role 편집, 사용자 추가, 그룹 추가, 삭제는 사용할 수 없습니다."
+      };
     }
 
     function formatAccessSource(value) {
@@ -2610,6 +3064,7 @@
       const canInspectMembers = access.canInspectMembers !== undefined ? Boolean(access.canInspectMembers) : membersResult.status !== 403;
       const canInspectGroups = access.canInspectGroups !== undefined ? Boolean(access.canInspectGroups) : groupsResult.status !== 403;
       const canInspectBindings = access.canInspectBindings !== undefined ? Boolean(access.canInspectBindings) : Array.isArray(bindingsData);
+      const accessControl = buildAccessControl({ access, currentUserRoles });
       const bindingSource = canInspectBindings ? bindingsData : (Array.isArray(detail.boundProjects) ? detail.boundProjects : []);
       const requestCounts = requests.reduce((counts, item) => {
         const normalizedStatus = normalizeRequestStatus(item && item.status);
@@ -2633,18 +3088,17 @@
           : [];
 
         const users = roleMembers.map((member) => ({
-          name: normalizeText(member.name) || normalizeText(member.userId) || normalizeText(member.id) || "Unknown",
+          id: normalizeText(member.id) || normalizeText(member.userId) || normalizeText(member.email),
+          userId: normalizeText(member.userId) || normalizeText(member.id),
+          name: extractDisplayName(member.name) || "Unknown",
           email: normalizeText(member.email) || "-",
-          lastLogin: formatRelativeLogin(member.lastLoginedAt),
-          meta: Array.isArray(member.roles) ? member.roles.join(", ") : role.name
+          lastLogin: formatRelativeLogin(member.lastLoginedAt)
         }));
 
         const mappedGroups = roleGroups.map((group) => ({
           id: normalizeText(group.id) || `${role.name}-group`,
           name: normalizeText(group.name) || "Unnamed Group",
-          description: normalizeText(group.description) || normalizeText(group.path) || "-",
-          members: `${formatNumber(group.memberCount)}명`,
-          source: Array.isArray(group.roles) ? group.roles.join(", ") : role.name
+          members: `${formatNumber(group.memberCount)}명`
         }));
 
         return {
@@ -2654,16 +3108,6 @@
           approval: currentUserRoles.includes(role.name) ? "보유중" : approvalLabel,
           canInspectMembers,
           canInspectGroups,
-          accessMeta: buildRoleAccessMeta({
-            roleName: role.name,
-            memberCount: role.memberCount,
-            directUserCount: roleMembers.length,
-            groupCount: roleGroups.length,
-            canInspectMembers,
-            canInspectGroups,
-            approvalLabel,
-            currentUserRoles
-          }),
           users,
           groups: mappedGroups
         };
@@ -2672,10 +3116,10 @@
       const owners = [];
       if (detail.owner) {
         owners.push({
-          initials: toInitials(detail.owner.name || detail.owner.userId),
-          name: normalizeText(detail.owner.name) || normalizeText(detail.owner.userId) || "Unknown",
-          meta: normalizeText(detail.owner.email) || `${normalizeText(detail.name) || "Realm"} owner`,
-          role: normalizeText(detail.owner.role) || "owner"
+          initials: toInitials(detail.owner.fullname || detail.owner.name || detail.owner.userId),
+          name: normalizeText(detail.owner.fullname) || normalizeText(detail.owner.name) || "Unknown",
+          meta: normalizeText(detail.owner.email) || "-",
+          role: "owner"
         });
       }
       if (canInspectMembers) {
@@ -2683,14 +3127,14 @@
           .filter((member) => Array.isArray(member.roles) && member.roles.includes("admin"))
           .slice(0, 3)
           .forEach((member) => {
-            if (owners.some((item) => normalizeText(item.name) === normalizeText(member.name) || normalizeText(item.meta) === normalizeText(member.email))) {
+            if (owners.some((item) => normalizeText(item.name) === normalizeText(member.fullname || member.name) || normalizeText(item.meta) === normalizeText(member.email))) {
               return;
             }
 
             owners.push({
-              initials: toInitials(member.name || member.userId),
-              name: normalizeText(member.name) || normalizeText(member.userId) || "Unknown",
-              meta: normalizeText(member.email) || normalizeText(detail.name) || "admin",
+              initials: toInitials(member.fullname || member.name || member.userId),
+              name: normalizeText(member.fullname) || normalizeText(member.name) || "Unknown",
+              meta: normalizeText(member.email) || "-",
               role: "admin"
             });
           });
@@ -2780,18 +3224,29 @@
         ],
         owners,
         oidcConfig: createOidcConfig(detail.id, detail.name, oidcAccess),
+        accessControl,
         editorRoles,
-        requests: requests.map((request) => ({
-          status: request.status,
-          title: `${normalizeText(request.roleName) || "role"} access request`,
-          meta: `${normalizeText(request.requester && request.requester.name) || "Unknown"} · ${normalizeText(request.reason) || "사유 없음"}`,
-          submeta: request.status === "pending"
-            ? `요청 생성 · ${formatRequestDate(request.createdAt)}`
-            : `${requestLabel(request.status)} 처리 · ${formatRequestDate(request.decidedAt || request.createdAt)}`,
-          actionLabel: request.status === "pending" ? "요청 확인" : "처리 결과"
-        })),
+        requests: requests.map((request) => {
+          const normalizedRequestStatus = normalizeRequestStatus(request.status);
+          return {
+            id: normalizeText(request.id),
+            status: request.status,
+            title: `${normalizeText(request.roleName) || "role"} access request`,
+            requester: normalizeText(request.requester && request.requester.name) || "Unknown",
+            reason: normalizeText(request.reason) || "사유 없음",
+            rejectReason: normalizedRequestStatus === "rejected"
+              ? (normalizeText(request.rejectReason) || "거절 사유 없음")
+              : "",
+            date: formatRequestDate(
+              normalizedRequestStatus === "pending"
+                ? request.createdAt
+                : (request.decidedAt || request.createdAt)
+            )
+          };
+        }),
         requestCounts,
         connectedProjects,
+        canApproveRequests: Boolean(capabilities.canApprove),
         changeHistory: buildHistory(detail, requests, {
           members: membersResult.status,
           groups: groupsResult.status,
@@ -2837,7 +3292,7 @@
               <a class="action-btn primary" href="${escapeHtml(model.relatedAction.href)}"><span class="material-icons-round" style="font-size:18px;">open_in_new</span>${escapeHtml(model.relatedAction.label)}</a>
             </div>
           </div>
-          <div class="hero-stats">${renderStats(model.heroStats)}</div>
+          <div class="hero-stats" id="heroStats">${renderStats(model.heroStats)}</div>
         </section>
 
         <div class="layout">
@@ -2847,7 +3302,7 @@
                 <div>
                   <div class="section-kicker"><span class="material-icons-round">monitor_heart</span>Realm</div>
                   <h2 class="section-title">Realm 정보</h2>
-                  <p class="section-desc">${escapeHtml(model.realmSectionDescription)}</p>
+                  <p class="section-desc" id="realmSectionDescription">${escapeHtml(model.realmSectionDescription)}</p>
                   </div>
                 </div>
                 <div class="overview-grid">
@@ -2858,7 +3313,7 @@
                         <div class="card-desc">기본으로 생성된 admin 그룹 owner를 볼 수 있습니다.</div>
                       </div>
                     </div>
-                  <div class="owner-list">${renderOwners(model.owners)}</div>
+                  <div class="owner-list" id="ownerList">${renderOwners(model.owners)}</div>
                   <details class="disclosure">
                     <summary>
                       <span>OIDC 접근 정보</span>
@@ -2866,7 +3321,7 @@
                       <span class="material-icons-round disclosure-icon" style="font-size:18px;">expand_more</span>
                     </summary>
                     <div class="disclosure-body">
-                      <div class="kv-list">${renderKvList(model.oidcConfig)}</div>
+                      <div class="kv-list" id="oidcConfigList">${renderKvList(model.oidcConfig)}</div>
                     </div>
                   </details>
                 </article>
@@ -2878,7 +3333,7 @@
                 <div>
                   <div class="section-kicker"><span class="material-icons-round">edit_square</span>Access</div>
                   <h2 class="section-title">권한 관리</h2>
-                  <p class="section-desc">${escapeHtml(model.accessSectionDescription)}</p>
+                  <p class="section-desc" id="accessSectionDescription">${escapeHtml(model.accessSectionDescription)}</p>
                 </div>
               </div>
               <div class="editor-shell">
@@ -2888,7 +3343,7 @@
                       <span class="material-icons-round" style="font-size:18px;">search</span>
                       <input id="roleSearchInput" type="search" placeholder="역할 검색" />
                     </label>
-                    <button class="mini-btn primary" type="button">+ 역할</button>
+                    <button class="mini-btn primary" id="addRoleBtn" data-access-action="add-role" type="button" ${model.accessControl.canManage ? "" : "disabled"}>+ 역할</button>
                   </div>
                   <div class="editor-sidebar-head">
                     <div class="editor-sidebar-title">역할</div>
@@ -2908,8 +3363,8 @@
                       <div class="editor-role-meta" id="selectedRoleMeta"></div>
                     </div>
                     <div class="inline-actions">
-                      <button class="mini-btn primary" type="button">Role 편집</button>
-                      <button class="mini-btn" type="button">정책 보기</button>
+                      <button class="mini-btn primary" id="editRoleBtn" data-access-action="edit-role" type="button" ${model.accessControl.canManage ? "" : "disabled"}>Role 편집</button>
+                      <button class="mini-btn" id="viewPolicyBtn" data-access-action="view-policy" type="button">정책 보기</button>
                     </div>
                   </div>
 
@@ -2917,7 +3372,7 @@
                     <section class="editor-block">
                       <div class="editor-block-head">
                         <div class="editor-block-title">사용자</div>
-                        <button class="mini-btn" type="button">+ 사용자 추가</button>
+                        <button class="mini-btn" id="addUserBtn" data-access-action="add-user" type="button" ${model.accessControl.canManage ? "" : "disabled"}>+ 사용자 추가</button>
                       </div>
                       <div class="editor-toolbar" style="padding:0 0 12px; border-bottom:0;">
                         <label class="search-field">
@@ -2951,7 +3406,7 @@
                     <section class="editor-block">
                       <div class="editor-block-head">
                         <div class="editor-block-title">그룹</div>
-                        <button class="mini-btn" type="button">+ 그룹 추가</button>
+                        <button class="mini-btn" id="addGroupBtn" data-access-action="add-group" type="button" ${model.accessControl.canManage ? "" : "disabled"}>+ 그룹 추가</button>
                       </div>
                       <div class="editor-toolbar" style="padding:0 0 12px; border-bottom:0;">
                         <label class="search-field">
@@ -2964,7 +3419,6 @@
                           <thead>
                             <tr>
                               <th>이름</th>
-                              <th>설명</th>
                               <th>멤버 수</th>
                               <th>Action</th>
                             </tr>
@@ -3002,9 +3456,8 @@
                     <button class="filter-tab" type="button" data-filter="approved">승인 ${escapeHtml(formatNumber(model.requestCounts.approved))}</button>
                     <button class="filter-tab" type="button" data-filter="rejected">거절 ${escapeHtml(formatNumber(model.requestCounts.rejected))}</button>
                   </div>
-                  <div class="request-summary" id="requestSummary"></div>
                 </div>
-                <div class="request-list" id="requestList">${renderRequests(model.requests)}</div>
+                <div class="request-list" id="requestList">${renderRequests(model.requests, model.canApproveRequests)}</div>
               </div>
             </section>
 
@@ -3031,24 +3484,174 @@
                   <div class="panel-subtitle">시간 순서대로 핵심 이벤트만 간단하게 이어 보이도록 정리했습니다.</div>
                 </div>
               </div>
-                <div class="timeline-list">${renderHistory(model.changeHistory)}</div>
+                <div class="timeline-list" id="timelineList">${renderHistory(model.changeHistory)}</div>
               </section>
             </div>
           </aside>
         </div>
       </main>
+      <div class="request-modal" id="rejectReasonModal" hidden>
+        <div class="request-modal-card" role="dialog" aria-modal="true" aria-labelledby="rejectReasonTitle">
+          <div class="request-modal-head">
+            <div class="request-modal-kicker">Reject Request</div>
+            <div class="request-modal-title" id="rejectReasonTitle">거절 사유 입력</div>
+            <div class="request-modal-desc">거절 사유를 남기고 SEND를 누르면 반려 API가 호출되고 모달이 닫힙니다.</div>
+          </div>
+          <div class="request-modal-target" id="rejectReasonTarget">선택된 요청이 없습니다.</div>
+          <div class="request-modal-field">
+            <label class="request-modal-label" for="rejectReasonInput">거절 사유</label>
+            <textarea
+              class="request-modal-textarea"
+              id="rejectReasonInput"
+              placeholder="거절 사유를 입력해 주세요."
+            ></textarea>
+          </div>
+          <div class="request-modal-actions">
+            <button class="mini-btn" id="rejectReasonCancelBtn" type="button">취소</button>
+            <button class="mini-btn primary" id="rejectReasonSendBtn" type="button">SEND</button>
+          </div>
+        </div>
+      </div>
+      <div class="request-modal" id="accessActionModal" hidden>
+        <div class="request-modal-card" role="dialog" aria-modal="true" aria-labelledby="accessActionTitle">
+          <div class="request-modal-head" id="accessActionHead">
+            <div class="request-modal-kicker" id="accessActionKicker">Access Action</div>
+            <div class="request-modal-title" id="accessActionTitle">권한 관리</div>
+            <div class="request-modal-desc" id="accessActionDesc">선택한 권한 관리 액션을 확인합니다.</div>
+          </div>
+          <div class="request-modal-target" id="accessActionTarget">대상이 선택되지 않았습니다.</div>
+          <div class="request-modal-field" id="accessActionField">
+            <label class="request-modal-label" for="accessActionInput" id="accessActionLabel">값</label>
+            <input class="request-modal-input" id="accessActionInput" type="text" placeholder="" autocomplete="off" />
+            <div class="request-modal-inline-results" id="accessActionSuggestions" hidden></div>
+          </div>
+          <div class="request-modal-actions">
+            <button class="mini-btn" id="accessActionCancelBtn" type="button">취소</button>
+            <button class="mini-btn primary" id="accessActionDeleteBtn" type="button" hidden>삭제</button>
+            <button class="mini-btn primary" id="accessActionConfirmBtn" type="button">확인</button>
+          </div>
+        </div>
+      </div>
+      <div class="policy-overlay" id="policyOverlay" hidden>
+        <div class="policy-overlay-panel" role="dialog" aria-modal="true" aria-labelledby="policyOverlayTitle">
+          <button class="policy-overlay-close" id="policyOverlayCloseBtn" type="button" aria-label="정책 안내 닫기">
+            <span class="material-icons-round" style="font-size:20px;">close</span>
+          </button>
+          <div class="policy-overlay-kicker">Access Policy</div>
+          <div class="policy-overlay-title" id="policyOverlayTitle">권한 관리</div>
+          <div class="policy-overlay-body">
+            <div class="policy-overlay-summary">
+              <div class="policy-overlay-summary-icon" aria-hidden="true">
+                <span class="material-icons-round">shield</span>
+              </div>
+              <div class="policy-overlay-summary-copy">
+                <div><strong>ACCESS 섹션은 역할 변경 권한이 있는 사용자만 수정할 수 있습니다.</strong></div>
+                <div>현재 사용자의 권한에 따라 버튼이 활성화되며, 수정 권한이 없으면 정책 확인만 가능합니다.</div>
+              </div>
+            </div>
+            <div class="policy-overlay-grid">
+              <section class="policy-overlay-section" aria-labelledby="policyAdminTitle">
+                <div class="policy-overlay-section-title" id="policyAdminTitle">
+                  <span class="material-icons-round" aria-hidden="true">admin_panel_settings</span>
+                  관리자 권한
+                </div>
+                <div class="policy-overlay-list">
+                  <div class="policy-overlay-item">admin, admin group, owner 권한을 가진 사용자는 역할 추가, 편집, 삭제를 수행할 수 있습니다.</div>
+                  <div class="policy-overlay-item">멤버와 그룹에 대한 권한 변경 요청을 검토하고 즉시 반영할 수 있습니다.</div>
+                </div>
+              </section>
+              <section class="policy-overlay-section" aria-labelledby="policyViewerTitle">
+                <div class="policy-overlay-section-title" id="policyViewerTitle">
+                  <span class="material-icons-round" aria-hidden="true">visibility</span>
+                  조회 전용
+                </div>
+                <div class="policy-overlay-list">
+                  <div class="policy-overlay-item">관리자 권한이 없는 사용자는 현재 정책과 할당 상태를 확인만 할 수 있습니다.</div>
+                  <div class="policy-overlay-item">수정이 필요한 경우 요청 흐름을 통해 관리자 검토를 받아야 합니다.</div>
+                </div>
+              </section>
+            </div>
+            <div class="policy-overlay-footnote">버튼 상태와 모달 액션은 현재 사용자 권한을 기준으로 노출됩니다. 화면에서 수정 버튼이 보이지 않으면 조회 전용 상태입니다.</div>
+          </div>
+        </div>
+      </div>
       `;
 
       mountRenderedTopbar();
     }
 
-    function bindPageInteractions(editorRoles) {
+    function rebuildModelWithRequests(requestsResult) {
+      pageState.requestsResult = requestsResult;
+      pageState.model = buildViewModel(
+        pageState.detail,
+        pageState.roles,
+        pageState.membersResult,
+        pageState.groupsResult,
+        pageState.bindings,
+        requestsResult,
+        pageState.oidcAccess
+      );
+      return pageState.model;
+    }
+
+    async function fetchRealmRequests() {
+      const result = await fetchAllPages(`/realms/${encodeURIComponent(realmKey)}/requests`, { limit: 100 }, { allowStatus: [403] });
+      return {
+        items: result.items || [],
+        status: result.status || 200
+      };
+    }
+
+    async function refreshAccessSectionData() {
+      const [detailPayload, oidcPayload, rolesPayload, membersResult, groupsResult, bindingsPayload] = await Promise.all([
+        requestJson(`/realms/${encodeURIComponent(realmKey)}`),
+        requestJson(`/realms/${encodeURIComponent(realmKey)}/oidc`),
+        requestJson(`/realms/${encodeURIComponent(realmKey)}/roles`),
+        fetchAllPages(`/realms/${encodeURIComponent(realmKey)}/members`, { limit: 100 }, { allowStatus: [403] }),
+        fetchAllPages(`/realms/${encodeURIComponent(realmKey)}/groups`, { limit: 100 }, { allowStatus: [403] }),
+        requestJson(`/realms/${encodeURIComponent(realmKey)}/bindings`, { allowStatus: [403] })
+      ]);
+
+      pageState.detail = extractData(detailPayload) || {};
+      pageState.oidcAccess = extractData(oidcPayload) || null;
+      pageState.roles = extractData(rolesPayload) || [];
+      pageState.membersResult = membersResult;
+      pageState.groupsResult = groupsResult;
+      pageState.bindings = extractData(bindingsPayload);
+      pageState.model = buildViewModel(
+        pageState.detail,
+        pageState.roles,
+        pageState.membersResult,
+        pageState.groupsResult,
+        pageState.bindings,
+        pageState.requestsResult,
+        pageState.oidcAccess
+      );
+      return pageState.model;
+    }
+
+    function bindPageInteractions(model) {
       const filterButtons = Array.from(document.querySelectorAll("[data-filter]"));
-      const requestRows = Array.from(document.querySelectorAll("[data-request-status]"));
-      const requestSummary = document.getElementById("requestSummary");
+      const requestList = document.getElementById("requestList");
+      const heroStats = document.getElementById("heroStats");
+      const realmSectionDescription = document.getElementById("realmSectionDescription");
+      const ownerList = document.getElementById("ownerList");
+      const oidcConfigList = document.getElementById("oidcConfigList");
+      const accessSectionDescription = document.getElementById("accessSectionDescription");
+      const timelineList = document.getElementById("timelineList");
+      const rejectReasonModal = document.getElementById("rejectReasonModal");
+      const rejectReasonInput = document.getElementById("rejectReasonInput");
+      const rejectReasonTarget = document.getElementById("rejectReasonTarget");
+      const rejectReasonSendBtn = document.getElementById("rejectReasonSendBtn");
+      const rejectReasonCancelBtn = document.getElementById("rejectReasonCancelBtn");
       const roleList = document.getElementById("roleList");
       const roleListSummary = document.getElementById("roleListSummary");
       const roleSearchInput = document.getElementById("roleSearchInput");
+      const addRoleBtn = document.getElementById("addRoleBtn");
+      const editRoleBtn = document.getElementById("editRoleBtn");
+      const viewPolicyBtn = document.getElementById("viewPolicyBtn");
+      const addUserBtn = document.getElementById("addUserBtn");
+      const addGroupBtn = document.getElementById("addGroupBtn");
       const userSearchInput = document.getElementById("userSearchInput");
       const groupSearchInput = document.getElementById("groupSearchInput");
       const selectedRoleName = document.getElementById("selectedRoleName");
@@ -3063,14 +3666,47 @@
       const userNextPageBtn = document.getElementById("userNextPageBtn");
       const groupPrevPageBtn = document.getElementById("groupPrevPageBtn");
       const groupNextPageBtn = document.getElementById("groupNextPageBtn");
+      const accessActionModal = document.getElementById("accessActionModal");
+      const accessActionHead = document.getElementById("accessActionHead");
+      const accessActionKicker = document.getElementById("accessActionKicker");
+      const accessActionTitle = document.getElementById("accessActionTitle");
+      const accessActionDesc = document.getElementById("accessActionDesc");
+      const accessActionTarget = document.getElementById("accessActionTarget");
+      const accessActionField = document.getElementById("accessActionField");
+      const accessActionLabel = document.getElementById("accessActionLabel");
+      const accessActionInput = document.getElementById("accessActionInput");
+      const accessActionSuggestions = document.getElementById("accessActionSuggestions");
+      const accessActionCancelBtn = document.getElementById("accessActionCancelBtn");
+      const accessActionDeleteBtn = document.getElementById("accessActionDeleteBtn");
+      const accessActionConfirmBtn = document.getElementById("accessActionConfirmBtn");
+      const policyOverlay = document.getElementById("policyOverlay");
+      const policyOverlayCloseBtn = document.getElementById("policyOverlayCloseBtn");
 
       const editorState = {
-        activeRole: editorRoles[0] ? editorRoles[0].name : "",
+        activeRole: pageState.preferredActiveRole && model.editorRoles.some((item) => item.name === pageState.preferredActiveRole)
+          ? pageState.preferredActiveRole
+          : (model.editorRoles[0] ? model.editorRoles[0].name : ""),
         roleQuery: "",
         userQuery: "",
         groupQuery: "",
         userPage: 1,
         groupPage: 1
+      };
+      let requestModel = model;
+      let activeRequestFilter = "all";
+      const rejectModalState = {
+        reqId: "",
+        triggerButton: null,
+        title: ""
+      };
+      const accessActionState = {
+        action: "",
+        triggerButton: null,
+        targetItem: null,
+        selectedItem: null,
+        searchResults: [],
+        searchDebounceTimer: null,
+        searchRequestToken: 0
       };
 
       function includesQuery(values, query) {
@@ -3080,12 +3716,982 @@
       }
 
       function getFilteredRoles() {
-        return editorRoles.filter((item) => includesQuery([item.name, item.summary, item.approval], editorState.roleQuery));
+        return model.editorRoles.filter((item) => includesQuery([item.name, item.summary, item.approval], editorState.roleQuery));
+      }
+
+      function getActiveRoleFromModel() {
+        return model.editorRoles.find((item) => item.name === editorState.activeRole) || null;
+      }
+
+      function getAccessActionConfig(action, activeRole, targetItem) {
+        if (action === "add-role") {
+          return {
+            kicker: "Create Role",
+            title: "역할 추가",
+            description: "새 Role 이름을 입력해 ACCESS 권한 관리 흐름을 확인합니다. 이 샘플에서는 실제 저장 호출 없이 모달만 표시합니다.",
+            label: "Role 이름",
+            placeholder: "예: developer",
+            confirmLabel: "추가",
+            target: `${model.title} Realm`,
+            showInput: true,
+            showConfirmButton: true,
+            showDeleteButton: false
+          };
+        }
+        if (action === "edit-role") {
+          const roleName = activeRole ? activeRole.name : "";
+          const isAdminRole = roleName === "admin";
+          return {
+            kicker: "Edit Role",
+            title: "Role 편집",
+            description: isAdminRole
+              ? "admin은 기본 관리 Role이라 이름 변경과 삭제를 할 수 없습니다."
+              : "선택한 Role 이름을 변경하거나 Role 자체를 삭제할 수 있습니다.",
+            label: "Role 이름",
+            placeholder: roleName || "Role 이름",
+            confirmLabel: "변경 저장",
+            target: activeRole ? `${model.title} / ${roleName}` : `${model.title} Realm`,
+            showInput: true,
+            readOnlyInput: isAdminRole,
+            showConfirmButton: !isAdminRole,
+            showDeleteButton: !isAdminRole,
+            deleteLabel: "Role 삭제",
+            cancelLabel: isAdminRole ? "닫기" : "취소"
+          };
+        }
+        if (action === "add-user") {
+          return {
+            kicker: "Add User",
+            title: "사용자 추가",
+            description: "이름, 이메일, user id로 사용자를 검색한 뒤 선택한 Role에 바로 연결합니다.",
+            label: "사용자 검색",
+            placeholder: "이름, 이메일 또는 user id",
+            confirmLabel: "추가",
+            target: activeRole ? `${model.title} / ${activeRole.name}` : `${model.title} Realm`,
+            showInput: true,
+            showConfirmButton: true,
+            showDeleteButton: false
+          };
+        }
+        if (action === "add-group") {
+          return {
+            kicker: "Add Group",
+            title: "그룹 추가",
+            description: "그룹 이름이나 경로 키워드로 검색한 뒤 선택한 Role에 바로 연결합니다.",
+            label: "그룹 검색",
+            placeholder: "그룹 이름 또는 경로",
+            confirmLabel: "추가",
+            target: activeRole ? `${model.title} / ${activeRole.name}` : `${model.title} Realm`,
+            showInput: true,
+            showConfirmButton: true,
+            showDeleteButton: false
+          };
+        }
+        if (action === "delete-user") {
+          const targetName = targetItem && targetItem.name ? targetItem.name : "선택한 사용자";
+          const roleName = activeRole && activeRole.name ? activeRole.name : "Role";
+          return {
+            kicker: "Remove User",
+            title: "사용자 삭제",
+            description: "",
+            label: "",
+            placeholder: "",
+            confirmLabel: "삭제",
+            targetHtml: `<strong>${escapeHtml(targetName)}</strong> 사용자를 <strong>${escapeHtml(roleName)}</strong> 에서 삭제할까요?`,
+            showInput: false,
+            compact: true,
+            showConfirmButton: false,
+            showDeleteButton: true,
+            deleteLabel: "삭제"
+          };
+        }
+        if (action === "delete-group") {
+          const targetName = targetItem && targetItem.name ? targetItem.name : "선택한 그룹";
+          const roleName = activeRole && activeRole.name ? activeRole.name : "Role";
+          return {
+            kicker: "Remove Group",
+            title: "그룹 삭제",
+            description: "",
+            label: "",
+            placeholder: "",
+            confirmLabel: "삭제",
+            targetHtml: `<strong>${escapeHtml(targetName)}</strong> 그룹을 <strong>${escapeHtml(roleName)}</strong> 에서 삭제할까요?`,
+            showInput: false,
+            compact: true,
+            showConfirmButton: false,
+            showDeleteButton: true,
+            deleteLabel: "삭제"
+          };
+        }
+        return null;
+      }
+
+      function openPolicyOverlay() {
+        if (!policyOverlay) {
+          return;
+        }
+        policyOverlay.hidden = false;
+        document.body.style.overflow = "hidden";
+      }
+
+      function closePolicyOverlay() {
+        if (!policyOverlay) {
+          return;
+        }
+        policyOverlay.hidden = true;
+        document.body.style.overflow = "";
+      }
+
+      function clearAccessActionSearchTimer() {
+        if (accessActionState.searchDebounceTimer) {
+          window.clearTimeout(accessActionState.searchDebounceTimer);
+          accessActionState.searchDebounceTimer = null;
+        }
+      }
+
+      function resetAccessActionSearchState() {
+        clearAccessActionSearchTimer();
+        accessActionState.searchResults = [];
+        accessActionState.searchRequestToken += 1;
+        if (accessActionSuggestions) {
+          accessActionSuggestions.innerHTML = "";
+          accessActionSuggestions.hidden = true;
+        }
+      }
+
+      function normalizeSearchUser(item) {
+        const displayName = normalizeText(
+          item && (
+            item.displayName
+            || (item.attributes && (Array.isArray(item.attributes.displayname) ? item.attributes.displayname[0] : item.attributes.displayname))
+            || [item.firstName, item.lastName].filter(Boolean).join(" ")
+            || item.username
+            || item.userId
+            || item.preferred_username
+            || item.email
+            || item.id
+            || item.sub
+          )
+        ) || "Unknown";
+        const userId = normalizeText(item && (item.username || item.userId || item.preferred_username || item.email || item.id || item.sub));
+        const email = normalizeText(item && item.email);
+        const team = normalizeText(item && item.team);
+        const identity = normalizeText(item && (item.id || item.sub || userId || email));
+        const meta = [userId && userId !== displayName ? userId : "", email && email !== userId ? email : "", team].filter(Boolean).join(" · ");
+
+        return {
+          id: identity,
+          userId: userId || identity,
+          name: displayName,
+          email: email || "",
+          meta: meta || "검색된 사용자",
+          initials: toInitials(displayName),
+          raw: item
+        };
+      }
+
+      function normalizeSearchGroup(item) {
+        const groupId = normalizeText(item && item.id);
+        const groupName = normalizeText(item && (item.name || item.path || groupId)) || "Unknown Group";
+        const groupPath = normalizeText(item && item.path);
+        const meta = [groupPath && groupPath !== groupName ? groupPath : "", groupId && groupId !== groupName ? `id ${groupId}` : ""]
+          .filter(Boolean)
+          .join(" · ");
+
+        return {
+          id: groupId || groupName,
+          name: groupName,
+          path: groupPath || "",
+          meta: meta || "검색된 그룹",
+          raw: item
+        };
+      }
+
+      function getActiveRoleMemberIdentitySet(roleName) {
+        const items = Array.isArray(pageState.membersResult && pageState.membersResult.items)
+          ? pageState.membersResult.items
+          : [];
+        const identities = new Set();
+
+        items
+          .filter((item) => Array.isArray(item.roles) && item.roles.includes(roleName))
+          .forEach((item) => {
+            [item.id, item.userId, item.email].forEach((value) => {
+              const normalized = normalizeText(value);
+              if (normalized) {
+                identities.add(normalized);
+              }
+            });
+          });
+
+        return identities;
+      }
+
+      function getActiveRoleGroupIdentitySet(roleName) {
+        const items = Array.isArray(pageState.groupsResult && pageState.groupsResult.items)
+          ? pageState.groupsResult.items
+          : [];
+        const identities = new Set();
+
+        items
+          .filter((item) => Array.isArray(item.roles) && item.roles.includes(roleName))
+          .forEach((item) => {
+            [item.id, item.name, item.path].forEach((value) => {
+              const normalized = normalizeText(value);
+              if (normalized) {
+                identities.add(normalized);
+              }
+            });
+          });
+
+        return identities;
+      }
+
+      function renderAccessActionSuggestions() {
+        if (!accessActionSuggestions) {
+          return;
+        }
+
+        const isAddUser = accessActionState.action === "add-user";
+        const isAddGroup = accessActionState.action === "add-group";
+        if (!isAddUser && !isAddGroup) {
+          accessActionSuggestions.innerHTML = "";
+          accessActionSuggestions.hidden = true;
+          return;
+        }
+
+        if (!accessActionInput || normalizeText(accessActionInput.value).length < 2) {
+          accessActionSuggestions.innerHTML = "";
+          accessActionSuggestions.hidden = true;
+          return;
+        }
+
+        if (!accessActionState.searchResults.length) {
+          accessActionSuggestions.innerHTML = '<div class="request-modal-inline-empty">검색 결과가 없습니다.</div>';
+          accessActionSuggestions.hidden = false;
+          return;
+        }
+
+        accessActionSuggestions.innerHTML = accessActionState.searchResults.map((item, index) => `
+          <button class="request-modal-inline-option" type="button" data-access-search-index="${index}">
+            <span class="request-modal-inline-option-name">${escapeHtml(item.name || item.userId || item.id)}</span>
+            <span class="request-modal-inline-option-meta">${escapeHtml(item.meta)}</span>
+          </button>
+        `).join("");
+        accessActionSuggestions.hidden = false;
+      }
+
+      async function performAccessUserSearch(keyword) {
+        if (accessActionState.action !== "add-user") {
+          return;
+        }
+
+        const trimmedKeyword = normalizeText(keyword);
+        clearAccessActionSearchTimer();
+
+        if (!trimmedKeyword || trimmedKeyword.length < 2) {
+          accessActionState.searchResults = [];
+          renderAccessActionSuggestions();
+          return;
+        }
+
+        const requestToken = ++accessActionState.searchRequestToken;
+
+        accessActionState.searchDebounceTimer = window.setTimeout(async () => {
+          try {
+            const response = await fetch(`/api/account/user${buildQuery({ keyword: trimmedKeyword })}`, {
+              credentials: "same-origin",
+              headers: {
+                Accept: "application/json"
+              }
+            });
+
+            if (!response.ok) {
+              throw new Error(`${response.status} ${response.statusText}`);
+            }
+
+            const payload = await response.json().catch(() => []);
+            if (requestToken !== accessActionState.searchRequestToken || accessActionState.action !== "add-user") {
+              return;
+            }
+
+            const activeRole = getActiveRoleFromModel();
+            const existingIdentities = getActiveRoleMemberIdentitySet(activeRole ? activeRole.name : "");
+            const uniqueUsers = [];
+            const seen = new Set();
+
+            (Array.isArray(payload) ? payload : []).forEach((item) => {
+              const normalizedUser = normalizeSearchUser(item);
+              const dedupeKey = normalizeText(normalizedUser.id || normalizedUser.userId || normalizedUser.email);
+              if (!dedupeKey || seen.has(dedupeKey)) {
+                return;
+              }
+
+              seen.add(dedupeKey);
+              const isExisting = [normalizedUser.id, normalizedUser.userId, normalizedUser.email]
+                .map((value) => normalizeText(value))
+                .filter(Boolean)
+                .some((value) => existingIdentities.has(value));
+
+              uniqueUsers.push({
+                ...normalizedUser,
+                isExisting
+              });
+            });
+
+            accessActionState.searchResults = uniqueUsers.filter((item) => !item.isExisting);
+            renderAccessActionSuggestions();
+          } catch (error) {
+            if (requestToken !== accessActionState.searchRequestToken) {
+              return;
+            }
+            accessActionState.searchResults = [];
+            renderAccessActionSuggestions();
+          }
+        }, 180);
+      }
+
+      async function performAccessGroupSearch(keyword) {
+        if (accessActionState.action !== "add-group") {
+          return;
+        }
+
+        const trimmedKeyword = normalizeText(keyword);
+        clearAccessActionSearchTimer();
+
+        if (!trimmedKeyword || trimmedKeyword.length < 2) {
+          accessActionState.searchResults = [];
+          renderAccessActionSuggestions();
+          return;
+        }
+
+        const requestToken = ++accessActionState.searchRequestToken;
+
+        accessActionState.searchDebounceTimer = window.setTimeout(async () => {
+          try {
+            const response = await fetch(`/api/account/group${buildQuery({ keyword: trimmedKeyword })}`, {
+              credentials: "same-origin",
+              headers: {
+                Accept: "application/json"
+              }
+            });
+
+            if (!response.ok) {
+              throw new Error(`${response.status} ${response.statusText}`);
+            }
+
+            const payload = await response.json().catch(() => []);
+            if (requestToken !== accessActionState.searchRequestToken || accessActionState.action !== "add-group") {
+              return;
+            }
+
+            const activeRole = getActiveRoleFromModel();
+            const existingIdentities = getActiveRoleGroupIdentitySet(activeRole ? activeRole.name : "");
+            const uniqueGroups = [];
+            const seen = new Set();
+
+            (Array.isArray(payload) ? payload : []).forEach((item) => {
+              const normalizedGroup = normalizeSearchGroup(item);
+              const dedupeKey = normalizeText(normalizedGroup.id || normalizedGroup.path || normalizedGroup.name);
+              if (!dedupeKey || seen.has(dedupeKey)) {
+                return;
+              }
+
+              seen.add(dedupeKey);
+              const isExisting = [normalizedGroup.id, normalizedGroup.name, normalizedGroup.path]
+                .map((value) => normalizeText(value))
+                .filter(Boolean)
+                .some((value) => existingIdentities.has(value));
+
+              uniqueGroups.push({
+                ...normalizedGroup,
+                isExisting
+              });
+            });
+
+            accessActionState.searchResults = uniqueGroups.filter((item) => !item.isExisting);
+            renderAccessActionSuggestions();
+          } catch (error) {
+            if (requestToken !== accessActionState.searchRequestToken) {
+              return;
+            }
+            accessActionState.searchResults = [];
+            renderAccessActionSuggestions();
+          }
+        }, 180);
+      }
+
+      function closeAccessActionModal() {
+        accessActionState.action = "";
+        accessActionState.triggerButton = null;
+        accessActionState.targetItem = null;
+        accessActionState.selectedItem = null;
+        resetAccessActionSearchState();
+        if (accessActionModal) {
+          accessActionModal.hidden = true;
+          accessActionModal.classList.remove("is-compact");
+        }
+        if (accessActionHead) {
+          accessActionHead.hidden = false;
+        }
+        if (accessActionField) {
+          accessActionField.hidden = false;
+        }
+        if (accessActionInput) {
+          accessActionInput.value = "";
+          accessActionInput.readOnly = false;
+        }
+        if (accessActionConfirmBtn) {
+          accessActionConfirmBtn.hidden = false;
+          accessActionConfirmBtn.style.display = "";
+        }
+        if (accessActionDeleteBtn) {
+          accessActionDeleteBtn.hidden = true;
+          accessActionDeleteBtn.style.display = "none";
+          accessActionDeleteBtn.disabled = false;
+          accessActionDeleteBtn.textContent = "삭제";
+        }
+        if (accessActionCancelBtn) {
+          accessActionCancelBtn.textContent = "취소";
+        }
+        if (accessActionTarget) {
+          accessActionTarget.classList.remove("is-boxed");
+          accessActionTarget.classList.remove("is-plain");
+        }
+        document.body.style.overflow = "";
+      }
+
+      function openAccessActionModal(action, triggerButton, targetItem = null) {
+        const canOpen = action === "view-policy" || model.accessControl.canManage;
+        if (!canOpen || !accessActionModal || !accessActionInput) {
+          return;
+        }
+
+        const activeRole = getActiveRoleFromModel();
+        const config = getAccessActionConfig(action, activeRole, targetItem);
+        if (!config) {
+          return;
+        }
+
+        accessActionState.action = action;
+        accessActionState.triggerButton = triggerButton || null;
+        accessActionState.targetItem = targetItem;
+        accessActionState.selectedItem = null;
+        resetAccessActionSearchState();
+        if (accessActionModal) {
+          accessActionModal.classList.toggle("is-compact", Boolean(config.compact));
+        }
+        if (accessActionHead) {
+          accessActionHead.hidden = Boolean(config.compact);
+        }
+        accessActionKicker.textContent = config.kicker;
+        accessActionTitle.textContent = config.title;
+        accessActionDesc.textContent = config.description;
+        if (accessActionTarget) {
+          accessActionTarget.classList.toggle("is-boxed", !config.compact);
+          accessActionTarget.classList.toggle("is-plain", Boolean(config.compact));
+          if (config.targetHtml) {
+            accessActionTarget.innerHTML = config.targetHtml;
+          } else {
+            accessActionTarget.textContent = config.target;
+          }
+        }
+        accessActionLabel.textContent = config.label;
+        accessActionInput.value = action === "edit-role" && activeRole ? activeRole.name : "";
+        accessActionInput.placeholder = config.placeholder;
+        accessActionInput.type = action === "add-user" || action === "add-group" ? "search" : "text";
+        accessActionInput.readOnly = Boolean(config.readOnlyInput) || !config.showInput;
+        accessActionConfirmBtn.textContent = config.confirmLabel;
+        accessActionConfirmBtn.hidden = !Boolean(config.showConfirmButton);
+        accessActionConfirmBtn.style.display = Boolean(config.showConfirmButton) ? "" : "none";
+        accessActionConfirmBtn.disabled = false;
+        accessActionConfirmBtn.title = "";
+        if (accessActionDeleteBtn) {
+          accessActionDeleteBtn.hidden = !Boolean(config.showDeleteButton);
+          accessActionDeleteBtn.style.display = Boolean(config.showDeleteButton) ? "" : "none";
+          accessActionDeleteBtn.textContent = config.deleteLabel || "삭제";
+          accessActionDeleteBtn.disabled = false;
+        }
+        if (accessActionCancelBtn) {
+          accessActionCancelBtn.textContent = config.cancelLabel || "취소";
+        }
+        if (accessActionField) {
+          accessActionField.hidden = !config.showInput;
+        }
+        accessActionModal.hidden = false;
+        document.body.style.overflow = "hidden";
+        window.requestAnimationFrame(() => {
+          if (config.showInput) {
+            accessActionInput.focus();
+          } else {
+            accessActionConfirmBtn.focus();
+          }
+          if (action === "edit-role" && accessActionInput.value) {
+            accessActionInput.select();
+          }
+        });
+      }
+
+      async function handleAddRole() {
+        const nextRoleName = normalizeText(accessActionInput && accessActionInput.value);
+        if (!nextRoleName) {
+          window.alert("추가할 Role 이름을 입력해 주세요.");
+          if (accessActionInput) {
+            accessActionInput.focus();
+          }
+          return;
+        }
+
+        const currentRoleNames = model.editorRoles.map((item) => item.name);
+        if (currentRoleNames.includes(nextRoleName)) {
+          window.alert("이미 존재하는 Role입니다.");
+          if (accessActionInput) {
+            accessActionInput.focus();
+            accessActionInput.select();
+          }
+          return;
+        }
+
+        const originalText = accessActionConfirmBtn.textContent;
+        const originalCancelDisabled = accessActionCancelBtn ? accessActionCancelBtn.disabled : false;
+        accessActionConfirmBtn.disabled = true;
+        accessActionConfirmBtn.textContent = "추가 중...";
+        if (accessActionCancelBtn) {
+          accessActionCancelBtn.disabled = true;
+        }
+
+        try {
+          await requestJson(`/realms/${encodeURIComponent(realmKey)}`, {
+            method: "PATCH",
+            body: {
+              roles: [...currentRoleNames, nextRoleName]
+            }
+          });
+          pageState.preferredActiveRole = nextRoleName;
+          closeAccessActionModal();
+          syncAccessRelatedSections(await refreshAccessSectionData());
+        } catch (error) {
+          window.alert(error && error.message ? error.message : "Role 추가에 실패했습니다.");
+        } finally {
+          accessActionConfirmBtn.disabled = false;
+          accessActionConfirmBtn.textContent = originalText;
+          if (accessActionCancelBtn) {
+            accessActionCancelBtn.disabled = originalCancelDisabled;
+          }
+        }
+      }
+
+      async function handleEditRole() {
+        const activeRole = getActiveRoleFromModel();
+        if (!activeRole) {
+          window.alert("편집할 Role을 먼저 선택해 주세요.");
+          return;
+        }
+        if (activeRole.name === "admin") {
+          closeAccessActionModal();
+          return;
+        }
+
+        const nextRoleName = normalizeText(accessActionInput && accessActionInput.value);
+        if (!nextRoleName) {
+          window.alert("변경할 Role 이름을 입력해 주세요.");
+          if (accessActionInput) {
+            accessActionInput.focus();
+          }
+          return;
+        }
+        if (nextRoleName === activeRole.name) {
+          closeAccessActionModal();
+          return;
+        }
+
+        const existingRoleNames = model.editorRoles.map((item) => item.name);
+        if (existingRoleNames.includes(nextRoleName)) {
+          window.alert("이미 존재하는 Role 이름입니다.");
+          if (accessActionInput) {
+            accessActionInput.focus();
+            accessActionInput.select();
+          }
+          return;
+        }
+
+        const iamName = normalizeText(pageState.detail && pageState.detail.name) || model.title;
+        const originalConfirmText = accessActionConfirmBtn.textContent;
+        const originalCancelDisabled = accessActionCancelBtn ? accessActionCancelBtn.disabled : false;
+        const originalDeleteDisabled = accessActionDeleteBtn ? accessActionDeleteBtn.disabled : false;
+        accessActionConfirmBtn.disabled = true;
+        accessActionConfirmBtn.textContent = "저장 중...";
+        if (accessActionDeleteBtn) {
+          accessActionDeleteBtn.disabled = true;
+        }
+        if (accessActionCancelBtn) {
+          accessActionCancelBtn.disabled = true;
+        }
+
+        try {
+          const response = await fetch(`/api/iam/${encodeURIComponent(iamName)}/${encodeURIComponent(activeRole.name)}`, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              role: nextRoleName
+            })
+          });
+
+          if (!response.ok) {
+            const payload = await response.json().catch(() => null);
+            const message = payload && payload.error && payload.error.message
+              ? payload.error.message
+              : `${response.status} ${response.statusText}`;
+            throw new Error(message);
+          }
+
+          pageState.preferredActiveRole = nextRoleName;
+          closeAccessActionModal();
+          syncAccessRelatedSections(await refreshAccessSectionData());
+        } catch (error) {
+          window.alert(error && error.message ? error.message : "Role 편집에 실패했습니다.");
+        } finally {
+          accessActionConfirmBtn.disabled = false;
+          accessActionConfirmBtn.textContent = originalConfirmText;
+          if (accessActionDeleteBtn) {
+            accessActionDeleteBtn.disabled = originalDeleteDisabled;
+          }
+          if (accessActionCancelBtn) {
+            accessActionCancelBtn.disabled = originalCancelDisabled;
+          }
+        }
+      }
+
+      async function handleDeleteRole() {
+        const activeRole = getActiveRoleFromModel();
+        if (!activeRole) {
+          window.alert("삭제할 Role을 먼저 선택해 주세요.");
+          return;
+        }
+        if (activeRole.name === "admin") {
+          closeAccessActionModal();
+          return;
+        }
+
+        const iamName = normalizeText(pageState.detail && pageState.detail.name) || model.title;
+        const originalDeleteText = accessActionDeleteBtn ? accessActionDeleteBtn.textContent : "삭제";
+        const originalCancelDisabled = accessActionCancelBtn ? accessActionCancelBtn.disabled : false;
+        const originalConfirmDisabled = accessActionConfirmBtn ? accessActionConfirmBtn.disabled : false;
+        if (accessActionDeleteBtn) {
+          accessActionDeleteBtn.disabled = true;
+          accessActionDeleteBtn.textContent = "삭제 중...";
+        }
+        if (accessActionConfirmBtn) {
+          accessActionConfirmBtn.disabled = true;
+        }
+        if (accessActionCancelBtn) {
+          accessActionCancelBtn.disabled = true;
+        }
+
+        try {
+          const response = await fetch(`/api/iam/${encodeURIComponent(iamName)}/${encodeURIComponent(activeRole.name)}`, {
+            method: "DELETE",
+            credentials: "same-origin",
+            headers: {
+              Accept: "application/json"
+            }
+          });
+
+          if (!response.ok) {
+            const payload = await response.json().catch(() => null);
+            const message = payload && payload.error && payload.error.message
+              ? payload.error.message
+              : `${response.status} ${response.statusText}`;
+            throw new Error(message);
+          }
+
+          pageState.preferredActiveRole = "";
+          closeAccessActionModal();
+          syncAccessRelatedSections(await refreshAccessSectionData());
+        } catch (error) {
+          window.alert(error && error.message ? error.message : "Role 삭제에 실패했습니다.");
+        } finally {
+          if (accessActionDeleteBtn) {
+            accessActionDeleteBtn.disabled = false;
+            accessActionDeleteBtn.textContent = originalDeleteText;
+          }
+          if (accessActionConfirmBtn) {
+            accessActionConfirmBtn.disabled = originalConfirmDisabled;
+          }
+          if (accessActionCancelBtn) {
+            accessActionCancelBtn.disabled = originalCancelDisabled;
+          }
+        }
+      }
+
+      async function handleAddGroup(selectedGroup) {
+        const activeRole = getActiveRoleFromModel();
+
+        if (!activeRole) {
+          window.alert("그룹을 추가할 Role을 먼저 선택해 주세요.");
+          return;
+        }
+
+        if (!selectedGroup || !selectedGroup.id) {
+          window.alert("검색 결과에서 추가할 그룹을 선택해 주세요.");
+          if (accessActionInput) {
+            accessActionInput.focus();
+          }
+          return;
+        }
+
+        const originalText = accessActionConfirmBtn.textContent;
+        const originalCancelDisabled = accessActionCancelBtn ? accessActionCancelBtn.disabled : false;
+        accessActionConfirmBtn.disabled = true;
+        accessActionConfirmBtn.textContent = "추가 중...";
+        if (accessActionCancelBtn) {
+          accessActionCancelBtn.disabled = true;
+        }
+
+        try {
+          const iamName = normalizeText(pageState.detail && pageState.detail.name) || model.title;
+          const response = await fetch(`/api/iam/${encodeURIComponent(iamName)}/${encodeURIComponent(activeRole.name)}/group`, {
+            method: "PUT",
+            credentials: "same-origin",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              groupId: selectedGroup.id
+            })
+          });
+
+          if (!response.ok) {
+            const payload = await response.json().catch(() => null);
+            const message = payload && payload.error && payload.error.message
+              ? payload.error.message
+              : `${response.status} ${response.statusText}`;
+            throw new Error(message);
+          }
+
+          pageState.preferredActiveRole = activeRole.name;
+          closeAccessActionModal();
+          syncAccessRelatedSections(await refreshAccessSectionData());
+        } catch (error) {
+          window.alert(error && error.message ? error.message : "그룹 추가에 실패했습니다.");
+        } finally {
+          accessActionConfirmBtn.disabled = false;
+          accessActionConfirmBtn.textContent = originalText;
+          if (accessActionCancelBtn) {
+            accessActionCancelBtn.disabled = originalCancelDisabled;
+          }
+        }
+      }
+
+      async function handleAddUser(selectedUser) {
+        const activeRole = getActiveRoleFromModel();
+
+        if (!activeRole) {
+          window.alert("사용자를 추가할 Role을 먼저 선택해 주세요.");
+          return;
+        }
+
+        if (!selectedUser || !selectedUser.id) {
+          window.alert("검색 결과에서 추가할 사용자를 선택해 주세요.");
+          if (accessActionInput) {
+            accessActionInput.focus();
+          }
+          return;
+        }
+
+        const originalText = accessActionConfirmBtn.textContent;
+        const originalCancelDisabled = accessActionCancelBtn ? accessActionCancelBtn.disabled : false;
+        accessActionConfirmBtn.disabled = true;
+        accessActionConfirmBtn.textContent = "추가 중...";
+        if (accessActionCancelBtn) {
+          accessActionCancelBtn.disabled = true;
+        }
+
+        try {
+          pageState.preferredActiveRole = activeRole.name;
+          await requestJson(`/realms/${encodeURIComponent(realmKey)}/members`, {
+            method: "POST",
+            body: {
+              userId: selectedUser.id,
+              role: activeRole.name
+            }
+          });
+          closeAccessActionModal();
+          syncAccessRelatedSections(await refreshAccessSectionData());
+        } catch (error) {
+          window.alert(error && error.message ? error.message : "사용자 추가에 실패했습니다.");
+        } finally {
+          accessActionConfirmBtn.disabled = false;
+          accessActionConfirmBtn.textContent = originalText;
+          if (accessActionCancelBtn) {
+            accessActionCancelBtn.disabled = originalCancelDisabled;
+          }
+        }
+      }
+
+      async function handleRemoveUser(selectedUser) {
+        const activeRole = getActiveRoleFromModel();
+
+        if (!activeRole) {
+          window.alert("사용자를 삭제할 Role을 먼저 선택해 주세요.");
+          return;
+        }
+
+        if (!selectedUser || !selectedUser.id) {
+          window.alert("삭제할 사용자를 다시 선택해 주세요.");
+          return;
+        }
+
+        const iamName = normalizeText(pageState.detail && pageState.detail.name) || model.title;
+        const originalText = accessActionConfirmBtn.textContent;
+        const originalCancelDisabled = accessActionCancelBtn ? accessActionCancelBtn.disabled : false;
+        accessActionConfirmBtn.disabled = true;
+        accessActionConfirmBtn.textContent = "삭제 중...";
+        if (accessActionCancelBtn) {
+          accessActionCancelBtn.disabled = true;
+        }
+
+        try {
+          const response = await fetch(`/api/iam/${encodeURIComponent(iamName)}/${encodeURIComponent(activeRole.name)}/user/${encodeURIComponent(selectedUser.id)}`, {
+            method: "DELETE",
+            credentials: "same-origin",
+            headers: {
+              Accept: "application/json"
+            }
+          });
+
+          if (!response.ok) {
+            const payload = await response.json().catch(() => null);
+            const message = payload && payload.error && payload.error.message
+              ? payload.error.message
+              : `${response.status} ${response.statusText}`;
+            throw new Error(message);
+          }
+
+          pageState.preferredActiveRole = activeRole.name;
+          closeAccessActionModal();
+          syncAccessRelatedSections(await refreshAccessSectionData());
+        } catch (error) {
+          window.alert(error && error.message ? error.message : "사용자 삭제에 실패했습니다.");
+        } finally {
+          accessActionConfirmBtn.disabled = false;
+          accessActionConfirmBtn.textContent = originalText;
+          if (accessActionCancelBtn) {
+            accessActionCancelBtn.disabled = originalCancelDisabled;
+          }
+        }
+      }
+
+      async function handleRemoveGroup(selectedGroup) {
+        const activeRole = getActiveRoleFromModel();
+
+        if (!activeRole) {
+          window.alert("그룹을 삭제할 Role을 먼저 선택해 주세요.");
+          return;
+        }
+
+        if (!selectedGroup || !selectedGroup.id) {
+          window.alert("삭제할 그룹을 다시 선택해 주세요.");
+          return;
+        }
+
+        const iamName = normalizeText(pageState.detail && pageState.detail.name) || model.title;
+        const originalText = accessActionConfirmBtn.textContent;
+        const originalCancelDisabled = accessActionCancelBtn ? accessActionCancelBtn.disabled : false;
+        accessActionConfirmBtn.disabled = true;
+        accessActionConfirmBtn.textContent = "삭제 중...";
+        if (accessActionCancelBtn) {
+          accessActionCancelBtn.disabled = true;
+        }
+
+        try {
+          const response = await fetch(`/api/iam/${encodeURIComponent(iamName)}/${encodeURIComponent(activeRole.name)}/group/${encodeURIComponent(selectedGroup.id)}`, {
+            method: "DELETE",
+            credentials: "same-origin",
+            headers: {
+              Accept: "application/json"
+            }
+          });
+
+          if (!response.ok) {
+            const payload = await response.json().catch(() => null);
+            const message = payload && payload.error && payload.error.message
+              ? payload.error.message
+              : `${response.status} ${response.statusText}`;
+            throw new Error(message);
+          }
+
+          pageState.preferredActiveRole = activeRole.name;
+          closeAccessActionModal();
+          syncAccessRelatedSections(await refreshAccessSectionData());
+        } catch (error) {
+          window.alert(error && error.message ? error.message : "그룹 삭제에 실패했습니다.");
+        } finally {
+          accessActionConfirmBtn.disabled = false;
+          accessActionConfirmBtn.textContent = originalText;
+          if (accessActionCancelBtn) {
+            accessActionCancelBtn.disabled = originalCancelDisabled;
+          }
+        }
+      }
+
+      function syncEditorActionButtons(activeRole) {
+        const canManage = Boolean(model.accessControl.canManage);
+        const hasActiveRole = Boolean(activeRole);
+        const isAdminRole = Boolean(activeRole && activeRole.name === "admin");
+
+        if (addRoleBtn) {
+          addRoleBtn.disabled = !canManage;
+          addRoleBtn.title = canManage ? "역할 추가" : "조회 전용";
+        }
+        if (editRoleBtn) {
+          editRoleBtn.disabled = !canManage || !hasActiveRole || isAdminRole;
+          editRoleBtn.title = !canManage
+            ? "조회 전용"
+            : (!hasActiveRole
+              ? "선택 가능한 Role이 없습니다."
+              : (isAdminRole ? "admin Role은 편집할 수 없습니다." : "Role 편집"));
+        }
+        if (addUserBtn) {
+          addUserBtn.disabled = !canManage || !hasActiveRole;
+          addUserBtn.title = canManage ? (hasActiveRole ? "사용자 추가" : "선택 가능한 Role이 없습니다.") : "조회 전용";
+        }
+        if (addGroupBtn) {
+          addGroupBtn.disabled = !canManage || !hasActiveRole;
+          addGroupBtn.title = canManage ? (hasActiveRole ? "그룹 추가" : "선택 가능한 Role이 없습니다.") : "조회 전용";
+        }
       }
 
       function syncActiveRole(filteredRoles) {
         if (filteredRoles.some((item) => item.name === editorState.activeRole)) return;
         editorState.activeRole = filteredRoles[0] ? filteredRoles[0].name : "";
+        pageState.preferredActiveRole = editorState.activeRole;
+      }
+
+      function syncOverviewSection(nextModel) {
+        model = nextModel;
+        if (realmSectionDescription) {
+          realmSectionDescription.textContent = nextModel.realmSectionDescription;
+        }
+        if (ownerList) {
+          ownerList.innerHTML = renderOwners(nextModel.owners);
+        }
+        if (oidcConfigList) {
+          oidcConfigList.innerHTML = renderKvList(nextModel.oidcConfig);
+        }
+      }
+
+      function syncAccessSection(nextModel) {
+        model = nextModel;
+        if (accessSectionDescription) {
+          accessSectionDescription.textContent = nextModel.accessSectionDescription;
+        }
+        renderEditor();
       }
 
       function renderEditor() {
@@ -3094,11 +4700,12 @@
         const activeRole = filteredRoles.find((item) => item.name === editorState.activeRole) || null;
 
         roleList.innerHTML = renderRoleList(filteredRoles, editorState.activeRole);
-        roleListSummary.textContent = `${filteredRoles.length} / ${editorRoles.length}`;
+        roleListSummary.textContent = `${filteredRoles.length} / ${model.editorRoles.length}`;
 
         Array.from(roleList.querySelectorAll("[data-role-name]")).forEach((button) => {
           button.addEventListener("click", () => {
             editorState.activeRole = button.dataset.roleName;
+            pageState.preferredActiveRole = editorState.activeRole;
             editorState.userPage = 1;
             editorState.groupPage = 1;
             renderEditor();
@@ -3111,8 +4718,9 @@
           selectedRoleMeta.textContent = "";
           selectedRoleApproval.className = "tone-pill review";
           selectedRoleApproval.textContent = "확인 필요";
-          userTableBody.innerHTML = renderUserRows([]);
-          groupTableBody.innerHTML = renderGroupRows([]);
+          syncEditorActionButtons(null);
+          userTableBody.innerHTML = renderUserRows([], { canManage: false });
+          groupTableBody.innerHTML = renderGroupRows([], { canManage: false });
           userTableSummary.textContent = "0건";
           groupTableSummary.textContent = "0건";
           userPrevPageBtn.disabled = true;
@@ -3123,10 +4731,10 @@
         }
 
         const filteredUsers = activeRole.users.filter((item) => (
-          includesQuery([item.name, item.email, item.meta, item.lastLogin], editorState.userQuery)
+          includesQuery([item.name, item.email, item.lastLogin], editorState.userQuery)
         ));
         const filteredGroups = activeRole.groups.filter((item) => (
-          includesQuery([item.name, item.description, item.members, item.source], editorState.groupQuery)
+          includesQuery([item.name, item.members], editorState.groupQuery)
         ));
         const pagedUsers = paginateClientItems(filteredUsers, editorState.userPage);
         const pagedGroups = paginateClientItems(filteredGroups, editorState.groupPage);
@@ -3136,11 +4744,18 @@
 
         selectedRoleName.textContent = activeRole.name;
         selectedRoleSummary.textContent = activeRole.summary;
-        selectedRoleMeta.textContent = activeRole.accessMeta.join(" · ");
+        selectedRoleMeta.textContent = "";
         selectedRoleApproval.className = `tone-pill ${approvalTone(activeRole.approval)}`;
         selectedRoleApproval.textContent = activeRole.approval;
-        userTableBody.innerHTML = renderUserRows(pagedUsers.items, { restricted: !activeRole.canInspectMembers });
-        groupTableBody.innerHTML = renderGroupRows(pagedGroups.items, { restricted: !activeRole.canInspectGroups });
+        syncEditorActionButtons(activeRole);
+        userTableBody.innerHTML = renderUserRows(pagedUsers.items, {
+          restricted: !activeRole.canInspectMembers,
+          canManage: model.accessControl.canManage
+        });
+        groupTableBody.innerHTML = renderGroupRows(pagedGroups.items, {
+          restricted: !activeRole.canInspectGroups,
+          canManage: model.accessControl.canManage
+        });
         userTableSummary.textContent = activeRole.canInspectMembers ? formatClientPageSummary(pagedUsers) : "조회 권한 없음";
         groupTableSummary.textContent = activeRole.canInspectGroups ? formatClientPageSummary(pagedGroups) : "조회 권한 없음";
         userPrevPageBtn.disabled = !activeRole.canInspectMembers || pagedUsers.page <= 1;
@@ -3149,30 +4764,415 @@
         groupNextPageBtn.disabled = !activeRole.canInspectGroups || pagedGroups.page >= pagedGroups.totalPages;
       }
 
+      function getRequestFilterMeta(status) {
+        if (status === "pending") {
+          return {
+            emptyMessage: "대기 중인 요청이 없습니다.",
+            emptyDescription: "응답이 완료된 요청은 Pending 목록에서 바로 제거됩니다."
+          };
+        }
+        if (status === "approved") {
+          return {
+            emptyMessage: "승인된 요청이 없습니다.",
+            emptyDescription: "현재 realm 기준으로 승인 처리된 요청이 없습니다."
+          };
+        }
+        if (status === "rejected") {
+          return {
+            emptyMessage: "거절된 요청이 없습니다.",
+            emptyDescription: "현재 realm 기준으로 거절 처리된 요청이 없습니다."
+          };
+        }
+        return {
+          emptyMessage: "표시할 권한 요청이 없습니다.",
+          emptyDescription: "현재 realm 기준으로 조회 가능한 요청이 없습니다."
+        };
+      }
+
+      function getFilteredRequests(sourceModel, status) {
+        if (!sourceModel || !Array.isArray(sourceModel.requests)) {
+          return [];
+        }
+        if (status === "all") {
+          return sourceModel.requests;
+        }
+        return sourceModel.requests.filter((item) => normalizeRequestStatus(item.status) === status);
+      }
+
+      function renderRequestListForFilter(status) {
+        if (!requestList) {
+          return;
+        }
+        const meta = getRequestFilterMeta(status);
+        const visibleRequests = getFilteredRequests(requestModel, status);
+        requestList.innerHTML = renderRequests(
+          visibleRequests,
+          requestModel.canApproveRequests,
+          meta.emptyMessage,
+          meta.emptyDescription
+        );
+      }
+
       function updateRequestFilter(status) {
+        activeRequestFilter = status;
         filterButtons.forEach((button) => {
           button.classList.toggle("is-active", button.dataset.filter === status);
         });
+        renderRequestListForFilter(status);
+      }
 
-        let visibleCount = 0;
-        requestRows.forEach((row) => {
-          const match = status === "all" || row.dataset.requestStatus === status;
-          row.style.display = match ? "" : "none";
-          if (match) visibleCount += 1;
+      function syncRequestSection(nextModel) {
+        model = nextModel;
+        requestModel = nextModel;
+        if (heroStats) {
+          heroStats.innerHTML = renderStats(nextModel.heroStats);
+        }
+        if (timelineList) {
+          timelineList.innerHTML = renderHistory(nextModel.changeHistory);
+        }
+
+        filterButtons.forEach((button) => {
+          const filter = button.dataset.filter || "all";
+          const count = filter === "pending"
+            ? nextModel.requestCounts.pending
+            : (filter === "approved"
+              ? nextModel.requestCounts.approved
+              : (filter === "rejected" ? nextModel.requestCounts.rejected : nextModel.requestCounts.total));
+          button.textContent = renderRequestFilterLabel(filter, count);
         });
 
-        const labelMap = {
-          all: "전체 요청",
-          pending: "대기 요청",
-          approved: "승인 요청",
-          rejected: "거절 요청"
-        };
-        requestSummary.textContent = `${labelMap[status]} ${visibleCount}건`;
+        updateRequestFilter(activeRequestFilter);
+      }
+
+      function syncAccessRelatedSections(nextModel) {
+        syncOverviewSection(nextModel);
+        syncAccessSection(nextModel);
+        syncRequestSection(nextModel);
+      }
+
+      function findRequestRow(reqId) {
+        return Array.from(document.querySelectorAll("[data-request-id]")).find((row) => row.dataset.requestId === reqId) || null;
+      }
+
+      function setRowActionState(reqId, activeButton, disabled) {
+        const row = findRequestRow(reqId);
+        if (!row) {
+          return [];
+        }
+        const actionButtons = Array.from(row.querySelectorAll("[data-request-action]"));
+        actionButtons.forEach((item) => {
+          item.disabled = disabled;
+          item.classList.toggle("is-active-action", item === activeButton);
+        });
+        return actionButtons;
+      }
+
+      function closeRejectReasonModal() {
+        if (rejectModalState.reqId) {
+          setRowActionState(rejectModalState.reqId, null, false);
+        }
+        rejectModalState.reqId = "";
+        rejectModalState.title = "";
+        if (rejectModalState.triggerButton) {
+          rejectModalState.triggerButton.classList.remove("is-active-action");
+          rejectModalState.triggerButton = null;
+        }
+        if (rejectReasonModal) {
+          rejectReasonModal.hidden = true;
+        }
+        if (rejectReasonInput) {
+          rejectReasonInput.value = "";
+        }
+        if (rejectReasonTarget) {
+          rejectReasonTarget.textContent = "선택된 요청이 없습니다.";
+        }
+        document.body.style.overflow = "";
+      }
+
+      function openRejectReasonModal(row, button) {
+        const reqId = row && row.dataset.requestId;
+        if (!reqId || !rejectReasonModal || !rejectReasonInput || !rejectReasonTarget) {
+          return;
+        }
+
+        rejectModalState.reqId = reqId;
+        rejectModalState.title = row.querySelector(".request-title") ? row.querySelector(".request-title").textContent : "권한 요청";
+        rejectModalState.triggerButton = button;
+        setRowActionState(reqId, button, false);
+        rejectReasonTarget.textContent = rejectModalState.title;
+        rejectReasonInput.value = "";
+        rejectReasonModal.hidden = false;
+        document.body.style.overflow = "hidden";
+        window.requestAnimationFrame(() => {
+          rejectReasonInput.focus();
+        });
+      }
+
+      async function submitRequestAction({ reqId, action, sourceButton, reason = "", pendingLabel }) {
+        if (!reqId || !action) {
+          return;
+        }
+
+        const actionButtons = setRowActionState(reqId, sourceButton, true);
+        const originalText = sourceButton ? sourceButton.textContent : "";
+        if (sourceButton && pendingLabel) {
+          sourceButton.textContent = pendingLabel;
+        }
+
+        try {
+          await requestJson(`/requests/${encodeURIComponent(reqId)}/${action}`, {
+            method: "POST",
+            body: action === "reject" ? { reason } : undefined
+          });
+          const latestRequests = await fetchRealmRequests();
+          const nextModel = rebuildModelWithRequests(latestRequests);
+          syncRequestSection(nextModel);
+        } catch (error) {
+          actionButtons.forEach((item) => {
+            item.disabled = false;
+            item.classList.remove("is-active-action");
+          });
+          if (sourceButton) {
+            sourceButton.textContent = originalText;
+          }
+          throw error;
+        }
+      }
+
+      async function handleRequestAction(button) {
+        const row = button.closest("[data-request-id]");
+        const reqId = row && row.dataset.requestId;
+        const action = button.dataset.requestAction;
+        if (!reqId || !action) {
+          return;
+        }
+
+        if (action === "reject") {
+          openRejectReasonModal(row, button);
+          return;
+        }
+
+        try {
+          await submitRequestAction({
+            reqId,
+            action,
+            sourceButton: button,
+            pendingLabel: "승인 중..."
+          });
+        } catch (error) {
+          window.alert(error && error.message ? error.message : "요청 처리에 실패했습니다.");
+        }
       }
 
       filterButtons.forEach((button) => {
         button.addEventListener("click", () => updateRequestFilter(button.dataset.filter));
       });
+      if (requestList) {
+        requestList.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-request-action]");
+          if (!button) {
+            return;
+          }
+          handleRequestAction(button);
+        });
+      }
+      if (rejectReasonCancelBtn) {
+        rejectReasonCancelBtn.addEventListener("click", () => closeRejectReasonModal());
+      }
+      if (rejectReasonModal) {
+        rejectReasonModal.addEventListener("click", (event) => {
+          if (event.target === rejectReasonModal) {
+            closeRejectReasonModal();
+          }
+        });
+      }
+      if (rejectReasonSendBtn) {
+        rejectReasonSendBtn.addEventListener("click", async () => {
+          if (!rejectModalState.reqId) {
+            closeRejectReasonModal();
+            return;
+          }
+
+          const originalSendText = rejectReasonSendBtn.textContent;
+          const originalCancelDisabled = rejectReasonCancelBtn ? rejectReasonCancelBtn.disabled : false;
+          rejectReasonSendBtn.disabled = true;
+          rejectReasonSendBtn.textContent = "SENDING...";
+          if (rejectReasonCancelBtn) {
+            rejectReasonCancelBtn.disabled = true;
+          }
+
+          try {
+            await submitRequestAction({
+              reqId: rejectModalState.reqId,
+              action: "reject",
+              sourceButton: rejectModalState.triggerButton,
+              reason: rejectReasonInput ? rejectReasonInput.value.trim() : "",
+              pendingLabel: "거절 중..."
+            });
+            closeRejectReasonModal();
+          } catch (error) {
+            if (rejectModalState.triggerButton) {
+              rejectModalState.triggerButton.classList.add("is-active-action");
+            }
+            window.alert(error && error.message ? error.message : "요청 처리에 실패했습니다.");
+          } finally {
+            rejectReasonSendBtn.disabled = false;
+            rejectReasonSendBtn.textContent = originalSendText;
+            if (rejectReasonCancelBtn) {
+              rejectReasonCancelBtn.disabled = originalCancelDisabled;
+            }
+          }
+        });
+      }
+      if (rejectReasonInput) {
+        rejectReasonInput.addEventListener("keydown", (event) => {
+          if ((event.metaKey || event.ctrlKey) && event.key === "Enter" && rejectReasonSendBtn && !rejectReasonSendBtn.disabled) {
+            rejectReasonSendBtn.click();
+          }
+          if (event.key === "Escape" && !rejectReasonModal.hidden) {
+            closeRejectReasonModal();
+          }
+        });
+      }
+      [addRoleBtn, editRoleBtn, addUserBtn, addGroupBtn].filter(Boolean).forEach((button) => {
+        button.addEventListener("click", () => {
+          if (button.disabled) {
+            return;
+          }
+          openAccessActionModal(button.dataset.accessAction, button);
+        });
+      });
+      if (viewPolicyBtn) {
+        viewPolicyBtn.addEventListener("click", () => openPolicyOverlay());
+      }
+      if (policyOverlayCloseBtn) {
+        policyOverlayCloseBtn.addEventListener("click", () => closePolicyOverlay());
+      }
+      if (accessActionCancelBtn) {
+        accessActionCancelBtn.addEventListener("click", () => closeAccessActionModal());
+      }
+      if (accessActionModal) {
+        accessActionModal.addEventListener("click", (event) => {
+          if (event.target === accessActionModal) {
+            closeAccessActionModal();
+          }
+        });
+      }
+      if (accessActionConfirmBtn) {
+        accessActionConfirmBtn.addEventListener("click", async () => {
+          if (accessActionState.action === "add-role") {
+            await handleAddRole();
+            return;
+          }
+          if (accessActionState.action === "edit-role") {
+            await handleEditRole();
+            return;
+          }
+          if (accessActionState.action === "add-user") {
+            await handleAddUser(accessActionState.selectedItem);
+            return;
+          }
+          if (accessActionState.action === "add-group") {
+            await handleAddGroup(accessActionState.selectedItem);
+            return;
+          }
+          if (accessActionState.action === "delete-user") {
+            await handleRemoveUser(accessActionState.targetItem);
+            return;
+          }
+          if (accessActionState.action === "delete-group") {
+            await handleRemoveGroup(accessActionState.targetItem);
+            return;
+          }
+          closeAccessActionModal();
+        });
+      }
+      if (accessActionDeleteBtn) {
+        accessActionDeleteBtn.addEventListener("click", async () => {
+          if (accessActionState.action === "edit-role") {
+            await handleDeleteRole();
+            return;
+          }
+          if (accessActionState.action === "delete-user") {
+            await handleRemoveUser(accessActionState.targetItem);
+            return;
+          }
+          if (accessActionState.action === "delete-group") {
+            await handleRemoveGroup(accessActionState.targetItem);
+          }
+        });
+      }
+      if (accessActionInput) {
+        accessActionInput.addEventListener("input", (event) => {
+          accessActionState.selectedItem = null;
+          if (accessActionState.action === "add-user") {
+            performAccessUserSearch(event.target.value);
+            return;
+          }
+          if (accessActionState.action === "add-group") {
+            performAccessGroupSearch(event.target.value);
+          }
+        });
+        accessActionInput.addEventListener("keydown", (event) => {
+          if ((accessActionState.action === "add-user" || accessActionState.action === "add-group") && event.key === "Enter") {
+            event.preventDefault();
+          }
+          if ((event.metaKey || event.ctrlKey) && event.key === "Enter" && accessActionConfirmBtn && !accessActionConfirmBtn.disabled) {
+            accessActionConfirmBtn.click();
+          }
+          if (event.key === "Escape" && accessActionModal && !accessActionModal.hidden) {
+            closeAccessActionModal();
+          }
+        });
+      }
+      if (accessActionSuggestions) {
+        accessActionSuggestions.addEventListener("click", async (event) => {
+          const option = event.target.closest("[data-access-search-index]");
+          if (!option) {
+            return;
+          }
+
+          const selectedItem = accessActionState.searchResults[Number(option.dataset.accessSearchIndex)];
+          if (!selectedItem) {
+            return;
+          }
+
+          accessActionState.selectedItem = selectedItem;
+          if (accessActionInput) {
+            accessActionInput.value = selectedItem.userId || selectedItem.email || selectedItem.name || selectedItem.path || selectedItem.id;
+          }
+          if (accessActionSuggestions) {
+            accessActionSuggestions.hidden = true;
+          }
+        });
+      }
+      if (userTableBody) {
+        userTableBody.addEventListener("click", (event) => {
+          const button = event.target.closest('[data-access-row-action="remove-user"]');
+          if (!button || button.disabled) {
+            return;
+          }
+
+          openAccessActionModal("delete-user", button, {
+            id: button.dataset.userId,
+            name: button.dataset.userName || "Unknown",
+            email: button.dataset.userEmail || ""
+          });
+        });
+      }
+      if (groupTableBody) {
+        groupTableBody.addEventListener("click", (event) => {
+          const button = event.target.closest('[data-access-row-action="remove-group"]');
+          if (!button || button.disabled) {
+            return;
+          }
+
+          openAccessActionModal("delete-group", button, {
+            id: button.dataset.groupId,
+            name: button.dataset.groupName || "Unnamed Group"
+          });
+        });
+      }
       roleSearchInput.addEventListener("input", (event) => {
         editorState.roleQuery = event.target.value;
         renderEditor();
@@ -3205,10 +5205,10 @@
       });
 
       renderEditor();
-      updateRequestFilter("all");
+      updateRequestFilter(activeRequestFilter);
     }
 
-    async function loadRealmDetail() {
+    async function loadRealmDetail(requestFilter = "all") {
       if (!realmKey) {
         renderState("Realm 식별자 필요", "Permission Hub에서 realm을 선택한 뒤 상세 화면으로 진입해 주세요.");
         return;
@@ -3236,9 +5236,22 @@
           status: requestsResult.status || 200
         };
 
+        pageState.detail = detail;
+        pageState.oidcAccess = oidcAccess;
+        pageState.roles = roles;
+        pageState.membersResult = membersResult;
+        pageState.groupsResult = groupsResult;
+        pageState.bindings = bindings;
+        pageState.requestsResult = requests;
+
         const model = buildViewModel(detail, roles, membersResult, groupsResult, bindings, requests, oidcAccess);
+        pageState.model = model;
         renderPage(model);
-        bindPageInteractions(model.editorRoles);
+        bindPageInteractions(model);
+        const initialFilterButton = document.querySelector(`[data-filter="${requestFilter}"]`);
+        if (initialFilterButton) {
+          initialFilterButton.click();
+        }
       } catch (error) {
         console.error("Failed to load permission detail", error);
         renderState("Permission Detail 로드 실패", error && error.message ? error.message : "실제 permission API 응답을 불러오지 못했습니다.");

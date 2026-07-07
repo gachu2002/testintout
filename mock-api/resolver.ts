@@ -2,6 +2,7 @@ import { Buffer } from 'node:buffer';
 
 type MockData = Record<string, unknown> & {
   appGalleryAppDetailsBySlug?: Record<string, unknown>;
+  appGalleryAppsByCategoryResponse?: Record<string, unknown>;
   domainCertificateByDomainId?: Record<string, unknown>;
   domainConnectionByDomainId?: Record<string, unknown>;
   projectPublishHistoryByProjectId?: Record<string, unknown>;
@@ -92,6 +93,23 @@ export function resolveMockResponse(
 
   if (method !== 'GET') {
     return null;
+  }
+
+  if (requestUrl.pathname === '/api/v2/app-gallery/apps') {
+    const category = requestUrl.searchParams.get('filter[category]')?.trim();
+    const categoryPayload = category
+      ? mockData.appGalleryAppsByCategoryResponse?.[category]
+      : null;
+
+    if (categoryPayload) {
+      const selectedParams = new URLSearchParams(requestUrl.searchParams);
+      selectedParams.delete('filter[category]');
+
+      return {
+        payload: applyPagination(categoryPayload, selectedParams),
+        status: 200,
+      };
+    }
   }
 
   if (

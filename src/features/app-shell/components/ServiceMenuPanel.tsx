@@ -28,10 +28,10 @@ const serviceOutlinks = [
 ] as const;
 
 const PanelRoot = styled(Box)(({ theme }) => ({
-  background: 'linear-gradient(180deg, rgba(247,248,251,.98) 0%, rgba(243,245,249,.98) 100%)',
+  background: theme.workspace.gradients.menuSurface,
   borderBottom: `1px solid ${theme.workspace.colors.border}`,
   borderTop: `1px solid ${alpha(theme.workspace.colors.border, 0.9)}`,
-  boxShadow: '0 18px 36px rgba(15,23,42,.08)',
+  boxShadow: theme.workspace.shadows.popover,
   left: 0,
   maxHeight: `calc(100vh - ${theme.workspace.layout.topbarHeight}px)`,
   overflowX: 'hidden',

@@ -29,8 +29,9 @@
       eyebrow: "Storage · Object Plane",
       title: "Bucket Hub",
       description: "오브젝트 스토리지 리소스 모음입니다. 실제 업로드 흐름과 퍼블릭 노출은 프로젝트/도메인 허브에서 보고, 여기서는 버킷 상태와 연결 대상을 빠르게 찾습니다.",
-      primaryAction: { href: "workspace_project_detail.html?project=restaurant", icon: "add_circle", label: "새 버킷 생성" },
+      primaryAction: null,
       secondaryAction: { href: "workspace_projects_hub.html", icon: "inventory_2", label: "프로젝트 허브 보기" },
+      createAction: { href: "#", icon: "add_circle", label: "새 버킷 생성" },
       heroStats: [
         { icon: "folder", value: "6", label: "등록 버킷", note: "Active 5 · Review 1", color: "linear-gradient(135deg,#0f766e,#14b8a6)" },
         { icon: "link", value: "15", label: "바인딩 프로젝트", note: "프로젝트/서비스 기준", color: "linear-gradient(135deg,#0d9488,#2dd4bf)" },
@@ -65,17 +66,17 @@
               { initials: "YJ", color: "linear-gradient(135deg,#ec4899,#f9a8d4)" }
             ]
           },
-          connectionsLabel: "Bound Projects",
+          connectionsLabel: "Connected Projects",
           connectionsEqualWidth: true,
           connectionsMaxItems: 4,
           connectionsLayoutClass: "is-fixed-projects",
           connections: [
-            { abbr: "WF", name: "workspace-fe", meta: "release bundle", color: "linear-gradient(135deg,#0f766e,#2dd4bf)" },
-            { abbr: "RW", name: "release-worker", meta: "artifact sync", color: "linear-gradient(135deg,#0ea5e9,#22d3ee)" },
-            { abbr: "OD", name: "ops-deployer", meta: "rollback asset", color: "linear-gradient(135deg,#14b8a6,#5eead4)" }
+            { abbr: "WF", name: "workspace-fe", meta: "release bundle", color: "linear-gradient(135deg,#0f766e,#2dd4bf)", href: "workspace_project_detail.html?project=hermes-be&menu=settings&section=config" },
+            { abbr: "RW", name: "release-worker", meta: "artifact sync", color: "linear-gradient(135deg,#0ea5e9,#22d3ee)", href: "workspace_project_detail.html?project=hermes-be&menu=settings&section=config" },
+            { abbr: "OD", name: "ops-deployer", meta: "rollback asset", color: "linear-gradient(135deg,#14b8a6,#5eead4)", href: "workspace_project_detail.html?project=hermes-be&menu=settings&section=config" }
           ],
           actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_bucket_detail.html?item=workspace-build-artifacts" }
+            { label: "MinIO Open", icon: "open_in_new", kind: "open", href: "workspace_bucket_detail.html?item=workspace-build-artifacts" }
           ]
         },
         {
@@ -94,17 +95,17 @@
               { initials: "YJ", color: "linear-gradient(135deg,#10b981,#6ee7b7)" }
             ]
           },
-          connectionsLabel: "Bound Projects",
+          connectionsLabel: "Connected Projects",
           connectionsEqualWidth: true,
           connectionsMaxItems: 4,
           connectionsLayoutClass: "is-fixed-projects",
           connections: [
-            { abbr: "RW", name: "restaurant-web", meta: "public media", color: "linear-gradient(135deg,#0ea5e9,#22d3ee)" },
-            { abbr: "RA", name: "restaurant-admin", meta: "asset upload", color: "linear-gradient(135deg,#0284c7,#67e8f9)" },
-            { abbr: "CS", name: "campaign-studio", meta: "campaign bundle", color: "linear-gradient(135deg,#38bdf8,#a5f3fc)" }
+            { abbr: "RW", name: "restaurant-web", meta: "public media", color: "linear-gradient(135deg,#0ea5e9,#22d3ee)", href: "workspace_project_detail.html?project=restaurant&menu=settings&section=config" },
+            { abbr: "RA", name: "restaurant-admin", meta: "asset upload", color: "linear-gradient(135deg,#0284c7,#67e8f9)", href: "workspace_project_detail.html?project=restaurant&menu=settings&section=config" },
+            { abbr: "CS", name: "campaign-studio", meta: "campaign bundle", color: "linear-gradient(135deg,#38bdf8,#a5f3fc)", href: "workspace_project_detail.html?project=restaurant&menu=settings&section=config" }
           ],
           actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_bucket_detail.html?item=restaurant-static-assets" }
+            { label: "MinIO Open", icon: "open_in_new", kind: "open", href: "workspace_bucket_detail.html?item=restaurant-static-assets" }
           ]
         },
         {
@@ -116,16 +117,16 @@
           meta: "프롬프트 번들과 평가 스냅샷이 쌓이는 프라이빗 버킷",
           color: "linear-gradient(135deg,#7c3aed,#a78bfa)",
           owner: { initials: "MH", name: "Minhyuk Lee", meta: "minhyuk@example.com", color: "linear-gradient(135deg,#7c3aed,#a78bfa)" },
-          connectionsLabel: "Bound Projects",
+          connectionsLabel: "Connected Projects",
           connectionsEqualWidth: true,
           connectionsMaxItems: 4,
           connectionsLayoutClass: "is-fixed-projects",
           connections: [
-            { abbr: "AP", name: "ai-platform", meta: "prompt source", color: "linear-gradient(135deg,#7c3aed,#a78bfa)" },
-            { abbr: "PE", name: "prompt-evaluator", meta: "snapshot read", color: "linear-gradient(135deg,#8b5cf6,#c4b5fd)" }
+            { abbr: "AP", name: "ai-platform", meta: "prompt source", color: "linear-gradient(135deg,#7c3aed,#a78bfa)", href: "workspace_project_detail.html?project=coverity-ai&menu=settings&section=config" },
+            { abbr: "PE", name: "prompt-evaluator", meta: "snapshot read", color: "linear-gradient(135deg,#8b5cf6,#c4b5fd)", href: "workspace_project_detail.html?project=coverity-ai&menu=settings&section=config" }
           ],
           actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_bucket_detail.html?item=prompt-catalog-private" }
+            { label: "MinIO Open", icon: "open_in_new", kind: "open", href: "workspace_bucket_detail.html?item=prompt-catalog-private" }
           ]
         },
         {
@@ -143,17 +144,17 @@
               { initials: "SY", color: "linear-gradient(135deg,#ec4899,#f9a8d4)" }
             ]
           },
-          connectionsLabel: "Bound Projects",
+          connectionsLabel: "Connected Projects",
           connectionsEqualWidth: true,
           connectionsMaxItems: 4,
           connectionsLayoutClass: "is-fixed-projects",
           connections: [
-            { abbr: "AC", name: "audit-center", meta: "audit export", color: "linear-gradient(135deg,#f59e0b,#fbbf24)" },
-            { abbr: "LE", name: "legal-export", meta: "compliance bundle", color: "linear-gradient(135deg,#f59e0b,#fcd34d)" },
-            { abbr: "SO", name: "security-ops", meta: "retrieval request", color: "linear-gradient(135deg,#fbbf24,#fde68a)" }
+            { abbr: "AC", name: "audit-center", meta: "audit export", color: "linear-gradient(135deg,#f59e0b,#fbbf24)", href: "workspace_project_detail.html?project=lgloganalyzer&menu=settings&section=config" },
+            { abbr: "LE", name: "legal-export", meta: "compliance bundle", color: "linear-gradient(135deg,#f59e0b,#fcd34d)", href: "workspace_project_detail.html?project=lgloganalyzer&menu=settings&section=config" },
+            { abbr: "SO", name: "security-ops", meta: "retrieval request", color: "linear-gradient(135deg,#fbbf24,#fde68a)", href: "workspace_project_detail.html?project=lgloganalyzer&menu=settings&section=config" }
           ],
           actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_bucket_detail.html?item=compliance-longterm-archive" }
+            { label: "MinIO Open", icon: "open_in_new", kind: "open", href: "workspace_bucket_detail.html?item=compliance-longterm-archive" }
           ]
         },
         {
@@ -165,17 +166,17 @@
           meta: "업로드 게이트웨이와 워커가 함께 쓰는 공용 인입 버킷",
           color: "linear-gradient(135deg,#0891b2,#5eead4)",
           owner: { initials: "YJ", name: "Yujin Cho", meta: "yujin@example.com", color: "linear-gradient(135deg,#0891b2,#5eead4)" },
-          connectionsLabel: "Bound Projects",
+          connectionsLabel: "Connected Projects",
           connectionsEqualWidth: true,
           connectionsMaxItems: 4,
           connectionsLayoutClass: "is-fixed-projects",
           connections: [
-            { abbr: "CS", name: "creator-studio", meta: "signed upload", color: "linear-gradient(135deg,#0891b2,#5eead4)" },
-            { abbr: "MW", name: "media-worker", meta: "image processing", color: "linear-gradient(135deg,#0f766e,#2dd4bf)" },
-            { abbr: "RS", name: "restaurant", meta: "media import", color: "linear-gradient(135deg,#14b8a6,#99f6e4)" }
+            { abbr: "CS", name: "creator-studio", meta: "signed upload", color: "linear-gradient(135deg,#0891b2,#5eead4)", href: "workspace_project_detail.html?project=restaurant&menu=settings&section=config" },
+            { abbr: "MW", name: "media-worker", meta: "image processing", color: "linear-gradient(135deg,#0f766e,#2dd4bf)", href: "workspace_project_detail.html?project=restaurant&menu=settings&section=config" },
+            { abbr: "RS", name: "restaurant", meta: "media import", color: "linear-gradient(135deg,#14b8a6,#99f6e4)", href: "workspace_project_detail.html?project=restaurant&menu=settings&section=config" }
           ],
           actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_bucket_detail.html?item=media-ingest-dropzone" }
+            { label: "MinIO Open", icon: "open_in_new", kind: "open", href: "workspace_bucket_detail.html?item=media-ingest-dropzone" }
           ]
         },
         {
@@ -193,16 +194,16 @@
               { initials: "JK", color: "linear-gradient(135deg,#0891b2,#22d3ee)" }
             ]
           },
-          connectionsLabel: "Bound Projects",
+          connectionsLabel: "Connected Projects",
           connectionsEqualWidth: true,
           connectionsMaxItems: 4,
           connectionsLayoutClass: "is-fixed-projects",
           connections: [
-            { abbr: "OD", name: "ops-dashboard", meta: "report export", color: "linear-gradient(135deg,#14b8a6,#60a5fa)" },
-            { abbr: "FO", name: "finance-ops", meta: "scheduled download", color: "linear-gradient(135deg,#0ea5e9,#67e8f9)" }
+            { abbr: "OD", name: "ops-dashboard", meta: "report export", color: "linear-gradient(135deg,#14b8a6,#60a5fa)", href: "workspace_project_detail.html?project=flysuperboardf&menu=settings&section=config" },
+            { abbr: "FO", name: "finance-ops", meta: "scheduled download", color: "linear-gradient(135deg,#0ea5e9,#67e8f9)", href: "workspace_project_detail.html?project=flysuperboardf&menu=settings&section=config" }
           ],
           actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_bucket_detail.html?item=analytics-report-export" }
+            { label: "MinIO Open", icon: "open_in_new", kind: "open", href: "workspace_bucket_detail.html?item=analytics-report-export" }
           ]
         }
       ],
@@ -237,7 +238,15 @@
           icon: "storage",
           label: "Bucket Usage",
           title: "현재 주요 버킷 사용량",
-          description: "우측 레일은 헬시 상태 대신 주요 버킷의 사용량과 점유율만 간단히 보여줍니다.",
+          description: "버킷의 사용량과 점유율을 확인합니다.",
+          summary: {
+            total: 5,
+            stats: [
+              { label: "Capacity Watch", value: 1 },
+              { label: "Bindings", value: 2 },
+              { label: "Freshness", value: 5 }
+            ]
+          },
           rows: [
             { title: "workspace-build-artifacts", meta: "3.8TB used · release asset / rollback bundle", pill: { label: "63%", tone: "info" } },
             { title: "restaurant-static-assets", meta: "5.2TB used · public image / campaign asset", pill: { label: "58%", tone: "info" } },
@@ -249,8 +258,1349 @@
       ]
     };
   </script>
+  <script>
+    window.HUB_CONFIG = {
+      ...window.HUB_CONFIG,
+      resources: [],
+      resourceDescription: "실제 bucket 정보를 불러오는 중입니다."
+    };
+  </script>
   <script src="workspace_resource_hub_shared.js"></script>
   <script src="ax_studio_topbar.js"></script>
+  <script>
+    (() => {
+      const API_BASE = "/api/v2";
+      const FETCH_LIMIT = 100;
+      const FALLBACK_CONFIG = window.HUB_CONFIG;
+      let lastRenderedConfig = FALLBACK_CONFIG;
+      const pendingBucketActions = new Set();
+      const bucketHubState = {
+        items: [],
+        detailById: new Map()
+      };
+      const bucketMutationState = {
+        bucketId: "",
+        triggerButton: null
+      };
+      const TYPE_META = {
+        private: {
+          label: "Private Bucket",
+          icon: "lock",
+          color: "linear-gradient(135deg,#0f766e,#14b8a6)"
+        },
+        public: {
+          label: "Public Bucket",
+          icon: "language",
+          color: "linear-gradient(135deg,#0ea5e9,#22d3ee)"
+        },
+        shared: {
+          label: "Shared Bucket",
+          icon: "hub",
+          color: "linear-gradient(135deg,#0891b2,#5eead4)"
+        },
+        archive: {
+          label: "Archive Bucket",
+          icon: "archive",
+          color: "linear-gradient(135deg,#f59e0b,#fbbf24)"
+        },
+        unknown: {
+          label: "Bucket",
+          icon: "folder",
+          color: "linear-gradient(135deg,#0f766e,#2dd4bf)"
+        }
+      };
+      const STATUS_META = {
+        active: { label: "Active", tone: "healthy" },
+        archived: { label: "Archived", tone: "muted" },
+        review: { label: "Review", tone: "review" },
+        error: { label: "Error", tone: "incident" },
+        pending: { label: "Pending", tone: "pending" },
+        unknown: { label: "Unknown", tone: "info" }
+      };
+      const AVATAR_COLORS = [
+        "linear-gradient(135deg,#0f766e,#2dd4bf)",
+        "linear-gradient(135deg,#6366f1,#818cf8)",
+        "linear-gradient(135deg,#ec4899,#f9a8d4)",
+        "linear-gradient(135deg,#f97316,#fdba74)",
+        "linear-gradient(135deg,#0891b2,#67e8f9)",
+        "linear-gradient(135deg,#16a34a,#86efac)"
+      ];
+      function buildQuery(params) {
+        const searchParams = new URLSearchParams();
+        Object.entries(params || {}).forEach(([key, value]) => {
+          if (value === undefined || value === null || value === "") {
+            return;
+          }
+          searchParams.set(key, String(value));
+        });
+
+        const query = searchParams.toString();
+        return query ? `?${query}` : "";
+      }
+
+      function buildApiError(response, payload) {
+        const apiMessage = normalizeText(payload?.error?.message);
+        const apiCode = normalizeText(payload?.error?.code);
+        const message = apiMessage || `${response.status} ${response.statusText}`;
+        const error = new Error(apiCode ? `${message} (${apiCode})` : message);
+        error.status = response.status;
+        error.code = apiCode || "";
+        error.payload = payload || null;
+        return error;
+      }
+
+      async function requestJson(path, options) {
+        const headers = new Headers({
+          Accept: "application/json"
+        });
+        const requestOptions = {
+          credentials: "same-origin",
+          ...(options || {})
+        };
+
+        Object.entries(requestOptions.headers || {}).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            headers.set(key, value);
+          }
+        });
+
+        if (
+          requestOptions.body &&
+          typeof requestOptions.body === "object" &&
+          !(requestOptions.body instanceof FormData) &&
+          !(requestOptions.body instanceof Blob)
+        ) {
+          if (!headers.has("Content-Type")) {
+            headers.set("Content-Type", "application/json");
+          }
+          requestOptions.body = JSON.stringify(requestOptions.body);
+        }
+
+        requestOptions.headers = headers;
+
+        const response = await fetch(`${API_BASE}${path}`, requestOptions);
+        const contentType = response.headers.get("content-type") || "";
+        const isJson = contentType.includes("application/json");
+        const payload = isJson ? await response.json().catch(() => null) : null;
+
+        if (!response.ok) {
+          throw buildApiError(response, payload);
+        }
+
+        return payload;
+      }
+
+      async function fetchJson(path, params) {
+        return requestJson(`${path}${buildQuery(params)}`);
+      }
+
+      function extractData(payload, fallback) {
+        if (payload && typeof payload === "object" && "data" in payload) {
+          return payload.data;
+        }
+        return payload ?? fallback;
+      }
+
+      function extractItems(payload) {
+        if (payload && Array.isArray(payload.items)) {
+          return payload.items;
+        }
+        if (payload && payload.data && Array.isArray(payload.data.items)) {
+          return payload.data.items;
+        }
+        return [];
+      }
+
+      function extractPageTotal(payload, fallback) {
+        if (payload && payload.page && Number.isFinite(payload.page.total)) {
+          return payload.page.total;
+        }
+        if (payload && payload.data && payload.data.page && Number.isFinite(payload.data.page.total)) {
+          return payload.data.page.total;
+        }
+        return fallback;
+      }
+
+      function extractNextCursor(payload) {
+        if (payload && payload.page && typeof payload.page.nextCursor === "string") {
+          return payload.page.nextCursor;
+        }
+        if (payload && payload.data && payload.data.page && typeof payload.data.page.nextCursor === "string") {
+          return payload.data.page.nextCursor;
+        }
+        return null;
+      }
+
+      async function fetchAllBuckets(limit = FETCH_LIMIT) {
+        const items = [];
+        let cursor = null;
+        let total = 0;
+        let hasNext = true;
+
+        while (hasNext) {
+          const payload = await fetchJson("/buckets", {
+            limit,
+            ...(cursor ? { cursor } : {})
+          });
+          const pageItems = extractItems(payload);
+          const nextCursor = extractNextCursor(payload);
+          const pageTotal = extractPageTotal(payload, total || pageItems.length);
+
+          items.push(...pageItems);
+          total = pageTotal;
+          cursor = nextCursor;
+          hasNext = Boolean(nextCursor);
+
+          if (!pageItems.length || (pageTotal > 0 && items.length >= pageTotal)) {
+            hasNext = false;
+          }
+        }
+
+        return {
+          items,
+          page: {
+            total: total || items.length
+          }
+        };
+      }
+
+      async function fetchBucketDetails(items) {
+        const detailEntries = await Promise.allSettled(
+          (items || []).map((item) => fetchJson(`/buckets/${encodeURIComponent(item.id)}`))
+        );
+
+        return detailEntries.reduce((acc, result, index) => {
+          if (result.status === "fulfilled") {
+            acc.set(items[index].id, extractData(result.value, null));
+          }
+          return acc;
+        }, new Map());
+      }
+
+      async function openBucketById(bucketId) {
+        const payload = await requestJson(`/buckets/${encodeURIComponent(bucketId)}/open`, {
+          method: "POST"
+        });
+        const data = extractData(payload, null);
+        if (data?.url) {
+          window.open(data.url, "_blank", "noopener,noreferrer");
+        }
+      }
+
+	      async function createBucketByApi({ name, sizeGb }) {
+	        return requestJson("/buckets", {
+	          method: "POST",
+	          body: {
+	            name,
+	            bucketSize: String(sizeGb)
+	          }
+	        });
+	      }
+
+      async function updateBucketAuthorsByApi(bucketId, authorSubs) {
+        return requestJson(`/buckets/${encodeURIComponent(bucketId)}`, {
+          method: "PATCH",
+          body: {
+            author: authorSubs
+          }
+        });
+      }
+
+      async function deleteBucketByApi(bucketId) {
+        return requestJson(`/buckets/${encodeURIComponent(bucketId)}`, {
+          method: "DELETE"
+        });
+      }
+
+      function normalizeText(value) {
+        return String(value || "").trim();
+      }
+
+      function normalizeKey(value) {
+        return normalizeText(value).toLowerCase();
+      }
+
+      function parseBucketSizeGb(value) {
+        const normalized = normalizeText(value).replace(/,/g, "");
+        if (!normalized) {
+          return null;
+        }
+
+        if (!/^\d+$/.test(normalized)) {
+          return null;
+        }
+
+        const amount = Number(normalized);
+        if (!Number.isInteger(amount) || amount <= 0 || amount > 1000) {
+          return null;
+        }
+
+        return amount;
+      }
+
+      function formatBucketSizeLabel(value) {
+        const amount = parseBucketSizeGb(value);
+        if (amount === null) {
+          return "";
+        }
+
+        return `${amount}GB`;
+      }
+
+      function splitAuthorInput(value) {
+        return [...new Set(
+          String(value || "")
+            .split(/[\n,]/)
+            .map((entry) => normalizeText(entry))
+            .filter(Boolean)
+        )];
+      }
+
+      function joinAuthorInput(values) {
+        return Array.isArray(values) ? values.map((entry) => normalizeText(entry)).filter(Boolean).join("\n") : "";
+      }
+
+      function getBucketState(bucketId) {
+        if (!bucketId) {
+          return null;
+        }
+
+        const item = (bucketHubState.items || []).find((entry) => normalizeText(entry?.id) === normalizeText(bucketId)) || null;
+        const detail = bucketHubState.detailById.get(bucketId) || null;
+        return {
+          ...(item || {}),
+          ...(detail || {}),
+          id: bucketId,
+          boundProjects: Array.isArray(detail?.boundProjects) ? detail.boundProjects : [],
+          collaborators: Array.isArray(detail?.collaborators)
+            ? detail.collaborators
+          : Array.isArray(item?.collaborators)
+              ? item.collaborators
+              : []
+        };
+      }
+
+      function getBucketBindingCount(bucket) {
+        if (Array.isArray(bucket?.boundProjects) && bucket.boundProjects.length > 0) {
+          return bucket.boundProjects.length;
+        }
+
+        return Number(bucket?.boundProjectCount || 0);
+      }
+
+	      function hasExistingBucketName(value) {
+	        const normalized = normalizeKey(value);
+	        if (!normalized) {
+	          return false;
+	        }
+
+	        const bucketItems = Array.isArray(bucketHubState.items) ? bucketHubState.items : [];
+	        return bucketItems.some((bucket) => normalizeKey(bucket?.name) === normalized);
+	      }
+
+      function formatNumber(value) {
+        const amount = Number(value);
+        if (!Number.isFinite(amount)) {
+          return "-";
+        }
+        return new Intl.NumberFormat("ko-KR").format(amount);
+      }
+
+      function formatBytes(value) {
+        const amount = Number(value);
+        if (!Number.isFinite(amount) || amount <= 0) {
+          return "0B";
+        }
+
+        const units = ["B", "KB", "MB", "GB", "TB", "PB"];
+        let size = amount;
+        let unitIndex = 0;
+
+        while (size >= 1024 && unitIndex < units.length - 1) {
+          size /= 1024;
+          unitIndex += 1;
+        }
+
+        const digits = size >= 100 || unitIndex === 0 ? 0 : size >= 10 ? 1 : 2;
+        return `${size.toFixed(digits)}${units[unitIndex]}`;
+      }
+
+      function toStorageLabel(bytes, fallbackLabel = "") {
+        const amount = Number(bytes);
+        if (Number.isFinite(amount) && amount > 0) {
+          return formatBytes(amount);
+        }
+
+        return normalizeText(fallbackLabel) || "0B";
+      }
+
+      function formatDateTime(value) {
+        if (!value) {
+          return "최근 수정 정보 없음";
+        }
+
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+          return "최근 수정 정보 없음";
+        }
+
+        return `Updated ${new Intl.DateTimeFormat("ko-KR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit"
+        }).format(date)}`;
+      }
+
+      function toInitials(value) {
+        const source = normalizeText(value);
+        if (!source) {
+          return "BK";
+        }
+
+        const parts = source
+          .replace(/[@._-]+/g, " ")
+          .split(/\s+/)
+          .filter(Boolean);
+
+        if (parts.length === 1) {
+          return parts[0].slice(0, 2).toUpperCase();
+        }
+
+        return parts
+          .slice(0, 2)
+          .map((part) => part.charAt(0).toUpperCase())
+          .join("");
+      }
+
+      function hashIndex(value, mod) {
+        const text = normalizeText(value);
+        let total = 0;
+        for (let index = 0; index < text.length; index += 1) {
+          total = (total + text.charCodeAt(index) * (index + 1)) % mod;
+        }
+        return total;
+      }
+
+      function getAvatarColor(value) {
+        return AVATAR_COLORS[hashIndex(value, AVATAR_COLORS.length)] || AVATAR_COLORS[0];
+      }
+
+      function getTypeMeta(value) {
+        const normalized = normalizeKey(value);
+        return TYPE_META[normalized] || TYPE_META.unknown;
+      }
+
+      function getStatusMeta(value) {
+        const normalized = normalizeKey(value);
+        return STATUS_META[normalized] || STATUS_META.unknown;
+      }
+
+      function getUsageTone(percent) {
+        if (!Number.isFinite(percent)) {
+          return "info";
+        }
+        if (percent >= 80) {
+          return "review";
+        }
+        if (percent >= 60) {
+          return "info";
+        }
+        return "healthy";
+      }
+
+      function getBucketUsageInfo(bucket) {
+        const usedBytes = Number(bucket?.usage?.usedBytes);
+        const quotaBytes = Number(bucket?.usage?.quotaBytes);
+        const usagePercent = Number(bucket?.usage?.usagePercent);
+
+        return {
+          usedBytes: Number.isFinite(usedBytes) && usedBytes > 0 ? usedBytes : 0,
+          quotaBytes: Number.isFinite(quotaBytes) && quotaBytes > 0 ? quotaBytes : 0,
+          usagePercent: Number.isFinite(usagePercent) ? usagePercent : null,
+          hasUsageSignal:
+            (Number.isFinite(usedBytes) && usedBytes > 0)
+            || (Number.isFinite(quotaBytes) && quotaBytes > 0)
+            || Number.isFinite(usagePercent)
+        };
+      }
+
+      function isCapacityWatchBucket(bucket) {
+        const usage = getBucketUsageInfo(bucket);
+        if (usage.quotaBytes <= 0) {
+          return true;
+        }
+
+        return Number.isFinite(usage.usagePercent) && usage.usagePercent >= 80;
+      }
+
+      function isBindingRiskBucket(bucket) {
+        const bindingCount = getBucketBindingCount(bucket);
+        return bindingCount === 0 || bindingCount >= 2;
+      }
+
+      function isFreshBucket(bucket) {
+        return getBucketUsageInfo(bucket).hasUsageSignal;
+      }
+
+      function buildUsageSummary(items) {
+        const bucketItems = Array.isArray(items) ? items : [];
+        return {
+          total: bucketItems.length,
+          stats: [
+            {
+              label: "Capacity Watch",
+              value: bucketItems.filter(isCapacityWatchBucket).length
+            },
+            {
+              label: "Bindings",
+              value: bucketItems.filter(isBindingRiskBucket).length
+            },
+            {
+              label: "Freshness",
+              value: bucketItems.filter(isFreshBucket).length
+            }
+          ]
+        };
+      }
+
+      function getOwnerName(owner) {
+        return owner?.displayName || owner?.userId || owner?.email || "Workspace Owner";
+      }
+
+      function buildHeroStats(stats, items) {
+        const totalBuckets = Number(stats?.totalBuckets ?? items.length ?? 0);
+        const boundProjectCount = Number(stats?.boundProjectCount ?? 0);
+        const totalUsedBytes = Number(stats?.totalUsedBytes ?? 0);
+        const privateCount = items.filter((item) => normalizeKey(item?.type) === "private").length;
+        const sharedCount = items.filter((item) => normalizeKey(item?.type) === "shared").length;
+
+        return [
+          {
+            icon: "folder",
+            value: formatNumber(totalBuckets),
+            label: "등록 버킷",
+            note: `Private ${formatNumber(privateCount)} · Shared ${formatNumber(sharedCount)}`,
+            color: "linear-gradient(135deg,#0f766e,#14b8a6)"
+          },
+          {
+            icon: "link",
+            value: formatNumber(boundProjectCount),
+            label: "바인딩 프로젝트",
+            note: "프로젝트 기준 연결 수",
+            color: "linear-gradient(135deg,#0d9488,#2dd4bf)"
+          },
+          {
+            icon: "storage",
+            value: formatBytes(totalUsedBytes),
+            label: "총 사용량",
+            note: "버킷 사용량 집계 기준",
+            color: "linear-gradient(135deg,#0f766e,#5eead4)"
+          },
+          {
+            icon: "visibility",
+            value: formatNumber(totalBuckets),
+            label: "접근 가능 버킷",
+            note: "현재 사용자 권한 기준",
+            color: "linear-gradient(135deg,#14b8a6,#99f6e4)"
+          }
+        ];
+      }
+
+      function buildFilters(filtersPayload, items) {
+        const typeItems = Array.isArray(filtersPayload?.types) && filtersPayload.types.length
+          ? filtersPayload.types
+          : Array.from(
+              items.reduce((acc, item) => {
+                const key = normalizeKey(item?.type);
+                if (!key) {
+                  return acc;
+                }
+                acc.set(key, (acc.get(key) || 0) + 1);
+                return acc;
+              }, new Map()).entries()
+            ).map(([value, count]) => ({ value, count }));
+
+        const labelMap = {
+          private: "프라이빗",
+          public: "퍼블릭",
+          shared: "공용",
+          archive: "아카이브"
+        };
+
+        return [
+          { id: "all", icon: "apps", label: "전체" },
+          ...typeItems.map((item) => ({
+            id: normalizeKey(item?.value),
+            icon: getTypeMeta(item?.value).icon,
+            label: labelMap[normalizeKey(item?.value)] || normalizeText(item?.value) || "기타"
+          }))
+        ];
+      }
+
+      function buildTipsPanel(panel) {
+        return {
+          ...FALLBACK_CONFIG.mainPanels[0],
+          rows: Array.isArray(panel?.rows) ? panel.rows : FALLBACK_CONFIG.mainPanels[0].rows,
+          footerLink: panel?.footerLink || FALLBACK_CONFIG.mainPanels[0].footerLink
+        };
+      }
+
+      function buildGuidePanel(panel) {
+        return {
+          ...FALLBACK_CONFIG.mainPanels[1],
+          rows: Array.isArray(panel?.rows) ? panel.rows : FALLBACK_CONFIG.mainPanels[1].rows,
+          footerLink: panel?.footerLink || FALLBACK_CONFIG.mainPanels[1].footerLink
+        };
+      }
+
+      function buildUsagePanel(panel, items) {
+        const rows = Array.isArray(panel?.items)
+          ? panel.items.map((item) => {
+              const usagePercent = Number(item?.usagePercent);
+              return {
+                title: normalizeText(item?.name) || "Bucket",
+                meta: `${formatBytes(item?.usedBytes)} used${Number(item?.quotaBytes) > 0 ? ` / ${formatBytes(item?.quotaBytes)} quota` : ""}`,
+                pill: {
+                  label: Number.isFinite(usagePercent) ? `${usagePercent}%` : "N/A",
+                  tone: getUsageTone(usagePercent)
+                }
+              };
+            })
+          : FALLBACK_CONFIG.sidebarPanels[0].rows;
+
+        return {
+          ...FALLBACK_CONFIG.sidebarPanels[0],
+          summary: buildUsageSummary(items),
+          rows
+        };
+      }
+
+      function getProjectBindingName(project) {
+        return normalizeText(project?.label) || normalizeText(project?.name) || normalizeText(project?.id) || "";
+      }
+
+      function toProjectDetailHref(project) {
+        const projectKey = getProjectBindingName(project);
+        if (projectKey) {
+          return `workspace_project_detail.html?project=${encodeURIComponent(projectKey)}&menu=settings&section=config`;
+        }
+
+        return "";
+      }
+
+      function toProjectConnection(project, color) {
+        const name = getProjectBindingName(project) || "project";
+        const role = normalizeText(project?.role);
+        const description = normalizeText(project?.description);
+        return {
+          abbr: normalizeText(project?.abbr) || toInitials(name),
+          name,
+          meta: role
+            ? `binding role · ${role}`
+            : description || "project binding",
+          color,
+          href: toProjectDetailHref(project)
+        };
+      }
+
+      function buildProjectConnections(bucket, detail, color) {
+        const boundProjects = Array.isArray(detail?.boundProjects) ? detail.boundProjects : [];
+        if (boundProjects.length > 0) {
+          return boundProjects.map((project) => toProjectConnection(project, color));
+        }
+
+        const boundProjectCount = Number(bucket?.boundProjectCount ?? 0);
+        if (boundProjectCount > 0) {
+          return [
+            {
+              abbr: String(boundProjectCount),
+              name: `${formatNumber(boundProjectCount)}개 프로젝트`,
+              meta: "connected project count is available, but project details are not yet loaded.",
+              color
+            }
+          ];
+        }
+
+        return [];
+      }
+
+      function buildBucketResource(bucket, detail) {
+        const resolved = detail || bucket || {};
+        const typeMeta = getTypeMeta(resolved.type || bucket?.type);
+        const statusMeta = getStatusMeta(resolved.status || bucket?.status);
+        const owner = resolved.owner || bucket?.owner || null;
+        const ownerName = getOwnerName(owner);
+        const collaborators = Array.isArray(resolved.collaborators)
+          ? resolved.collaborators
+          : Array.isArray(bucket?.collaborators)
+            ? bucket.collaborators
+            : [];
+        const usage = resolved?.usage || bucket?.usage || {};
+        const usagePercent = Number(usage?.value ?? usage?.usagePercent);
+        const usedBytes = Number(usage?.usedBytes);
+        const quotaBytes = Number(usage?.quotaBytes);
+        const connections = buildProjectConnections(bucket, detail, typeMeta.color);
+        const bindingCount = Array.isArray(detail?.boundProjects) && detail.boundProjects.length > 0
+          ? detail.boundProjects.length
+          : Number(bucket?.boundProjectCount || connections.length || 0);
+        const detailHref = `workspace_bucket_detail.html?id=${encodeURIComponent(bucket?.id || "")}&item=${encodeURIComponent(bucket?.name || "")}`;
+        const quotaLabel = normalizeText(usage?.quotaLabel) || toStorageLabel(quotaBytes, resolved.capacity?.label);
+        const usedLabel = normalizeText(usage?.usedLabel) || toStorageLabel(usedBytes, usage?.label);
+        const usageDisplayLabel = normalizeText(usage?.valueLabel) || (quotaLabel ? `${usedLabel} / ${quotaLabel}` : usedLabel);
+        const isPending = pendingBucketActions.has(bucket?.id);
+        const canDelete = bindingCount === 0;
+
+        return {
+          id: bucket?.id,
+          renderSource: "api-bucket",
+          categories: ["all", normalizeKey(resolved.type || bucket?.type)].filter(Boolean),
+          status: statusMeta,
+          engine: `${typeMeta.label} · ${quotaLabel} quota`,
+          icon: typeMeta.icon,
+          name: normalizeText(bucket?.name) || "Bucket",
+          meta: `${usedLabel} used · ${formatNumber(bucket?.boundProjectCount || connections.length)}개 프로젝트 연결`,
+          color: typeMeta.color,
+          owner: owner
+            ? {
+                initials: toInitials(ownerName),
+                name: ownerName,
+                meta: owner?.email || owner?.userId || "owner",
+                color: typeMeta.color
+              }
+            : null,
+          sharing: {
+            collaborators: collaborators.map((collaborator) => ({
+              initials: toInitials(getOwnerName(collaborator)),
+              color: getAvatarColor(getOwnerName(collaborator))
+            }))
+          },
+          details: [
+            {
+              icon: "link",
+              text: `Bindings ${formatNumber(bindingCount)}`
+            }
+          ],
+          usage: {
+            label: "Storage",
+            value: Number.isFinite(usagePercent) ? usagePercent : 0,
+            visualValue: usedBytes > 0
+              ? Math.max(Number.isFinite(usagePercent) ? usagePercent : 0, 1.5)
+              : 0,
+            color: typeMeta.color,
+            meta: usageDisplayLabel
+          },
+          connectionsLabel: "PROJECTS",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections,
+          footer: formatDateTime(resolved.updatedAt || bucket?.updatedAt),
+          actions: [
+            {
+              label: "Detail",
+              icon: "open_in_new",
+              kind: "open",
+              href: detailHref
+            },
+            {
+              label: "Delete",
+              icon: "delete",
+              kind: "neutral",
+              disabled: !bucket?.id || isPending || !canDelete,
+              attributes: {
+                "data-bucket-id": bucket?.id,
+                "data-bucket-action": "delete",
+                title: canDelete
+                  ? "Bucket 삭제"
+                  : "연결된 프로젝트를 먼저 해제해야 삭제할 수 있습니다."
+              }
+            },
+            {
+              label: "MinIO Open",
+              icon: "open_in_new",
+              kind: "open",
+              disabled: !bucket?.id || isPending,
+              attributes: {
+                "data-bucket-id": bucket?.id,
+                "data-bucket-action": "open"
+              }
+            }
+          ]
+        };
+      }
+
+      function buildResourceDescription(total, stats) {
+        if (Number(total) <= 0) {
+          return "조회 가능한 bucket 리소스가 없습니다. 권한 또는 바인딩 상태를 확인해 주세요.";
+        }
+
+        return `${formatNumber(total)}개의 bucket 리소스를 실제 API 응답으로 렌더링합니다. 총 사용량 ${formatBytes(stats?.totalUsedBytes)}와 프로젝트 바인딩 ${formatNumber(stats?.boundProjectCount)}건을 함께 보여줍니다.`;
+      }
+
+      function ensureBucketCreateModal() {
+        let modal = document.getElementById("bucketCreateModal");
+        if (modal) {
+          return modal;
+        }
+
+        modal = document.createElement("div");
+        modal.className = "hub-lite-create-backdrop";
+        modal.id = "bucketCreateModal";
+        modal.hidden = true;
+        modal.innerHTML = `
+          <div class="hub-lite-create-shell" role="dialog" aria-modal="true" aria-labelledby="bucketCreateTitle">
+            <div class="hub-lite-create-head">
+              <div class="hub-lite-create-copy">
+                <div class="hub-lite-create-title-row">
+                  <span class="hub-lite-create-step-badge">1</span>
+                  <h2 id="bucketCreateTitle">버킷을 생성합니다</h2>
+                </div>
+                <p class="hub-lite-create-subtitle">버킷 이름과 용량을 먼저 입력한 뒤, 접근 정책과 프로젝트 바인딩은 상세 화면에서 이어서 설정할 수 있습니다.</p>
+              </div>
+              <div class="hub-lite-create-head-actions">
+                <div class="hub-lite-create-hero" aria-hidden="true"><span class="material-icons-round">folder</span></div>
+                <button class="hub-lite-create-close" type="button" id="bucketCreateClose" aria-label="버킷 생성 닫기">
+                  <span class="material-icons-round">close</span>
+                </button>
+              </div>
+            </div>
+            <div class="hub-lite-create-progress">
+              <div class="hub-lite-create-progress-track">
+                <div class="hub-lite-create-progress-item">
+                  <div class="hub-lite-create-progress-line">
+                    <span class="hub-lite-create-progress-rail"></span>
+                    <span class="hub-lite-create-progress-dot">1</span>
+                    <span class="hub-lite-create-progress-rail"></span>
+                  </div>
+                  <div class="hub-lite-create-progress-label">버킷 정보</div>
+                  <div class="hub-lite-create-progress-value" id="bucketCreateValue">아직 입력되지 않았습니다.</div>
+                </div>
+              </div>
+            </div>
+            <form class="hub-lite-create-form" id="bucketCreateForm">
+              <div class="hub-lite-create-stage">
+                <div class="hub-lite-create-panel">
+	                  <div class="hub-lite-create-panel-title">버킷 이름과 용량을 입력해주세요.</div>
+	                  <input class="hub-lite-create-input" id="bucketCreateName" type="text" placeholder="예: workspace-build-artifacts" required />
+	                  <div
+	                    class="hub-lite-create-note"
+	                    id="bucketCreateNameFeedback"
+	                    aria-hidden="true"
+	                    style="display:none;border-color:rgba(185,28,28,.14);background:rgba(185,28,28,.07);color:#b91c1c;"
+	                  ><span class="material-icons-round">error</span><span>같은 이름의 버킷이 이미 존재합니다. 다른 이름을 입력해주세요.</span></div>
+	                  <div style="display:flex;align-items:center;gap:10px;">
+	                    <input class="hub-lite-create-input" id="bucketCreateSize" type="number" min="1" max="1000" step="1" inputmode="numeric" placeholder="예: 100" required style="flex:1 1 auto;margin:0;" />
+	                    <span style="display:inline-flex;align-items:center;justify-content:center;min-width:52px;padding:0 14px;height:48px;border-radius:14px;background:rgba(15,118,110,.12);color:#0f766e;font-weight:700;letter-spacing:.02em;">GB</span>
+	                  </div>
+	                  <div class="hub-lite-create-note"><span class="material-icons-round">info</span>버킷 생성 단계에서는 이름과 용량만 입력합니다. 버킷 용량 기본 단위는 GB입니다.</div>
+                </div>
+              </div>
+              <div class="hub-lite-create-actions">
+                <button class="hub-lite-create-action ghost" type="button" id="bucketCreateCancel">취소</button>
+                <button class="hub-lite-create-action primary" type="submit" id="bucketCreateSubmit" disabled><span class="material-icons-round">check_circle</span>버킷 생성</button>
+              </div>
+            </form>
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+
+	        const form = modal.querySelector("#bucketCreateForm");
+	        const nameInput = modal.querySelector("#bucketCreateName");
+	        const nameFeedback = modal.querySelector("#bucketCreateNameFeedback");
+	        const sizeInput = modal.querySelector("#bucketCreateSize");
+	        const value = modal.querySelector("#bucketCreateValue");
+	        const submit = modal.querySelector("#bucketCreateSubmit");
+	        const setNameFeedbackVisible = (visible) => {
+	          nameFeedback.style.display = visible ? "flex" : "none";
+	          nameFeedback.setAttribute("aria-hidden", visible ? "false" : "true");
+	        };
+	        const close = () => {
+	          modal.hidden = true;
+	          document.body.style.overflow = "";
+	          form.reset();
+	          sizeInput.setCustomValidity("");
+	          value.textContent = "아직 입력되지 않았습니다.";
+	          setNameFeedbackVisible(false);
+	          submit.dataset.loading = "false";
+	          submit.innerHTML = `<span class="material-icons-round">check_circle</span>버킷 생성`;
+	          submit.disabled = true;
+	        };
+
+	        const sync = () => {
+	          const normalizedName = normalizeText(nameInput.value);
+	          const hasNameInput = normalizedName.length > 0;
+	          const normalizedSize = formatBucketSizeLabel(sizeInput.value);
+	          const hasDuplicateName = hasExistingBucketName(normalizedName);
+	          sizeInput.setCustomValidity(normalizedSize ? "" : "버킷 용량은 GB 기준으로 1부터 1000까지 입력할 수 있습니다.");
+	          value.textContent = [normalizedName, normalizedSize].filter(Boolean).join(" · ") || "아직 입력되지 않았습니다.";
+	          setNameFeedbackVisible(hasNameInput && hasDuplicateName);
+	          submit.disabled = !normalizedName || !normalizedSize || hasDuplicateName || submit.dataset.loading === "true";
+	        };
+
+        nameInput.addEventListener("input", sync);
+        sizeInput.addEventListener("input", sync);
+
+        modal.querySelector("#bucketCreateClose").addEventListener("click", close);
+        modal.querySelector("#bucketCreateCancel").addEventListener("click", close);
+        modal.addEventListener("click", (event) => {
+          if (event.target === modal) {
+            close();
+          }
+        });
+
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
+          (async () => {
+            const name = normalizeText(nameInput.value);
+            const size = parseBucketSizeGb(sizeInput.value);
+	            if (!name) {
+	              nameInput.focus();
+	              return;
+	            }
+	            if (hasExistingBucketName(name)) {
+	              setNameFeedbackVisible(true);
+	              nameInput.focus();
+	              return;
+	            }
+            if (size === null) {
+              sizeInput.reportValidity();
+              sizeInput.focus();
+              return;
+            }
+
+            submit.dataset.loading = "true";
+            submit.disabled = true;
+            submit.innerHTML = `<span class="material-icons-round">hourglass_top</span>생성 중...`;
+
+	            try {
+	              await createBucketByApi({
+	                name,
+	                sizeGb: size
+	              });
+	              close();
+	              await loadBucketHub();
+            } catch (error) {
+              submit.dataset.loading = "false";
+              submit.innerHTML = `<span class="material-icons-round">check_circle</span>버킷 생성`;
+              sync();
+              window.alert(error && error.message ? error.message : "Bucket 생성에 실패했습니다.");
+            }
+          })();
+        });
+
+        modal.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && !modal.hidden) {
+            close();
+          }
+        });
+
+        return modal;
+      }
+
+      function ensureBucketEditModal() {
+        let modal = document.getElementById("bucketEditModal");
+        if (modal) {
+          return modal;
+        }
+
+        modal = document.createElement("div");
+        modal.className = "hub-lite-create-backdrop";
+        modal.id = "bucketEditModal";
+        modal.hidden = true;
+        modal.innerHTML = `
+          <div class="hub-lite-create-shell" role="dialog" aria-modal="true" aria-labelledby="bucketEditTitle">
+            <div class="hub-lite-create-head">
+              <div class="hub-lite-create-copy">
+                <div class="hub-lite-create-title-row">
+                  <span class="hub-lite-create-step-badge">2</span>
+                  <h2 id="bucketEditTitle">버킷 author를 수정합니다</h2>
+                </div>
+                <p class="hub-lite-create-subtitle">현재 v2 bucket 수정 API는 author 배열만 지원합니다. 줄바꿈 또는 쉼표로 여러 user sub를 입력할 수 있습니다.</p>
+              </div>
+              <div class="hub-lite-create-head-actions">
+                <div class="hub-lite-create-hero" aria-hidden="true"><span class="material-icons-round">edit</span></div>
+                <button class="hub-lite-create-close" type="button" id="bucketEditClose" aria-label="버킷 수정 닫기">
+                  <span class="material-icons-round">close</span>
+                </button>
+              </div>
+            </div>
+            <form class="hub-lite-create-form" id="bucketEditForm">
+              <div class="hub-lite-create-stage">
+                <div class="hub-lite-create-panel">
+                  <div class="hub-lite-create-panel-title" id="bucketEditTarget">선택된 버킷이 없습니다.</div>
+                  <textarea class="hub-lite-create-input" id="bucketEditAuthors" placeholder="author user sub를 줄바꿈 또는 쉼표로 입력하세요" style="min-height:180px;resize:vertical;padding-top:14px;"></textarea>
+                  <div class="hub-lite-create-note" id="bucketEditNote"><span class="material-icons-round">info</span>author 목록을 비우면 owner만 접근 가능한 상태로 돌아갑니다.</div>
+                </div>
+              </div>
+              <div class="hub-lite-create-actions">
+                <button class="hub-lite-create-action ghost" type="button" id="bucketEditCancel">취소</button>
+                <button class="hub-lite-create-action primary" type="submit" id="bucketEditSubmit"><span class="material-icons-round">save</span>저장</button>
+              </div>
+            </form>
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+        return modal;
+      }
+
+      function ensureBucketDeleteModal() {
+        let modal = document.getElementById("bucketDeleteModal");
+        if (modal) {
+          return modal;
+        }
+
+        modal = document.createElement("div");
+        modal.className = "hub-lite-create-backdrop";
+        modal.id = "bucketDeleteModal";
+        modal.hidden = true;
+        modal.innerHTML = `
+          <div class="hub-lite-create-shell" role="dialog" aria-modal="true" aria-labelledby="bucketDeleteTitle">
+            <div class="hub-lite-create-head">
+              <div class="hub-lite-create-copy">
+                <div class="hub-lite-create-title-row">
+                  <span class="hub-lite-create-step-badge">!</span>
+                  <h2 id="bucketDeleteTitle">버킷을 삭제합니다</h2>
+                </div>
+                <p class="hub-lite-create-subtitle">bound project가 남아 있으면 삭제할 수 없습니다. 삭제 후에는 같은 이름을 다시 만들기 전까지 Hub와 MinIO에서 모두 사라집니다.</p>
+              </div>
+            </div>
+            <div class="hub-lite-create-stage">
+              <div class="hub-lite-create-panel">
+                <div class="hub-lite-create-panel-title" id="bucketDeleteTarget">선택된 버킷이 없습니다.</div>
+                <div class="hub-lite-create-note" id="bucketDeleteNote"><span class="material-icons-round">info</span>삭제 전 연결된 프로젝트가 없는지 다시 확인해 주세요.</div>
+              </div>
+            </div>
+            <div class="hub-lite-create-actions">
+              <button class="hub-lite-create-action ghost" type="button" id="bucketDeleteCancel">취소</button>
+              <button class="hub-lite-create-action primary" type="button" id="bucketDeleteSubmit"><span class="material-icons-round">delete</span>삭제</button>
+            </div>
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+        return modal;
+      }
+
+      function wireBucketMutations() {
+        const editModal = ensureBucketEditModal();
+        const editForm = editModal.querySelector("#bucketEditForm");
+        const editAuthors = editModal.querySelector("#bucketEditAuthors");
+        const editTarget = editModal.querySelector("#bucketEditTarget");
+        const editSubmit = editModal.querySelector("#bucketEditSubmit");
+        const deleteModal = ensureBucketDeleteModal();
+        const deleteTarget = deleteModal.querySelector("#bucketDeleteTarget");
+        const deleteNote = deleteModal.querySelector("#bucketDeleteNote");
+        const deleteSubmit = deleteModal.querySelector("#bucketDeleteSubmit");
+
+        const closeEdit = () => {
+          editModal.hidden = true;
+          document.body.style.overflow = "";
+          editForm.reset();
+          bucketMutationState.bucketId = "";
+          bucketMutationState.triggerButton = null;
+          editSubmit.disabled = false;
+          editSubmit.innerHTML = `<span class="material-icons-round">save</span>저장`;
+        };
+
+        const closeDelete = () => {
+          deleteModal.hidden = true;
+          document.body.style.overflow = "";
+          bucketMutationState.bucketId = "";
+          bucketMutationState.triggerButton = null;
+          deleteSubmit.disabled = false;
+          deleteSubmit.innerHTML = `<span class="material-icons-round">delete</span>삭제`;
+        };
+
+        if (editModal.dataset.bucketMutationReady !== "true") {
+          [editModal.querySelector("#bucketEditClose"), editModal.querySelector("#bucketEditCancel")].filter(Boolean).forEach((button) => {
+            button.addEventListener("click", closeEdit);
+          });
+          [deleteModal.querySelector("#bucketDeleteClose"), deleteModal.querySelector("#bucketDeleteCancel")].filter(Boolean).forEach((button) => {
+            button.addEventListener("click", closeDelete);
+          });
+
+          editModal.addEventListener("click", (event) => {
+            if (event.target === editModal) {
+              closeEdit();
+            }
+          });
+          deleteModal.addEventListener("click", (event) => {
+            if (event.target === deleteModal) {
+              closeDelete();
+            }
+          });
+
+          editModal.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && !editModal.hidden) {
+              closeEdit();
+            }
+          });
+          deleteModal.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && !deleteModal.hidden) {
+              closeDelete();
+            }
+          });
+
+          editForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            (async () => {
+              if (!bucketMutationState.bucketId) {
+                return;
+              }
+
+              editSubmit.disabled = true;
+              editSubmit.innerHTML = `<span class="material-icons-round">hourglass_top</span>저장 중...`;
+
+              try {
+                await updateBucketAuthorsByApi(bucketMutationState.bucketId, splitAuthorInput(editAuthors.value));
+                closeEdit();
+                await loadBucketHub();
+              } catch (error) {
+                editSubmit.disabled = false;
+                editSubmit.innerHTML = `<span class="material-icons-round">save</span>저장`;
+                window.alert(error && error.message ? error.message : "Bucket 수정에 실패했습니다.");
+              }
+            })();
+          });
+
+          deleteSubmit.addEventListener("click", () => {
+            (async () => {
+              if (!bucketMutationState.bucketId) {
+                return;
+              }
+
+              const bucket = getBucketState(bucketMutationState.bucketId);
+              const bindingCount = getBucketBindingCount(bucket);
+              if (bindingCount > 0) {
+                deleteSubmit.disabled = true;
+                deleteNote.innerHTML = `<span class="material-icons-round">info</span>현재 ${formatNumber(bindingCount)}개의 프로젝트가 연결되어 있어 삭제할 수 없습니다. 바인딩을 먼저 해제해 주세요.`;
+                return;
+              }
+
+              deleteSubmit.disabled = true;
+              deleteSubmit.innerHTML = `<span class="material-icons-round">hourglass_top</span>삭제 중...`;
+
+              try {
+                await deleteBucketByApi(bucketMutationState.bucketId);
+                closeDelete();
+                await loadBucketHub();
+              } catch (error) {
+                deleteSubmit.disabled = false;
+                deleteSubmit.innerHTML = `<span class="material-icons-round">delete</span>삭제`;
+                window.alert(error && error.message ? error.message : "Bucket 삭제에 실패했습니다.");
+              }
+            })();
+          });
+
+          editModal.dataset.bucketMutationReady = "true";
+        }
+
+        document.querySelectorAll("[data-bucket-id][data-bucket-action]").forEach((button) => {
+          if (button.dataset.bucketMutationBound === "true") {
+            return;
+          }
+
+          button.dataset.bucketMutationBound = "true";
+          button.addEventListener("click", async (event) => {
+            const bucketId = button.getAttribute("data-bucket-id");
+            const action = button.getAttribute("data-bucket-action");
+            if (!bucketId || !action || button.disabled || button.classList.contains("is-disabled")) {
+              return;
+            }
+
+            if (action === "open") {
+              return;
+            }
+
+            event.preventDefault();
+            const bucket = getBucketState(bucketId);
+            if (!bucket) {
+              window.alert("선택한 bucket 정보를 다시 불러와 주세요.");
+              return;
+            }
+
+            bucketMutationState.bucketId = bucketId;
+            bucketMutationState.triggerButton = button;
+
+            if (action === "edit") {
+              editTarget.textContent = normalizeText(bucket.name) || "Bucket";
+              editAuthors.value = joinAuthorInput((bucket.collaborators || []).map((entry) => entry?.sub));
+              editModal.hidden = false;
+              document.body.style.overflow = "hidden";
+              requestAnimationFrame(() => {
+                editAuthors.focus();
+              });
+              return;
+            }
+
+            if (action === "delete") {
+              const bindingCount = getBucketBindingCount(bucket);
+              deleteTarget.textContent = normalizeText(bucket.name) || "Bucket";
+              deleteNote.innerHTML = `<span class="material-icons-round">info</span>${
+                bindingCount > 0
+                  ? `현재 ${formatNumber(bindingCount)}개의 프로젝트가 연결되어 있어 삭제할 수 없습니다. 바인딩을 먼저 해제해 주세요.`
+                  : "삭제하면 Hub 목록과 MinIO bucket이 함께 정리됩니다."
+              }`;
+              deleteSubmit.disabled = bindingCount > 0;
+              deleteModal.hidden = false;
+              document.body.style.overflow = "hidden";
+              requestAnimationFrame(() => {
+                (bindingCount > 0 ? deleteModal.querySelector("#bucketDeleteCancel") : deleteSubmit).focus();
+              });
+            }
+          });
+        });
+      }
+
+      function wireBucketCreateAction() {
+        const button = document.querySelector(".control-actions .create-btn");
+        if (!button || button.dataset.bucketCreateBound === "true") {
+          return;
+        }
+
+	        button.dataset.bucketCreateBound = "true";
+	        button.addEventListener("click", (event) => {
+	          event.preventDefault();
+	          const modal = ensureBucketCreateModal();
+	          const sync = modal && modal.querySelector("#bucketCreateName") ? (() => {
+	            const event = new Event("input", { bubbles: true });
+	            modal.querySelector("#bucketCreateName").dispatchEvent(event);
+	          }) : null;
+	          modal.hidden = false;
+	          document.body.style.overflow = "hidden";
+	          const input = modal.querySelector("#bucketCreateName");
+	          if (typeof sync === "function") {
+	            sync();
+	          }
+	          requestAnimationFrame(() => {
+	            if (input) {
+	              input.focus();
+            }
+          });
+        });
+      }
+
+      function renderConfig(config) {
+        lastRenderedConfig = config;
+        window.HUB_CONFIG = config;
+        if (typeof window.renderWorkspaceResourceHub === "function") {
+          window.renderWorkspaceResourceHub(config);
+          attachActionHandlers();
+          wireBucketCreateAction();
+          wireBucketMutations();
+          if (typeof window.refreshConceptEndpointOverlay === "function") {
+            requestAnimationFrame(() => {
+              window.refreshConceptEndpointOverlay();
+            });
+          }
+        }
+      }
+
+      async function loadBucketHub() {
+        const results = await Promise.allSettled([
+          fetchAllBuckets(),
+          fetchJson("/buckets/stats"),
+          fetchJson("/buckets/filters"),
+          fetchJson("/buckets/panels/usage"),
+          fetchJson("/panels/tips", { surface: "buckets" }),
+          fetchJson("/panels/guide-links", { surface: "buckets" })
+        ]);
+
+        const bucketsResult = results[0];
+        if (bucketsResult.status !== "fulfilled") {
+          throw bucketsResult.reason;
+        }
+
+        const bucketsPayload = bucketsResult.value;
+        const bucketItems = extractItems(bucketsPayload);
+        const bucketDetails = await fetchBucketDetails(bucketItems);
+        bucketHubState.items = bucketItems;
+        bucketHubState.detailById = bucketDetails;
+        const statsPayload = results[1].status === "fulfilled" ? extractData(results[1].value, {}) : {};
+        const filtersPayload = results[2].status === "fulfilled" ? extractData(results[2].value, null) : null;
+        const usagePayload = results[3].status === "fulfilled" ? extractData(results[3].value, null) : null;
+        const tipsPayload = results[4].status === "fulfilled" ? extractData(results[4].value, null) : null;
+        const guidePayload = results[5].status === "fulfilled" ? extractData(results[5].value, null) : null;
+        const total = extractPageTotal(bucketsPayload, bucketItems.length);
+
+        renderConfig({
+          ...FALLBACK_CONFIG,
+          searchSource: "buckets",
+          searchSourceLabel: "Bucket Hub",
+          searchDefaultType: "hub",
+          heroStats: buildHeroStats(statsPayload, bucketItems),
+          filters: buildFilters(filtersPayload, bucketItems),
+          resourceDescription: buildResourceDescription(total, statsPayload),
+          resources: bucketItems.map((bucket) => buildBucketResource(bucket, bucketDetails.get(bucket.id))),
+          mainPanels: [
+            buildTipsPanel(tipsPayload),
+            buildGuidePanel(guidePayload)
+          ],
+          sidebarPanels: [
+            buildUsagePanel(usagePayload, bucketItems)
+          ]
+        });
+      }
+
+      function attachActionHandlers() {
+        document.querySelectorAll("[data-bucket-id][data-bucket-action]").forEach((button) => {
+          if (button.dataset.bucketActionBound === "true") {
+            return;
+          }
+
+          button.dataset.bucketActionBound = "true";
+          button.addEventListener("click", async (event) => {
+            event.preventDefault();
+
+            const bucketId = button.getAttribute("data-bucket-id");
+            const action = button.getAttribute("data-bucket-action");
+            if (!bucketId || action !== "open" || button.disabled || button.classList.contains("is-disabled")) {
+              return;
+            }
+
+            button.disabled = true;
+            button.classList.add("is-disabled");
+            pendingBucketActions.add(bucketId);
+
+            try {
+              await openBucketById(bucketId);
+            } catch (error) {
+              console.error("[workspace_s3_hub] bucket open failed", error);
+              window.alert(error && error.message ? error.message : "Bucket open 동작에 실패했습니다.");
+            } finally {
+              pendingBucketActions.delete(bucketId);
+              await loadBucketHub().catch((error) => {
+                console.warn("[workspace_s3_hub] reload after action failed", error);
+              });
+            }
+          });
+        });
+      }
+
+      function handleLoadError(error) {
+        console.warn("[workspace_s3_hub] Failed to load bucket hub data", error);
+        bucketHubState.items = [];
+        bucketHubState.detailById = new Map();
+        renderConfig({
+          ...FALLBACK_CONFIG,
+          resources: [],
+          resourceDescription: "실제 bucket 정보를 불러오지 못했습니다. 권한 또는 API 상태를 확인해 주세요."
+        });
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => {
+          loadBucketHub().catch(handleLoadError);
+        }, { once: true });
+      } else {
+        loadBucketHub().catch(handleLoadError);
+      }
+    })();
+  </script>
   <script src="concept_endpoint_overlay.js"></script>
 </body>
 </html>

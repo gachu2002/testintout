@@ -38,3 +38,24 @@ export function focusVisibleStyles(theme: Theme) {
     },
   };
 }
+
+export function buildResourceResultCopy({
+  filterLabel,
+  isDefault,
+  loadedCount,
+  total,
+  visibleCount,
+}: {
+  filterLabel?: string;
+  isDefault: boolean;
+  loadedCount: number;
+  total?: number;
+  visibleCount: number;
+}) {
+  const totalCopy = typeof total === 'number' ? `${total.toLocaleString()} total` : 'total unknown';
+  const loadedCopy = `${loadedCount.toLocaleString()} loaded`;
+
+  if (isDefault) return `${loadedCopy} · ${totalCopy}`;
+
+  return `${visibleCount.toLocaleString()} ${filterLabel ?? 'visible'} · ${loadedCopy}`;
+}

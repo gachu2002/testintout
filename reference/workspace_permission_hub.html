@@ -8,6 +8,339 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
   <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
   <link rel="stylesheet" href="ax_studio_topbar.css" />
+  <style>
+    .permission-request-lines {
+      display: grid;
+      gap: 3px;
+    }
+
+    .permission-request-line {
+      display: block;
+      line-height: 1.55;
+    }
+
+    .permission-request-label {
+      font-weight: 700;
+      color: var(--t2);
+      margin-right: 4px;
+    }
+
+    .permission-request-value {
+      color: var(--t3);
+    }
+
+    .tag.is-requestable-role {
+      appearance: none;
+      cursor: pointer;
+      transition: border-color .16s ease, background .16s ease, color .16s ease, box-shadow .16s ease;
+    }
+
+    .tag.is-requestable-role:hover {
+      color: var(--brand);
+      border-color: color-mix(in srgb, var(--brand) 24%, transparent);
+      background: var(--brand-bg);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 10%, transparent);
+    }
+
+    .tag.is-requestable-role:disabled {
+      cursor: default;
+      opacity: 1;
+    }
+
+    .permission-request-modal[hidden] {
+      display: none;
+    }
+
+    .permission-request-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 320;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(31, 22, 50, .44);
+      backdrop-filter: blur(8px);
+    }
+
+    .permission-request-modal-card {
+      width: min(100%, 520px);
+      padding: 22px;
+      border-radius: 24px;
+      border: 1px solid rgba(236, 231, 244, .96);
+      background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(255,247,251,.98));
+      box-shadow: 0 24px 52px rgba(31,22,50,.18);
+      display: grid;
+      gap: 16px;
+    }
+
+    .permission-request-modal-head {
+      display: grid;
+      gap: 6px;
+    }
+
+    .permission-request-modal-kicker {
+      color: var(--brand);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .permission-request-modal-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      color: var(--t1);
+    }
+
+    .permission-request-modal-desc,
+    .permission-request-modal-target {
+      color: var(--t2);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .permission-request-modal-target {
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.82);
+    }
+
+    .permission-request-modal-field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .permission-request-modal-note,
+    .permission-request-modal-feedback {
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--t2);
+    }
+
+    .permission-request-modal-feedback {
+      min-height: 20px;
+    }
+
+    .permission-request-modal-feedback[data-tone="error"] {
+      color: #be123c;
+    }
+
+    .permission-request-modal-feedback[data-tone="ok"] {
+      color: #047857;
+    }
+
+    .permission-request-modal-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--t1);
+    }
+
+    .permission-request-modal-input,
+    .permission-request-modal-textarea {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: #fff;
+      color: var(--t1);
+      font: inherit;
+      font-size: 13px;
+      line-height: 1.65;
+      outline: none;
+      transition: border .16s ease, box-shadow .16s ease;
+    }
+
+    .permission-request-modal-input {
+      min-height: 52px;
+    }
+
+    .permission-request-modal-textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .permission-request-modal-input:focus,
+    .permission-request-modal-textarea:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(190,24,93,.10);
+    }
+
+    .permission-request-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .permission-request-send-btn:disabled {
+      opacity: .48;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .resource-action-btn.delete {
+      background: #fff1f2;
+      border-color: rgba(225, 29, 72, .18);
+      color: #be123c;
+    }
+
+    .resource-action-btn.delete:hover {
+      background: #ffe4e6;
+    }
+
+    .permission-delete-modal[hidden] {
+      display: none;
+    }
+
+    .permission-delete-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 340;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(31, 22, 50, .52);
+      backdrop-filter: blur(8px);
+    }
+
+    .permission-delete-modal-card {
+      width: min(100%, 500px);
+      padding: 22px;
+      border-radius: 24px;
+      border: 1px solid rgba(251, 205, 214, .96);
+      background: linear-gradient(180deg, rgba(255,255,255,.99), rgba(255,244,246,.98));
+      box-shadow: 0 24px 52px rgba(31,22,50,.2);
+      display: grid;
+      gap: 16px;
+    }
+
+    .permission-delete-modal-head {
+      display: grid;
+      gap: 6px;
+    }
+
+    .permission-delete-modal-kicker {
+      color: #be123c;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .permission-delete-modal-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      color: var(--t1);
+    }
+
+    .permission-delete-modal-desc,
+    .permission-delete-modal-target,
+    .permission-delete-modal-note {
+      color: var(--t2);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .permission-delete-modal-target {
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(251, 191, 36, .28);
+      background: rgba(255, 251, 235, .9);
+      color: var(--t1);
+      font-weight: 700;
+    }
+
+    .permission-delete-modal-note {
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(244, 63, 94, .16);
+      background: rgba(255, 241, 242, .92);
+    }
+
+    .permission-delete-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .permission-delete-confirm-btn {
+      background: #e11d48;
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 14px 30px rgba(225, 29, 72, .22);
+    }
+
+    .permission-delete-confirm-btn:hover {
+      background: #be123c;
+    }
+
+    .permission-delete-confirm-btn:disabled {
+      opacity: .48;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .permission-request-expand-row {
+      cursor: pointer;
+      transition: background .16s ease, border-color .16s ease, box-shadow .16s ease;
+    }
+
+    .permission-request-expand-row:hover,
+    .permission-request-expand-row:focus-within {
+      background: color-mix(in srgb, var(--brand) 4%, white);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand) 10%, transparent);
+    }
+
+    .permission-request-expand-row .list-row-copy {
+      gap: 2px;
+    }
+
+    .permission-request-expand-row .list-row-title {
+      font-size: 12px;
+      color: var(--t1);
+      font-weight: 700;
+    }
+
+    .permission-request-expand-row .list-row-subtitle {
+      display: none;
+    }
+
+    .permission-request-expand-row .list-row-meta {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      margin-top: 0;
+      transition: max-height .18s ease, opacity .16s ease, margin-top .16s ease;
+      pointer-events: none;
+    }
+
+    .permission-request-expand-row.is-expanded .list-row-meta {
+      max-height: 220px;
+      opacity: 1;
+      margin-top: 6px;
+      pointer-events: auto;
+    }
+
+    @media (max-width: 820px) {
+      .permission-request-modal {
+        padding: 16px;
+      }
+
+      .permission-request-modal-card,
+      .permission-delete-modal-card {
+        padding: 18px;
+        border-radius: 20px;
+      }
+
+      .permission-delete-modal {
+        padding: 16px;
+      }
+    }
+  </style>
 </head>
 <body>
   <div id="app"></div>
@@ -32,10 +365,10 @@
       eyebrow: "Accessibility · IAM & Approvals",
       title: "Permission Hub",
       description: "Permission Realm 모음입니다. 각 카드에서 Realm 안에 포함된 Role, 프로젝트 바인딩, 요청 Inbox를 한 화면에서 확인합니다.",
-      primaryAction: { href: "workspace_permission_detail.html", icon: "person_add", label: "새권한 요청" },
+      primaryAction: null,
       secondaryAction: { href: "workspace_projects_hub.html", icon: "inventory_2", label: "프로젝트 목록" },
       utilityAction: null,
-      createAction: null,
+      createAction: { href: "#", icon: "add_circle", label: "새 Permission 생성" },
       heroStats: [
         { icon: "admin_panel_settings", value: "-", label: "등록 Realm", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#be185d,#ec4899)" },
         { icon: "badge", value: "-", label: "포함 Role", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#db2777,#f472b6)" },
@@ -123,6 +456,26 @@
         rejected: { label: "Rejected", tone: "incident" },
         cancelled: { label: "Cancelled", tone: "muted" }
       };
+      const PANEL_TONE_CLASS = {
+        healthy: "tone-healthy",
+        stable: "tone-healthy",
+        review: "tone-review",
+        pending: "tone-pending",
+        info: "tone-info",
+        warn: "tone-warn",
+        incident: "tone-incident",
+        draft: "tone-draft",
+        muted: "tone-muted"
+      };
+      const createdRealmResources = [];
+      let lastRenderedConfig = FALLBACK_CONFIG;
+      const hubState = {
+        realmItems: [],
+        realmMap: new Map(),
+        statsPayload: null,
+        filtersPayload: null,
+        requestsPayload: null
+      };
 
       function buildQuery(params) {
         const searchParams = new URLSearchParams();
@@ -146,11 +499,19 @@
           ...(options || {})
         });
 
+        const payload = await response.json().catch(() => null);
+
         if (!response.ok) {
-          throw new Error(`${response.status} ${response.statusText}`);
+          const message = payload && payload.error && payload.error.message
+            ? payload.error.message
+            : `${response.status} ${response.statusText}`;
+          const error = new Error(message);
+          error.status = response.status;
+          error.payload = payload;
+          throw error;
         }
 
-        return response.json();
+        return payload;
       }
 
       async function fetchJson(path, params) {
@@ -241,6 +602,24 @@
 
       function normalizeText(value) {
         return String(value || "").trim();
+      }
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function renderRequestLine(label, value) {
+        return `
+          <div class="permission-request-line">
+            <span class="permission-request-label">${escapeHtml(label)}:</span>
+            <span class="permission-request-value">${escapeHtml(value)}</span>
+          </div>
+        `;
       }
 
       function refineSectionDescription(value, fallback) {
@@ -434,20 +813,24 @@
         const rows = (requests || []).slice(0, REQUEST_PANEL_LIMIT).map(request => {
           const statusMeta = getRequestStatusMeta(request && request.status);
           const realm = realmMap.get(normalizeText(request && request.realmId));
-          const requesterName = normalizeText(request && request.requester && request.requester.name) || "unknown";
           const roleName = normalizeText(request && request.roleName) || "role";
-          const realmName = normalizeText(realm && realm.name) || "Unknown Realm";
-          const metaParts = [
-            realmName,
-            roleName,
-            requesterName,
-            formatRequestDate(request && request.createdAt)
+          const realmName = normalizeText(request && request.realmName) || normalizeText(realm && realm.name) || "Unknown Realm";
+          const rejectReason = normalizeText(request && request.rejectReason);
+          const isRejected = normalizeText(request && request.status).toLowerCase() === "rejected";
+          const createdAt = formatRequestDate(
+            isRejected
+              ? (request && (request.decidedAt || request.createdAt))
+              : (request && request.createdAt)
+          );
+          const lines = [
+            ...(rejectReason ? [renderRequestLine("거절 사유", truncateText(rejectReason, 72))] : []),
+            renderRequestLine("날짜", createdAt)
           ];
-          const reason = truncateText(request && request.reason, 48);
 
           return {
-            title: `${requesterName} · ${roleName}`,
-            meta: reason ? `${metaParts.join(" · ")} · ${reason}` : metaParts.join(" · "),
+            title: `${escapeHtml(realmName)}'s ${escapeHtml(roleName)} access request`,
+            meta: `<div class="permission-request-lines">${lines.join("")}</div>`,
+            className: "permission-request-expand-row",
             pill: statusMeta
           };
         });
@@ -469,6 +852,91 @@
             }
           ]
         };
+      }
+
+      function renderHeroStatsMarkup(items) {
+        return (items || []).map((item) => `
+          <article class="stat-card">
+            <div class="stat-icon" style="background:${item.color || "linear-gradient(135deg,var(--brand),var(--accent-2))"}">
+              <span class="material-icons-round">${item.icon}</span>
+            </div>
+            <div class="stat-copy">
+              <div class="stat-value">${item.value}</div>
+              <div class="stat-label">${item.label}</div>
+              ${item.note ? `<div class="stat-note">${item.note}</div>` : ""}
+            </div>
+          </article>
+        `).join("");
+      }
+
+      function renderRequestPanelRows(rows) {
+        return (rows || []).map((row) => `
+          <div class="list-row ${row.className || ""}">
+            <div class="list-row-copy">
+              <div class="list-row-title">${row.href ? `<a href="${row.href}">${row.title}</a>` : row.title}</div>
+              ${row.subtitle ? `<div class="list-row-subtitle">${row.subtitle}</div>` : ""}
+              <div class="list-row-meta ${row.metaClassName || ""}">${row.meta || ""}</div>
+            </div>
+            ${row.pill ? `<span class="ops-pill ${PANEL_TONE_CLASS[row.pill.tone] || "tone-info"}">${row.pill.label}</span>` : ""}
+          </div>
+        `).join("");
+      }
+
+      function renderRequestPanelMarkup(panel) {
+        return `
+          <div class="sec-label"><span class="material-icons-round">${panel.icon}</span>${panel.label}</div>
+          <div class="list-head">
+            ${panel.title ? `<div class="list-title">${panel.title}</div>` : ""}
+            ${panel.description ? `<div class="list-desc">${panel.description}</div>` : ""}
+          </div>
+          <div class="list-rows">${renderRequestPanelRows(panel.rows)}</div>
+          ${panel.footerLink ? `<a class="side-link" href="${panel.footerLink.href}">${panel.footerLink.label}<span class="material-icons-round">chevron_right</span></a>` : ""}
+        `;
+      }
+
+      function setHubSnapshot({ realmItems, statsPayload, filtersPayload, requestsPayload }) {
+        hubState.realmItems = Array.isArray(realmItems) ? realmItems : [];
+        hubState.realmMap = new Map(hubState.realmItems.map(item => [normalizeText(item && item.id), item]));
+        hubState.statsPayload = statsPayload ?? null;
+        hubState.filtersPayload = filtersPayload ?? null;
+        hubState.requestsPayload = requestsPayload ?? null;
+      }
+
+      function ensureRequestPanelElement() {
+        const existing = document.getElementById("permissionRequestPanel");
+        if (existing) {
+          return existing;
+        }
+
+        const panel = document.querySelector(".side-col .personal-rail-card");
+        if (!panel) {
+          return null;
+        }
+
+        panel.id = "permissionRequestPanel";
+        return panel;
+      }
+
+      function syncHubRequestSections({ requestsPayload = hubState.requestsPayload, statsPayload = hubState.statsPayload } = {}) {
+        const requestPanelElement = ensureRequestPanelElement();
+        const heroStatsElement = document.querySelector(".hero-stats");
+        const nextRequestsPayload = requestsPayload ?? hubState.requestsPayload;
+        const nextStatsPayload = statsPayload ?? hubState.statsPayload;
+
+        hubState.requestsPayload = nextRequestsPayload ?? null;
+        hubState.statsPayload = nextStatsPayload ?? null;
+
+        if (!requestPanelElement || !heroStatsElement) {
+          return false;
+        }
+
+        const requestPanel = buildRequestPanel(extractItems(nextRequestsPayload), hubState.realmMap);
+        requestPanelElement.innerHTML = renderRequestPanelMarkup(requestPanel);
+        heroStatsElement.innerHTML = renderHeroStatsMarkup(
+          buildHeroStats(nextStatsPayload, hubState.realmItems, hubState.filtersPayload)
+        );
+        wirePermissionRequestListInteractions();
+        return true;
       }
 
       function toConnection(binding, color) {
@@ -521,13 +989,42 @@
         const boundProjects = Array.isArray(realm && realm.boundProjects) ? realm.boundProjects : [];
         const roles = Array.isArray(realm && realm.roles) ? realm.roles : [];
         const currentUserRoles = new Set(getViewerRoleNames(realm));
+        const canRequest = Boolean(realm && realm.capabilities && realm.capabilities.canRequest);
+        const canDelete = Boolean(realm && realm.capabilities && realm.capabilities.canDelete);
+        const projectCount = Number(realm && realm.projectCount) || boundProjects.length;
         const capabilityChips = [];
+        const hasAdminRole = Array.from(currentUserRoles).some(role => role.toLowerCase() === "admin");
+        const actions = [];
 
-        if (realm && realm.capabilities && realm.capabilities.canApprove) {
-          capabilityChips.push({ icon: "verified_user", text: "Manage enabled" });
+        if ((realm && realm.capabilities && realm.capabilities.canApprove) || hasAdminRole) {
+          capabilityChips.push({ icon: "verified_user", text: "Manage enabled", className: "is-manage-enabled" });
         } else if (realm && realm.capabilities && realm.capabilities.canRequest) {
-          capabilityChips.push({ icon: "person_add", text: "Request enabled" });
+          capabilityChips.push({ icon: "person_add", text: "Request enabled", className: "is-request-enabled" });
         }
+
+        if (canDelete) {
+          actions.push({
+            kind: "delete",
+            label: "Delete",
+            icon: "delete",
+            disabled: projectCount > 0,
+            attributes: {
+              "data-realm-delete-id": normalizeText(realm && realm.id),
+              "data-realm-delete-name": normalizeText(realm && realm.name) || "Permission Realm",
+              "data-realm-delete-project-count": String(projectCount),
+              title: projectCount > 0
+                ? "연결된 프로젝트를 먼저 해제해야 합니다."
+                : "Permission Realm 삭제"
+            }
+          });
+        }
+
+        actions.push({
+          kind: "open",
+          label: "Detail",
+          icon: "open_in_new",
+          href: toPermissionDetailHref(realm)
+        });
 
         return {
           id: realm.id,
@@ -553,23 +1050,208 @@
           connections: boundProjects.map(binding => toConnection(binding, kindMeta.color)),
           tagsLabel: "Roles",
           tags: roles.map(role => ({
-            icon: "badge",
-            text: `${normalizeText(role && role.name) || "role"}(${formatNumber(role && role.memberCount)})`,
-            className: currentUserRoles.has(normalizeText(role && role.name)) ? "is-active-role" : "",
-            title: currentUserRoles.has(normalizeText(role && role.name))
-              ? "현재 접속자가 가진 role"
-              : ""
+            ...(function buildRoleTag() {
+              const roleName = normalizeText(role && role.name) || "role";
+              const hasRole = currentUserRoles.has(roleName);
+              const isRequestable = !hasRole && canRequest;
+              return {
+                icon: "badge",
+                text: `${roleName}(${formatNumber(role && role.memberCount)})`,
+                className: hasRole ? "is-active-role" : (isRequestable ? "is-requestable-role" : ""),
+                title: hasRole
+                  ? "현재 접속자가 가진 role"
+                  : (isRequestable ? "클릭해서 permission 요청" : ""),
+                button: isRequestable,
+                attributes: isRequestable ? {
+                  "data-permission-request-role": roleName,
+                  "data-permission-request-realm-id": normalizeText(realm && realm.id),
+                  "data-permission-request-realm-name": normalizeText(realm && realm.name) || "Permission Realm"
+                } : {}
+              };
+            })()
           })),
           footer: formatDateTime(realm && realm.updatedAt),
+          actions
+        };
+      }
+
+      function buildCreatedRealmResource(name) {
+        const realmName = normalizeText(name) || "New Permission Realm";
+        const kindMeta = KIND_META.scoped;
+        return {
+          id: `draft-${Date.now()}`,
+          categories: ["all", "scoped"],
+          status: { label: "Review", tone: "review" },
+          engine: kindMeta.engine,
+          icon: kindMeta.icon,
+          name: realmName,
+          meta: "새 Permission Realm 초안입니다. Role과 프로젝트 바인딩은 상세에서 이어서 설정합니다.",
+          color: kindMeta.color,
+          details: [
+            { icon: "groups", text: "Members 0" },
+            { icon: "badge", text: "Roles 0" }
+          ],
+          tagsFirst: true,
+          connectionsLabel: "Projects",
+          connectionsEqualWidth: true,
+          connectionsMaxItems: 4,
+          connectionsLayoutClass: "is-fixed-projects",
+          connections: [],
+          tagsLabel: "Roles",
+          tags: [],
+          footer: "방금 생성됨",
           actions: [
             {
               kind: "open",
               label: "Detail",
               icon: "open_in_new",
-              href: toPermissionDetailHref(realm)
+              href: toPermissionDetailHref({ id: realmName, name: realmName, kind: "scoped", status: "review" })
             }
           ]
         };
+      }
+
+      function ensureRealmCreateModal() {
+        let modal = document.getElementById("permissionRealmCreateModal");
+        if (modal) {
+          return modal;
+        }
+
+        modal = document.createElement("div");
+        modal.className = "hub-lite-create-backdrop";
+        modal.id = "permissionRealmCreateModal";
+        modal.hidden = true;
+        modal.innerHTML = `
+          <div class="hub-lite-create-shell" role="dialog" aria-modal="true" aria-labelledby="permissionRealmCreateTitle">
+            <div class="hub-lite-create-head">
+              <div class="hub-lite-create-copy">
+                <div class="hub-lite-create-title-row">
+                  <span class="hub-lite-create-step-badge">1</span>
+                  <h2 id="permissionRealmCreateTitle">Permission Realm을 생성합니다</h2>
+                </div>
+                <p class="hub-lite-create-subtitle">이름만 먼저 만들고, Role과 프로젝트 연결은 상세 화면에서 정리할 수 있습니다.</p>
+              </div>
+              <div class="hub-lite-create-head-actions">
+                <div class="hub-lite-create-hero" aria-hidden="true"><span class="material-icons-round">vpn_key</span></div>
+                <button class="hub-lite-create-close" type="button" id="permissionRealmCreateClose" aria-label="Permission 생성 닫기">
+                  <span class="material-icons-round">close</span>
+                </button>
+              </div>
+            </div>
+            <div class="hub-lite-create-progress">
+              <div class="hub-lite-create-progress-track">
+                <div class="hub-lite-create-progress-item">
+                  <div class="hub-lite-create-progress-line">
+                    <span class="hub-lite-create-progress-rail"></span>
+                    <span class="hub-lite-create-progress-dot">1</span>
+                    <span class="hub-lite-create-progress-rail"></span>
+                  </div>
+                  <div class="hub-lite-create-progress-label">Realm 이름</div>
+                  <div class="hub-lite-create-progress-value" id="permissionRealmCreateValue">아직 입력되지 않았습니다.</div>
+                </div>
+              </div>
+            </div>
+            <form class="hub-lite-create-form" id="permissionRealmCreateForm">
+              <div class="hub-lite-create-stage">
+                <div class="hub-lite-create-panel">
+                  <div class="hub-lite-create-panel-title">Permission Realm 이름을 입력해주세요.</div>
+                  <input class="hub-lite-create-input" id="permissionRealmCreateName" type="text" placeholder="예: workspace-project-admin" required />
+                  <div class="hub-lite-create-note"><span class="material-icons-round">info</span>현재 화면에서는 이름만 등록하고, Role 구성과 바인딩 정책은 상세 화면에서 이어서 작업합니다.</div>
+                </div>
+              </div>
+              <div class="hub-lite-create-actions">
+                <button class="hub-lite-create-action ghost" type="button" id="permissionRealmCreateCancel">취소</button>
+                <button class="hub-lite-create-action primary" type="submit" id="permissionRealmCreateSubmit" disabled><span class="material-icons-round">check_circle</span>Permission 생성</button>
+              </div>
+            </form>
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        const form = modal.querySelector("#permissionRealmCreateForm");
+        const input = modal.querySelector("#permissionRealmCreateName");
+        const value = modal.querySelector("#permissionRealmCreateValue");
+        const submit = modal.querySelector("#permissionRealmCreateSubmit");
+        const closeButtons = [
+          modal.querySelector("#permissionRealmCreateClose"),
+          modal.querySelector("#permissionRealmCreateCancel")
+        ].filter(Boolean);
+
+        const sync = () => {
+          const currentValue = normalizeText(input && input.value);
+          if (value) {
+            value.textContent = currentValue || "아직 입력되지 않았습니다.";
+          }
+          if (submit) {
+            submit.disabled = !currentValue;
+          }
+        };
+
+        const close = () => {
+          modal.hidden = true;
+          document.body.style.overflow = "";
+          if (form) form.reset();
+          sync();
+        };
+
+        closeButtons.forEach((button) => {
+          button.addEventListener("click", close);
+        });
+
+        modal.addEventListener("click", (event) => {
+          if (event.target === modal) {
+            close();
+          }
+        });
+
+        modal.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && !modal.hidden) {
+            close();
+          }
+        });
+
+        if (input) {
+          input.addEventListener("input", sync);
+        }
+
+        if (form) {
+          form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const name = normalizeText(input && input.value);
+            if (!name) {
+              sync();
+              return;
+            }
+
+            createdRealmResources.unshift(buildCreatedRealmResource(name));
+            close();
+            renderConfig(lastRenderedConfig || FALLBACK_CONFIG);
+          });
+        }
+
+        sync();
+        return modal;
+      }
+
+      function wireRealmCreateAction() {
+        const button = document.querySelector(".control-actions .create-btn");
+        if (!button || button.dataset.permissionCreateBound === "true") {
+          return;
+        }
+
+        button.dataset.permissionCreateBound = "true";
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          const modal = ensureRealmCreateModal();
+          const input = modal && modal.querySelector("#permissionRealmCreateName");
+          if (!modal) return;
+          modal.hidden = false;
+          document.body.style.overflow = "hidden";
+          requestAnimationFrame(() => {
+            if (input) input.focus();
+          });
+        });
       }
 
       async function fetchAllPages(path, params) {
@@ -607,15 +1289,560 @@
       }
 
       function renderConfig(config) {
-        window.HUB_CONFIG = config;
+        lastRenderedConfig = config;
+        const nextConfig = {
+          ...config,
+          resources: [...createdRealmResources, ...(config.resources || [])]
+        };
+        window.HUB_CONFIG = nextConfig;
         if (typeof window.renderWorkspaceResourceHub === "function") {
-          window.renderWorkspaceResourceHub(config);
+          window.renderWorkspaceResourceHub(nextConfig);
+          ensureRequestPanelElement();
+          wireRealmCreateAction();
           if (typeof window.refreshConceptEndpointOverlay === "function") {
             requestAnimationFrame(() => {
               window.refreshConceptEndpointOverlay();
             });
           }
         }
+      }
+
+      function ensurePermissionRequestModal() {
+        let modal = document.getElementById("permissionRequestModal");
+        if (modal) {
+          return modal;
+        }
+
+        modal = document.createElement("div");
+        modal.className = "permission-request-modal";
+        modal.id = "permissionRequestModal";
+        modal.hidden = true;
+        modal.innerHTML = `
+          <div class="permission-request-modal-card" role="dialog" aria-modal="true" aria-labelledby="permissionRequestTitle">
+            <div class="permission-request-modal-head">
+              <div class="permission-request-modal-kicker">Permission Request</div>
+              <div class="permission-request-modal-title" id="permissionRequestTitle">권한 요청</div>
+              <div class="permission-request-modal-desc">권한을 요청하는 이유를 간략히 써주세요.</div>
+            </div>
+            <div class="permission-request-modal-target" id="permissionRequestTarget">선택된 role이 없습니다.</div>
+            <div class="permission-request-modal-field">
+              <label class="permission-request-modal-label" for="permissionRequestReasonInput">요청 사유</label>
+              <textarea
+                class="permission-request-modal-textarea"
+                id="permissionRequestReasonInput"
+                placeholder="권한 요청 사유를 입력해 주세요."
+              ></textarea>
+            </div>
+            <div class="permission-request-modal-actions">
+              <button class="resource-action-btn" id="permissionRequestCancelBtn" type="button">
+                <span class="material-icons-round">close</span>취소
+              </button>
+              <button class="resource-action-btn create-btn permission-request-send-btn" id="permissionRequestSendBtn" type="button" disabled>
+                <span class="material-icons-round">send</span>SEND
+              </button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+        return modal;
+      }
+
+      function buildPermissionRequestModalState() {
+        return {
+          realmId: "",
+          realmName: "",
+          roleName: "",
+          triggerButton: null
+        };
+      }
+
+      function buildRealmCreateModalState() {
+        return {
+          triggerButton: null
+        };
+      }
+
+      function buildRealmDeleteModalState() {
+        return {
+          realmId: "",
+          realmName: "",
+          projectCount: 0,
+          triggerButton: null
+        };
+      }
+
+      function ensureRealmDeleteModal() {
+        let modal = document.getElementById("permissionRealmDeleteModal");
+        if (modal) {
+          return modal;
+        }
+
+        modal = document.createElement("div");
+        modal.className = "permission-delete-modal";
+        modal.id = "permissionRealmDeleteModal";
+        modal.hidden = true;
+        modal.innerHTML = `
+          <div class="permission-delete-modal-card" role="dialog" aria-modal="true" aria-labelledby="permissionRealmDeleteTitle">
+            <div class="permission-delete-modal-head">
+              <div class="permission-delete-modal-kicker">Delete Realm</div>
+              <div class="permission-delete-modal-title" id="permissionRealmDeleteTitle">Permission Realm 삭제</div>
+              <div class="permission-delete-modal-desc">이 작업은 Realm 카드와 request inbox에서 즉시 반영됩니다. 삭제 전에 연결된 프로젝트가 없는지 다시 확인해 주세요.</div>
+            </div>
+            <div class="permission-delete-modal-target" id="permissionRealmDeleteTarget">선택된 Realm이 없습니다.</div>
+            <div class="permission-delete-modal-note" id="permissionRealmDeleteNote">Realm에 연결된 프로젝트가 남아 있으면 삭제할 수 없습니다.</div>
+            <div class="permission-delete-modal-actions">
+              <button class="resource-action-btn" id="permissionRealmDeleteCancelBtn" type="button">
+                <span class="material-icons-round">close</span>Cancel
+              </button>
+              <button class="resource-action-btn delete permission-delete-confirm-btn" id="permissionRealmDeleteConfirmBtn" type="button">
+                <span class="material-icons-round">delete</span>Delete Realm
+              </button>
+            </div>
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+        return modal;
+      }
+
+      function ensureRealmCreateModal() {
+        let modal = document.getElementById("permissionRealmCreateModal");
+        if (modal) {
+          return modal;
+        }
+
+        modal = document.createElement("div");
+        modal.className = "permission-request-modal";
+        modal.id = "permissionRealmCreateModal";
+        modal.hidden = true;
+        modal.innerHTML = `
+          <div class="permission-request-modal-card" role="dialog" aria-modal="true" aria-labelledby="permissionRealmCreateTitle">
+            <div class="permission-request-modal-head">
+              <div class="permission-request-modal-kicker">Create Realm</div>
+              <div class="permission-request-modal-title" id="permissionRealmCreateTitle">Realm 생성</div>
+              <div class="permission-request-modal-desc">중복되지 않은 이름이면 새 Permission Realm을 바로 생성합니다.</div>
+            </div>
+            <div class="permission-request-modal-field">
+              <label class="permission-request-modal-label" for="permissionRealmCreateNameInput">Realm 이름</label>
+              <input
+                class="permission-request-modal-input"
+                id="permissionRealmCreateNameInput"
+                type="text"
+                placeholder="예: workspace-analytics"
+                autocomplete="off"
+              />
+              <div class="permission-request-modal-note">새 Realm은 기본적으로 scoped 타입으로 생성됩니다.</div>
+              <div class="permission-request-modal-feedback" id="permissionRealmCreateFeedback"></div>
+            </div>
+            <div class="permission-request-modal-actions">
+              <button class="resource-action-btn" id="permissionRealmCreateCancelBtn" type="button">
+                <span class="material-icons-round">close</span>취소
+              </button>
+              <button class="resource-action-btn create-btn permission-request-send-btn" id="permissionRealmCreateConfirmBtn" type="button" disabled>
+                <span class="material-icons-round">add_circle</span>생성
+              </button>
+            </div>
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+        return modal;
+      }
+
+      function wirePermissionRequestListInteractions() {
+        const rows = Array.from(document.querySelectorAll(".permission-request-expand-row"));
+        if (!rows.length) {
+          return;
+        }
+
+        rows.forEach((row) => {
+          row.setAttribute("role", "button");
+          row.setAttribute("tabindex", "0");
+          row.setAttribute("aria-expanded", "false");
+
+          const toggleRow = () => {
+            const shouldExpand = !row.classList.contains("is-expanded");
+            rows.forEach((candidate) => {
+              candidate.classList.remove("is-expanded");
+              candidate.setAttribute("aria-expanded", "false");
+            });
+
+            if (shouldExpand) {
+              row.classList.add("is-expanded");
+              row.setAttribute("aria-expanded", "true");
+            }
+          };
+
+          row.addEventListener("click", () => toggleRow());
+          row.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              toggleRow();
+            }
+
+            if (event.key === "Escape" && row.classList.contains("is-expanded")) {
+              row.classList.remove("is-expanded");
+              row.setAttribute("aria-expanded", "false");
+              row.focus();
+            }
+          });
+        });
+      }
+
+      function wireRealmDeleteInteractions() {
+        const modal = ensureRealmDeleteModal();
+        const target = document.getElementById("permissionRealmDeleteTarget");
+        const note = document.getElementById("permissionRealmDeleteNote");
+        const confirmBtn = document.getElementById("permissionRealmDeleteConfirmBtn");
+        const cancelBtn = document.getElementById("permissionRealmDeleteCancelBtn");
+        const state = buildRealmDeleteModalState();
+
+        if (!modal || !target || !note || !confirmBtn || !cancelBtn) {
+          return;
+        }
+
+        const closeModal = () => {
+          modal.hidden = true;
+          target.textContent = "선택된 Realm이 없습니다.";
+          note.textContent = "Realm에 연결된 프로젝트가 남아 있으면 삭제할 수 없습니다.";
+          confirmBtn.disabled = false;
+          confirmBtn.innerHTML = `<span class="material-icons-round">delete</span>Delete Realm`;
+          cancelBtn.disabled = false;
+          if (state.triggerButton) {
+            state.triggerButton.disabled = false;
+          }
+          document.body.style.overflow = "";
+          state.realmId = "";
+          state.realmName = "";
+          state.projectCount = 0;
+          state.triggerButton = null;
+        };
+
+        document.querySelectorAll("[data-realm-delete-id]").forEach((button) => {
+          button.addEventListener("click", () => {
+            state.realmId = button.getAttribute("data-realm-delete-id") || "";
+            state.realmName = button.getAttribute("data-realm-delete-name") || "Permission Realm";
+            state.projectCount = Number(button.getAttribute("data-realm-delete-project-count") || "0");
+            state.triggerButton = button;
+            target.textContent = state.realmName;
+            note.textContent = state.projectCount > 0
+              ? `현재 ${formatNumber(state.projectCount)}개의 프로젝트가 연결되어 있습니다. 바인딩을 먼저 해제해야 삭제할 수 있습니다.`
+              : "이 Realm의 Keycloak client와 local permission request 기록이 함께 정리됩니다.";
+            confirmBtn.disabled = state.projectCount > 0;
+            modal.hidden = false;
+            document.body.style.overflow = "hidden";
+            requestAnimationFrame(() => {
+              (state.projectCount > 0 ? cancelBtn : confirmBtn).focus();
+            });
+          });
+        });
+
+        cancelBtn.onclick = () => closeModal();
+        modal.onclick = (event) => {
+          if (event.target === modal) {
+            closeModal();
+          }
+        };
+        confirmBtn.onclick = async () => {
+          if (!state.realmId || state.projectCount > 0) {
+            return;
+          }
+
+          confirmBtn.disabled = true;
+          cancelBtn.disabled = true;
+          confirmBtn.innerHTML = `<span class="material-icons-round">hourglass_top</span>Deleting...`;
+          if (state.triggerButton) {
+            state.triggerButton.disabled = true;
+          }
+
+          try {
+            await requestJson(`/permissions/realms/${encodeURIComponent(state.realmId)}`, {
+              method: "DELETE",
+              headers: {
+                Accept: "application/json"
+              }
+            });
+            closeModal();
+            await loadPermissionHub();
+          } catch (error) {
+            confirmBtn.disabled = false;
+            cancelBtn.disabled = false;
+            confirmBtn.innerHTML = `<span class="material-icons-round">delete</span>Delete Realm`;
+            if (state.triggerButton) {
+              state.triggerButton.disabled = false;
+            }
+            window.alert(error && error.message ? error.message : "Realm 삭제에 실패했습니다.");
+          }
+        };
+        modal.onkeydown = (event) => {
+          if (event.key === "Escape" && !modal.hidden) {
+            closeModal();
+          }
+        };
+      }
+
+      function wireRealmCreateInteractions() {
+        const modal = ensureRealmCreateModal();
+        const nameInput = document.getElementById("permissionRealmCreateNameInput");
+        const feedback = document.getElementById("permissionRealmCreateFeedback");
+        const confirmBtn = document.getElementById("permissionRealmCreateConfirmBtn");
+        const cancelBtn = document.getElementById("permissionRealmCreateCancelBtn");
+        const state = buildRealmCreateModalState();
+
+        if (!modal || !nameInput || !feedback || !confirmBtn || !cancelBtn) {
+          return;
+        }
+
+        const getExistingRealmNames = () => new Set(
+          (hubState.realmItems || [])
+            .map((realm) => normalizeText(realm && realm.name).toLowerCase())
+            .filter(Boolean)
+        );
+
+        const setFeedback = (message, tone) => {
+          feedback.textContent = message || "";
+          if (tone) {
+            feedback.dataset.tone = tone;
+          } else {
+            delete feedback.dataset.tone;
+          }
+        };
+
+        const syncCreateEnabled = () => {
+          const name = normalizeText(nameInput.value);
+          if (!name) {
+            confirmBtn.disabled = true;
+            setFeedback("Realm 이름을 입력해 주세요.");
+            return false;
+          }
+
+          const exists = getExistingRealmNames().has(name.toLowerCase());
+          if (exists) {
+            confirmBtn.disabled = true;
+            setFeedback("같은 이름의 Realm이 이미 있습니다.", "error");
+            return false;
+          }
+
+          confirmBtn.disabled = false;
+          setFeedback("사용 가능한 이름입니다.", "ok");
+          return true;
+        };
+
+        const closeModal = () => {
+          modal.hidden = true;
+          nameInput.value = "";
+          confirmBtn.disabled = true;
+          confirmBtn.innerHTML = `<span class="material-icons-round">add_circle</span>생성`;
+          cancelBtn.disabled = false;
+          setFeedback("");
+          if (state.triggerButton) {
+            state.triggerButton.disabled = false;
+          }
+          state.triggerButton = null;
+          document.body.style.overflow = "";
+        };
+
+        const openModal = (triggerButton) => {
+          state.triggerButton = triggerButton || null;
+          if (state.triggerButton) {
+            state.triggerButton.disabled = true;
+          }
+          modal.hidden = false;
+          document.body.style.overflow = "hidden";
+          nameInput.value = "";
+          syncCreateEnabled();
+          requestAnimationFrame(() => {
+            nameInput.focus();
+          });
+        };
+
+        const heroPrimaryButton = document.querySelector(".control-actions .create-btn");
+        if (heroPrimaryButton) {
+          heroPrimaryButton.onclick = (event) => {
+            event.preventDefault();
+            openModal(heroPrimaryButton);
+          };
+        }
+
+        cancelBtn.onclick = () => closeModal();
+        modal.onclick = (event) => {
+          if (event.target === modal) {
+            closeModal();
+          }
+        };
+        nameInput.oninput = () => syncCreateEnabled();
+        nameInput.onkeydown = (event) => {
+          if ((event.metaKey || event.ctrlKey) && event.key === "Enter" && !confirmBtn.disabled) {
+            confirmBtn.click();
+          }
+          if (event.key === "Escape" && !modal.hidden) {
+            closeModal();
+          }
+        };
+        confirmBtn.onclick = async () => {
+          const realmName = normalizeText(nameInput.value);
+          if (!realmName || !syncCreateEnabled()) {
+            return;
+          }
+
+          confirmBtn.disabled = true;
+          cancelBtn.disabled = true;
+          confirmBtn.innerHTML = `<span class="material-icons-round">hourglass_top</span>생성중...`;
+
+          try {
+            await requestJson("/permissions/realms", {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                name: realmName,
+                kind: "scoped"
+              })
+            });
+            closeModal();
+            await loadPermissionHub();
+          } catch (error) {
+            cancelBtn.disabled = false;
+            confirmBtn.innerHTML = `<span class="material-icons-round">add_circle</span>생성`;
+            const duplicateError = error && error.payload && error.payload.error && error.payload.error.code === "ALREADY_EXISTS";
+            setFeedback(
+              duplicateError
+                ? "같은 이름의 Realm이 이미 있습니다."
+                : (error && error.message ? error.message : "Realm 생성에 실패했습니다."),
+              "error"
+            );
+            confirmBtn.disabled = duplicateError ? true : !realmName;
+            if (state.triggerButton) {
+              state.triggerButton.disabled = false;
+            }
+          }
+        };
+        modal.onkeydown = (event) => {
+          if (event.key === "Escape" && !modal.hidden) {
+            closeModal();
+          }
+        };
+      }
+
+      function wirePermissionRequestInteractions() {
+        const modal = ensurePermissionRequestModal();
+        const target = document.getElementById("permissionRequestTarget");
+        const reasonInput = document.getElementById("permissionRequestReasonInput");
+        const sendBtn = document.getElementById("permissionRequestSendBtn");
+        const cancelBtn = document.getElementById("permissionRequestCancelBtn");
+        const state = buildPermissionRequestModalState();
+
+        if (!modal || !target || !reasonInput || !sendBtn || !cancelBtn) {
+          return;
+        }
+
+        const closeModal = () => {
+          modal.hidden = true;
+          target.textContent = "선택된 role이 없습니다.";
+          reasonInput.value = "";
+          sendBtn.disabled = true;
+          sendBtn.innerHTML = `<span class="material-icons-round">send</span>SEND`;
+          cancelBtn.disabled = false;
+          if (state.triggerButton) {
+            state.triggerButton.disabled = false;
+            state.triggerButton.classList.remove("is-requesting");
+          }
+          document.body.style.overflow = "";
+          state.realmId = "";
+          state.realmName = "";
+          state.roleName = "";
+          state.triggerButton = null;
+        };
+
+        const syncSendEnabled = () => {
+          sendBtn.disabled = !reasonInput.value.trim();
+        };
+
+        document.querySelectorAll("[data-permission-request-role]").forEach((button) => {
+          button.addEventListener("click", () => {
+            state.realmId = button.getAttribute("data-permission-request-realm-id") || "";
+            state.realmName = button.getAttribute("data-permission-request-realm-name") || "Permission Realm";
+            state.roleName = button.getAttribute("data-permission-request-role") || "";
+            state.triggerButton = button;
+            target.textContent = `${state.realmName} · ${state.roleName}`;
+            reasonInput.value = "";
+            syncSendEnabled();
+            modal.hidden = false;
+            document.body.style.overflow = "hidden";
+            requestAnimationFrame(() => {
+              reasonInput.focus();
+            });
+          });
+        });
+
+        cancelBtn.onclick = () => closeModal();
+        modal.onclick = (event) => {
+          if (event.target === modal) {
+            closeModal();
+          }
+        };
+        reasonInput.oninput = () => syncSendEnabled();
+        reasonInput.onkeydown = (event) => {
+          if ((event.metaKey || event.ctrlKey) && event.key === "Enter" && !sendBtn.disabled) {
+            sendBtn.click();
+          }
+          if (event.key === "Escape" && !modal.hidden) {
+            closeModal();
+          }
+        };
+        sendBtn.onclick = async () => {
+          if (!state.realmId || !state.roleName || !reasonInput.value.trim()) {
+            syncSendEnabled();
+            return;
+          }
+
+          sendBtn.disabled = true;
+          cancelBtn.disabled = true;
+          sendBtn.innerHTML = `<span class="material-icons-round">hourglass_top</span>SENDING...`;
+          if (state.triggerButton) {
+            state.triggerButton.disabled = true;
+            state.triggerButton.classList.add("is-requesting");
+          }
+
+          try {
+            await requestJson(`/permissions/realms/${encodeURIComponent(state.realmId)}/requests`, {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                roleName: state.roleName,
+                reason: reasonInput.value.trim()
+              })
+            });
+            closeModal();
+            const refreshResults = await Promise.allSettled([
+              fetchJson("/permissions/requests", { limit: REQUEST_PANEL_LIMIT, sort: "-createdAt" }),
+              fetchJson("/permissions/realms/stats")
+            ]);
+            const nextRequestsPayload = refreshResults[0].status === "fulfilled"
+              ? refreshResults[0].value
+              : hubState.requestsPayload;
+            const nextStatsPayload = refreshResults[1].status === "fulfilled"
+              ? extractData(refreshResults[1].value, null)
+              : hubState.statsPayload;
+            if (!syncHubRequestSections({ requestsPayload: nextRequestsPayload, statsPayload: nextStatsPayload })) {
+              await loadPermissionHub();
+            }
+          } catch (error) {
+            sendBtn.innerHTML = `<span class="material-icons-round">send</span>SEND`;
+            cancelBtn.disabled = false;
+            syncSendEnabled();
+            if (state.triggerButton) {
+              state.triggerButton.disabled = false;
+              state.triggerButton.classList.remove("is-requesting");
+            }
+            window.alert(error && error.message ? error.message : "권한 요청 생성에 실패했습니다.");
+          }
+        };
       }
 
       async function loadPermissionHub() {
@@ -648,7 +1875,12 @@
         const requestsPayload = requestsResult.status === "fulfilled" ? requestsResult.value : null;
         const tipsPayload = tipsResult.status === "fulfilled" ? extractData(tipsResult.value, null) : null;
         const guidePayload = guideResult.status === "fulfilled" ? extractData(guideResult.value, null) : null;
-        const realmMap = new Map(realmItems.map(item => [normalizeText(item && item.id), item]));
+        setHubSnapshot({
+          realmItems,
+          statsPayload,
+          filtersPayload,
+          requestsPayload
+        });
         const resourceTotal = extractPageTotal(realmsPayload, realmItems.length);
 
         renderConfig({
@@ -662,9 +1894,13 @@
             buildGuidePanel(guidePayload)
           ],
           sidebarPanels: [
-            buildRequestPanel(extractItems(requestsPayload), realmMap)
+            buildRequestPanel(extractItems(requestsPayload), hubState.realmMap)
           ]
         });
+        wirePermissionRequestListInteractions();
+        wireRealmCreateInteractions();
+        wirePermissionRequestInteractions();
+        wireRealmDeleteInteractions();
       }
 
       const handleLoadError = (error) => {
@@ -702,6 +1938,7 @@
             }
           ]
         });
+        wireRealmCreateInteractions();
       };
 
       if (document.readyState === "loading") {

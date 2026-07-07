@@ -9,11 +9,15 @@ import { useEffect, useState } from 'react';
 import { SectionStatusBadge } from '@/components/reference-status';
 import { SmartLink } from '@/components/SmartLink';
 import { focusVisibleStyles } from '@/components/workspace';
+import { WorkspaceIcon } from '@/components/WorkspaceIcon';
 import type { ServiceMenuGroup } from '@/features/app-shell/types';
 import { launchpadSectionStatus } from '@/features/launchpad/sectionStatus';
-import type { LaunchpadAnnouncement, LaunchpadHero } from '@/features/launchpad/types';
+import type {
+  LaunchpadAnnouncement,
+  LaunchpadBanner,
+  LaunchpadHero,
+} from '@/features/launchpad/types';
 import {
-  type BannerVariant,
   buildBannerSlides,
   getSlideVisual,
   type ReferenceBannerSlide,
@@ -24,6 +28,7 @@ import { BannerVisualCard, DejPipelineBackground, DejSnapshot } from './BannerVi
 export function BannerPanel({
   activeIndex,
   announcements,
+  banners,
   hero,
   isLoading,
   onSelect,
@@ -32,6 +37,7 @@ export function BannerPanel({
 }: {
   activeIndex: number;
   announcements: LaunchpadAnnouncement[];
+  banners: LaunchpadBanner[];
   hero?: LaunchpadHero;
   isLoading: boolean;
   onSelect: (index: number) => void;
@@ -39,7 +45,7 @@ export function BannerPanel({
   serviceGroups: ServiceMenuGroup[];
 }) {
   const [isPaused, setIsPaused] = useState(false);
-  const slides = isLoading ? [] : buildBannerSlides(announcements, hero, serviceGroups);
+  const slides = isLoading ? [] : buildBannerSlides(banners, announcements, hero, serviceGroups);
   const safeIndex = activeIndex >= 0 && activeIndex < slides.length ? activeIndex : 0;
 
   useEffect(() => {
@@ -115,9 +121,21 @@ function BannerSlideFrame({
 }) {
   const visual = getSlideVisual(slide.variant);
   const isDark = slide.variant !== 'release';
-  const titleMaxWidth = slide.variant === 'release' ? 620 : slide.variant === 'dej' ? 860 : 680;
-  const descriptionMaxWidth =
-    slide.variant === 'release' ? 520 : slide.variant === 'dej' ? 860 : 680;
+  const hasVisualSide = slide.variant === 'dej' || slide.visualMode !== 'none';
+  const titleMaxWidth = !hasVisualSide
+    ? 860
+    : slide.variant === 'release'
+      ? 620
+      : slide.variant === 'dej'
+        ? 860
+        : 680;
+  const descriptionMaxWidth = !hasVisualSide
+    ? 860
+    : slide.variant === 'release'
+      ? 520
+      : slide.variant === 'dej'
+        ? 860
+        : 680;
 
   return (
     <Paper
@@ -144,7 +162,7 @@ function BannerSlideFrame({
         width: '100%',
       })}
     >
-      {slide.variant === 'dej' ? <DejPipelineBackground /> : null}
+      {slide.variant === 'dej' || slide.showBackdrop ? <DejPipelineBackground /> : null}
 
       <Stack
         alignItems={{ md: 'center', xs: 'flex-start' }}
@@ -153,7 +171,7 @@ function BannerSlideFrame({
         spacing={3}
         sx={{ position: 'relative', width: '100%', zIndex: 2 }}
       >
-        <Box maxWidth={720}>
+        <Box maxWidth={hasVisualSide ? 720 : 860}>
           <Stack
             alignItems="center"
             direction="row"
@@ -173,7 +191,7 @@ function BannerSlideFrame({
               textTransform: 'uppercase',
             }}
           >
-            {getSlideIcon(slide.variant)}
+            {getSlideIcon(slide)}
             {slide.eyebrow}
             <SectionStatusBadge disabled={!isActive} status={launchpadSectionStatus.banner} />
           </Stack>
@@ -218,10 +236,15 @@ function BannerSlideFrame({
         <Stack
           alignItems="center"
           spacing={2}
-          sx={{ minWidth: { md: 240, xs: 0 }, width: { md: 'auto', xs: '100%' } }}
+          sx={{
+            minWidth: { md: hasVisualSide ? 240 : 0, xs: 0 },
+            width: { md: 'auto', xs: '100%' },
+          }}
         >
-          {slide.variant === 'dej' ? <DejSnapshot hero={hero} /> : null}
-          {slide.variant !== 'dej' ? <BannerVisualCard slide={slide} /> : null}
+          {slide.variant === 'dej' ? <DejSnapshot hero={hero} slide={slide} /> : null}
+          {slide.variant !== 'dej' && slide.visualMode !== 'none' ? (
+            <BannerVisualCard slide={slide} />
+          ) : null}
           <BannerDots
             activeIndex={activeIndex}
             accent={visual.dotColor}
@@ -263,6 +286,7 @@ function BannerActions({
           color: visual.ctaColor,
           flex: { xs: 1, sm: '0 0 auto' },
           fontSize: 13,
+          gap: 0.75,
           fontWeight: 700,
           height: 40,
           minWidth: 106,
@@ -272,6 +296,9 @@ function BannerActions({
         }}
         tabIndex={isInteractive ? undefined : -1}
       >
+        {slide.primaryIcon ? (
+          <WorkspaceIcon name={slide.primaryIcon} sx={{ fontSize: 17 }} />
+        ) : null}
         {slide.primaryLabel}
       </Button>
       {slide.secondaryLabel && slide.secondaryHref ? (
@@ -285,6 +312,7 @@ function BannerActions({
             color: visual.ghostColor,
             flex: { xs: 1, sm: '0 0 auto' },
             fontSize: 13,
+            gap: 0.75,
             fontWeight: 600,
             height: 40,
             minWidth: 88,
@@ -297,6 +325,9 @@ function BannerActions({
           }}
           tabIndex={isInteractive ? undefined : -1}
         >
+          {slide.secondaryIcon ? (
+            <WorkspaceIcon name={slide.secondaryIcon} sx={{ fontSize: 17 }} />
+          ) : null}
           {slide.secondaryLabel}
         </Button>
       ) : null}
@@ -359,10 +390,11 @@ function AnnouncementErrorNotice({ isDark }: { isDark: boolean }) {
   );
 }
 
-function getSlideIcon(variant: BannerVariant) {
-  if (variant === 'dej') return <TimelineRoundedIcon sx={{ fontSize: 13 }} />;
-  if (variant === 'release') return <RocketLaunchRoundedIcon sx={{ fontSize: 13 }} />;
-  if (variant === 'learning' || variant === 'research') {
+function getSlideIcon(slide: ReferenceBannerSlide) {
+  if (slide.eyebrowIcon) return <WorkspaceIcon name={slide.eyebrowIcon} sx={{ fontSize: 13 }} />;
+  if (slide.variant === 'dej') return <TimelineRoundedIcon sx={{ fontSize: 13 }} />;
+  if (slide.variant === 'release') return <RocketLaunchRoundedIcon sx={{ fontSize: 13 }} />;
+  if (slide.variant === 'learning' || slide.variant === 'research') {
     return <EventRoundedIcon sx={{ fontSize: 13 }} />;
   }
 

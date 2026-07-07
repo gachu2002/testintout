@@ -1,10 +1,10 @@
+import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import AdminPanelSettingsRoundedIcon from '@mui/icons-material/AdminPanelSettingsRounded';
 import ApprovalRoundedIcon from '@mui/icons-material/ApprovalRounded';
 import FolderRoundedIcon from '@mui/icons-material/FolderRounded';
 import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
 import HubRoundedIcon from '@mui/icons-material/HubRounded';
 import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded';
-import PersonAddAlt1RoundedIcon from '@mui/icons-material/PersonAddAlt1Rounded';
 import { Button } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 
@@ -17,10 +17,10 @@ import type { PermissionHubFilters, PermissionHubStats } from '@/features/permis
 
 const heroCopy = {
   description:
-    '워크스페이스 Permission Realm 모음입니다. 각 Realm의 Role과 배정 인원, 프로젝트 연결 상태를 확인하고 요청 목록으로 이어지는 운영 흐름을 준비합니다.',
+    'Permission Realm 모음입니다. 각 카드에서 Realm 안에 포함된 Role, 프로젝트 바인딩, 요청 Inbox를 한 화면에서 확인합니다.',
   eyebrow: 'Accessibility · IAM & Approvals',
-  primaryAction: '새 권한 요청',
-  secondaryAction: '프로젝트 허브 보기',
+  primaryAction: '새 Permission 생성',
+  secondaryAction: '프로젝트 목록',
   title: 'Permission Hub',
 };
 
@@ -33,7 +33,7 @@ export function PermissionHubHero({
   isLoading: boolean;
   stats?: PermissionHubStats;
 }) {
-  const statsConfig = buildStatsConfig(filters);
+  const statsConfig = buildStatsConfig(filters, stats);
 
   return (
     <WorkspaceHubHero
@@ -41,7 +41,7 @@ export function PermissionHubHero({
         <>
           <Button
             disabled
-            startIcon={<PersonAddAlt1RoundedIcon />}
+            startIcon={<AddCircleRoundedIcon />}
             sx={workspaceHubHeroActionButtonSx}
             variant="contained"
           >
@@ -83,7 +83,10 @@ export function PermissionHubHero({
   );
 }
 
-function buildStatsConfig(filters: PermissionHubFilters | undefined) {
+function buildStatsConfig(
+  filters: PermissionHubFilters | undefined,
+  stats: PermissionHubStats | undefined,
+) {
   return [
     {
       color: 'linear-gradient(135deg,#be185d,#fb7185)',
@@ -93,25 +96,25 @@ function buildStatsConfig(filters: PermissionHubFilters | undefined) {
       note: buildKindNote(filters),
     },
     {
-      color: 'linear-gradient(135deg,#0f766e,#14b8a6)',
+      color: 'linear-gradient(135deg,#9d174d,#fb7185)',
       getValue: (stats: PermissionHubStats) => stats.totalMembers,
       icon: <GroupsRoundedIcon sx={{ fontSize: 20 }} />,
       label: '배정 인원',
-      note: '중복 포함',
+      note: '중복 포함 총 사용자수',
     },
     {
-      color: 'linear-gradient(135deg,#2563eb,#60a5fa)',
+      color: 'linear-gradient(135deg,#db2777,#f472b6)',
       getValue: (stats: PermissionHubStats) => stats.boundProjectCount,
       icon: <Inventory2RoundedIcon sx={{ fontSize: 20 }} />,
-      label: '연결 프로젝트',
-      note: 'bound project 기준',
+      label: '연결된 프로젝트',
+      note: '프로젝트 바인딩 기준',
     },
     {
-      color: 'linear-gradient(135deg,#f59e0b,#fbbf24)',
+      color: 'linear-gradient(135deg,#e11d48,#fb7185)',
       getValue: (stats: PermissionHubStats) => stats.pendingRequests,
       icon: <ApprovalRoundedIcon sx={{ fontSize: 20 }} />,
       label: '요청 대기',
-      note: 'permission realm inbox',
+      note: `manageable realms ${stats?.manageableRealms ?? 0}`,
     },
   ] as const;
 }
@@ -120,5 +123,5 @@ function buildKindNote(filters: PermissionHubFilters | undefined) {
   if (!filters) return 'realm kind 집계';
 
   const counts = new Map(filters.kinds.map((kind) => [kind.value, kind.count]));
-  return `platform ${counts.get('platform') ?? 0} · project ${counts.get('project') ?? 0} · resource ${counts.get('resource') ?? 0} · scoped ${counts.get('scoped') ?? 0}`;
+  return `scoped ${(counts.get('scoped') ?? 0).toLocaleString()}`;
 }

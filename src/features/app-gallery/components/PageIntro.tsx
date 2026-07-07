@@ -4,6 +4,7 @@ import FolderOpenRoundedIcon from '@mui/icons-material/FolderOpenRounded';
 import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded';
 import RocketLaunchRoundedIcon from '@mui/icons-material/RocketLaunchRounded';
 import StorefrontRoundedIcon from '@mui/icons-material/StorefrontRounded';
+import ViewListRoundedIcon from '@mui/icons-material/ViewListRounded';
 import { Box, Typography } from '@mui/material';
 import type { ReactElement } from 'react';
 
@@ -17,7 +18,15 @@ import {
 import { appGallerySectionStatus } from '@/features/app-gallery/sectionStatus';
 import type { AppGalleryHero } from '@/features/app-gallery/types';
 
-export function PageIntro({ hero, totalApps }: { hero?: AppGalleryHero; totalApps: number }) {
+export function PageIntro({
+  hero,
+  resultTotal,
+  totalApps,
+}: {
+  hero?: AppGalleryHero;
+  resultTotal?: number;
+  totalApps: number;
+}) {
   const stats = hero?.stats ?? [
     {
       id: 'catalog',
@@ -54,6 +63,15 @@ export function PageIntro({ hero, totalApps }: { hero?: AppGalleryHero; totalApp
             variant="outlined"
           />
         ))}
+        {typeof resultTotal === 'number' ? (
+          <TagChip
+            icon={<ViewListRoundedIcon />}
+            label={`조회 결과 ${resultTotal}`}
+            size="small"
+            title="Current app list result total"
+            variant="outlined"
+          />
+        ) : null}
       </TagRow>
     </PageHeader>
   );
