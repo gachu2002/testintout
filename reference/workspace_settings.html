@@ -30,6 +30,200 @@
         radial-gradient(circle at top right, rgba(165,0,52,.05), transparent 18%),
         linear-gradient(180deg, #fafbff 0%, var(--page-bg) 100%);
       color:var(--page-text);
+      transition:background .2s ease, color .2s ease;
+    }
+    body[data-theme="dark"] {
+      --page-bg:#0b1220;
+      --page-surface:#162132;
+      --page-surface-soft:#1d2a3d;
+      --page-border:#283447;
+      --page-border-strong:#3c506f;
+      --page-text:#edf2ff;
+      --page-text-2:#c7d2e4;
+      --page-text-3:#92a0b8;
+      --page-brand:#ff5c87;
+      --page-brand-soft:rgba(255,92,135,.16);
+      --page-shadow:0 24px 48px rgba(0,0,0,.34);
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(255,92,135,.10), transparent 22%),
+        linear-gradient(180deg, #09111d 0%, var(--page-bg) 100%);
+    }
+    body[data-theme="dark"] .hero-card,
+    body[data-theme="dark"] .panel-card,
+    body[data-theme="dark"] .summary-card,
+    body[data-theme="dark"] .metric-card,
+    body[data-theme="dark"] .key-block,
+    body[data-theme="dark"] .modal-card {
+      background:rgba(22,33,50,.94);
+    }
+    body[data-theme="dark"] .key-block-head,
+    body[data-theme="dark"] .modal-head,
+    body[data-theme="dark"] .table-footer,
+    body[data-theme="dark"] .metric-card,
+    body[data-theme="dark"] .theme-option {
+      background:linear-gradient(180deg, #223148 0%, #172233 100%);
+    }
+    body[data-theme="dark"] .primary-btn {
+      background:#223148;
+    }
+    body[data-theme="dark"] .secondary-btn,
+    body[data-theme="dark"] .icon-btn,
+    body[data-theme="dark"] .field-input,
+    body[data-theme="dark"] .field-select {
+      background:#172233;
+      color:var(--page-text);
+    }
+    body[data-theme="dark"] thead th {
+      background:#1b273a;
+    }
+    body[data-theme="dark"] .mono {
+      color:#f8fbff;
+    }
+    body[data-theme="dark"] .field-input[readonly] {
+      background:#141d2c;
+      color:var(--page-text-3);
+    }
+    .hub-lite-create-shell {
+      color:var(--page-text);
+      border-color:var(--page-border);
+      background:
+        radial-gradient(circle at top right, var(--settings-modal-brand-soft, color-mix(in srgb, var(--page-brand) 10%, transparent)), transparent 24%),
+        radial-gradient(circle at left 18%, var(--settings-modal-accent, rgba(37,99,235,.08)), transparent 22%),
+        linear-gradient(180deg, rgba(255,255,255,.98) 0%, rgba(246,249,253,.96) 100%);
+    }
+    #keyInputModal .hub-lite-create-shell {
+      --settings-modal-brand:#a50034;
+      --settings-modal-brand-hover:#8e002d;
+      --settings-modal-brand-soft:rgba(165,0,52,.12);
+      --settings-modal-accent:rgba(244,63,94,.10);
+      width:min(720px, calc(100vw - 40px));
+      padding:22px 24px 24px;
+    }
+    #keyInputModal .hub-lite-create-actions {
+      gap:10px;
+    }
+    #keyInputModal .hub-lite-create-action {
+      min-width:0;
+      min-height:40px;
+      padding:0 14px;
+      border-radius:12px;
+      font-size:13px;
+    }
+    #keyInputModal .hub-lite-create-action .material-icons-round {
+      font-size:16px;
+    }
+    #keyInputModal #keyInputCancel {
+      min-width:88px;
+    }
+    #keyInputModal #keyInputSubmit {
+      min-width:124px;
+    }
+    #keyInputModal .hub-lite-create-step-badge,
+    #keyInputModal .hub-lite-create-progress-dot {
+      background:var(--settings-modal-brand);
+    }
+    #keyInputModal .hub-lite-create-hero {
+      background:linear-gradient(135deg, var(--settings-modal-brand), var(--settings-modal-brand-hover));
+      box-shadow:0 18px 34px color-mix(in srgb, var(--settings-modal-brand) 26%, transparent);
+    }
+    .hub-lite-create-head h2,
+    .hub-lite-create-panel-title,
+    .hub-lite-create-progress-label {
+      color:var(--page-text);
+    }
+    .hub-lite-create-subtitle,
+    .hub-lite-create-progress-value,
+    .hub-lite-create-note {
+      color:var(--page-text-2);
+    }
+    .hub-lite-create-note.is-error {
+      color:#c62828;
+    }
+    .hub-lite-create-note.is-error .material-icons-round {
+      color:#c62828;
+    }
+    .hub-lite-create-close {
+      background:var(--page-surface-soft);
+      color:var(--page-text-2);
+    }
+    .hub-lite-create-close:hover {
+      background:#eef3f9;
+      color:var(--page-text);
+    }
+    .hub-lite-create-panel {
+      border-color:var(--page-border);
+      background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(248,251,255,.92));
+    }
+    .hub-lite-create-input {
+      border-color:var(--page-border);
+      background:#fff;
+      color:var(--page-text);
+    }
+    .hub-lite-create-input:focus {
+      border-color:color-mix(in srgb, var(--settings-modal-brand, var(--page-brand)) 36%, white);
+      box-shadow:0 0 0 4px color-mix(in srgb, var(--settings-modal-brand, var(--page-brand)) 10%, transparent);
+    }
+    .hub-lite-create-action.ghost {
+      background:#fff;
+      color:var(--page-text-2);
+      border:1px solid var(--page-border);
+    }
+    .hub-lite-create-action.primary {
+      background:var(--settings-modal-brand, var(--page-brand));
+      color:#fff;
+    }
+    .hub-lite-create-action.primary:hover {
+      background:var(--settings-modal-brand-hover, var(--page-brand));
+    }
+    body[data-theme="dark"] .hub-lite-create-shell {
+      border-color:var(--page-border);
+      background:
+        radial-gradient(circle at top right, var(--settings-modal-brand-soft, rgba(255,92,135,.14)), transparent 24%),
+        radial-gradient(circle at left 18%, var(--settings-modal-accent, rgba(59,130,246,.14)), transparent 22%),
+        linear-gradient(180deg, rgba(20,30,46,.98) 0%, rgba(14,22,35,.98) 100%);
+      box-shadow:0 28px 64px rgba(0,0,0,.42);
+    }
+    body[data-theme="dark"] .hub-lite-create-close {
+      background:#1b273a;
+      color:var(--page-text-2);
+    }
+    body[data-theme="dark"] .hub-lite-create-close:hover {
+      background:#24354d;
+      color:var(--page-text);
+    }
+    body[data-theme="dark"] .hub-lite-create-panel {
+      border-color:var(--page-border);
+      background:linear-gradient(180deg, rgba(24,36,55,.96), rgba(18,28,43,.94));
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.04),
+        0 12px 24px rgba(0,0,0,.18);
+    }
+    body[data-theme="dark"] .hub-lite-create-input {
+      background:#172233;
+      border-color:var(--page-border);
+      color:var(--page-text);
+    }
+    body[data-theme="dark"] .hub-lite-create-action.ghost {
+      background:#172233;
+      color:var(--page-text-2);
+      border-color:var(--page-border);
+    }
+    body[data-theme="dark"] .hub-lite-create-progress-dot,
+    body[data-theme="dark"] .hub-lite-create-step-badge {
+      background:var(--settings-modal-brand, var(--page-brand));
+    }
+    body[data-theme="dark"] #keyInputModal .hub-lite-create-shell {
+      --settings-modal-brand:#ff5c87;
+      --settings-modal-brand-hover:#ff7aa0;
+      --settings-modal-brand-soft:rgba(255,92,135,.18);
+      --settings-modal-accent:rgba(251,113,133,.16);
+    }
+    body[data-theme="dark"] .hub-lite-create-note.is-error {
+      color:#ff8f8f;
+    }
+    body[data-theme="dark"] .hub-lite-create-note.is-error .material-icons-round {
+      color:#ff8f8f;
     }
     .settings-page {
       max-width:1320px;
@@ -650,12 +844,12 @@
           </div>
           <div class="metric-card">
             <div class="metric-label">활성 토큰</div>
-            <div class="metric-value" id="tokenCount">1</div>
+            <div class="metric-value" id="tokenCount">-</div>
             <div class="metric-meta">Gitlab 및 개인 액세스 키 포함</div>
           </div>
           <div class="metric-card">
             <div class="metric-label">현재 테마</div>
-            <div class="metric-value" id="themeLabel">Light</div>
+            <div class="metric-value" id="themeLabel">-</div>
             <div class="metric-meta">페이지 공통 UI 표시 모드</div>
           </div>
         </div>
@@ -664,24 +858,24 @@
 
       <aside class="summary-card">
         <div class="summary-head">
-          <div class="summary-avatar" id="summaryAvatar">TN</div>
+          <div class="summary-avatar" id="summaryAvatar">..</div>
           <div>
-            <div class="summary-name" id="summaryName">남태헌</div>
-            <div class="summary-meta" id="summaryEmail">taehun.nam@lge.com</div>
+            <div class="summary-name" id="summaryName">불러오는 중</div>
+            <div class="summary-meta" id="summaryEmail">-</div>
           </div>
         </div>
-        <div class="status-chip">
+        <div class="status-chip" id="summaryRoleChip">
           <span class="material-icons-round">verified</span>
-          Workspace Owner
+          <span id="summaryRoleLabel">Workspace Member</span>
         </div>
         <div class="summary-list">
           <div class="summary-item">
             <span class="summary-item-label">시간대</span>
-            <span class="summary-item-value" id="summaryTimezone">Asia/Seoul</span>
+            <span class="summary-item-value" id="summaryTimezone">-</span>
           </div>
           <div class="summary-item">
             <span class="summary-item-label">언어</span>
-            <span class="summary-item-value" id="summaryLanguage">한국어</span>
+            <span class="summary-item-value" id="summaryLanguage">-</span>
           </div>
           <div class="summary-item">
             <span class="summary-item-label">Workspace 버전</span>
@@ -689,7 +883,7 @@
           </div>
           <div class="summary-item">
             <span class="summary-item-label">최근 갱신</span>
-            <span class="summary-item-value" id="summaryUpdatedAt">오늘 14:10</span>
+            <span class="summary-item-value" id="summaryUpdatedAt">-</span>
           </div>
         </div>
       </aside>
@@ -701,25 +895,25 @@
           <div class="panel-head">
             <div>
               <div class="panel-title">프로필</div>
-              <div class="panel-desc">메시지 발신자 표기와 알림 언어, 시간 표시 기준에 사용됩니다.</div>
+              <div class="panel-desc">계정 기본 정보와 함께, 이 화면에서는 시간대와 언어만 변경할 수 있습니다.</div>
             </div>
           </div>
           <div class="info-grid">
             <div class="info-row">
               <div class="info-label">사용자 이름</div>
-              <div class="info-value" id="profileName">남태헌</div>
+              <div class="info-value" id="profileName">불러오는 중</div>
             </div>
             <div class="info-row">
               <div class="info-label">이메일</div>
-              <div class="info-value" id="profileEmail">taehun.nam@lge.com</div>
+              <div class="info-value" id="profileEmail">-</div>
             </div>
             <div class="info-row">
               <div class="info-label">시간대</div>
-              <div class="info-value" id="profileTimezone">Asia/Seoul</div>
+              <div class="info-value" id="profileTimezone">-</div>
             </div>
             <div class="info-row">
               <div class="info-label">언어</div>
-              <div class="info-value" id="profileLanguage">한국어</div>
+              <div class="info-value" id="profileLanguage">-</div>
             </div>
           </div>
         </article>
@@ -802,6 +996,11 @@
                 <div class="key-block-title">Gitlab 토큰</div>
                 <div class="key-block-desc">배포, 저장소 연동, 파이프라인 호출에 사용됩니다.</div>
               </div>
+              <div class="section-actions">
+                <button class="primary-btn" type="button" data-action="add-gitlab" id="addGitlabTokenBtn" hidden>
+                  <span class="material-icons-round">add</span>추가
+                </button>
+              </div>
             </div>
             <div id="gitlabTable"></div>
           </section>
@@ -834,7 +1033,7 @@
             Account Editor
           </div>
           <h2 class="modal-title" id="profileModalTitle">프로필 편집</h2>
-          <p class="modal-desc">메시지 허브 발신자 표기와 상단 계정 요약에 반영되는 기본 정보를 수정합니다.</p>
+          <p class="modal-desc">이 화면에서는 이름, 시간대, 언어를 변경할 수 있습니다.</p>
         </div>
         <button class="icon-btn modal-close" type="button" data-action="close-profile-modal" aria-label="닫기">
           <span class="material-icons-round">close</span>
@@ -845,8 +1044,8 @@
         <div class="form-grid">
           <label class="field-block">
             <span class="field-label">사용자 이름</span>
-            <input class="field-input" id="editName" name="name" type="text" maxlength="32" required />
-            <span class="field-hint">알림 발신자와 계정 카드에 노출되는 이름입니다.</span>
+            <input class="field-input" id="editName" name="name" type="text" maxlength="32" />
+            <span class="field-hint">이름만 수정할 수 있습니다.</span>
           </label>
 
           <label class="field-block">
@@ -869,9 +1068,9 @@
           <label class="field-block">
             <span class="field-label">언어</span>
             <select class="field-select" id="editLanguage" name="language">
-              <option value="한국어">한국어</option>
-              <option value="English">English</option>
-              <option value="日本語">日本語</option>
+              <option value="ko_KR.utf8">한국어</option>
+              <option value="en_US.utf8">English</option>
+              <option value="ja_JP.utf8">日本語</option>
             </select>
             <span class="field-hint">알림 텍스트와 기본 UI 표시에 우선 적용됩니다.</span>
           </label>
@@ -887,35 +1086,101 @@
     </div>
   </div>
 
+  <div class="hub-lite-create-backdrop" id="keyInputModal" hidden>
+    <div class="hub-lite-create-shell" role="dialog" aria-modal="true" aria-labelledby="keyInputTitle">
+      <div class="hub-lite-create-head">
+        <div class="hub-lite-create-copy">
+          <div class="hub-lite-create-title-row">
+            <span class="hub-lite-create-step-badge">1</span>
+            <h2 id="keyInputTitle">키를 등록합니다</h2>
+          </div>
+          <p class="hub-lite-create-subtitle" id="keyInputSubtitle">사용할 키 값을 입력해 주세요.</p>
+        </div>
+        <div class="hub-lite-create-head-actions">
+          <div class="hub-lite-create-hero" aria-hidden="true"><span class="material-icons-round" id="keyInputHeroIcon">key</span></div>
+          <button class="hub-lite-create-close" type="button" id="keyInputClose" aria-label="키 등록 닫기">
+            <span class="material-icons-round">close</span>
+          </button>
+        </div>
+      </div>
+      <div class="hub-lite-create-progress">
+        <div class="hub-lite-create-progress-track">
+          <div class="hub-lite-create-progress-item">
+            <div class="hub-lite-create-progress-line">
+              <span class="hub-lite-create-progress-rail"></span>
+              <span class="hub-lite-create-progress-dot">1</span>
+              <span class="hub-lite-create-progress-rail"></span>
+            </div>
+            <div class="hub-lite-create-progress-label" id="keyInputProgressLabel">키 등록</div>
+            <div class="hub-lite-create-progress-value" id="keyInputProgressValue">아직 입력되지 않았습니다.</div>
+          </div>
+        </div>
+      </div>
+      <form class="hub-lite-create-form" id="keyInputForm">
+        <div class="hub-lite-create-stage">
+          <div class="hub-lite-create-panel">
+            <div class="hub-lite-create-panel-title" id="keyInputPanelTitle">등록할 키 값을 입력해 주세요.</div>
+            <input class="hub-lite-create-input" id="keyInputValue" type="text" autocomplete="off" required />
+            <div class="hub-lite-create-note" id="keyInputNote">
+              <span class="material-icons-round">info</span>
+              <span>입력한 값은 현재 계정 설정에 저장됩니다.</span>
+            </div>
+          </div>
+        </div>
+        <div class="hub-lite-create-actions">
+          <button class="hub-lite-create-action ghost" type="button" id="keyInputCancel">취소</button>
+          <button class="hub-lite-create-action primary" type="submit" id="keyInputSubmit" disabled>
+            <span class="material-icons-round">check_circle</span>등록
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="ax_studio_topbar.js"></script>
   <script>
     (() => {
-      const initialProfile = {
-        name: "남태헌",
-        email: "taehun.nam@lge.com",
-        timezone: "Asia/Seoul",
-        language: "한국어"
-      };
-
-      const initialState = {
-        feedback: "",
+      const API_BASE = "/api/v2";
+      const SETTING_API = "/api/setting";
+      const DEFAULT_PREFERENCES = {
         theme: "light",
+        timezone: "Asia/Seoul",
+        language: "ko_KR.utf8"
+      };
+      const LANGUAGE_LABEL = {
+        "ko_KR.utf8": "한국어",
+        "en_US.utf8": "English",
+        "ja_JP.utf8": "日本語"
+      };
+      const initialState = {
+        isLoading: true,
+        feedback: "",
+        theme: DEFAULT_PREFERENCES.theme,
         workspaceVersion: "1.0.34",
-        updatedAt: "오늘 14:10",
-        profile: { ...initialProfile },
+        updatedAt: "",
+        profile: {
+          name: "",
+          avatarName: "",
+          email: "",
+          timezone: DEFAULT_PREFERENCES.timezone,
+          language: DEFAULT_PREFERENCES.language
+        },
         sshKeys: [],
-        gitlabTokens: [
-          { id: "gitlab-token-1", value: "glpat-BAqCs_ZzEwPxvQGyKkXZ" }
-        ],
-        personalKeys: [
-          { id: "personal-1", value: "c171cc607cd0b483313e2812a4e3487dd23b36d286a1571112393467da197367" },
-          { id: "personal-2", value: "44584a2ac25c85327b7dddf39d80bf6bc24ba74e07d487a6135ac1d1d70e3cf6" },
-          { id: "personal-3", value: "b4eae2a8eec4fceac0c1829f097cae146dcfa2b009a5cb75b9fd51e40071b74" },
-          { id: "personal-4", value: "e806a582f303671ec4ea450073a9cd564a64a19acf4f5b84f40658f4eaa0fd2c" }
-        ]
+        gitlabTokens: [],
+        personalKeys: [],
+        keyModal: {
+          visible: false,
+          type: "",
+          value: "",
+          error: ""
+        },
+        capabilities: {
+          isAdmin: false
+        }
       };
 
       const state = structuredClone(initialState);
+      let lastLoadedState = structuredClone(initialState);
 
       const elements = {
         settingsFeedback: document.getElementById("settingsFeedback"),
@@ -925,6 +1190,7 @@
         summaryAvatar: document.getElementById("summaryAvatar"),
         summaryName: document.getElementById("summaryName"),
         summaryEmail: document.getElementById("summaryEmail"),
+        summaryRoleLabel: document.getElementById("summaryRoleLabel"),
         summaryTimezone: document.getElementById("summaryTimezone"),
         summaryLanguage: document.getElementById("summaryLanguage"),
         summaryVersion: document.getElementById("summaryVersion"),
@@ -937,14 +1203,173 @@
         sshTable: document.getElementById("sshTable"),
         gitlabTable: document.getElementById("gitlabTable"),
         personalTable: document.getElementById("personalTable"),
+        addGitlabTokenBtn: document.getElementById("addGitlabTokenBtn"),
         themeOptions: document.getElementById("themeOptions"),
         profileModal: document.getElementById("profileModal"),
         profileForm: document.getElementById("profileForm"),
         editName: document.getElementById("editName"),
         editEmail: document.getElementById("editEmail"),
         editTimezone: document.getElementById("editTimezone"),
-        editLanguage: document.getElementById("editLanguage")
+        editLanguage: document.getElementById("editLanguage"),
+        keyInputModal: document.getElementById("keyInputModal"),
+        keyInputForm: document.getElementById("keyInputForm"),
+        keyInputTitle: document.getElementById("keyInputTitle"),
+        keyInputSubtitle: document.getElementById("keyInputSubtitle"),
+        keyInputHeroIcon: document.getElementById("keyInputHeroIcon"),
+        keyInputProgressLabel: document.getElementById("keyInputProgressLabel"),
+        keyInputProgressValue: document.getElementById("keyInputProgressValue"),
+        keyInputPanelTitle: document.getElementById("keyInputPanelTitle"),
+        keyInputValue: document.getElementById("keyInputValue"),
+        keyInputNote: document.getElementById("keyInputNote"),
+        keyInputSubmit: document.getElementById("keyInputSubmit"),
+        keyInputClose: document.getElementById("keyInputClose"),
+        keyInputCancel: document.getElementById("keyInputCancel")
       };
+
+      const KEY_MODAL_CONFIG = {
+        ssh: {
+          title: "SSH 키를 등록합니다",
+          subtitle: "개발 환경 접속에 사용할 공개 키를 입력해 주세요.",
+          progressLabel: "SSH 키 등록",
+          panelTitle: "SSH 공개 키를 입력해 주세요.",
+          note: "OpenSSH 형식의 공개 키 1개를 현재 계정에 등록합니다.",
+          placeholder: "예: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... user@host",
+          buttonLabel: "SSH 키 등록",
+          heroIcon: "key"
+        },
+        gitlab: {
+          title: "Gitlab 토큰을 등록합니다",
+          subtitle: "저장소와 파이프라인 연동에 사용할 토큰 1개만 등록할 수 있습니다.",
+          progressLabel: "Gitlab 토큰 등록",
+          panelTitle: "Gitlab Personal Access Token을 입력해 주세요.",
+          note: "",
+          placeholder: "예: glpat-xxxxxxxxxxxxxxxxxxxx",
+          buttonLabel: "Gitlab 토큰 등록",
+          heroIcon: "token"
+        }
+      };
+
+      function buildQuery(params) {
+        const searchParams = new URLSearchParams();
+        Object.entries(params || {}).forEach(([key, value]) => {
+          if (value === undefined || value === null || value === "") {
+            return;
+          }
+          searchParams.set(key, String(value));
+        });
+        const query = searchParams.toString();
+        return query ? `?${query}` : "";
+      }
+
+      async function requestJson(url, options) {
+        const response = await fetch(url, {
+          credentials: "same-origin",
+          headers: {
+            Accept: "application/json",
+            ...(options && options.body ? { "Content-Type": "application/json" } : {})
+          },
+          ...(options || {})
+        });
+
+        if (!response.ok) {
+          let message = `${response.status} ${response.statusText}`;
+          try {
+            const payload = await response.json();
+            const apiMessage = payload?.message || payload?.error?.message || payload?.error || payload?.code;
+            if (apiMessage) {
+              message = `${response.status} ${apiMessage}`;
+            }
+          } catch {
+            try {
+              const text = await response.text();
+              if (text) {
+                message = `${response.status} ${text}`;
+              }
+            } catch {
+              // ignore body parsing failure
+            }
+          }
+          throw new Error(message);
+        }
+
+        const contentType = response.headers.get("content-type") || "";
+        if (!contentType.includes("application/json")) {
+          return null;
+        }
+        return response.json();
+      }
+
+      function getLanguageLabel(value) {
+        return LANGUAGE_LABEL[String(value || "").trim()] || String(value || "-");
+      }
+
+      function formatDateTime(value) {
+        if (!value) {
+          return "-";
+        }
+        const date = new Date(value);
+        if (Number.isNaN(date.valueOf())) {
+          return String(value);
+        }
+        return new Intl.DateTimeFormat("ko-KR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit"
+        }).format(date);
+      }
+
+      function mapSettingKeyRows(values, prefix) {
+        return (Array.isArray(values) ? values : []).map((value, index) => ({
+          id: `${prefix}-${index}-${String(value)}`,
+          value: String(value || "")
+        }));
+      }
+
+      function applyRemoteState(mePayload, settingPayload) {
+        const me = mePayload?.data || mePayload || {};
+        const preferences = me?.preferences || {};
+        const settings = settingPayload || {};
+        const keys = settings?.keys || {};
+        const name = me?.fullname || me?.displayName || me?.name || settings?.fullname || settings?.displayname || settings?.name || me?.email || "이름 없음";
+        const avatarName = me?.displayName || me?.name || settings?.displayname || settings?.name || name;
+        const email = me?.email || settings?.email || "-";
+        const timezone = preferences.timezone || settings?.timezone || DEFAULT_PREFERENCES.timezone;
+        const language = preferences.language || settings?.language || DEFAULT_PREFERENCES.language;
+        const theme = preferences.theme || settings?.theme || DEFAULT_PREFERENCES.theme;
+        const updatedAt = me?.updatedAt || settings?.lastModified || settings?.created || me?.lastLoginedAt || "";
+
+        state.isLoading = false;
+        state.theme = theme;
+        state.updatedAt = updatedAt;
+        state.profile = {
+          name,
+          avatarName,
+          email,
+          timezone,
+          language
+        };
+        state.sshKeys = mapSettingKeyRows(keys?.sshKey, "ssh");
+        state.gitlabTokens = mapSettingKeyRows(keys?.gitlabToken, "gitlab");
+        state.personalKeys = mapSettingKeyRows(keys?.apiKey, "personal");
+        state.capabilities = {
+          isAdmin: Boolean(me?.capabilities?.isAdmin)
+        };
+
+        lastLoadedState = structuredClone({
+          isLoading: false,
+          feedback: "",
+          theme: state.theme,
+          workspaceVersion: state.workspaceVersion,
+          updatedAt: state.updatedAt,
+          profile: { ...state.profile },
+          sshKeys: [...state.sshKeys],
+          gitlabTokens: [...state.gitlabTokens],
+          personalKeys: [...state.personalKeys],
+          capabilities: { ...state.capabilities }
+        });
+      }
 
       function getInitials(name, email) {
         const normalized = String(name || "").trim();
@@ -954,13 +1379,6 @@
           return normalized.slice(0, 2).toUpperCase();
         }
         return String(email || "WS").slice(0, 2).toUpperCase();
-      }
-
-      function formatNowLabel() {
-        const now = new Date();
-        const hours = String(now.getHours()).padStart(2, "0");
-        const minutes = String(now.getMinutes()).padStart(2, "0");
-        return `오늘 ${hours}:${minutes}`;
       }
 
       function escapeHtml(value) {
@@ -1037,36 +1455,72 @@
       }
 
       function syncSummary() {
+        if (state.isLoading) {
+          elements.sshKeyCount.textContent = "-";
+          elements.tokenCount.textContent = "-";
+          elements.themeLabel.textContent = "-";
+          elements.summaryName.textContent = "불러오는 중";
+          elements.summaryEmail.textContent = "-";
+          elements.summaryAvatar.textContent = "..";
+          elements.summaryRoleLabel.textContent = "Workspace Member";
+          elements.summaryTimezone.textContent = "-";
+          elements.summaryLanguage.textContent = "-";
+          elements.summaryVersion.textContent = state.workspaceVersion;
+          elements.summaryUpdatedAt.textContent = "-";
+          elements.profileName.textContent = "불러오는 중";
+          elements.profileEmail.textContent = "-";
+          elements.profileTimezone.textContent = "-";
+          elements.profileLanguage.textContent = "-";
+          elements.workspaceVersion.textContent = state.workspaceVersion;
+          return;
+        }
+
         elements.sshKeyCount.textContent = String(state.sshKeys.length);
         elements.tokenCount.textContent = String(state.gitlabTokens.length + state.personalKeys.length);
         elements.themeLabel.textContent = state.theme === "dark" ? "Dark" : "Light";
 
         elements.summaryName.textContent = state.profile.name;
         elements.summaryEmail.textContent = state.profile.email;
-        elements.summaryAvatar.textContent = getInitials(state.profile.name, state.profile.email);
+        elements.summaryAvatar.textContent = getInitials(state.profile.avatarName || state.profile.name, state.profile.email);
         elements.summaryTimezone.textContent = state.profile.timezone;
-        elements.summaryLanguage.textContent = state.profile.language;
+        elements.summaryLanguage.textContent = getLanguageLabel(state.profile.language);
+        elements.summaryRoleLabel.textContent = state.capabilities.isAdmin ? "Workspace Admin" : "Workspace Member";
         elements.summaryVersion.textContent = state.workspaceVersion;
-        elements.summaryUpdatedAt.textContent = state.updatedAt;
+        elements.summaryUpdatedAt.textContent = formatDateTime(state.updatedAt);
 
         elements.profileName.textContent = state.profile.name;
         elements.profileEmail.textContent = state.profile.email;
         elements.profileTimezone.textContent = state.profile.timezone;
-        elements.profileLanguage.textContent = state.profile.language;
+        elements.profileLanguage.textContent = getLanguageLabel(state.profile.language);
         elements.workspaceVersion.textContent = state.workspaceVersion;
       }
 
       function syncThemeOptions() {
+        document.body.dataset.theme = state.theme === "dark" ? "dark" : "light";
         elements.themeOptions.querySelectorAll(".theme-option").forEach((option) => {
           const input = option.querySelector('input[name="appearance"]');
+          if (input) {
+            input.checked = input.value === state.theme;
+          }
           option.classList.toggle("is-active", input && input.value === state.theme);
         });
       }
 
       function renderTables() {
+        if (state.isLoading) {
+          elements.sshTable.innerHTML = keyTableMarkup([], "ssh").replace("No rows", "불러오는 중");
+          elements.gitlabTable.innerHTML = keyTableMarkup([], "gitlab").replace("No rows", "불러오는 중");
+          elements.personalTable.innerHTML = keyTableMarkup([], "personal").replace("No rows", "불러오는 중");
+          elements.addGitlabTokenBtn.hidden = true;
+          elements.addGitlabTokenBtn.style.display = "none";
+          return;
+        }
         elements.sshTable.innerHTML = keyTableMarkup(state.sshKeys, "ssh");
         elements.gitlabTable.innerHTML = keyTableMarkup(state.gitlabTokens, "gitlab");
         elements.personalTable.innerHTML = keyTableMarkup(state.personalKeys, "personal");
+        const hasGitlabToken = state.gitlabTokens.length > 0;
+        elements.addGitlabTokenBtn.hidden = hasGitlabToken;
+        elements.addGitlabTokenBtn.style.display = hasGitlabToken ? "none" : "";
       }
 
       function rerender() {
@@ -1079,7 +1533,7 @@
         elements.editName.value = state.profile.name;
         elements.editEmail.value = state.profile.email;
         elements.editTimezone.value = state.profile.timezone;
-        elements.editLanguage.value = state.profile.language;
+        elements.editLanguage.value = state.profile.language || DEFAULT_PREFERENCES.language;
         elements.profileModal.classList.add("is-visible");
         elements.profileModal.setAttribute("aria-hidden", "false");
       }
@@ -1089,62 +1543,217 @@
         elements.profileModal.setAttribute("aria-hidden", "true");
       }
 
-      function saveProfile() {
+      function syncKeyInputModal() {
+        const config = KEY_MODAL_CONFIG[state.keyModal.type];
+        const currentValue = String(state.keyModal.value || "").trim();
+
+        if (!config) {
+          elements.keyInputSubmit.disabled = true;
+          elements.keyInputProgressValue.textContent = "아직 입력되지 않았습니다.";
+          elements.keyInputNote.classList.remove("is-error");
+          return;
+        }
+
+        elements.keyInputTitle.textContent = config.title;
+        elements.keyInputSubtitle.textContent = config.subtitle;
+        elements.keyInputHeroIcon.textContent = config.heroIcon;
+        elements.keyInputProgressLabel.textContent = config.progressLabel;
+        elements.keyInputPanelTitle.textContent = config.panelTitle;
+        elements.keyInputValue.placeholder = config.placeholder;
+        elements.keyInputValue.type = "text";
+        elements.keyInputValue.value = state.keyModal.value;
+        elements.keyInputNote.classList.toggle("is-error", Boolean(state.keyModal.error));
+        if (state.keyModal.error) {
+          elements.keyInputNote.hidden = false;
+          elements.keyInputNote.style.display = "";
+          elements.keyInputNote.innerHTML = `<span class="material-icons-round">error</span><span>${escapeHtml(state.keyModal.error)}</span>`;
+        } else if (config.note) {
+          elements.keyInputNote.hidden = false;
+          elements.keyInputNote.style.display = "";
+          elements.keyInputNote.innerHTML = `<span class="material-icons-round">info</span><span>${escapeHtml(config.note)}</span>`;
+        } else {
+          elements.keyInputNote.hidden = true;
+          elements.keyInputNote.style.display = "none";
+          elements.keyInputNote.innerHTML = "";
+        }
+        elements.keyInputSubmit.innerHTML = `<span class="material-icons-round">check_circle</span>${escapeHtml(config.buttonLabel)}`;
+        elements.keyInputSubmit.disabled = !currentValue;
+        elements.keyInputProgressValue.textContent = currentValue || "아직 입력되지 않았습니다.";
+      }
+
+      function openKeyInputModal(type) {
+        state.keyModal = {
+          visible: true,
+          type,
+          value: "",
+          error: ""
+        };
+        syncKeyInputModal();
+        elements.keyInputModal.hidden = false;
+        requestAnimationFrame(() => {
+          elements.keyInputValue.focus();
+        });
+      }
+
+      function closeKeyInputModal() {
+        state.keyModal = {
+          visible: false,
+          type: "",
+          value: "",
+          error: ""
+        };
+        elements.keyInputModal.hidden = true;
+        elements.keyInputForm.reset();
+      }
+
+      async function saveProfile() {
         const nextProfile = {
-          name: elements.editName.value.trim(),
+          name: String(elements.editName.value || "").trim() || state.profile.name,
+          avatarName: state.profile.avatarName,
           email: state.profile.email,
           timezone: elements.editTimezone.value,
           language: elements.editLanguage.value
         };
 
-        if (!nextProfile.name) {
-          setFeedback("이름을 입력해 주세요.");
+        try {
+          await requestJson(`${API_BASE}/me/preferences`, {
+            method: "PATCH",
+            body: JSON.stringify({
+              fullname: nextProfile.name,
+              timezone: nextProfile.timezone,
+              language: nextProfile.language
+            })
+          });
+          state.profile = nextProfile;
+          state.updatedAt = new Date().toISOString();
+          lastLoadedState.profile = { ...state.profile };
+          lastLoadedState.updatedAt = state.updatedAt;
+          setFeedback("프로필 정보를 저장했습니다.");
+          closeProfileModal();
+          rerender();
+        } catch (error) {
+          setFeedback(String(error?.message || "프로필 저장에 실패했습니다.").replace(/^\d+\s*/, "").trim());
+        }
+      }
+
+      async function submitKeyInputModal() {
+        const modalType = state.keyModal.type;
+        const value = String(elements.keyInputValue.value || "").trim();
+        if (!modalType || !value) {
+          syncKeyInputModal();
           return;
         }
 
-        state.profile = nextProfile;
-        state.updatedAt = formatNowLabel();
-        setFeedback("프로필 정보를 저장했습니다.");
-        closeProfileModal();
-        rerender();
+        const keyType = modalType === "ssh" ? "sshKey" : "gitlabToken";
+        const successMessage = modalType === "ssh" ? "SSH 키를 등록했습니다." : "Gitlab 토큰을 등록했습니다.";
+
+        try {
+          await requestJson(SETTING_API, {
+            method: "POST",
+            body: JSON.stringify({
+              keysControl: {
+                type: keyType,
+                method: "add",
+                value
+              }
+            })
+          });
+          closeKeyInputModal();
+          await loadSettings();
+          setFeedback(successMessage);
+        } catch (error) {
+          if (modalType === "gitlab") {
+            state.keyModal.error = "유효한 Gitlab 토큰이 아닙니다.";
+            syncKeyInputModal();
+          }
+          setFeedback(String(error?.message || "키 등록에 실패했습니다.").replace(/^\d+\s*/, "").trim());
+        }
       }
 
-      function removeById(list, id, message) {
+      async function removeById(list, id, keyType, message) {
         const index = list.findIndex((item) => item.id === id);
         if (index < 0) return;
-        list.splice(index, 1);
-        setFeedback(message);
-        rerender();
+        const [target] = list.splice(index, 1);
+        try {
+          await requestJson(SETTING_API, {
+            method: "POST",
+            body: JSON.stringify({
+              keysControl: {
+                type: keyType,
+                method: "delete",
+                value: target.value
+              }
+            })
+          });
+          setFeedback(message);
+          rerender();
+        } catch (error) {
+          list.splice(index, 0, target);
+          setFeedback(String(error?.message || "삭제에 실패했습니다.").replace(/^\d+\s*/, "").trim());
+          rerender();
+        }
       }
 
-      document.addEventListener("click", (event) => {
+      async function loadSettings() {
+        state.isLoading = true;
+        rerender();
+        try {
+          const [mePayload, settingPayload] = await Promise.all([
+            requestJson(`${API_BASE}/me`),
+            requestJson(SETTING_API)
+          ]);
+          applyRemoteState(mePayload, settingPayload);
+          rerender();
+        } catch (error) {
+          state.isLoading = false;
+          setFeedback(String(error?.message || "계정 설정을 불러오지 못했습니다.").replace(/^\d+\s*/, "").trim());
+          rerender();
+        }
+      }
+
+      document.addEventListener("click", async (event) => {
         const actionButton = event.target.closest("[data-action]");
         if (!actionButton) return;
 
         const { action, id } = actionButton.dataset;
 
         if (action === "add-ssh") {
-          const nextIndex = state.sshKeys.length + 1;
-          state.sshKeys.unshift({
-            id: `ssh-${Date.now()}`,
-            value: `ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPreviewSampleKey${nextIndex} workspace-settings-${nextIndex}`
-          });
-          setFeedback("SSH 키 샘플 항목을 추가했습니다.");
-          return rerender();
+          openKeyInputModal("ssh");
+          return;
         }
 
         if (action === "create-personal") {
-          state.personalKeys.unshift({
-            id: `personal-${Date.now()}`,
-            value: crypto.randomUUID().replace(/-/g, "") + crypto.randomUUID().replace(/-/g, "")
-          });
-          setFeedback("개인 키를 새로 생성했습니다.");
-          return rerender();
+          try {
+            const payload = await requestJson(SETTING_API, {
+              method: "POST",
+              body: JSON.stringify({
+                keysControl: {
+                  type: "apiKey",
+                  method: "create"
+                }
+              })
+            });
+            await loadSettings();
+            const createdApiKey = payload?.createdApiKey;
+            setFeedback(createdApiKey ? `개인 키를 생성했습니다. 새 키: ${createdApiKey}` : "개인 키를 생성했습니다.");
+          } catch (error) {
+            setFeedback(String(error?.message || "개인 키 생성에 실패했습니다.").replace(/^\d+\s*/, "").trim());
+          }
+          return;
         }
 
-        if (action === "remove-ssh") return removeById(state.sshKeys, id, "SSH 키를 삭제했습니다.");
-        if (action === "remove-gitlab") return removeById(state.gitlabTokens, id, "Gitlab 토큰을 삭제했습니다.");
-        if (action === "remove-personal") return removeById(state.personalKeys, id, "개인 키를 삭제했습니다.");
+        if (action === "add-gitlab") {
+          if (state.gitlabTokens.length > 0) {
+            setFeedback("Gitlab 토큰은 1개만 등록할 수 있습니다.");
+            return;
+          }
+          openKeyInputModal("gitlab");
+          return;
+        }
+
+        if (action === "remove-ssh") return removeById(state.sshKeys, id, "sshKey", "SSH 키를 삭제했습니다.");
+        if (action === "remove-gitlab") return removeById(state.gitlabTokens, id, "gitlabToken", "Gitlab 토큰을 삭제했습니다.");
+        if (action === "remove-personal") return removeById(state.personalKeys, id, "apiKey", "개인 키를 삭제했습니다.");
 
         if (action === "edit-profile") {
           openProfileModal();
@@ -1157,26 +1766,71 @@
         }
 
         if (action === "restore-profile") {
-          state.profile = { ...initialProfile };
-          state.theme = initialState.theme;
-          state.updatedAt = formatNowLabel();
-          setFeedback("프로필과 외관 설정을 기본값으로 복구했습니다.");
-          return rerender();
+          try {
+            await requestJson(`${API_BASE}/me/preferences`, {
+              method: "PATCH",
+              body: JSON.stringify({ ...DEFAULT_PREFERENCES })
+            });
+            state.theme = DEFAULT_PREFERENCES.theme;
+            state.profile.timezone = DEFAULT_PREFERENCES.timezone;
+            state.profile.language = DEFAULT_PREFERENCES.language;
+            state.updatedAt = new Date().toISOString();
+            lastLoadedState.theme = state.theme;
+            lastLoadedState.profile.timezone = state.profile.timezone;
+            lastLoadedState.profile.language = state.profile.language;
+            lastLoadedState.updatedAt = state.updatedAt;
+            setFeedback("프로필과 외관 설정을 기본값으로 복구했습니다.");
+            rerender();
+          } catch (error) {
+            setFeedback(String(error?.message || "기본값 복구에 실패했습니다.").replace(/^\d+\s*/, "").trim());
+          }
+          return;
         }
       });
 
-      document.addEventListener("change", (event) => {
+      document.addEventListener("change", async (event) => {
         const appearance = event.target.closest('input[name="appearance"]');
         if (!appearance) return;
+        const previousTheme = state.theme;
         state.theme = appearance.value;
-        setFeedback(`${appearance.value === "dark" ? "다크 모드" : "라이트 모드"}를 선택했습니다.`);
         rerender();
+        try {
+          await requestJson(`${API_BASE}/me/preferences`, {
+            method: "PATCH",
+            body: JSON.stringify({
+              theme: appearance.value
+            })
+          });
+          lastLoadedState.theme = state.theme;
+          state.updatedAt = new Date().toISOString();
+          lastLoadedState.updatedAt = state.updatedAt;
+          setFeedback(`${appearance.value === "dark" ? "다크 모드" : "라이트 모드"}를 선택했습니다.`);
+          rerender();
+        } catch (error) {
+          state.theme = previousTheme;
+          setFeedback(String(error?.message || "테마 저장에 실패했습니다.").replace(/^\d+\s*/, "").trim());
+          rerender();
+        }
       });
 
-      elements.profileForm.addEventListener("submit", (event) => {
+      elements.profileForm.addEventListener("submit", async (event) => {
         event.preventDefault();
-        saveProfile();
+        await saveProfile();
       });
+
+      elements.keyInputForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        await submitKeyInputModal();
+      });
+
+      elements.keyInputValue.addEventListener("input", (event) => {
+        state.keyModal.value = event.target.value || "";
+        state.keyModal.error = "";
+        syncKeyInputModal();
+      });
+
+      elements.keyInputClose.addEventListener("click", closeKeyInputModal);
+      elements.keyInputCancel.addEventListener("click", closeKeyInputModal);
 
       elements.profileModal.addEventListener("click", (event) => {
         if (event.target === elements.profileModal) {
@@ -1184,13 +1838,26 @@
         }
       });
 
+      elements.keyInputModal.addEventListener("click", (event) => {
+        if (event.target === elements.keyInputModal) {
+          closeKeyInputModal();
+        }
+      });
+
       document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && elements.profileModal.classList.contains("is-visible")) {
+        if (event.key !== "Escape") {
+          return;
+        }
+        if (elements.profileModal.classList.contains("is-visible")) {
           closeProfileModal();
+        }
+        if (!elements.keyInputModal.hidden) {
+          closeKeyInputModal();
         }
       });
 
       rerender();
+      loadSettings();
     })();
   </script>
 </body>

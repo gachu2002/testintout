@@ -47,6 +47,12 @@ export type DomainResource = {
   status: string;
 };
 
+export type DomainCreateRequest = {
+  url: string;
+};
+
+export type DomainCreateResponse = DomainResource;
+
 export type DomainTipsPanelRow = {
   meta: string;
   title: string;

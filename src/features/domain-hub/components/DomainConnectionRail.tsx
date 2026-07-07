@@ -1,11 +1,10 @@
 import CableRoundedIcon from '@mui/icons-material/CableRounded';
-import { Box, Skeleton } from '@mui/material';
+import { Skeleton } from '@mui/material';
 
 import { SectionStatusBadge } from '@/components/reference-status';
 import {
   Badge,
   Desc,
-  DetailGroup,
   Empty,
   Head,
   HeadCopy,
@@ -17,42 +16,43 @@ import {
   RowMeta,
   RowSkeletons,
   RowTitle,
-  SummaryHeader,
-  SummaryLabel,
-  SummaryValue,
   Title,
 } from '@/components/workspace';
 import { domainHubSectionStatus } from '@/features/domain-hub/sectionStatus';
 import type {
   DomainConnectionDetail,
   DomainConnectionPanel,
-  DomainConnectionStatus,
+  DomainResource,
 } from '@/features/domain-hub/types';
 import { formatLabel } from '@/lib/formatters';
 import type { ToneName } from '@/styles/tokens';
 
 const railCopy = {
-  description: '실제 ingress, ELB, CDN 연결 여부만 빠르게 읽을 수 있도록 분리했습니다.',
-  emptyDetail: 'No selected domain connection is available.',
-  emptySummary: 'No connection summary is available.',
   label: 'Connection Status',
-  selectedLabel: 'Selected domain',
-  summaryLabel: 'Connection summary',
   title: '현재 커넥션 상태',
+};
+
+const connectionStatusOrder: Record<string, number> = {
+  ready: 0,
+  connected: 1,
+  none: 2,
 };
 
 export function DomainConnectionRail({
   detail,
+  domains,
   isDetailLoading,
   isPanelLoading,
   panel,
 }: {
   detail?: DomainConnectionDetail;
+  domains: DomainResource[];
   isDetailLoading: boolean;
   isPanelLoading: boolean;
   panel?: DomainConnectionPanel;
 }) {
-  const items = panel?.items ?? [];
+  const isLoading = isPanelLoading || isDetailLoading;
+  const rows = buildConnectionRows(domains, detail);
 
   return (
     <Panel hub="domain">
@@ -67,81 +67,112 @@ export function DomainConnectionRail({
           {isPanelLoading ? (
             <Skeleton height={42} width="100%" />
           ) : (
-            <Desc>{railCopy.description}</Desc>
+            <Desc>{buildConnectionPanelDescription(panel)}</Desc>
           )}
         </HeadCopy>
       </Head>
 
-      {isPanelLoading ? (
+      {isLoading ? (
         <RowSkeletons count={3} height={66} />
-      ) : panel && items.length > 0 ? (
-        <Box>
-          <SummaryHeader>
-            <SummaryLabel>{railCopy.summaryLabel}</SummaryLabel>
-            <SummaryValue hub="domain">{panel.total.toLocaleString()} total</SummaryValue>
-          </SummaryHeader>
-          <RowList dense>
-            {items.map((item) => (
-              <ListRow center compact key={item.status}>
-                <RowCopy>
-                  <RowTitle noWrap>{getConnectionStatusLabel(item.status)}</RowTitle>
-                  <RowMeta>{buildSummaryMeta(item.status, item.count)}</RowMeta>
-                </RowCopy>
-                <Badge dot tone={getConnectionTone(item.status)}>
-                  {item.count.toLocaleString()}
-                </Badge>
-              </ListRow>
-            ))}
-          </RowList>
-        </Box>
+      ) : rows.length > 0 ? (
+        <RowList dense>
+          {rows.map((row, index) => (
+            <ListRow center compact key={`${row.title}-${row.pill.label}-${index}`}>
+              <RowCopy>
+                <RowTitle noWrap>{row.title}</RowTitle>
+                <RowMeta>{row.meta}</RowMeta>
+              </RowCopy>
+              <Badge dot tone={row.pill.tone}>
+                {row.pill.label}
+              </Badge>
+            </ListRow>
+          ))}
+        </RowList>
       ) : (
-        <Empty>{railCopy.emptySummary}</Empty>
+        <Empty>프로젝트와 연결된 도메인이 아직 없습니다.</Empty>
       )}
-
-      <DetailGroup>
-        <SummaryHeader>
-          <SummaryLabel>{railCopy.selectedLabel}</SummaryLabel>
-        </SummaryHeader>
-        {isDetailLoading ? (
-          <Skeleton height={72} sx={{ borderRadius: '16px' }} variant="rounded" />
-        ) : detail ? (
-          <ListRow center compact>
-            <RowCopy>
-              <RowTitle noWrap>{detail.name}</RowTitle>
-              <RowMeta>{buildDetailMeta(detail)}</RowMeta>
-            </RowCopy>
-            <Badge dot tone={getConnectionTone(detail.status)}>
-              {getConnectionStatusLabel(detail.status)}
-            </Badge>
-          </ListRow>
-        ) : (
-          <Empty>{railCopy.emptyDetail}</Empty>
-        )}
-      </DetailGroup>
     </Panel>
   );
 }
 
-function buildSummaryMeta(status: DomainConnectionStatus, count: number) {
-  const label = count === 1 ? 'domain' : 'domains';
+function buildConnectionPanelDescription(panel: DomainConnectionPanel | undefined) {
+  const total = panel?.total ?? 0;
+  const summary = (panel?.items ?? [])
+    .filter((item) => item.count > 0)
+    .map((item) => `${getConnectionStatusLabel(item.status)} ${item.count.toLocaleString()}`)
+    .join(' · ');
 
-  if (status === 'none') return `${count.toLocaleString()} ${label} without a connection`;
-  if (status === 'ready') return `${count.toLocaleString()} ${label} ready to connect`;
-  if (status === 'connected') return `${count.toLocaleString()} ${label} connected`;
-
-  return `${count.toLocaleString()} ${label}`;
+  return total > 0
+    ? `총 ${total.toLocaleString()}개 도메인 기준 ${summary || '상태 정보 없음'}`
+    : '커넥션 상태를 확인할 수 있는 도메인이 없습니다.';
 }
 
-function buildDetailMeta(detail: DomainConnectionDetail) {
-  if (detail.boundProject === null) return 'No bound project';
-  if (detail.status === 'none') return 'No connection configured';
-  if (detail.status === 'ready') return 'Connection ready';
-  if (detail.status === 'connected') return 'Connection active';
+function buildConnectionRows(
+  domains: DomainResource[],
+  detail: DomainConnectionDetail | undefined,
+) {
+  const detailRow = detail ? buildConnectionRowFromDetail(detail) : null;
+  const detailId = detail?.id ?? '';
+  const domainRows = domains
+    .filter((domain) => domain.connection.status !== 'none')
+    .sort(
+      (left, right) =>
+        (connectionStatusOrder[left.connection.status] ?? 99) -
+        (connectionStatusOrder[right.connection.status] ?? 99),
+    )
+    .filter((domain) => domain.id !== detailId)
+    .map((domain) => ({
+      meta: buildConnectionSummary(domain.connection.status, domain.boundProject),
+      pill: {
+        label: getConnectionStatusLabel(domain.connection.status),
+        tone: getConnectionTone(domain.connection.status),
+      },
+      title: domain.name || '도메인 정보 없음',
+    }));
 
-  return formatLabel(detail.status);
+  const rows = [detailRow, ...domainRows].filter((row): row is ConnectionRailRow => Boolean(row));
+
+  if (rows.length > 0) {
+    return rows.slice(0, 4);
+  }
+
+  return [
+    {
+      meta: '프로젝트와 연결된 도메인이 아직 없습니다.',
+      pill: { label: 'Empty', tone: 'draft' as const },
+      title: '표시할 커넥션 상태가 없습니다.',
+    },
+  ];
 }
 
-function getConnectionStatusLabel(status: DomainConnectionStatus) {
+function buildConnectionRowFromDetail(detail: DomainConnectionDetail): ConnectionRailRow {
+  return {
+    meta: buildConnectionSummary(detail.status, detail.boundProject),
+    pill: {
+      label: getConnectionStatusLabel(detail.status),
+      tone: getConnectionTone(detail.status),
+    },
+    title: detail.name || '도메인 정보 없음',
+  };
+}
+
+function buildConnectionSummary(
+  status: string,
+  boundProject: DomainResource['boundProject'] | DomainConnectionDetail['boundProject'],
+) {
+  const projectLabel = boundProject?.name;
+  if (status === 'connected') {
+    return projectLabel ? `${projectLabel} 연결 완료` : '라우트 연결 완료';
+  }
+  if (status === 'ready') {
+    return projectLabel ? `${projectLabel} 연결 준비 완료` : '라우트 연결 준비 완료';
+  }
+  if (status === 'none') return '바인딩 전';
+
+  return formatLabel(status);
+}
+
+function getConnectionStatusLabel(status: string) {
   if (status === 'none') return 'None';
   if (status === 'ready') return 'Ready';
   if (status === 'connected') return 'Connected';
@@ -149,10 +180,19 @@ function getConnectionStatusLabel(status: DomainConnectionStatus) {
   return formatLabel(status);
 }
 
-function getConnectionTone(status: DomainConnectionStatus): ToneName {
+function getConnectionTone(status: string): ToneName {
   if (status === 'none') return 'draft';
   if (status === 'ready') return 'review';
   if (status === 'connected') return 'healthy';
 
   return 'info';
 }
+
+type ConnectionRailRow = {
+  meta: string;
+  pill: {
+    label: string;
+    tone: ToneName;
+  };
+  title: string;
+};

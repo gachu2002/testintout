@@ -32,9 +32,9 @@ export function buildResourceItems({
   const databaseItems = databases.map((item) => ({
     href: routes.databases,
     iconBackground: 'linear-gradient(135deg,#2563eb,#06b6d4)',
-    iconName: 'database',
+    iconName: 'storage',
     id: `database-${item.id}`,
-    meta: `DB · ${item.engine}`,
+    meta: `${item.engine || 'DB'} · ${item.status || '-'}`,
     status: item.health.label,
     title: item.name,
   }));
@@ -44,7 +44,7 @@ export function buildResourceItems({
     iconBackground: 'linear-gradient(135deg,#0f766e,#2dd4bf)',
     iconName: 'bucket',
     id: `bucket-${item.id}`,
-    meta: `Bucket · ${item.type}`,
+    meta: `${item.type || 'Bucket'} · ${item.status || '-'}`,
     status: item.status,
     title: item.name,
   }));
@@ -54,7 +54,7 @@ export function buildResourceItems({
     iconBackground: 'linear-gradient(135deg,#4f46e5,#60a5fa)',
     iconName: 'domain',
     id: `domain-${item.id}`,
-    meta: `Domain · ${item.kind}`,
+    meta: `${item.kind || 'Domain'} · ${item.status || '-'}`,
     status: item.status,
     title: item.name,
   }));
@@ -64,7 +64,7 @@ export function buildResourceItems({
     iconBackground: 'linear-gradient(135deg,#f97316,#fb923c)',
     iconName: 'console',
     id: `console-${item.id}`,
-    meta: `Console · ${item.typeLabel}`,
+    meta: `${item.typeLabel || item.type || 'Console'} · ${item.statusLabel || item.status || '-'}`,
     status: item.statusLabel,
     title: item.name,
   }));

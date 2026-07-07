@@ -1,9 +1,10 @@
 import AccountTreeRoundedIcon from '@mui/icons-material/AccountTreeRounded';
 import AppsRoundedIcon from '@mui/icons-material/AppsRounded';
+import BoltRoundedIcon from '@mui/icons-material/BoltRounded';
 import HubRoundedIcon from '@mui/icons-material/HubRounded';
-import MemoryRoundedIcon from '@mui/icons-material/MemoryRounded';
 import StorageRoundedIcon from '@mui/icons-material/StorageRounded';
 import TableChartRoundedIcon from '@mui/icons-material/TableChartRounded';
+import TravelExploreRoundedIcon from '@mui/icons-material/TravelExploreRounded';
 import type { ReactNode } from 'react';
 
 import { FilterBar, ResultCount } from '@/components/workspace';
@@ -13,40 +14,39 @@ import {
 } from '@/components/workspace/FilterControls';
 import { databaseHubSectionStatus } from '@/features/database-hub/sectionStatus';
 import type { DatabaseHubFilters } from '@/features/database-hub/types';
-import { formatLabel } from '@/lib/formatters';
 
 export function DatabaseHubFilterBar({
-  activeEngine,
+  activeCategory,
   filters,
   isLoading,
   loadedCount,
-  onEngineChange,
+  onCategoryChange,
   total,
 }: {
-  activeEngine: string;
+  activeCategory: string;
   filters?: DatabaseHubFilters;
   isLoading: boolean;
   loadedCount: number;
-  onEngineChange: (engine: string) => void;
+  onCategoryChange: (category: string) => void;
   total?: number;
 }) {
-  const options = buildEngineOptions(filters, total).map<WorkspaceFilterOption>((option) => {
-    const meta = getEngineMeta(option.engine);
+  const options = buildCategoryOptions(filters, total).map<WorkspaceFilterOption>((option) => {
+    const meta = getCategoryMeta(option.category);
 
     return {
       count: option.count,
       icon: meta.icon,
-      isActive: option.engine === activeEngine,
-      key: option.engine,
+      isActive: option.category === activeCategory,
+      key: option.category,
       label: meta.label,
-      onClick: () => onEngineChange(option.engine),
+      onClick: () => onCategoryChange(option.category),
     };
   });
 
   return (
     <FilterBar>
       <WorkspaceFilterGroup
-        ariaLabel="Database engine filters"
+        ariaLabel="Database category filters"
         hub="database"
         isLoading={isLoading}
         label="View"
@@ -54,42 +54,60 @@ export function DatabaseHubFilterBar({
         skeletonCount={6}
         status={databaseHubSectionStatus.filters}
       />
-      <ResultCount>{buildResultCopy(activeEngine, loadedCount, total)}</ResultCount>
+      <ResultCount>{buildResultCopy(activeCategory, loadedCount, total)}</ResultCount>
     </FilterBar>
   );
 }
 
-function buildEngineOptions(filters: DatabaseHubFilters | undefined, total: number | undefined) {
+function buildCategoryOptions(filters: DatabaseHubFilters | undefined, total: number | undefined) {
   const allCount = total ?? filters?.engines.reduce((sum, engine) => sum + engine.count, 0) ?? 0;
+  const grouped =
+    filters?.engines.reduce<Record<string, number>>((acc, engine) => {
+      const category = getDatabaseEngineCategory(engine.value);
+      acc[category] = (acc[category] ?? 0) + engine.count;
+
+      return acc;
+    }, {}) ?? {};
 
   return [
-    { count: allCount, engine: 'all' },
-    ...(filters?.engines.map((engine) => ({ count: engine.count, engine: engine.value })) ?? []),
+    { category: 'all', count: allCount },
+    ...Object.entries(grouped).map(([category, count]) => ({ category, count })),
   ];
 }
 
-function getEngineMeta(engine: string): { icon: ReactNode; label: string } {
-  if (engine === 'all') return { icon: <AppsRoundedIcon sx={{ fontSize: 15 }} />, label: '전체' };
-  if (engine === 'milvus')
-    return { icon: <HubRoundedIcon sx={{ fontSize: 15 }} />, label: 'Milvus' };
-  if (engine === 'mongo') {
-    return { icon: <AccountTreeRoundedIcon sx={{ fontSize: 15 }} />, label: 'MongoDB' };
+function getCategoryMeta(category: string): { icon: ReactNode; label: string } {
+  if (category === 'all') return { icon: <AppsRoundedIcon sx={{ fontSize: 15 }} />, label: '전체' };
+  if (category === 'relational') {
+    return { icon: <TableChartRoundedIcon sx={{ fontSize: 15 }} />, label: '관계형' };
   }
-  if (engine === 'mysql')
-    return { icon: <TableChartRoundedIcon sx={{ fontSize: 15 }} />, label: 'MySQL' };
-  if (engine === 'postgres') {
-    return { icon: <StorageRoundedIcon sx={{ fontSize: 15 }} />, label: 'Postgres' };
+  if (category === 'document') {
+    return { icon: <AccountTreeRoundedIcon sx={{ fontSize: 15 }} />, label: '문서형' };
   }
-  if (engine === 'redis')
-    return { icon: <MemoryRoundedIcon sx={{ fontSize: 15 }} />, label: 'Redis' };
+  if (category === 'cache')
+    return { icon: <BoltRoundedIcon sx={{ fontSize: 15 }} />, label: '캐시' };
+  if (category === 'search') {
+    return { icon: <TravelExploreRoundedIcon sx={{ fontSize: 15 }} />, label: '검색' };
+  }
+  if (category === 'vector')
+    return { icon: <HubRoundedIcon sx={{ fontSize: 15 }} />, label: '벡터' };
 
-  return { icon: <StorageRoundedIcon sx={{ fontSize: 15 }} />, label: formatLabel(engine) };
+  return { icon: <StorageRoundedIcon sx={{ fontSize: 15 }} />, label: '기타' };
 }
 
-function buildResultCopy(activeEngine: string, loadedCount: number, total: number | undefined) {
+function buildResultCopy(activeCategory: string, loadedCount: number, total: number | undefined) {
   const totalCopy = typeof total === 'number' ? `${total.toLocaleString()} total` : 'total loading';
 
-  if (activeEngine === 'all') return `Loaded ${loadedCount.toLocaleString()} of ${totalCopy}`;
+  if (activeCategory === 'all') return `Loaded ${loadedCount.toLocaleString()} of ${totalCopy}`;
 
-  return `${loadedCount.toLocaleString()} ${formatLabel(activeEngine)} resources · ${totalCopy}`;
+  return `${loadedCount.toLocaleString()} ${getCategoryMeta(activeCategory).label} resources · ${totalCopy}`;
+}
+
+function getDatabaseEngineCategory(engine: string) {
+  if (engine === 'mysql' || engine === 'postgres') return 'relational';
+  if (engine === 'mongo') return 'document';
+  if (engine === 'redis') return 'cache';
+  if (engine === 'elastic') return 'search';
+  if (engine === 'milvus') return 'vector';
+
+  return 'unknown';
 }

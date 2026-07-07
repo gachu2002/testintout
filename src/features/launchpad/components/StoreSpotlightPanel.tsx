@@ -5,6 +5,7 @@ import LinkRoundedIcon from '@mui/icons-material/LinkRounded';
 import MenuBookRoundedIcon from '@mui/icons-material/MenuBookRounded';
 import QueryStatsRoundedIcon from '@mui/icons-material/QueryStatsRounded';
 import RocketLaunchRoundedIcon from '@mui/icons-material/RocketLaunchRounded';
+import SellRoundedIcon from '@mui/icons-material/SellRounded';
 import SmartToyRoundedIcon from '@mui/icons-material/SmartToyRounded';
 import StorefrontRoundedIcon from '@mui/icons-material/StorefrontRounded';
 import TerminalRoundedIcon from '@mui/icons-material/TerminalRounded';
@@ -66,7 +67,7 @@ export function StoreSpotlightPanel({
 
   return (
     <Panel>
-      <CompactLabel icon={<StorefrontRoundedIcon sx={{ fontSize: 14 }} />} label="Store" />
+      <CompactLabel icon={<StorefrontRoundedIcon sx={{ fontSize: 14 }} />} label="Gallery" />
       {storeSpotlightHasError ? (
         <Typography color="text.disabled" fontSize={12} sx={{ mb: 1.5 }}>
           Store metadata is unavailable. Gallery content will use available feeds.
@@ -108,7 +109,7 @@ function StoreGallerySection({ section }: { section: StoreSectionViewModel }) {
             {section.description}
           </Typography>
         </Box>
-        <PanelMoreLink href={section.href} label="Open gallery" />
+        <PanelMoreLink href={section.href} label="갤러리 열기" />
       </Stack>
 
       <Box
@@ -263,16 +264,20 @@ function SpotlightCard({
           <Box
             key={tag}
             sx={(theme) => ({
+              alignItems: 'center',
               bgcolor: 'rgba(255,255,255,.86)',
               border: `1px solid ${theme.workspace.colors.border}`,
               borderRadius: 999,
               color: 'text.secondary',
+              display: 'inline-flex',
               fontSize: 10,
               fontWeight: 700,
+              gap: 0.5,
               px: 1.25,
               py: 0.75,
             })}
           >
+            <SellRoundedIcon sx={{ fontSize: 12 }} />
             {tag}
           </Box>
         ))}

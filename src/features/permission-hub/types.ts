@@ -22,6 +22,11 @@ export type PermissionHubFilters = {
 
 export type PermissionKindFilter = 'all' | PermissionRealmKind;
 
+export type PermissionRealmCreateRequest = {
+  kind: 'scoped';
+  name: string;
+};
+
 export type PermissionRealm = {
   access: {
     accessLevel: string;
@@ -100,4 +105,27 @@ export type PermissionGuideLinksPanel = {
   surface: 'permissions';
   title: string;
   type: 'guide-links';
+};
+
+export type PermissionRequestStatus = 'approved' | 'cancelled' | 'pending' | 'rejected';
+
+export type PermissionRequestActor = {
+  avatarUrl: string | null;
+  id: string;
+  name: string;
+  role: string | null;
+};
+
+export type PermissionRequestItem = {
+  createdAt: string;
+  decidedAt: string | null;
+  decidedBy: PermissionRequestActor | null;
+  id: string;
+  realmId: string;
+  realmName: string;
+  reason: string;
+  rejectReason: string;
+  requester: PermissionRequestActor;
+  roleName: string;
+  status: PermissionRequestStatus;
 };

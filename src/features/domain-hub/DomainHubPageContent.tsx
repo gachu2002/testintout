@@ -25,17 +25,20 @@ import type { DomainStatusFilter } from '@/features/domain-hub/types';
 
 export function DomainHubPageContent() {
   const [activeStatus, setActiveStatus] = useState<DomainStatusFilter>('all');
-  const domainsQuery = useDomainHubDomainsQuery(6, '');
+  const domainsQuery = useDomainHubDomainsQuery(8, '', '', '');
   const filtersQuery = useDomainHubFiltersQuery();
   const statsQuery = useDomainHubStatsQuery();
   const tipsQuery = useDomainHubTipsQuery();
   const guideLinksQuery = useDomainHubGuideLinksQuery();
   const certificatePanelQuery = useDomainCertificatePanelQuery();
   const domains = domainsQuery.data?.items ?? [];
-  const railDomainId = domains[0]?.id ?? '';
-  const certificateDetailQuery = useDomainCertificateDetailQuery(railDomainId);
+  const certificateRailDomainId =
+    domains.find((domain) => domain.certificate.status !== 'none')?.id ?? domains[0]?.id ?? '';
+  const connectionRailDomainId =
+    domains.find((domain) => domain.connection.status !== 'none')?.id ?? domains[0]?.id ?? '';
+  const certificateDetailQuery = useDomainCertificateDetailQuery(certificateRailDomainId);
   const connectionPanelQuery = useDomainConnectionPanelQuery();
-  const connectionDetailQuery = useDomainConnectionDetailQuery(railDomainId);
+  const connectionDetailQuery = useDomainConnectionDetailQuery(connectionRailDomainId);
   const visibleDomains = domains.filter((domain) => {
     if (activeStatus === 'all') return true;
     if (activeStatus === 'certificate') return domain.certificate.status !== 'none';
@@ -45,7 +48,18 @@ export function DomainHubPageContent() {
 
   return (
     <Stack spacing={2.5}>
-      <DomainHubHero isLoading={statsQuery.isLoading} stats={statsQuery.data} />
+      <DomainHubHero
+        certificatePanel={certificatePanelQuery.data}
+        connectionPanel={connectionPanelQuery.data}
+        domains={domains}
+        isLoading={
+          statsQuery.isLoading ||
+          domainsQuery.isLoading ||
+          certificatePanelQuery.isLoading ||
+          connectionPanelQuery.isLoading
+        }
+        stats={statsQuery.data}
+      />
       <DomainHubFilterBar
         activeStatus={activeStatus}
         filters={filtersQuery.data}
@@ -72,12 +86,14 @@ export function DomainHubPageContent() {
         <Stack spacing={2.5}>
           <DomainCertificateRail
             detail={certificateDetailQuery.data}
+            domains={domains}
             isDetailLoading={certificateDetailQuery.isLoading}
             isPanelLoading={certificatePanelQuery.isLoading}
             panel={certificatePanelQuery.data}
           />
           <DomainConnectionRail
             detail={connectionDetailQuery.data}
+            domains={domains}
             isDetailLoading={connectionDetailQuery.isLoading}
             isPanelLoading={connectionPanelQuery.isLoading}
             panel={connectionPanelQuery.data}

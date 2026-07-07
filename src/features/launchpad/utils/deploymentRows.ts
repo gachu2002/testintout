@@ -1,7 +1,6 @@
 import { routes } from '@/config/routes';
 import type { Job, Project } from '@/features/launchpad/types';
-import { getJobTitle } from '@/features/launchpad/utils/statusTone';
-import { formatRelativeTime } from '@/lib/formatters';
+import { formatLaunchpadRelativeTime } from '@/features/launchpad/utils/referenceFormatters';
 
 export type DeploymentRow = {
   href: string;
@@ -14,41 +13,32 @@ export type DeploymentRow = {
 };
 
 export function buildDeploymentRows(projects: Project[], jobs: Job[]): DeploymentRow[] {
-  const projectIcons = ['language', 'dashboard', 'schedule'];
-  const projectRows = projects.map((project, index) => ({
+  return projects.slice(0, 5).map((project, index) => ({
     href: routes.projects,
-    icon: getCycledValue(projectIcons, index),
+    icon: 'rocket_launch',
     iconBackground: getCycledValue(DEPLOYMENT_GRADIENTS, index),
     id: `project-${project.id}`,
     name: project.name,
-    status: project.visibility === 'private' ? 'Running' : 'Stopped',
-    version: `${project.projectType} · ${formatRelativeTime(project.updatedAt)}`,
+    status: getProjectPill(project, jobs),
+    version: `${project.ide || project.projectType || 'workspace'} · ${formatLaunchpadRelativeTime(
+      project.updatedAt,
+    )}`,
   }));
-  const jobRows = jobs.map((job, index) => ({
-    href: routes.projects,
-    icon: index % 2 === 0 ? 'schedule' : 'smart_toy',
-    iconBackground: getCycledValue(DEPLOYMENT_GRADIENTS, projectRows.length + index),
-    id: `job-${job.id}`,
-    name: getJobTitle(job.type),
-    status: getDeploymentStatus(job.status),
-    version: `${job.type} · ${formatRelativeTime(job.updatedAt)}`,
-  }));
-
-  return [...projectRows, ...jobRows].slice(0, 5);
 }
 
 function getCycledValue(values: string[], index: number) {
   return values[index % values.length] ?? values[0] ?? '';
 }
 
-function getDeploymentStatus(status: string) {
-  const normalized = status.toLowerCase();
+function getProjectPill(project: Project, jobs: Job[]) {
+  const match = jobs.find((job) => String(job.id || '').includes(project.id || ''));
+  const normalized = match?.status.toLowerCase();
 
-  if (['queued', 'pending', 'building'].includes(normalized)) return 'Building';
-  if (['failed', 'error', 'denied'].includes(normalized)) return 'Error';
-  if (['stopped', 'cancelled'].includes(normalized)) return 'Stopped';
+  if (normalized === 'running') return 'Running';
+  if (normalized === 'queued') return 'Queued';
+  if (normalized === 'failed') return 'Error';
 
-  return 'Running';
+  return 'Ready';
 }
 
 const DEPLOYMENT_GRADIENTS = [

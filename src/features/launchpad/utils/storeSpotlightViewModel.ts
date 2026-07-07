@@ -110,34 +110,40 @@ export function getTileTagTone(
 }
 
 function mapAppSpotlight(item: AppGalleryFeaturedItem, sectionHref: string): StoreSpotlightCard {
+  const points = [
+    item.installTargetLabel ? `${item.installTargetLabel} 단위로 바로 연결` : null,
+    item.capabilities.canInstall ? '설치 API 연결 가능' : '조회 중심 프리뷰',
+    ...item.tags.slice(0, 2),
+  ].filter((point): point is string => Boolean(point));
+
   return {
     description: item.summary,
     eyebrow: 'DEJ App Gallery',
     href: sectionHref,
     icon: item.icon,
-    iconBackground: getIconBackground(item.iconColor, '#22d3ee'),
-    points: [
-      { icon: 'rocket_launch', text: item.subtitle },
-      {
-        icon: 'dashboard',
-        text: `${item.categoryLabel} · Install target ${item.installTargetLabel}`,
-      },
-      { icon: 'link', text: item.tags.join(' · ') },
-    ],
-    stateLabel: '앱 갤러리 추천',
+    iconBackground: item.iconColor || '#2563eb',
+    points: points.map((point) => ({ icon: getCategoryIcon(item.category), text: point })),
+    stateLabel: item.badge || '앱 갤러리 추천',
     tags: item.tags,
     title: item.title,
   };
 }
 
 function mapAiSpotlight(item: AiGallerySpotlight, sectionHref: string): StoreSpotlightCard {
+  const points = [
+    item.chatbotTypeLabel ? `${item.chatbotTypeLabel} 연결` : null,
+    typeof item.linkedChatbotCount === 'number' ? `연결된 챗봇 ${item.linkedChatbotCount}개` : null,
+    item.capabilities.canTryNow ? '바로 써보기 가능' : null,
+    item.capabilities.canOpenWeb ? '웹 열기 가능' : null,
+  ].filter((point): point is string => Boolean(point));
+
   return {
     description: item.summary,
     eyebrow: 'DEJ AI Gallery',
     href: item.openUrl || sectionHref,
     icon: 'smart_toy',
-    iconBackground: getIconBackground(item.iconColor, '#7c5fcf'),
-    points: [],
+    iconBackground: item.iconColor || '#b40e4d',
+    points: points.map((point) => ({ icon: 'link', text: point })),
     stateLabel: 'AI Gallery Preview',
     tags: item.tags,
     title: item.title,
@@ -149,7 +155,7 @@ function mapAppTile(item: AppGalleryFeaturedItem, sectionHref: string): StoreTil
     description: item.summary,
     href: sectionHref,
     icon: item.icon,
-    iconBackground: getIconBackground(item.iconColor, getCategoryAccent(item.category)),
+    iconBackground: item.iconColor || getCategoryAccent(item.category),
     id: item.slug,
     name: item.title,
     tag: item.badge || item.categoryLabel,
@@ -158,23 +164,34 @@ function mapAppTile(item: AppGalleryFeaturedItem, sectionHref: string): StoreTil
 }
 
 function mapAiTiles(item: AiGallerySpotlight, sectionHref: string): StoreTileViewModel[] {
-  return item.tags.slice(0, 4).map((tag, index) => ({
-    description: 'Connected chatbot',
-    href: sectionHref,
+  const linkedChatbots = item.linkedChatbots ?? [];
+  const tiles = linkedChatbots.length
+    ? linkedChatbots.slice(0, 4).map((chatbot) => ({
+        description: chatbot.typeLabel || chatbot.type || 'Connected chatbot',
+        href: chatbot.trialUrl || chatbot.webUrl || sectionHref,
+        name: chatbot.name,
+        tag: chatbot.hasApi ? 'API 챗봇' : '웹페이지 챗봇',
+      }))
+    : item.tags.slice(0, 4).map((tag) => ({
+        description: item.chatbotTypeLabel || 'Connected chatbot',
+        href: item.trialUrl || item.webUrl || sectionHref,
+        name: tag,
+        tag: item.statusLabel || 'Preview',
+      }));
+
+  return tiles.map((tile, index) => ({
+    description: tile.description,
+    href: tile.href,
     icon: index % 2 === 0 ? 'hub' : 'chat',
     iconBackground:
       index % 2 === 0
         ? 'linear-gradient(135deg,#b40e4d,#7c5fcf)'
         : 'linear-gradient(135deg,#4f8cff,#0086cc)',
-    id: `${item.slug}-${tag}`,
-    name: tag,
-    tag: item.statusLabel || 'Preview',
-    tagTone: getAiTone(item.status),
+    id: `${item.slug}-${tile.name}`,
+    name: tile.name,
+    tag: tile.tag,
+    tagTone: 'brand',
   }));
-}
-
-function getIconBackground(color: string, accent: string) {
-  return `linear-gradient(135deg, ${color}, ${accent})`;
 }
 
 function getCategoryAccent(category: string) {
@@ -184,17 +201,17 @@ function getCategoryAccent(category: string) {
   return '#3b6fcf';
 }
 
+function getCategoryIcon(category: string) {
+  if (category === 'workspace') return 'dashboard';
+  if (category === 'operations') return 'rocket_launch';
+  if (category === 'analytics') return 'monitoring';
+
+  return 'terminal';
+}
+
 function getAppTone(category: string): StoreTileTone {
   if (category === 'operations') return 'orange';
   if (category === 'workspace') return 'green';
 
   return 'blue';
-}
-
-function getAiTone(status: string): StoreTileTone {
-  if (status === 'review') return 'blue';
-  if (status === 'active') return 'green';
-  if (status === 'error') return 'brand';
-
-  return 'purple';
 }

@@ -18,6 +18,7 @@ type WorkspaceResourceCardsPanelProps = {
   children: ReactNode;
   description: string;
   emptyCopy: string;
+  headerAction?: ReactNode;
   hub: HubThemeName;
   icon: ReactNode;
   isEmpty: boolean;
@@ -34,6 +35,7 @@ export function WorkspaceResourceCardsPanel({
   children,
   description,
   emptyCopy,
+  headerAction,
   hub,
   icon,
   isEmpty,
@@ -57,7 +59,7 @@ export function WorkspaceResourceCardsPanel({
           <Title>{title}</Title>
           <Desc>{description}</Desc>
         </HeadCopy>
-        {resultCopy ? <ResultCount>{resultCopy}</ResultCount> : null}
+        {headerAction ?? (resultCopy ? <ResultCount>{resultCopy}</ResultCount> : null)}
       </Head>
 
       {isLoading ? (

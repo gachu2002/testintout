@@ -27,10 +27,12 @@ const heroCopy = {
 export function PermissionHubHero({
   filters,
   isLoading,
+  onCreateClick,
   stats,
 }: {
   filters?: PermissionHubFilters;
   isLoading: boolean;
+  onCreateClick: () => void;
   stats?: PermissionHubStats;
 }) {
   const statsConfig = buildStatsConfig(filters, stats);
@@ -40,7 +42,7 @@ export function PermissionHubHero({
       actions={
         <>
           <Button
-            disabled
+            onClick={onCreateClick}
             startIcon={<AddCircleRoundedIcon />}
             sx={workspaceHubHeroActionButtonSx}
             variant="contained"

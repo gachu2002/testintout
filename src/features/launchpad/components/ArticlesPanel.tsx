@@ -5,12 +5,10 @@ import { styled } from '@mui/material/styles';
 import { SectionStatusBadge } from '@/components/reference-status';
 import { SmartLink } from '@/components/SmartLink';
 import { focusVisibleStyles, Panel } from '@/components/workspace';
-import { WorkspaceIcon } from '@/components/WorkspaceIcon';
 import { launchpadSectionStatus } from '@/features/launchpad/sectionStatus';
 import type { Article, ArticleTab } from '@/features/launchpad/types';
+import { formatLaunchpadDate } from '@/features/launchpad/utils/referenceFormatters';
 import { getArticleGradient } from '@/features/launchpad/utils/visuals';
-import { formatDate } from '@/lib/formatters';
-import { workspaceTokens } from '@/styles/tokens';
 
 import { ListSkeleton, PanelMoreLink } from './LaunchpadPrimitives';
 
@@ -158,10 +156,10 @@ export function ArticlesPanel({
             <ArticleRoundedIcon sx={{ fontSize: 14 }} />
           </Box>
           <Box component="span" sx={{ lineHeight: 1 }}>
-            Articles
+            아티클
           </Box>
           <SectionStatusBadge status={launchpadSectionStatus.articles} />
-          <PanelMoreLink href="/docs/articles" label="More" />
+          <PanelMoreLink href="/docs/articles" label="더보기" />
         </SectionLabel>
         <TabList aria-label="Article categories" role="group">
           {resolvedTabs.map((tab) => {
@@ -205,7 +203,7 @@ function ArticleRow({ article }: { article: Article }) {
   return (
     <ArticleRowLink href={article.href}>
       <ArticleThumb articleGradient={getArticleGradient(article.category)}>
-        <WorkspaceIcon name={getArticleIconName(article.category)} sx={{ fontSize: 18 }} />
+        <ArticleRoundedIcon sx={{ fontSize: 18 }} />
       </ArticleThumb>
       <Box minWidth={0}>
         <ArticleTitle>{article.title}</ArticleTitle>
@@ -213,26 +211,16 @@ function ArticleRow({ article }: { article: Article }) {
           <ArticleTag tagBackground={tagTone.background} tagColor={tagTone.color}>
             {article.categoryLabel}
           </ArticleTag>
-          <Box component="span">{formatDate(article.publishedAt)}</Box>
+          <Box component="span">{formatLaunchpadDate(article.publishedAt)}</Box>
         </ArticleMeta>
       </Box>
     </ArticleRowLink>
   );
 }
 
-function getArticleIconName(category: string) {
-  if (category === 'ai') return 'agent';
-  if (category === 'security') return 'approval';
-
-  return 'project';
-}
-
 function getArticleTagTone(category: string) {
-  const { colors } = workspaceTokens;
+  if (category === 'development') return { background: '#e0edff', color: '#3157b7' };
+  if (category === 'security') return { background: '#fee2e2', color: '#b91c1c' };
 
-  if (category === 'ai') return { background: colors.purpleBackground, color: colors.purple };
-  if (category === 'security') return { background: colors.brandBackground, color: colors.brand };
-  if (category === 'dev') return { background: colors.blueBackground, color: colors.blue };
-
-  return { background: colors.greenBackground, color: colors.green };
+  return { background: '#f3f4f6', color: '#475569' };
 }

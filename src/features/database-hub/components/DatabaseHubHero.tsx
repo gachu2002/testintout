@@ -1,9 +1,9 @@
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
-import DataUsageRoundedIcon from '@mui/icons-material/DataUsageRounded';
 import HealthAndSafetyRoundedIcon from '@mui/icons-material/HealthAndSafetyRounded';
 import HubRoundedIcon from '@mui/icons-material/HubRounded';
 import LinkRoundedIcon from '@mui/icons-material/LinkRounded';
 import StorageRoundedIcon from '@mui/icons-material/StorageRounded';
+import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import WebRoundedIcon from '@mui/icons-material/WebRounded';
 import { Button } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
@@ -13,7 +13,7 @@ import { WorkspaceHubHero } from '@/components/workspace/HubHero';
 import { workspaceHubHeroActionButtonSx } from '@/components/workspace/HubHeroStyles';
 import { routes } from '@/config/routes';
 import { databaseHubSectionStatus } from '@/features/database-hub/sectionStatus';
-import type { DatabaseHubFilters, DatabaseHubStats } from '@/features/database-hub/types';
+import type { DatabaseHealthPanel, DatabaseHubStats } from '@/features/database-hub/types';
 
 const heroCopy = {
   description:
@@ -25,22 +25,24 @@ const heroCopy = {
 };
 
 export function DatabaseHubHero({
-  filters,
+  healthPanel,
   isLoading,
+  onCreateClick,
   stats,
 }: {
-  filters?: DatabaseHubFilters;
+  healthPanel?: DatabaseHealthPanel;
   isLoading: boolean;
+  onCreateClick: () => void;
   stats?: DatabaseHubStats;
 }) {
-  const statsConfig = buildStatsConfig(filters);
+  const statsConfig = buildStatsConfig(healthPanel);
 
   return (
     <WorkspaceHubHero
       actions={
         <>
           <Button
-            disabled
+            onClick={onCreateClick}
             startIcon={<AddCircleRoundedIcon />}
             sx={workspaceHubHeroActionButtonSx}
             variant="contained"
@@ -66,74 +68,65 @@ export function DatabaseHubHero({
       title={heroCopy.title}
     >
       <StatGrid>
-        {statsConfig.map((item) => (
-          <StatTile
-            color={item.color}
-            icon={item.icon}
-            isLoading={isLoading}
-            key={item.label}
-            label={item.label}
-            note={item.note}
-            value={stats ? item.getValue(stats) : '0'}
-          />
-        ))}
+        {statsConfig.map((item) => {
+          const note =
+            typeof item.note === 'function' ? (stats ? item.note(stats) : '') : item.note;
+
+          return (
+            <StatTile
+              color={item.color}
+              icon={item.icon}
+              isLoading={isLoading}
+              key={item.label}
+              label={item.label}
+              note={note}
+              value={stats ? item.getValue(stats) : '0'}
+            />
+          );
+        })}
       </StatGrid>
     </WorkspaceHubHero>
   );
 }
 
-function buildStatsConfig(filters: DatabaseHubFilters | undefined) {
+function buildStatsConfig(healthPanel: DatabaseHealthPanel | undefined) {
+  const healthSummary = healthPanel?.summary;
+
   return [
     {
       color: 'linear-gradient(135deg,#2563eb,#3b82f6)',
       getValue: (stats: DatabaseHubStats) => stats.totalDatabases.toLocaleString(),
       icon: <StorageRoundedIcon sx={{ fontSize: 20 }} />,
       label: '등록 리소스',
-      note: buildEngineNote(filters),
+      note: (stats: DatabaseHubStats) =>
+        `Running ${stats.runningCount.toLocaleString()} · Issues ${stats.issueCount.toLocaleString()}`,
     },
     {
       color: 'linear-gradient(135deg,#3b82f6,#38bdf8)',
       getValue: (stats: DatabaseHubStats) => stats.bindingCount.toLocaleString(),
       icon: <LinkRoundedIcon sx={{ fontSize: 20 }} />,
-      label: 'Bound Projects',
-      note: 'binding count 기준',
+      label: '연결 바인딩',
+      note: 'project / console bindings',
     },
     {
       color: 'linear-gradient(135deg,#1d4ed8,#60a5fa)',
-      getValue: (stats: DatabaseHubStats) => stats.runningCount.toLocaleString(),
+      getValue: () => (healthSummary?.healthy ?? 0).toLocaleString(),
       icon: <HealthAndSafetyRoundedIcon sx={{ fontSize: 20 }} />,
-      label: 'Running 리소스',
-      note: 'runtime status 기준',
+      label: 'Healthy 리소스',
+      note: `Degraded ${(healthSummary?.degraded ?? 0).toLocaleString()} · Unknown ${(
+        healthSummary?.unknown ?? 0
+      ).toLocaleString()}`,
     },
     {
       color: 'linear-gradient(135deg,#0ea5e9,#67e8f9)',
-      getValue: (stats: DatabaseHubStats) => formatByteValue(stats.totalQuotaBytes),
-      icon: <DataUsageRoundedIcon sx={{ fontSize: 20 }} />,
-      label: 'Quota',
-      note: 'accepted stats aggregate',
+      getValue: (stats: DatabaseHubStats) => getWeeklyResourceViews(stats).toLocaleString(),
+      icon: <VisibilityRoundedIcon sx={{ fontSize: 20 }} />,
+      label: '주간 리소스 열람',
+      note: '최근 7일 조회 기준',
     },
   ] as const;
 }
 
-function buildEngineNote(filters: DatabaseHubFilters | undefined) {
-  if (!filters?.engines.length) return 'engine 집계 로딩';
-
-  return filters.engines
-    .map((engine) => `${engine.value} ${engine.count.toLocaleString()}`)
-    .join(' · ');
-}
-
-function formatByteValue(bytes: number) {
-  if (bytes <= 0) return '0B';
-
-  const units = ['B', 'KB', 'MB', 'GB', 'TB'] as const;
-  let value = bytes;
-  let unitIndex = 0;
-
-  while (value >= 1024 && unitIndex < units.length - 1) {
-    value /= 1024;
-    unitIndex += 1;
-  }
-
-  return `${value.toFixed(value >= 10 || unitIndex === 0 ? 0 : 1)}${units[unitIndex]}`;
+function getWeeklyResourceViews(stats: DatabaseHubStats) {
+  return stats.weeklyResourceViews ?? stats.weeklyViews ?? stats.weeklyViewCount ?? 0;
 }

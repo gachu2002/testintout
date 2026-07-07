@@ -4,7 +4,6 @@ import type {
   LaunchpadBanner,
   LaunchpadHero,
 } from '@/features/launchpad/types';
-import { workspaceTokens } from '@/styles/tokens';
 
 export type BannerVariant = 'dej' | 'learning' | 'release' | 'research' | 'security';
 
@@ -293,12 +292,12 @@ export function getSlideVisual(variant: BannerVariant) {
   if (variant === 'dej') {
     return {
       background:
-        'linear-gradient(90deg, rgba(2,12,24,.56) 0%, rgba(3,20,38,.36) 42%, rgba(3,20,38,.12) 72%, rgba(3,20,38,.04) 100%), radial-gradient(circle at center, rgba(255,255,255,.04), transparent 60%), radial-gradient(circle at 12% 14%, rgba(255,255,255,.22), transparent 24%), radial-gradient(circle at 20% 72%, rgba(34,211,238,.24), transparent 26%), radial-gradient(circle at 84% 28%, rgba(59,130,246,.26), transparent 30%), radial-gradient(circle at 72% 82%, rgba(14,165,233,.22), transparent 28%), linear-gradient(135deg, #031b31 0%, #074064 48%, #052743 100%)',
+        'linear-gradient(90deg, rgba(2,12,24,.56) 0%, rgba(3,20,38,.36) 42%, rgba(3,20,38,.12) 72%, rgba(3,20,38,.04) 100%), radial-gradient(circle at center, rgba(255,255,255,.04), transparent 60%), radial-gradient(circle at 10% 16%, rgba(255,255,255,.22), transparent 24%), radial-gradient(circle at 18% 80%, rgba(34,211,238,.28), transparent 28%), radial-gradient(circle at 78% 24%, rgba(59,130,246,.34), transparent 30%), radial-gradient(circle at 88% 78%, rgba(168,85,247,.24), transparent 26%), linear-gradient(135deg, #081a3a 0%, #0f4c81 42%, #26145c 100%)',
       borderColor: 'rgba(255,255,255,.16)',
-      ctaBackground: 'linear-gradient(135deg, #0284c7, #22d3ee)',
-      ctaColor: '#fff',
-      ctaHoverBackground: 'linear-gradient(135deg, #0369a1, #38bdf8)',
-      ctaShadow: '0 10px 24px rgba(14,165,233,.22)',
+      ctaBackground: 'linear-gradient(135deg, #38bdf8, #818cf8)',
+      ctaColor: '#f8fbff',
+      ctaHoverBackground: 'linear-gradient(135deg, #0ea5e9, #6366f1)',
+      ctaShadow: '0 12px 28px rgba(59,130,246,.28)',
       dotColor: '#38bdf8',
       ghostBackground: 'rgba(7,29,48,.72)',
       ghostBorder: 'rgba(125,211,252,.28)',
@@ -306,14 +305,14 @@ export function getSlideVisual(variant: BannerVariant) {
       ghostHoverBackground: 'rgba(14,165,233,.16)',
       ghostHoverBorder: 'rgba(125,211,252,.46)',
       padding: '24px 28px 22px',
-      shadow: '0 18px 44px rgba(12,19,43,.18)',
+      shadow: '0 20px 48px rgba(12,19,43,.22)',
     };
   }
 
   if (variant === 'learning') {
     return {
       background:
-        'linear-gradient(90deg, rgba(2,12,24,.58) 0%, rgba(3,20,38,.28) 52%, rgba(3,20,38,.05) 100%), radial-gradient(circle at 86% 18%, rgba(125,211,252,.32), transparent 28%), radial-gradient(circle at 62% 88%, rgba(167,139,250,.24), transparent 30%), linear-gradient(135deg, #1e1b4b 0%, #4c1d95 52%, #164e63 100%)',
+        'linear-gradient(90deg, rgba(2,12,24,.58) 0%, rgba(3,20,38,.28) 52%, rgba(3,20,38,.05) 100%), radial-gradient(circle at 18% 16%, rgba(255,255,255,.18), transparent 22%), radial-gradient(circle at 84% 20%, rgba(56,189,248,.38), transparent 28%), radial-gradient(circle at 66% 84%, rgba(168,85,247,.3), transparent 30%), linear-gradient(135deg, #1d4ed8 0%, #0f766e 54%, #312e81 100%)',
       borderColor: 'rgba(255,255,255,.18)',
       ctaBackground: 'linear-gradient(135deg, #dbeafe, #c4b5fd)',
       ctaColor: '#1e3a8a',
@@ -353,7 +352,7 @@ export function getSlideVisual(variant: BannerVariant) {
   if (variant === 'research') {
     return {
       background:
-        'linear-gradient(90deg, rgba(2,12,24,.58) 0%, rgba(3,20,38,.28) 52%, rgba(3,20,38,.05) 100%), radial-gradient(circle at 18% 22%, rgba(255,255,255,.18), transparent 22%), radial-gradient(circle at 84% 22%, rgba(16,185,129,.36), transparent 28%), radial-gradient(circle at 70% 82%, rgba(45,212,191,.24), transparent 28%), linear-gradient(135deg, #14532d 0%, #0f766e 48%, #164e63 100%)',
+        'linear-gradient(90deg, rgba(2,12,24,.58) 0%, rgba(3,20,38,.28) 52%, rgba(3,20,38,.05) 100%), radial-gradient(circle at 16% 18%, rgba(255,255,255,.16), transparent 22%), radial-gradient(circle at 84% 22%, rgba(16,185,129,.36), transparent 28%), radial-gradient(circle at 70% 82%, rgba(45,212,191,.24), transparent 28%), linear-gradient(135deg, #14532d 0%, #0f766e 48%, #164e63 100%)',
       borderColor: 'rgba(255,255,255,.18)',
       ctaBackground: 'linear-gradient(135deg, #d1fae5, #99f6e4)',
       ctaColor: '#115e59',
@@ -372,8 +371,8 @@ export function getSlideVisual(variant: BannerVariant) {
 
   return {
     background:
-      'radial-gradient(circle at top right, rgba(180,14,77,.08), transparent 34%), linear-gradient(90deg, #f7eff3 0%, #eef3f8 58%, #ece6f4 100%)',
-    borderColor: 'rgba(214,216,219,.75)',
+      'linear-gradient(90deg, rgba(122,28,74,.16) 0%, rgba(190,24,93,.06) 46%, rgba(255,255,255,0) 100%), radial-gradient(circle at 16% 18%, rgba(255,255,255,.95), transparent 20%), radial-gradient(circle at 84% 18%, rgba(244,114,182,.18), transparent 28%), radial-gradient(circle at 72% 84%, rgba(251,113,133,.12), transparent 24%), linear-gradient(135deg, #fff8fc 0%, #fff1f6 46%, #ffe4ee 100%)',
+    borderColor: 'rgba(244,114,182,.22)',
     ctaBackground: 'linear-gradient(135deg, #fdf2f8, #fbcfe8)',
     ctaColor: '#9d174d',
     ctaHoverBackground: 'linear-gradient(135deg, #fce7f3, #f9a8d4)',
@@ -385,6 +384,6 @@ export function getSlideVisual(variant: BannerVariant) {
     ghostHoverBackground: '#fff1f6',
     ghostHoverBorder: 'rgba(244,114,182,.38)',
     padding: '26px 30px 24px',
-    shadow: workspaceTokens.shadows.raised,
+    shadow: '0 18px 40px rgba(244,114,182,.12)',
   };
 }

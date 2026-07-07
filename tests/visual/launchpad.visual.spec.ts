@@ -13,6 +13,10 @@ const strictScreenshots = process.env.VISUAL_STRICT === '1';
 
 for (const target of visualTargets) {
   test(target.trackerRow, async ({ browser, page }, testInfo) => {
+    if (target.timeout) {
+      testInfo.setTimeout(target.timeout);
+    }
+
     const reactRequests = collectApiRequests(page);
 
     await page.goto(target.route);
@@ -263,6 +267,24 @@ async function runReactAction(page: Page, action: VisualAction) {
     return;
   }
 
+  if (action === 'open-database-create-dialog') {
+    const createButton = page.getByRole('button', { name: '새 데이터베이스 생성' }).first();
+
+    await expect(createButton).toBeVisible();
+    await createButton.click();
+    await expect(page.getByRole('dialog').first()).toBeVisible();
+    return;
+  }
+
+  if (action === 'open-domain-create-dialog') {
+    const createButton = page.getByRole('button', { name: '새 도메인 생성' }).first();
+
+    await expect(createButton).toBeVisible();
+    await createButton.click();
+    await expect(page.getByRole('dialog').first()).toBeVisible();
+    return;
+  }
+
   if (action === 'open-service-menu') {
     await page.locator('[data-ref="service-menu-trigger"]').click();
     await expect(page.locator('[data-ref="service-menu-panel"]')).toBeVisible();
@@ -304,6 +326,27 @@ async function runReferenceAction(page: Page, action: VisualAction) {
   }
 
   if (action === 'submit-app-gallery-install') {
+    return;
+  }
+
+  if (action === 'open-database-create-dialog') {
+    const createButton = page
+      .locator('.create-btn')
+      .filter({ hasText: '새 데이터베이스 생성' })
+      .first();
+
+    await expect(createButton).toBeVisible();
+    await createButton.click();
+    await expect(page.locator('#databaseCreateModal')).toBeVisible();
+    return;
+  }
+
+  if (action === 'open-domain-create-dialog') {
+    const createButton = page.locator('.create-btn').filter({ hasText: '새 도메인 생성' }).first();
+
+    await expect(createButton).toBeVisible();
+    await createButton.click();
+    await expect(page.locator('#domainCreateModal')).toBeVisible();
     return;
   }
 

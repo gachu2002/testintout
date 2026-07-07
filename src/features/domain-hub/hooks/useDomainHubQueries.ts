@@ -1,6 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
+  createDomain,
   getDomainCertificateDetail,
   getDomainCertificatePanel,
   getDomainConnectionDetail,
@@ -11,6 +12,7 @@ import {
   getDomainHubStats,
   getDomainHubTipsPanel,
 } from '@/features/domain-hub/api/domainHubApi';
+import type { DomainCreateRequest } from '@/features/domain-hub/types';
 
 export const domainHubQueryKeys = {
   all: ['domain-hub'] as const,
@@ -20,18 +22,29 @@ export const domainHubQueryKeys = {
   connectionDetail: (domainId: string) =>
     [...domainHubQueryKeys.all, 'connection-detail', domainId] as const,
   connectionPanel: () => [...domainHubQueryKeys.all, 'connection-panel'] as const,
-  domains: (limit: number, cursor: string, q: string) =>
-    [...domainHubQueryKeys.all, 'domains', limit, cursor, q] as const,
+  domains: (limit: number, cursor: string, q: string, sort: string) =>
+    [...domainHubQueryKeys.all, 'domains', limit, cursor, q, sort] as const,
   filters: () => [...domainHubQueryKeys.all, 'filters'] as const,
   guideLinks: () => [...domainHubQueryKeys.all, 'guide-links', 'domains'] as const,
   stats: () => [...domainHubQueryKeys.all, 'stats'] as const,
   tips: () => [...domainHubQueryKeys.all, 'tips', 'domains'] as const,
 };
 
-export function useDomainHubDomainsQuery(limit = 6, cursor = '', q = '') {
+export function useDomainHubDomainsQuery(limit = 8, cursor = '', q = '', sort = '') {
   return useQuery({
-    queryFn: () => getDomainHubDomains({ cursor, limit, q }),
-    queryKey: domainHubQueryKeys.domains(limit, cursor, q),
+    queryFn: () => getDomainHubDomains({ cursor, limit, q, sort }),
+    queryKey: domainHubQueryKeys.domains(limit, cursor, q, sort),
+  });
+}
+
+export function useCreateDomainMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: DomainCreateRequest) => createDomain(payload),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: domainHubQueryKeys.all });
+    },
   });
 }
 

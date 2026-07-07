@@ -21,8 +21,8 @@ import type {
   Project,
 } from '@/features/launchpad/types';
 import { buildDeploymentRows, type DeploymentRow } from '@/features/launchpad/utils/deploymentRows';
+import { formatLaunchpadRelativeTime } from '@/features/launchpad/utils/referenceFormatters';
 import type { ResourceRailItem } from '@/features/launchpad/utils/resourceItems';
-import { formatRelativeTime, stripMarkup } from '@/lib/formatters';
 import { getStatusTone } from '@/lib/statusTone';
 
 import { HeaderTextAction, ListSkeleton, PanelMoreLink, RailHeader } from './LaunchpadPrimitives';
@@ -40,10 +40,10 @@ export function NotificationsPanel({
   return (
     <SoftPanel>
       <RailHeader
-        action={<HeaderTextAction label="All read" />}
+        action={<HeaderTextAction label="모두 읽음" />}
         icon={<NotificationsNoneRoundedIcon sx={{ fontSize: 14 }} />}
         status={launchpadSectionStatus.notificationsRail}
-        title="My Notifications"
+        title="내 알림"
       />
       {isLoading ? <ListSkeleton count={5} /> : null}
       {!isLoading && hasError ? (
@@ -85,10 +85,10 @@ export function ProjectsJobsPanel({
   return (
     <SoftPanel>
       <RailHeader
-        action={<PanelMoreLink href={routes.projects} label="View all" />}
+        action={<PanelMoreLink href={routes.projects} label="전체보기" />}
         icon={<RocketLaunchRoundedIcon sx={{ fontSize: 14 }} />}
         status={launchpadSectionStatus.deploymentsRail}
-        title="My Deployments"
+        title="내 배포 앱"
       />
       {isLoading ? <ListSkeleton count={5} /> : null}
       {!isLoading && hasError ? (
@@ -134,7 +134,7 @@ export function ResourcesPanel({
       <RailHeader
         icon={<Inventory2RoundedIcon sx={{ fontSize: 14 }} />}
         status={launchpadSectionStatus.resourcesRail}
-        title="My Resources"
+        title="내 리소스"
       />
       {isLoading ? <ListSkeleton count={6} /> : null}
       {!isLoading && hasError ? <RailErrorMessage label="Resources could not be loaded." /> : null}
@@ -156,7 +156,7 @@ export function ResourcesPanel({
               scrollbarWidth: 'thin',
             }}
           >
-            {resources.slice(0, 8).map((resource) => (
+            {resources.slice(0, 7).map((resource) => (
               <ResourceItem key={resource.id} resource={resource} />
             ))}
           </Stack>
@@ -229,7 +229,7 @@ function RailErrorMessage({ label }: { label: string }) {
 }
 
 function NotificationRow({ notification }: { notification: Notification }) {
-  const message = stripMarkup(notification.message) || notification.status;
+  const message = notification.message || '';
 
   return (
     <Box
@@ -271,7 +271,7 @@ function NotificationRow({ notification }: { notification: Notification }) {
           <Box component="b">{notification.title}</Box> {message}
         </Typography>
         <Typography color="text.disabled" fontSize={10} sx={{ mt: 0.25 }}>
-          {formatRelativeTime(notification.createdAt)}
+          {formatLaunchpadRelativeTime(notification.createdAt)}
         </Typography>
       </Box>
     </Box>
@@ -408,6 +408,7 @@ function getDeploymentIcon(name: string) {
   const sx = { fontSize: 17 };
 
   if (name === 'dashboard') return <DashboardRoundedIcon sx={sx} />;
+  if (name === 'rocket_launch') return <RocketLaunchRoundedIcon sx={sx} />;
   if (name === 'schedule') return <ScheduleRoundedIcon sx={sx} />;
   if (name === 'smart_toy') return <SmartToyRoundedIcon sx={sx} />;
 

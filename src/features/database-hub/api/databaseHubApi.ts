@@ -1,9 +1,14 @@
 import type {
+  CreateDatabaseRequest,
+  DatabaseBinding,
+  DatabaseBindingsPayload,
+  DatabaseDetail,
   DatabaseGuideLinksPanel,
   DatabaseHealthPanel,
   DatabaseHubFilters,
   DatabaseHubStats,
   DatabaseResource,
+  DatabaseRestartJob,
   DatabaseTipsPanel,
 } from '@/features/database-hub/types';
 import { apiClient } from '@/lib/api/axios';
@@ -56,6 +61,36 @@ export async function getDatabaseHubGuideLinksPanel(): Promise<DatabaseGuideLink
 export async function getDatabaseHealthPanel(): Promise<DatabaseHealthPanel> {
   const response = await apiClient.get<ApiDataResponse<DatabaseHealthPanel>>(
     '/v2/databases/panels/health',
+  );
+
+  return unwrapApiData(response);
+}
+
+export async function getDatabaseDetail(databaseId: string): Promise<DatabaseDetail> {
+  const response = await apiClient.get<ApiDataResponse<DatabaseDetail>>(
+    `/v2/databases/${encodeURIComponent(databaseId)}`,
+  );
+
+  return unwrapApiData(response);
+}
+
+export async function getDatabaseBindings(databaseId: string): Promise<DatabaseBinding[]> {
+  const response = await apiClient.get<ApiDataResponse<DatabaseBindingsPayload>>(
+    `/v2/databases/${encodeURIComponent(databaseId)}/bindings`,
+  );
+
+  return unwrapApiData(response).items;
+}
+
+export async function createDatabase(request: CreateDatabaseRequest): Promise<DatabaseDetail> {
+  const response = await apiClient.post<ApiDataResponse<DatabaseDetail>>('/v2/databases', request);
+
+  return unwrapApiData(response);
+}
+
+export async function restartDatabase(databaseId: string): Promise<DatabaseRestartJob> {
+  const response = await apiClient.post<ApiDataResponse<DatabaseRestartJob>>(
+    `/v2/databases/${encodeURIComponent(databaseId)}/restart`,
   );
 
   return unwrapApiData(response);

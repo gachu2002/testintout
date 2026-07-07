@@ -597,6 +597,21 @@
       background:var(--green-bg);
       color:var(--green);
     }
+    .hero-btn.favorite {
+      border-color:rgba(214,216,219,.95);
+      background:rgba(255,255,255,.84);
+      color:var(--t2);
+    }
+    .hero-btn.favorite:hover {
+      background:#f8fafc;
+      color:var(--t1);
+    }
+    .hero-btn.favorite.is-active {
+      border-color:rgba(76,106,136,.18);
+      background:var(--brand-bg);
+      color:var(--brand);
+      box-shadow:0 10px 24px rgba(76,106,136,.12);
+    }
     .hero-grid {
       position:relative;
       z-index:1;
@@ -1310,6 +1325,46 @@
       background:var(--surface-soft);
       border:1px solid var(--border);
       align-items:end;
+    }
+    .port-toolbar {
+      display:grid;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .port-caption {
+      font-size:12px;
+      line-height:1.6;
+      color:var(--t2);
+    }
+    .port-create {
+      display:grid;
+      grid-template-columns:180px minmax(0, 1.25fr) auto;
+      gap:10px;
+      padding:12px;
+      border-radius:14px;
+      background:var(--surface-soft);
+      border:1px solid var(--border);
+      align-items:end;
+    }
+    .port-row {
+      grid-template-columns:minmax(0, 1fr) auto;
+      align-items:center;
+    }
+    .port-row.is-editing {
+      grid-template-columns:180px minmax(0, 1.25fr) auto;
+      align-items:end;
+    }
+    .port-main {
+      min-width:0;
+      display:grid;
+      gap:6px;
+    }
+    .port-actions {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
     }
     .variable-row {
       display:grid;
@@ -2725,6 +2780,309 @@
       padding-top:18px;
       border-top:1px solid rgba(214,216,219,.74);
     }
+    .cowork-modal-backdrop {
+      position:fixed;
+      inset:0;
+      z-index:440;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background:rgba(15,23,42,.42);
+      backdrop-filter:blur(8px);
+    }
+    .cowork-modal-backdrop[hidden] {
+      display:none !important;
+    }
+    .cowork-modal-shell {
+      width:min(960px, 100%);
+      max-height:calc(100vh - 48px);
+      overflow:auto;
+      padding:24px;
+      border-radius:26px;
+      background:
+        radial-gradient(circle at top right, rgba(76,106,136,.1), transparent 32%),
+        linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border:1px solid rgba(214,216,219,.88);
+      box-shadow:0 28px 72px rgba(15,23,42,.22);
+    }
+    .cowork-modal-head {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:18px;
+    }
+    .cowork-modal-kicker {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-bottom:10px;
+      color:var(--brand);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+    .cowork-modal-kicker .material-icons-round { font-size:15px; }
+    .cowork-modal-copy h2 {
+      font-size:28px;
+      line-height:1.08;
+      letter-spacing:-.03em;
+      margin-bottom:8px;
+    }
+    .cowork-modal-copy p {
+      color:var(--t2);
+      font-size:14px;
+      line-height:1.6;
+    }
+    .cowork-modal-layout {
+      display:grid;
+      grid-template-columns:minmax(0, 1.05fr) minmax(320px, .95fr);
+      gap:18px;
+      align-items:start;
+    }
+    .cowork-panel {
+      padding:20px;
+      border-radius:22px;
+      border:1px solid rgba(214,216,219,.78);
+      background:rgba(255,255,255,.9);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+      display:grid;
+      gap:16px;
+    }
+    .cowork-section-head {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .cowork-section-eyebrow {
+      color:var(--t3);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+    .cowork-section-title {
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      line-height:1.15;
+    }
+    .cowork-section-meta {
+      color:var(--t3);
+      font-size:12px;
+      line-height:1.4;
+      text-align:right;
+      max-width:220px;
+    }
+    .cowork-search-shell {
+      position:relative;
+    }
+    .cowork-search-shell .material-icons-round {
+      position:absolute;
+      left:14px;
+      top:50%;
+      transform:translateY(-50%);
+      font-size:18px;
+      color:var(--t3);
+      pointer-events:none;
+    }
+    .cowork-search-input {
+      width:100%;
+      height:46px;
+      padding:0 16px 0 42px;
+      border:1px solid rgba(214,216,219,.96);
+      border-radius:14px;
+      background:#fff;
+      color:var(--t1);
+      font:inherit;
+      outline:none;
+      transition:border .15s ease, box-shadow .15s ease;
+    }
+    .cowork-search-input:focus {
+      border-color:rgba(76,106,136,.34);
+      box-shadow:0 0 0 4px rgba(76,106,136,.12);
+    }
+    .cowork-feedback {
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      padding:14px 16px;
+      margin-bottom:18px;
+      border-radius:16px;
+      border:1px solid rgba(76,106,136,.16);
+      background:linear-gradient(135deg, rgba(220,231,242,.7), rgba(255,255,255,.94));
+      color:var(--t2);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .cowork-feedback .material-icons-round {
+      font-size:18px;
+      color:var(--brand);
+      margin-top:1px;
+    }
+    .cowork-feedback[hidden] {
+      display:none !important;
+    }
+    .cowork-candidate-list,
+    .cowork-current-list {
+      display:grid;
+      gap:10px;
+    }
+    .cowork-candidate {
+      width:100%;
+      padding:15px 16px;
+      border:1px solid rgba(214,216,219,.88);
+      border-radius:18px;
+      background:#fbfcfe;
+      display:grid;
+      grid-template-columns:auto minmax(0, 1fr) auto;
+      gap:12px;
+      align-items:center;
+      text-align:left;
+      transition:border .15s ease, box-shadow .15s ease, transform .15s ease;
+    }
+    .cowork-candidate:hover {
+      transform:translateY(-1px);
+      border-color:rgba(76,106,136,.18);
+      box-shadow:0 12px 22px rgba(76,106,136,.08);
+    }
+    .cowork-candidate.is-selected {
+      border-color:rgba(76,106,136,.22);
+      background:linear-gradient(180deg, rgba(220,231,242,.68), rgba(255,255,255,.96));
+      box-shadow:0 12px 22px rgba(76,106,136,.08);
+    }
+    .cowork-avatar {
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-size:12px;
+      font-weight:800;
+      box-shadow:0 10px 22px rgba(15,23,42,.12);
+      flex-shrink:0;
+    }
+    .cowork-candidate-main,
+    .cowork-current-main {
+      min-width:0;
+      display:grid;
+      gap:4px;
+    }
+    .cowork-candidate-name,
+    .cowork-current-name {
+      font-size:14px;
+      font-weight:800;
+      color:var(--t1);
+    }
+    .cowork-candidate-meta,
+    .cowork-current-meta {
+      font-size:12px;
+      line-height:1.5;
+      color:var(--t2);
+      word-break:break-word;
+    }
+    .cowork-candidate-role,
+    .cowork-role-badge {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:72px;
+      height:28px;
+      padding:0 10px;
+      border-radius:999px;
+      border:1px solid rgba(214,216,219,.88);
+      background:#fff;
+      color:var(--t2);
+      font-size:11px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .cowork-current-item {
+      padding:15px 16px;
+      border:1px solid rgba(214,216,219,.88);
+      border-radius:18px;
+      background:#fbfcfe;
+      display:grid;
+      grid-template-columns:auto minmax(0, 1fr) auto;
+      gap:12px;
+      align-items:center;
+    }
+    .cowork-current-actions {
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .cowork-remove-btn {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:5px;
+      height:32px;
+      padding:0 12px;
+      border:none;
+      border-radius:10px;
+      background:var(--red-bg);
+      color:var(--red);
+      font-size:12px;
+      font-weight:800;
+    }
+    .cowork-remove-btn:hover {
+      filter:brightness(.98);
+    }
+    .cowork-empty {
+      padding:18px;
+      border-radius:18px;
+      border:1px dashed rgba(214,216,219,.96);
+      background:#fbfcfe;
+      color:var(--t2);
+      font-size:13px;
+      line-height:1.6;
+      text-align:center;
+    }
+    .cowork-selected-card {
+      display:grid;
+      gap:6px;
+      padding:16px;
+      border-radius:18px;
+      border:1px solid rgba(79,140,255,.18);
+      background:linear-gradient(135deg, rgba(226,243,255,.9), rgba(255,255,255,.98));
+    }
+    .cowork-selected-card[hidden] {
+      display:none !important;
+    }
+    .cowork-selected-label {
+      color:var(--t3);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .cowork-selected-name {
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    .cowork-selected-meta {
+      color:var(--t2);
+      font-size:12px;
+      line-height:1.55;
+    }
+    .cowork-modal-actions {
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:20px;
+      padding-top:20px;
+      border-top:1px solid rgba(214,216,219,.74);
+    }
 
     @media (max-width:1120px) {
       .service-groups { grid-template-columns:repeat(2, minmax(0, 1fr)); }
@@ -2761,8 +3119,11 @@
       .resource-picker-copy h2 { font-size:24px; }
       .publish-modal-head,
       .publish-section-head,
-      .resource-picker-head { flex-direction:column; }
-      .publish-section-meta { text-align:left; max-width:none; }
+      .resource-picker-head,
+      .cowork-modal-head,
+      .cowork-section-head { flex-direction:column; }
+      .publish-section-meta,
+      .cowork-section-meta { text-align:left; max-width:none; }
       .service-group {
         padding:16px 18px;
         border-right:none;
@@ -2776,13 +3137,21 @@
       .analytics-block { padding:16px; }
       .variable-create,
       .variable-row { grid-template-columns:1fr; }
+      .port-create,
+      .port-row,
+      .port-row.is-editing { grid-template-columns:1fr; }
       .variable-row.is-editing { grid-template-columns:1fr; }
       .publish-form-grid,
       .publish-inline-stats,
-      .publish-step-grid { grid-template-columns:1fr; }
+      .publish-step-grid,
+      .cowork-modal-layout { grid-template-columns:1fr; }
       .variable-toolbar-top { align-items:flex-start; }
       .member-row { grid-template-columns:auto minmax(0, 1fr); }
       .member-role { grid-column:2; justify-self:start; }
+      .cowork-candidate,
+      .cowork-current-item { grid-template-columns:auto minmax(0, 1fr); }
+      .cowork-candidate-role,
+      .cowork-current-actions { grid-column:2; justify-self:start; }
       .harvest-head,
       .security-head,
       .harvest-row,
@@ -2794,8 +3163,11 @@
       .publish-modal-shell { max-height:calc(100vh - 24px); padding:18px; border-radius:22px; }
       .resource-picker-backdrop { padding:16px; }
       .resource-picker-shell { max-height:calc(100vh - 24px); padding:18px; border-radius:20px; }
+      .cowork-modal-backdrop { padding:16px; }
+      .cowork-modal-shell { max-height:calc(100vh - 24px); padding:18px; border-radius:22px; }
       .publish-mode-switch,
-      .publish-modal-actions { width:100%; }
+      .publish-modal-actions,
+      .cowork-modal-actions { width:100%; }
       .publish-mode-tab,
       .publish-action { flex:1; }
       .search-ai { display:none; }
@@ -2940,6 +3312,7 @@
         <div class="hero-side">
           <div class="hero-actions">
             <button class="hero-btn ghost" type="button"><span class="material-icons-round">arrow_back</span>목록으로</button>
+            <button class="hero-btn favorite" type="button" id="favoriteToggleButton" aria-pressed="true"><span class="material-icons-round">favorite</span>Favorite</button>
             <button class="hero-btn blue" type="button" id="openIdeButton"><span class="material-icons-round">open_in_new</span>Open IDE</button>
             <button class="hero-btn green" type="button" id="runButton"><span class="material-icons-round">play_circle</span>Run</button>
             <button class="hero-btn primary" type="button" id="publishButton"><span class="material-icons-round">publish</span>Publish</button>
@@ -3015,6 +3388,7 @@
                     <label for="prefixInput">Global Prefix</label>
                     <input type="text" id="prefixInput" placeholder="REACT_APP_" />
                   </div>
+                  <button class="mini-action" type="button" id="savePrefixButton"><span class="material-icons-round">save</span>Prefix 저장</button>
                   <div class="prefix-help">여기서 입력한 Prefix가 모든 변수명 앞에 일괄 적용됩니다.</div>
                 </div>
                 <div class="variable-create">
@@ -3038,6 +3412,20 @@
 
             <div class="config-block">
               <div class="panel-kicker"><span class="material-icons-round">settings_ethernet</span>Worker Ports</div>
+              <div class="port-toolbar">
+                <div class="port-caption">도메인 선택과 동일한 영역에서 워커 포트도 바로 추가하고 관리할 수 있도록 샘플 동작을 연결했습니다.</div>
+                <div class="port-create">
+                  <div class="field-shell">
+                    <label>Port</label>
+                    <input type="number" id="newPortNumber" placeholder="8000" min="1" max="65535" />
+                  </div>
+                  <div class="field-shell">
+                    <label>Description</label>
+                    <input type="text" id="newPortMeta" placeholder="main FastAPI application" />
+                  </div>
+                  <button class="create-action" type="button" id="addPortButton"><span class="material-icons-round">add</span>추가 완료</button>
+                </div>
+              </div>
               <div class="port-list" id="portList"></div>
             </div>
           </div>
@@ -3146,7 +3534,7 @@
           <div class="search-row">
             <div class="search-shell">
               <span class="material-icons-round">search</span>
-              <input type="text" value="keyword, url, 문서명을 검색하세요" readonly />
+              <input id="harvestSearchInput" type="text" placeholder="keyword, url, 문서명을 검색하세요" />
             </div>
             <span class="chip" id="harvestCountChip">0 Docs</span>
           </div>
@@ -3285,6 +3673,66 @@
       <div class="resource-picker-list" id="resourcePickerList"></div>
       <div class="resource-picker-actions">
         <button class="publish-action ghost" type="button" id="resourcePickerCancel">취소</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cowork-modal-backdrop" id="coworkModal" hidden>
+    <div class="cowork-modal-shell" role="dialog" aria-modal="true" aria-labelledby="coworkModalTitle">
+      <div class="cowork-modal-head">
+        <div class="cowork-modal-copy">
+          <div class="cowork-modal-kicker"><span class="material-icons-round">group_add</span>Co-working</div>
+          <h2 id="coworkModalTitle">협업 인원 추가</h2>
+          <p id="coworkModalSubtitle">프로젝트에 함께 작업할 팀원을 선택하고, 현재 접근 권한을 가진 사람도 바로 확인할 수 있습니다.</p>
+        </div>
+        <button class="publish-close-btn" type="button" id="coworkModalClose" aria-label="협업 모달 닫기">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+
+      <div class="cowork-feedback" id="coworkModalFeedback" hidden>
+        <span class="material-icons-round">info</span>
+        <span id="coworkModalFeedbackText"></span>
+      </div>
+
+      <div class="cowork-modal-layout">
+        <section class="cowork-panel">
+          <div class="cowork-section-head">
+            <div>
+              <div class="cowork-section-eyebrow">Invite</div>
+              <div class="cowork-section-title">함께 작업할 인원 선택</div>
+            </div>
+            <div class="cowork-section-meta">이름이나 메일로 후보를 빠르게 찾을 수 있습니다.</div>
+          </div>
+          <label class="cowork-search-shell" for="coworkMemberSearch">
+            <span class="material-icons-round">search</span>
+            <input class="cowork-search-input" id="coworkMemberSearch" type="text" placeholder="이름 또는 메일로 검색" />
+          </label>
+          <div class="cowork-selected-card" id="coworkSelectedCard" hidden>
+            <div class="cowork-selected-label">Selected</div>
+            <div class="cowork-selected-name" id="coworkSelectedName"></div>
+            <div class="cowork-selected-meta" id="coworkSelectedMeta"></div>
+          </div>
+          <div class="cowork-candidate-list" id="coworkInviteList"></div>
+        </section>
+
+        <section class="cowork-panel">
+          <div class="cowork-section-head">
+            <div>
+              <div class="cowork-section-eyebrow">Access</div>
+              <div class="cowork-section-title">현재 협업 인원</div>
+            </div>
+            <div class="cowork-section-meta" id="coworkCurrentCount">0 collaborators</div>
+          </div>
+          <div class="cowork-current-list" id="coworkCurrentList"></div>
+        </section>
+      </div>
+
+      <div class="cowork-modal-actions">
+        <button class="publish-action ghost" type="button" id="coworkCancelButton">닫기</button>
+        <button class="publish-action primary" type="button" id="coworkInviteButton" disabled>
+          <span class="material-icons-round">person_add</span>선택한 인원 초대
+        </button>
       </div>
     </div>
   </div>
@@ -3895,6 +4343,13 @@
         .replace(/[^a-z0-9]+/g, "");
       const toArray = (value) => Array.isArray(value) ? value.filter(Boolean) : [];
       const cloneValue = (value) => JSON.parse(JSON.stringify(value || {}));
+      const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char] || char));
       const formatDisplayDate = (value) => {
         if (!value) return "";
         const date = new Date(value);
@@ -3949,6 +4404,105 @@
 
         return highlights.filter(Boolean);
       };
+      const normalizeVulnerabilityList = (payload) => {
+        const report = unwrapEnvelope(payload);
+        const vulnerabilities = Array.isArray(report?.vulnerabilities)
+          ? report.vulnerabilities
+          : Array.isArray(report)
+            ? report
+            : [];
+
+        return vulnerabilities.map((item) => {
+          const severity = String(item?.severity || "").trim();
+          const rawScore = item?.score ?? item?.cvssScore ?? item?.cvss?.score ?? item?.cvss?.nvd?.v3Score ?? "";
+          const scoreValue = String(rawScore ?? "").trim();
+          const resourceName = String(
+            item?.resource ||
+            item?.pkgName ||
+            item?.packageName ||
+            item?.artifact ||
+            item?.target ||
+            ""
+          ).trim();
+          const installedVersion = String(item?.installedVersion || "").trim();
+          const fixedVersion = String(item?.fixedVersion || "").trim();
+          const resource = [
+            [resourceName, installedVersion].filter(Boolean).join(" ").trim(),
+            fixedVersion ? `fix ${fixedVersion}` : ""
+          ].filter(Boolean).join(" -> ");
+          const links = Array.isArray(item?.links) ? item.links : [];
+          const primaryLink = String(item?.primaryLink || links[0] || item?.link || "").trim();
+          const issue = String(item?.title || item?.vulnerabilityID || item?.id || "").trim();
+
+          return {
+            issue: issue || "Untitled vulnerability",
+            score: severity && scoreValue ? `${severity} ${scoreValue}` : severity || scoreValue || "-",
+            resource: resource || resourceName || "-",
+            link: primaryLink || "-"
+          };
+        }).filter((item) => item.issue || item.resource !== "-" || item.link !== "-");
+      };
+      const normalizeHarvestList = (payload) => {
+        const normalized = unwrapEnvelope(payload);
+        const documents = Array.isArray(normalized?.items)
+          ? normalized.items
+          : Array.isArray(normalized?.documents)
+            ? normalized.documents
+            : Array.isArray(normalized)
+              ? normalized
+              : [];
+
+        return documents.map((item) => {
+          const keyword = String(item?.display || item?.keyword || item?.title || "").trim();
+          const url = String(item?.url || item?.link || "").trim();
+          const createdAt = formatDisplayDate(item?.createdAt || item?.created || "") || "-";
+          const updatedAt = formatDisplayDate(item?.updatedAt || item?.updated || item?.createdAt || "") || "-";
+
+          return {
+            keyword: keyword || "Untitled document",
+            url: url || "-",
+            created: createdAt,
+            updated: updatedAt
+          };
+        }).filter((item) => item.keyword || item.url !== "-");
+      };
+      const normalizeUserAnalyticsPayload = (payload) => {
+        const normalized = unwrapEnvelope(payload);
+        if (!normalized || typeof normalized !== "object") return null;
+
+	        const summary = normalized.summary && typeof normalized.summary === "object" ? normalized.summary : {};
+	        const trend = normalized.trend && typeof normalized.trend === "object" ? normalized.trend : {};
+	        const topPages = Array.isArray(normalized.topPages) ? normalized.topPages : [];
+	        const stats = normalized.stats && typeof normalized.stats === "object" ? normalized.stats : {};
+
+	        return {
+	          connected: normalized.connected !== false,
+	          period: String(normalized.period || "day").trim() || "day",
+	          date: String(normalized.date || "last7").trim() || "last7",
+          summary: {
+            visits: Number(summary.visits || 0),
+            uniqueVisitors: Number(summary.uniqueVisitors || 0),
+            returningUsers: Number(summary.returningUsers || 0),
+            avgVisitSeconds: Number(summary.avgVisitSeconds || 0),
+            bounceRate: Number(summary.bounceRate || 0),
+            actionsPerVisit: Number(summary.actionsPerVisit || 0)
+          },
+          trend: {
+            labels: Array.isArray(trend.labels) ? trend.labels.map((item) => String(item || "").trim()).filter(Boolean) : [],
+            visits: Array.isArray(trend.visits) ? trend.visits.map((item) => Number(item || 0)) : [],
+            uniqueVisitors: Array.isArray(trend.uniqueVisitors) ? trend.uniqueVisitors.map((item) => Number(item || 0)) : [],
+            pageviews: Array.isArray(trend.pageviews) ? trend.pageviews.map((item) => Number(item || 0)) : []
+          },
+	          topPages: topPages.map((item) => ({
+	            path: String(item?.path || "").trim(),
+	            visits: Number(item?.visits || 0),
+	            uniqueVisitors: Number(item?.uniqueVisitors || 0),
+	            avgVisitSeconds: Number(item?.avgVisitSeconds || 0),
+	            shareRate: Number(item?.shareRate || 0)
+	          })).filter((item) => item.path),
+	          stats
+	        };
+	      };
       const requestJson = async (url, options = {}) => {
         const response = await fetch(url, {
           credentials: "include",
@@ -4028,15 +4582,90 @@
             : `/api/v2/projects/${encodeURIComponent(resolvedProjectId)}/${normalizedPath}`;
         return requestJson(url, options);
       };
+      const updateProjectConfiguration = async (payload) => {
+        return requestProjectAction("", {
+          method: "POST",
+          body: JSON.stringify(payload || {})
+        });
+      };
+      const normalizeFavoriteIdList = (value) => {
+        if (!Array.isArray(value)) return [];
+        return Array.from(new Set(value.map((item) => String(item ?? "").trim()).filter(Boolean)));
+      };
+      const readFavoriteProjects = (setting) => {
+        if (setting?.favorite && typeof setting.favorite === "object" && !Array.isArray(setting.favorite)) {
+          return normalizeFavoriteIdList(setting.favorite.projects);
+        }
+        return normalizeFavoriteIdList(
+          setting?.favoriteProjects
+          || setting?.favoritesProjects
+          || setting?.favoritesrojects
+        );
+      };
+      const requestFavoriteProjects = async () => {
+        const setting = await requestJson("/api/setting");
+        return readFavoriteProjects(setting);
+      };
+      const updateFavoriteProjects = async (favoriteProjects) => {
+        return requestJson("/api/setting", {
+          method: "POST",
+          body: JSON.stringify({
+            favorite: {
+              projects: normalizeFavoriteIdList(favoriteProjects)
+            }
+          })
+        });
+      };
+      const serializeEnvironmentVariables = (variables) => {
+        return (variables || []).reduce((accumulator, variable) => {
+          const key = String(variable?.key || "").trim();
+          if (!key) return accumulator;
+          accumulator[key] = String(variable?.value ?? "").trim();
+          return accumulator;
+        }, {});
+      };
+      const syncEnvironmentVariables = async (variables) => {
+        return updateProjectConfiguration({
+          environmentVariables: serializeEnvironmentVariables(variables)
+        });
+      };
+      const syncEnvironmentVariablesPrefix = async (prefix) => {
+        return updateProjectConfiguration({
+          environmentVariablesPrefix: String(prefix ?? "").trim()
+        });
+      };
+      const serializePorts = (ports) => {
+        return (ports || []).reduce((accumulator, port) => {
+          const portValue = String(port?.name || "").trim();
+          if (!portValue) return accumulator;
+          const numericPort = Number(portValue);
+          accumulator.push({
+            type: String(port?.type || "web").trim() || "web",
+            port: Number.isFinite(numericPort) ? numericPort : portValue,
+            description: String(port?.meta || "").trim()
+          });
+          return accumulator;
+        }, []);
+      };
+      const syncPorts = async (ports) => {
+        return updateProjectConfiguration({
+          ports: serializePorts(ports)
+        });
+      };
       const loadLiveProject = async (projectId) => {
         if (!projectId) return null;
-        const [detailResult, summaryResult, precheckResult, runtimeResult, publishesResult, readmeResult] = await Promise.allSettled([
+        const [detailResult, summaryResult, precheckResult, runtimeResult, publishesResult, readmeResult, vulnerabilityResult, harvestResult, userAnalyticsResult, observabilityResult, gitlabCommitsResult] = await Promise.allSettled([
           requestJson(`/api/v2/projects/${encodeURIComponent(projectId)}`),
           requestJson(`/api/v2/projects/${encodeURIComponent(projectId)}/summary`),
           requestJson(`/api/v2/projects/${encodeURIComponent(projectId)}/precheck`),
           requestJson(`/api/v2/publishes/projects/${encodeURIComponent(projectId)}/runtime`),
           requestJson(`/api/v2/publishes/projects/${encodeURIComponent(projectId)}?sort=-created&limit=20`),
-          requestJson(`/api/v2/projects/${encodeURIComponent(projectId)}/readme`)
+          requestJson(`/api/v2/projects/${encodeURIComponent(projectId)}/readme`),
+          requestJson(`/api/v2/projects/${encodeURIComponent(projectId)}/vulnerability`),
+          requestJson(`/api/v2/projects/${encodeURIComponent(projectId)}/harvest?page=1&itemsInPage=10&keyword=`),
+	          requestJson(`/api/v2/projects/${encodeURIComponent(projectId)}/analytics?period=day&date=last7`),
+          requestJson(`/api/v2/projects/${encodeURIComponent(projectId)}/observability/service`),
+          requestJson(`/api/v2/projects/${encodeURIComponent(projectId)}/gitlab/commits?ref=master&page=1&perPage=20`)
         ]);
         if (detailResult.status !== "fulfilled" || !detailResult.value) {
           return null;
@@ -4047,6 +4676,13 @@
           precheck: precheckResult.status === "fulfilled" ? unwrapEnvelope(precheckResult.value) : null,
           runtime: runtimeResult.status === "fulfilled" ? unwrapEnvelope(runtimeResult.value) : null,
           readme: readmeResult.status === "fulfilled" ? unwrapTextPayload(readmeResult.value) : "",
+          vulnerability: vulnerabilityResult.status === "fulfilled" ? vulnerabilityResult.value : null,
+          harvest: harvestResult.status === "fulfilled" ? harvestResult.value : null,
+          analytics: userAnalyticsResult.status === "fulfilled" ? unwrapEnvelope(userAnalyticsResult.value) : null,
+          observability: observabilityResult.status === "fulfilled" ? unwrapEnvelope(observabilityResult.value) : null,
+          gitlabCommits: gitlabCommitsResult.status === "fulfilled" && Array.isArray(gitlabCommitsResult.value?.items)
+            ? gitlabCommitsResult.value.items
+            : [],
           publishes: publishesResult.status === "fulfilled" && Array.isArray(publishesResult.value?.items)
             ? publishesResult.value.items
             : []
@@ -4080,6 +4716,54 @@
           name: permissionName,
           meta: "bound permission realm"
         }];
+      };
+      const toDomainOption = (domain, currentProjectId = "") => {
+        const id = String(domain?.id || domain?._id || "").trim();
+        const name = String(domain?.name || domain?.url || "").trim();
+        const boundProjectId = String(domain?.boundProject?.id || "").trim();
+        const boundProjectLabel = String(domain?.boundProject?.label || "").trim();
+        const certificateStatus = String(domain?.certificate?.status || (name ? "pending" : "none")).trim();
+        const connectionStatus = String(domain?.connection?.status || (boundProjectId ? "connected" : "none")).trim();
+        return {
+          id,
+          label: name || "연결된 도메인 없음",
+          value: name || "연결된 도메인 없음",
+          certificate: {
+            status: certificateStatus,
+            expiresAt: domain?.certificate?.expiresAt || null
+          },
+          connection: {
+            status: connectionStatus
+          },
+          boundProjectId,
+          boundProjectLabel,
+          canBind: domain?.capabilities?.canBind !== false,
+          isConnectedToCurrentProject: Boolean(id && currentProjectId && boundProjectId === currentProjectId)
+        };
+      };
+      const createEmptyDomainOption = () => ({
+        id: "",
+        label: "No Domain",
+        value: "연결된 도메인 없음",
+        certificate: { status: "none", expiresAt: null },
+        connection: { status: "none" },
+        boundProjectId: "",
+        boundProjectLabel: "",
+        canBind: true,
+        isConnectedToCurrentProject: false
+      });
+      const normalizeEnvironmentVariables = (value) => {
+        if (Array.isArray(value)) {
+          return value.map((item) => ({
+            key: String(item?.key || item?.name || "").trim(),
+            value: String(item?.value ?? item?.meta ?? "").trim()
+          })).filter((item) => item.key);
+        }
+        if (!value || typeof value !== "object") return [];
+        return Object.entries(value).map(([key, rawValue]) => ({
+          key: String(key || "").trim(),
+          value: String(rawValue ?? "").trim()
+        })).filter((item) => item.key);
       };
       const getPagedItems = async (path) => {
         const result = await requestJson(path);
@@ -4119,8 +4803,11 @@
         const summary = bundle.summary || {};
         const precheck = bundle.precheck || {};
         const runtime = bundle.runtime || {};
-        const readme = String(bundle.readme || "");
         const publishes = toArray(bundle.publishes);
+        const gitlabCommits = toArray(bundle.gitlabCommits);
+        const projectCreatedAt = detail?.createdAt || detail?.created || null;
+        const harvest = normalizeHarvestList(bundle.harvest);
+        const security = normalizeVulnerabilityList(bundle.vulnerability);
         const currentPublish = toArray(runtime?.publishes).find((item) => item?.isCurrent) || publishes.find((item) => item?.isCurrent) || publishes[0] || null;
         const ownerName = detail?.owner?.name || detail?.owner?.preferred_username || detail?.owner?.email || detail?.owner?.sub || fallbackProject.owner;
         const runtimeLabel = detail?.templateRef?.name || detail?.ide || detail?.projectType || fallbackProject.runtimeVersion;
@@ -4132,7 +4819,8 @@
           : liveStatus === "building" || liveStatus === "deploying" || currentPublish?.status === "idle"
             ? "Preparing"
             : "Inactive";
-        const domainValue = detail?.domain?.url || detail?.domain || fallbackProject.domain || "Not connected";
+        const domainValue = String(detail?.domain?.url || detail?.domain || "").trim();
+        const resolvedDomainValue = domainValue || "연결된 도메인 없음";
         const currentVersion = currentPublish?.containerVersion || currentPublish?.version || detail?.version || fallbackProject.runtimeVersion;
         const tags = Array.from(new Set([
           ...toArray(detail?.hashtag),
@@ -4141,6 +4829,7 @@
           ...toArray(summary?.mainTechStack),
           ...toArray(fallbackProject.tags)
         ].map((item) => String(item || "").trim()).filter(Boolean))).slice(0, 6);
+        const variables = normalizeEnvironmentVariables(detail?.environmentVariables);
         const ports = toArray(detail?.ports).map((port) => {
           if (typeof port === "object") {
             return {
@@ -4163,11 +4852,22 @@
           ];
           return {
             name,
+            email: member?.email || "",
+            sub: member?.sub || "",
+            userid: member?.userid || "",
+            id: member?.id || member?._id || member?.sub || member?.userid || member?.email || name,
             role: index === 0 ? "Owner" : "Author",
-            meta: index === 0 ? "project owner" : "project collaborator",
+            meta: index === 0
+              ? "project owner"
+              : [member?.hr_profile?.org, member?.hr_profile?.position].filter(Boolean).join(" · ") || "project collaborator",
             color: palette[index % palette.length]
           };
         });
+        const authorIds = Array.from(new Set(
+          toArray(detail?.author)
+            .map((member) => String(member?.id || member?._id || member?.sub || member?.userid || "").trim())
+            .filter(Boolean)
+        ));
         const resources = [];
         normalizeDatabaseBindings(detail?.databaseId).forEach((database) => {
           resources.push({ icon: "storage", name: "Database", meta: database.label, color: "linear-gradient(135deg,#4f8cff,#3b6fcf)" });
@@ -4184,43 +4884,27 @@
         if (detail?.llmKeyId) {
           resources.push({ icon: "vpn_key", name: "LLM Key", meta: String(detail.llmKeyId), color: "linear-gradient(135deg,#a78bfa,#7c5fcf)" });
         }
-        if (domainValue && domainValue !== "Not connected") {
+        if (domainValue) {
           resources.unshift({ icon: "dns", name: "Domain", meta: domainValue, color: "linear-gradient(135deg,#4f8cff,#22d3ee)" });
         }
-        const summarySources = toArray(summary?.sources).slice(0, 3).map((source, index) => {
-          const label = typeof source === "string"
-            ? source
-            : source?.title || source?.path || source?.file || `summary-source-${index + 1}`;
-          return {
-            keyword: label,
-            url: typeof source === "string" ? source : source?.path || source?.url || "#",
-            created: formatDisplayDate(detail?.created || detail?.lastModified || detail?.updatedAt) || fallbackProject.updatedAt,
-            updated: formatDisplayDate(detail?.lastModified || detail?.updatedAt || detail?.created) || fallbackProject.updatedAt
-          };
-        });
-        const readmeHighlights = extractReadmeHighlights(readme);
         const activityTimeline = [];
-        publishes.slice(0, 4).forEach((item) => {
+        publishes.forEach((item) => {
           activityTimeline.push({
             title: `${item.version || item.containerVersion || "publish"} ${item.isCurrent ? "current" : "recorded"}`,
-            meta: `${formatDisplayDate(item.createdAt || detail?.lastModified) || fallbackProject.updatedAt} · ${item.status || "ready"} · ${item.containerName || runtime?.appName || detail?.name || "publish"}`
+            meta: `${formatDisplayDate(item.createdAt || detail?.lastModified) || fallbackProject.updatedAt} · ${item.status || "ready"} · ${item.containerName || runtime?.appName || detail?.name || "publish"}`,
+            kind: "deploy"
           });
         });
-        summarySources.slice(0, 2).forEach((item) => {
+        gitlabCommits.forEach((item) => {
+          const commitDate = item?.createdAt || item?.committedDate || item?.authoredDate || detail?.lastModified;
+          const summary = String(item?.title || item?.message || "").trim() || `Commit ${item?.shortId || String(item?.id || "").slice(0, 8) || ""}`.trim();
+          const authorName = String(item?.authorName || item?.authorEmail || "GitLab").trim();
+          const shortId = String(item?.shortId || item?.id || "").trim();
           activityTimeline.push({
-            title: `Summary synced: ${item.keyword}`,
-            meta: `${item.updated || item.created || fallbackProject.updatedAt} · summary-source · ${item.url}`
+            title: summary,
+            meta: `${formatDisplayDate(commitDate) || fallbackProject.updatedAt} · ${authorName}${shortId ? ` · ${shortId}` : ""}`,
+            kind: "activity"
           });
-        });
-        readmeHighlights.slice(0, 3).forEach((item, index) => {
-          activityTimeline.push({
-            title: index === 0 ? `README overview: ${item}` : `README note: ${item}`,
-            meta: `${formatDisplayDate(detail?.lastModified || detail?.updatedAt || detail?.created) || fallbackProject.updatedAt} · readme · project documentation`
-          });
-        });
-        activityTimeline.push({
-          title: "Project detail loaded from v2",
-          meta: `${formatDisplayDate(detail?.lastModified || detail?.updatedAt || detail?.created) || fallbackProject.updatedAt} · ${ownerName}`
         });
         const liveLogs = [
           currentPublish
@@ -4242,16 +4926,24 @@
             }
             : null
         ].filter(Boolean);
+        const analytics = bundle.analytics && typeof bundle.analytics === "object"
+          ? normalizeUserAnalyticsPayload(bundle.analytics)
+          : null;
+        const observability = bundle.observability && typeof bundle.observability === "object"
+          ? bundle.observability
+          : null;
         const nextProject = {
           ...fallbackProject,
           name: detail?.name || fallbackProject.name,
+          createdAt: formatDisplayDate(projectCreatedAt) || null,
           runtime: runtimeKey,
           status,
           privacy: detail?.visibility ? "Shared" : "Private",
           owner: ownerName,
           updatedAt: formatDisplayDate(detail?.lastModified || detail?.updatedAt || detail?.created) || fallbackProject.updatedAt,
           description: detail?.description || summary?.overview || fallbackProject.description,
-          domain: domainValue,
+          domain: resolvedDomainValue,
+          domainId: String(detail?.domain?._id || detail?.domain?.id || "").trim(),
           repo: detail?.gitlabId ? `GitLab #${detail.gitlabId}` : fallbackProject.repo || "Not connected",
           memory: runtime?.podMetrics?.memory || fallbackProject.memory,
           cpu: runtime?.podMetrics?.cpu || fallbackProject.cpu,
@@ -4277,15 +4969,19 @@
             ["Current Version", currentVersion || "-", currentPublish?.containerName || runtime?.appName || "publish runtime summary"],
             ["Precheck", precheck?.authority === false ? "Blocked" : precheck?.deployable === false ? "Check required" : "Ready", precheck?.message || "latest precheck state"]
           ],
+          authorIds,
           team: teamMembers.length ? teamMembers : fallbackProject.team,
           domains: [
-            ["Primary Domain", domainValue, "현재 연결된 대표 도메인"],
+            ["Primary Domain", resolvedDomainValue, domainValue ? "현재 연결된 대표 도메인" : "아직 연결된 도메인이 없습니다."],
             ["IDE Route", detail?.uri || fallbackProject.ideUrl || "-", "개발 IDE 진입 경로"],
             ["Publish Route", runtime?.appName || currentPublish?.containerName || detail?.name || "-", "현재 publish runtime 기준"],
             ["Visibility", detail?.visibility ? "Shared" : "Private", "프로젝트 접근 범위"]
           ],
-          ports: ports.length ? ports : fallbackProject.ports,
-          variables: fallbackProject.variables || [],
+          ports: hasLiveDetail ? ports : fallbackProject.ports,
+          variables: hasLiveDetail ? variables : fallbackProject.variables || [],
+          environmentVariablesPrefix: hasLiveDetail
+            ? String(detail?.environmentVariablesPrefix ?? "").trim()
+            : fallbackProject.environmentVariablesPrefix ?? null,
           permissions: hasLiveDetail ? getProjectPermissionBindings(detail) : [
             { name: "workspace.development.read", meta: "Owner, authors, admin" },
             { name: "workspace.development.run", meta: status === "Running" ? "현재 runtime 사용 가능" : "실행 후 사용 가능" },
@@ -4300,9 +4996,11 @@
           trend: publishes.length
             ? publishes.slice(0, 7).map((item, index) => 20 + (publishes.length - index) * 7)
             : fallbackProject.trend,
-          logs: liveLogs.length ? liveLogs : fallbackProject.logs,
-          harvest: summarySources.length ? summarySources : fallbackProject.harvest,
-          security: fallbackProject.security || [],
+          logs: hasLiveDetail ? liveLogs : fallbackProject.logs,
+          analytics,
+          observability,
+          harvest: hasLiveDetail ? harvest : fallbackProject.harvest,
+          security: hasLiveDetail ? security : fallbackProject.security || [],
           quick: [
             {
               icon: "deployed_code",
@@ -4330,30 +5028,54 @@
       };
       const liveProjectBundle = await loadLiveProject(resolvedProjectId);
       const project = buildLiveProject(liveProjectBundle);
-      const defaultPrefix = project.runtime === "react" ? "REACT_APP_" : project.runtime === "fastapi" ? "APP_" : "";
-      const domainOptions = [
-        {
-          label: "Primary Domain",
-          value: project.domain,
-          ssl: { status: "정상", tone: "pass", note: "인증서가 연결되어 안전하게 접근할 수 있습니다." },
-          healthy: { status: "Healthy", tone: "pass", note: "현재 라우팅과 응답 상태가 안정적으로 유지되고 있습니다." }
-        },
-        {
-          label: "Preview Domain",
-          value: `preview.${project.domain}`,
-          ssl: { status: "정상", tone: "pass", note: "프리뷰 도메인에도 SSL 인증서가 적용되어 있습니다." },
-          healthy: { status: "확인 필요", tone: "warn", note: "최근 배포 반영 직후라 헬스 체크를 다시 확인하는 상태입니다." }
-        },
-        {
-          label: "Canary Domain",
-          value: `canary.${project.domain}`,
-          ssl: { status: "정상", tone: "pass", note: "카나리 도메인도 동일한 SSL 정책을 사용합니다." },
-          healthy: { status: "Healthy", tone: "pass", note: "검증용 트래픽에 대해 정상 응답을 유지하고 있습니다." }
+      let favoriteProjects = [];
+      if (resolvedProjectId) {
+        try {
+          favoriteProjects = await requestFavoriteProjects();
+          project.favorite = favoriteProjects.includes(resolvedProjectId);
+        } catch (error) {
+          console.warn("Failed to sync favorite projects.", error);
         }
-      ];
+      }
+      const listedDomains = resolvedProjectId ? await getPagedItems("/api/v2/domains?limit=100") : [];
+      const defaultPrefix = project.runtime === "react" ? "REACT_APP_" : project.runtime === "fastapi" ? "APP_" : "";
+      const currentDomainOption = project.domainId || (project.domain && project.domain !== "연결된 도메인 없음")
+        ? toDomainOption({
+          id: project.domainId,
+          name: project.domain,
+          boundProject: resolvedProjectId ? { id: resolvedProjectId, label: project.name } : null,
+          certificate: { status: project.domainId ? "pending" : "none" },
+          connection: { status: project.domainId ? "ready" : "none" },
+          capabilities: { canBind: true }
+        }, resolvedProjectId)
+        : null;
+      const availableDomainOptions = listedDomains
+        .map((item) => toDomainOption(item, resolvedProjectId))
+        .filter((item) => item.id && item.canBind && (!item.boundProjectId || item.boundProjectId === resolvedProjectId));
+      const mergedDomainOptions = availableDomainOptions.slice();
+      if (currentDomainOption?.id && !mergedDomainOptions.some((item) => item.id === currentDomainOption.id)) {
+        mergedDomainOptions.unshift(currentDomainOption);
+      }
+      let domainOptions = [createEmptyDomainOption(), ...mergedDomainOptions];
       let selectedDomain = domainOptions[0];
-      let globalPrefix = defaultPrefix;
+      const connectedOption = domainOptions.find((item) => item.isConnectedToCurrentProject || (item.value && item.value === project.domain && project.domain !== "연결된 도메인 없음"));
+      if (connectedOption) {
+        selectedDomain = connectedOption;
+      }
+      let globalPrefix = project.environmentVariablesPrefix ?? (liveProjectBundle?.detail ? "" : defaultPrefix);
+      let draftGlobalPrefix = globalPrefix;
       let configUpdatedAt = project.updatedAt;
+      let portState = project.ports.map((port) => {
+        const name = String(port.name || port.port || "").trim();
+        const meta = String(port.meta || port.description || "").trim();
+        return {
+          name,
+          meta,
+          editing: false,
+          draftName: name,
+          draftMeta: meta
+        };
+      });
       let variableState = project.variables.map(variable => ({
         key: variable.key || variable.name || "",
         value: variable.value || variable.meta || "",
@@ -4377,6 +5099,7 @@
       };
 
       const severityClass = (score) => {
+        if (score.startsWith("Critical")) return "background:var(--red-bg);color:var(--red)";
         if (score.startsWith("High")) return "background:var(--red-bg);color:var(--red)";
         if (score.startsWith("Medium")) return "background:var(--orange-bg);color:var(--orange)";
         return "background:var(--blue-bg);color:var(--blue)";
@@ -4384,9 +5107,23 @@
       const renderDomainStatus = () => {
         const container = document.getElementById("domainStatus");
         if (!container) return;
+        const certificateStatus = String(selectedDomain?.certificate?.status || "none").toLowerCase();
+        const connectionStatus = String(selectedDomain?.connection?.status || "none").toLowerCase();
+        const sslState = certificateStatus === "issued"
+          ? { status: "정상", tone: "pass", note: "인증서가 정상 발급되어 안전하게 접근할 수 있습니다." }
+          : certificateStatus === "expired"
+            ? { status: "만료", tone: "warn", note: "인증서가 만료되어 갱신이 필요합니다." }
+            : certificateStatus === "pending"
+              ? { status: "대기", tone: "warn", note: "인증서 발급 또는 검증이 아직 완료되지 않았습니다." }
+              : { status: "미연결", tone: "warn", note: "연결된 도메인이 없어 SSL 상태를 확인할 수 없습니다." };
+        const connectionState = connectionStatus === "connected"
+          ? { status: "Healthy", tone: "pass", note: "현재 프로젝트와 도메인 연결이 완료되어 있습니다." }
+          : connectionStatus === "ready"
+            ? { status: "준비됨", tone: "warn", note: "도메인은 연결됐지만 인증서/연결 상태 확인이 더 필요합니다." }
+            : { status: "미연결", tone: "warn", note: "프로젝트에 연결된 도메인이 없습니다." };
         container.innerHTML = [
-          ["SSL 체크", selectedDomain.ssl],
-          ["Healthy 체크", selectedDomain.healthy]
+          ["SSL 체크", sslState],
+          ["Healthy 체크", connectionState]
         ].map(([label, state]) => `
           <div class="domain-status-card">
             <div class="domain-status-head">
@@ -4401,6 +5138,19 @@
       const renderVariables = () => {
         const container = document.getElementById("varList");
         if (!container) return;
+        if (!variableState.length) {
+          container.innerHTML = `
+            <div class="variable-row">
+              <div class="variable-summary">
+                <div class="variable-summary-head">
+                  <div class="variable-name">등록된 환경 변수가 없습니다.</div>
+                </div>
+                <div class="variable-value">프로젝트에 저장된 environmentVariables가 아직 없습니다.</div>
+              </div>
+            </div>
+          `;
+          return;
+        }
         container.innerHTML = variableState.map((variable, index) => `
           <div class="variable-row ${variable.editing ? "is-editing" : ""}" data-variable-index="${index}">
             ${variable.editing ? `
@@ -4424,6 +5174,47 @@
             `}
             <div class="variable-actions">
               ${variable.editing
+                ? '<button class="row-action save" type="button" data-action="save"><span class="material-icons-round">check</span>저장</button><button class="row-action" type="button" data-action="cancel"><span class="material-icons-round">close</span>취소</button>'
+                : '<button class="row-action save" type="button" data-action="edit"><span class="material-icons-round">edit</span>수정</button>'
+              }
+              <button class="row-action delete" type="button" data-action="delete"><span class="material-icons-round">delete_outline</span>삭제</button>
+            </div>
+          </div>
+        `).join("");
+      };
+      const renderPorts = () => {
+        const container = document.getElementById("portList");
+        if (!container) return;
+        if (!portState.length) {
+          container.innerHTML = `
+            <div class="port-row">
+              <div class="port-main">
+                <div class="port-name">등록된 포트가 없습니다.</div>
+                <div class="port-meta">프로젝트에 저장된 ports 정보가 아직 없습니다.</div>
+              </div>
+            </div>
+          `;
+          return;
+        }
+        container.innerHTML = portState.map((port, index) => `
+          <div class="port-row ${port.editing ? "is-editing" : ""}" data-port-index="${index}">
+            ${port.editing ? `
+              <div class="field-shell">
+                <label>Port</label>
+                <input type="number" data-field="draftName" value="${port.draftName}" min="1" max="65535" placeholder="8000" />
+              </div>
+              <div class="field-shell">
+                <label>Description</label>
+                <input type="text" data-field="draftMeta" value="${port.draftMeta}" placeholder="main FastAPI application" />
+              </div>
+            ` : `
+              <div class="port-main">
+                <div class="port-name mono">${port.name}</div>
+                <div class="port-meta">${port.meta || "-"}</div>
+              </div>
+            `}
+            <div class="port-actions">
+              ${port.editing
                 ? '<button class="row-action save" type="button" data-action="save"><span class="material-icons-round">check</span>저장</button><button class="row-action" type="button" data-action="cancel"><span class="material-icons-round">close</span>취소</button>'
                 : '<button class="row-action save" type="button" data-action="edit"><span class="material-icons-round">edit</span>수정</button>'
               }
@@ -4527,11 +5318,15 @@
       };
 
       const buildTimelineEntries = (project) => {
+        const timelineItems = Array.isArray(project.timeline) ? project.timeline : [];
+        const logItems = Array.isArray(project.logs) ? project.logs : [];
+        const harvestItems = Array.isArray(project.harvest) ? project.harvest : [];
         const explicitDates = [
+          parseTimelineDate(project.createdAt, project.updatedAt),
           parseTimelineDate(project.updatedAt),
-          ...project.timeline.map((item) => parseTimelineDate(extractMetaParts(item.meta)[0], project.updatedAt)),
-          ...project.logs.map((item) => parseTimelineDate(extractMetaParts(item.meta)[0], project.updatedAt)),
-          ...project.harvest.flatMap((item) => [
+          ...timelineItems.map((item) => parseTimelineDate(extractMetaParts(item.meta)[0], project.updatedAt)),
+          ...logItems.map((item) => parseTimelineDate(extractMetaParts(item.meta)[0], project.updatedAt)),
+          ...harvestItems.flatMap((item) => [
             parseTimelineDate(item.created, project.updatedAt),
             parseTimelineDate(item.updated, project.updatedAt)
           ])
@@ -4543,8 +5338,41 @@
         const earliestKnownDate = explicitDates.length
           ? new Date(Math.min(...explicitDates.map((item) => item.getTime())))
           : shiftDate(latestKnownDate, -14, 0, 0);
-        const createdAt = shiftDate(earliestKnownDate, -3, -2, 0);
+        const createdAt = parseTimelineDate(project.createdAt, project.updatedAt) || shiftDate(earliestKnownDate, -3, -2, 0);
         const versionInfo = getLatestVersionInfo(project);
+        const hasLiveHistory = Boolean(project.createdAt);
+
+        if (hasLiveHistory) {
+          const events = [
+            {
+              at: createdAt,
+              title: `${project.name} 프로젝트 생성`,
+              detail: `${project.projectType} · ${project.owner} owner assigned`,
+              kind: "created"
+            },
+            ...timelineItems.map((item) => {
+              const metaParts = extractMetaParts(item.meta);
+              return {
+                at: parseTimelineDate(metaParts[0], project.updatedAt) || latestKnownDate,
+                title: item.title,
+                detail: metaParts.slice(1).join(" · ") || item.meta,
+                kind: item.kind || classifyTimelineKind(item.title, item.meta)
+              };
+            })
+          ];
+
+          const seen = new Set();
+          return events
+            .filter((item) => item?.title && item?.detail && item?.at instanceof Date && !Number.isNaN(item.at.getTime()))
+            .sort((a, b) => a.at.getTime() - b.at.getTime())
+            .filter((item) => {
+              const key = `${item.title}::${item.detail}::${item.at.getTime()}`;
+              if (seen.has(key)) return false;
+              seen.add(key);
+              return true;
+            })
+            .map((item) => ({ ...item, kindLabel: timelineKindMeta[item.kind] || timelineKindMeta.activity }));
+        }
 
         const events = [
           {
@@ -4565,7 +5393,7 @@
             detail: item.meta,
             kind: classifyTimelineKind(item.title, item.meta)
           })),
-          ...project.harvest.slice(0, 2).map((item) => ({
+          ...harvestItems.slice(0, 2).map((item) => ({
             at: parseTimelineDate(item.created, project.updatedAt) || shiftDate(createdAt, 2, 8, 0),
             title: `문서 등록: ${item.keyword}`,
             detail: item.url,
@@ -4583,16 +5411,16 @@
             detail: `${item.name} · ${item.meta}`,
             kind: "activity"
           })),
-          ...project.timeline.map((item) => {
+          ...timelineItems.map((item) => {
             const metaParts = extractMetaParts(item.meta);
             return {
               at: parseTimelineDate(metaParts[0], project.updatedAt) || latestKnownDate,
               title: item.title,
               detail: metaParts.slice(1).join(" · ") || item.meta,
-              kind: classifyTimelineKind(item.title, item.meta)
+              kind: item.kind || classifyTimelineKind(item.title, item.meta)
             };
           }),
-          ...project.logs.map((item) => {
+          ...logItems.map((item) => {
             const metaParts = extractMetaParts(item.meta);
             return {
               at: parseTimelineDate(metaParts[0], project.updatedAt) || shiftDate(latestKnownDate, 0, -2, 0),
@@ -4610,7 +5438,7 @@
           {
             at: parseTimelineDate(configUpdatedAt, project.updatedAt) || latestKnownDate,
             title: "현재 설정 스냅샷",
-            detail: `${selectedDomain.value} · ${variableState.length} vars · Prefix ${globalPrefix || "none"}`,
+            detail: `${selectedDomain.value} · ${variableState.length} vars · ${portState.length} ports · Prefix ${globalPrefix || "none"}`,
             kind: "activity"
           },
           {
@@ -4658,7 +5486,7 @@
         const keyInput = document.getElementById("newVariableKey");
         const previewInput = document.getElementById("newVariablePreview");
         if (!keyInput || !previewInput) return;
-        previewInput.value = `${globalPrefix}${keyInput.value || "YOUR_KEY"}`;
+        previewInput.value = `${draftGlobalPrefix}${keyInput.value || "YOUR_KEY"}`;
       };
 
       const deriveDeploymentType = (project) => {
@@ -4710,6 +5538,62 @@
         const secs = seconds % 60;
         if (!mins) return `${secs}s`;
         return `${mins}m ${String(secs).padStart(2, "0")}s`;
+      };
+
+      const createEmptyUserAnalyticsDashboard = () => ({
+        userKpis: [
+          { label: "서비스 KPI", value: "0", note: "조회된 방문 데이터가 없습니다.", tone: "accent-green" },
+          { label: "활성 사용자", value: "0", note: "중복 제거 방문자", tone: "accent-blue" },
+          { label: "재방문 사용자", value: "0", note: "재방문 비중 0%", tone: "accent-brand" },
+          { label: "평균 체류 시간", value: "0s", note: "이탈률 0% · 방문당 0.0 액션", tone: "accent-orange" }
+        ],
+        visitTrend: [],
+        visitTrendLabels: [],
+        topPages: []
+      });
+
+      const scaleTrendValues = (values) => {
+        const numericValues = Array.isArray(values) ? values.map((item) => Number(item || 0)) : [];
+        const maxValue = Math.max(...numericValues, 0);
+        if (!numericValues.length || maxValue <= 0) return [];
+        return numericValues.map((value) => Math.round(clamp((value / maxValue) * 96, 18, 96)));
+      };
+
+      const buildLiveUserAnalyticsDashboard = (analytics) => {
+        if (!analytics || typeof analytics !== "object") {
+          return createEmptyUserAnalyticsDashboard();
+        }
+
+        const summary = analytics.summary && typeof analytics.summary === "object" ? analytics.summary : {};
+        const trend = analytics.trend && typeof analytics.trend === "object" ? analytics.trend : {};
+        const visits = Number(summary.visits || 0);
+        const uniqueVisitors = Number(summary.uniqueVisitors || 0);
+        const returningUsers = Number(summary.returningUsers || 0);
+        const bounceRate = Number(summary.bounceRate || 0);
+        const actionsPerVisit = Number(summary.actionsPerVisit || 0);
+        const avgVisitSeconds = Number(summary.avgVisitSeconds || 0);
+        const visitTrendLabels = Array.isArray(trend.labels) ? trend.labels : [];
+        const visitTrendValues = Array.isArray(trend.visits) ? trend.visits : [];
+        const topPages = Array.isArray(analytics.topPages) ? analytics.topPages : [];
+
+        return {
+          userKpis: [
+            { label: "서비스 KPI", value: formatCompactNumber(visits), note: `${analytics.date || "선택 기간"} 누적 방문 수`, tone: "accent-green" },
+            { label: "활성 사용자", value: formatCompactNumber(uniqueVisitors), note: "중복 제거 방문자", tone: "accent-blue" },
+            { label: "재방문 사용자", value: formatCompactNumber(returningUsers), note: `재방문 비중 ${Math.round((returningUsers / Math.max(uniqueVisitors, 1)) * 100)}%`, tone: "accent-brand" },
+            { label: "평균 체류 시간", value: formatDuration(Math.max(0, Math.round(avgVisitSeconds))), note: `이탈률 ${bounceRate.toFixed(1)}% · 방문당 ${actionsPerVisit.toFixed(1)} 액션`, tone: "accent-orange" }
+          ],
+          visitTrend: scaleTrendValues(visitTrendValues),
+          visitTrendLabels,
+          topPages: topPages.map((item) => ({
+            path: item.path,
+            visits: Number(item.visits || 0),
+            share: `${Number(item.shareRate || 0).toFixed(1)}%`,
+            meta: Number(item.avgVisitSeconds || 0) > 0
+              ? `평균 체류 ${formatDuration(Math.round(item.avgVisitSeconds))}`
+              : `고유 방문 ${formatCompactNumber(Number(item.uniqueVisitors || 0))}`
+          }))
+        };
       };
 
       const buildMetricsDashboard = (project) => {
@@ -4788,10 +5672,16 @@
         };
       };
 
-      const renderTrendBars = (targetId, values, tone) => {
-        const trendLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      const renderTrendBars = (targetId, values, tone, labels = []) => {
         const container = document.getElementById(targetId);
         if (!container) return;
+        if (!Array.isArray(values) || !values.length) {
+          container.innerHTML = `<div class="page-row"><div class="page-main"><div class="page-meta">No analytics trend data</div></div></div>`;
+          return;
+        }
+        const trendLabels = Array.isArray(labels) && labels.length === values.length
+          ? labels
+          : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].slice(0, values.length);
         container.innerHTML = values.map((height, index) => `
           <div class="trend-col">
             <div class="trend-bar ${tone}" style="height:${height + 6}px"></div>
@@ -4803,6 +5693,10 @@
       const renderPageList = (targetId, items) => {
         const container = document.getElementById(targetId);
         if (!container) return;
+        if (!Array.isArray(items) || !items.length) {
+          container.innerHTML = `<div class="page-row"><div class="page-main"><div class="page-meta">No analytics pages</div></div><div class="page-value">-</div></div>`;
+          return;
+        }
         container.innerHTML = items.map((item) => `
           <div class="page-row">
             <div class="page-main">
@@ -4817,7 +5711,15 @@
       const renderResourceChart = (svgId, labelsId, payload) => {
         const svg = document.getElementById(svgId);
         const labels = document.getElementById(labelsId);
-        if (!svg || !labels || !payload) return;
+        if (!svg || !labels) return;
+        if (!payload || !Array.isArray(payload.labels) || !payload.labels.length) {
+          svg.innerHTML = `
+            <rect x="0" y="0" width="640" height="220" fill="rgba(15,23,42,.02)"></rect>
+            <text x="320" y="112" text-anchor="middle" fill="#94a3b8" font-size="14">No observability data</text>
+          `;
+          labels.innerHTML = "";
+          return;
+        }
 
         const width = 640;
         const height = 220;
@@ -4866,11 +5768,78 @@
       };
 
       const inviteMemberPool = [
-        { name: "Sujin Park", role: "Author", color: "linear-gradient(135deg,#fb7185,#e11d48)" },
-        { name: "Dongho Kim", role: "Author", color: "linear-gradient(135deg,#22d3ee,#0284c7)" },
-        { name: "Yuna Choi", role: "Author", color: "linear-gradient(135deg,#fbbf24,#ea580c)" },
-        { name: "Jisoo Han", role: "Author", color: "linear-gradient(135deg,#34d399,#0d9488)" }
+        { name: "Sujin Park", email: "sujin.park@workspace.ai", role: "Author", meta: "frontend workflow · dashboard owner", color: "linear-gradient(135deg,#fb7185,#e11d48)" },
+        { name: "Dongho Kim", email: "dongho.kim@workspace.ai", role: "Author", meta: "backend workflow · api maintainer", color: "linear-gradient(135deg,#22d3ee,#0284c7)" },
+        { name: "Yuna Choi", email: "yuna.choi@workspace.ai", role: "Author", meta: "design review · shared component owner", color: "linear-gradient(135deg,#fbbf24,#ea580c)" },
+        { name: "Jisoo Han", email: "jisoo.han@workspace.ai", role: "Author", meta: "qa support · release checklist", color: "linear-gradient(135deg,#34d399,#0d9488)" }
       ];
+      const inviteMemberColors = inviteMemberPool.map((item) => item.color).filter(Boolean);
+      const hashToken = (value) => String(value || "").split("").reduce((accumulator, char) => ((accumulator * 31) + char.charCodeAt(0)) >>> 0, 0);
+      const getMemberInitials = (value) => String(value || "")
+        .split(/[\s@._-]+/)
+        .filter(Boolean)
+        .map((token) => token[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase() || "WS";
+      const buildMemberMeta = (member, role = "Author") => {
+        const hrProfile = member?.hr_profile && typeof member.hr_profile === "object" ? member.hr_profile : {};
+        const metaCandidates = [
+          member?.meta,
+          [hrProfile?.org, hrProfile?.position].filter(Boolean).join(" · "),
+          member?.attributes?.displayname,
+          member?.displayname,
+          member?.userid,
+          role === "Owner" ? "project owner" : "workspace collaborator"
+        ];
+        return String(metaCandidates.find((value) => String(value || "").trim()) || "").trim();
+      };
+      const resolveMemberColor = (member, index = 0) => {
+        if (member?.color) return String(member.color);
+        if (!inviteMemberColors.length) return "linear-gradient(135deg,#4f8cff,#22d3ee)";
+        const seed = String(member?.id || member?._id || member?.sub || member?.userid || member?.email || member?.name || index);
+        return inviteMemberColors[hashToken(seed) % inviteMemberColors.length] || "linear-gradient(135deg,#4f8cff,#22d3ee)";
+      };
+      const normalizeMember = (member, index = 0) => {
+        const name = String(
+          member?.name
+          || member?.attributes?.displayname
+          || member?.displayname
+          || member?.preferred_username
+          || member?.username
+          || member?.given_name
+          || member?.email
+          || member?.sub
+          || `Member ${index + 1}`
+        ).trim();
+        const email = String(member?.email || `${slugify(name)}@workspace.ai`).trim();
+        const role = String(member?.role || (index === 0 ? "Owner" : "Author")).trim() || "Author";
+        const meta = buildMemberMeta(member, role);
+        const color = resolveMemberColor(member, index);
+        const id = String(member?.id || member?._id || member?.sub || member?.userid || email || name).trim();
+        const userid = String(member?.userid || "").trim();
+        const sub = String(member?.sub || "").trim();
+        return { ...member, id, userid, sub, name, email, role, meta, color };
+      };
+      const getMemberLookupKey = (member) => normalizeToken(
+        member?.id
+        || member?._id
+        || member?.sub
+        || member?.userid
+        || member?.email
+        || `${member?.name || ""}-${member?.email || ""}`
+      );
+      let coworkSearchTerm = "";
+      let coworkSearchResults = [];
+      let coworkSearchLoading = false;
+      let coworkSearchError = "";
+      let coworkFeedback = "";
+      let selectedCoworkMemberKey = "";
+      let coworkModalFocusTarget = null;
+      let coworkSearchTimer = null;
+      let coworkSearchRequestSequence = 0;
+      let coworkSearchAbortController = null;
+      let coworkActionPending = false;
 
       const setDetailView = (view) => {
         document.querySelectorAll("[data-detail-view]").forEach((button) => {
@@ -4924,14 +5893,19 @@
         const addHeroMemberButton = document.getElementById("addHeroMemberButton");
         if (!addHeroMemberButton) return;
         addHeroMemberButton.addEventListener("click", () => {
-          const nextCandidate = inviteMemberPool.find(candidate => !project.team.some(member => member.name === candidate.name));
-          const fallbackIndex = project.team.length + 1;
-          const nextMember = nextCandidate || {
-            name: `Guest ${fallbackIndex}`,
-            role: "Author",
-            color: "linear-gradient(135deg,#a78bfa,#7c3aed)"
-          };
-          project.team.push(nextMember);
+          if (coworkModal) {
+            coworkSearchTerm = "";
+            coworkSearchResults = [];
+            coworkSearchLoading = false;
+            coworkSearchError = "";
+            selectedCoworkMemberKey = "";
+            coworkFeedback = "";
+            setCoworkModalOpen(true);
+            return;
+          }
+          const nextCandidate = inviteMemberPool.find((candidate) => !project.team.some((member) => member.name === candidate.name));
+          if (!nextCandidate) return;
+          project.team.push(normalizeMember(nextCandidate, project.team.length));
           renderHeroMembers();
         });
       };
@@ -4952,9 +5926,19 @@
       privacyEl.style.color = "var(--blue)";
 
       const favoriteEl = document.getElementById("heroFavorite");
-      favoriteEl.textContent = project.favorite ? "Favorited" : "Not Favorite";
-      favoriteEl.style.background = project.favorite ? "var(--brand-bg)" : "#f3f4f6";
-      favoriteEl.style.color = project.favorite ? "var(--brand)" : "#6b7280";
+      const favoriteToggleButton = document.getElementById("favoriteToggleButton");
+      const renderFavoriteUi = () => {
+        favoriteEl.textContent = project.favorite ? "Favorited" : "Not Favorite";
+        favoriteEl.style.background = project.favorite ? "var(--brand-bg)" : "#f3f4f6";
+        favoriteEl.style.color = project.favorite ? "var(--brand)" : "#6b7280";
+        if (!favoriteToggleButton) return;
+        favoriteToggleButton.classList.toggle("is-active", project.favorite);
+        favoriteToggleButton.setAttribute("aria-pressed", project.favorite ? "true" : "false");
+        favoriteToggleButton.innerHTML = project.favorite
+          ? '<span class="material-icons-round">favorite</span>Favorited'
+          : '<span class="material-icons-round">favorite_border</span>Favorite';
+      };
+      renderFavoriteUi();
 
       document.getElementById("heroMeta").innerHTML = `
         <span><strong>Owner</strong> ${project.owner}</span>
@@ -4986,6 +5970,20 @@
       const resourcePickerList = document.getElementById("resourcePickerList");
       const resourcePickerClose = document.getElementById("resourcePickerClose");
       const resourcePickerCancel = document.getElementById("resourcePickerCancel");
+      const coworkModal = document.getElementById("coworkModal");
+      const coworkModalClose = document.getElementById("coworkModalClose");
+      const coworkCancelButton = document.getElementById("coworkCancelButton");
+      const coworkInviteButton = document.getElementById("coworkInviteButton");
+      const coworkMemberSearch = document.getElementById("coworkMemberSearch");
+      const coworkInviteList = document.getElementById("coworkInviteList");
+      const coworkCurrentList = document.getElementById("coworkCurrentList");
+      const coworkCurrentCount = document.getElementById("coworkCurrentCount");
+      const coworkSelectedCard = document.getElementById("coworkSelectedCard");
+      const coworkSelectedName = document.getElementById("coworkSelectedName");
+      const coworkSelectedMeta = document.getElementById("coworkSelectedMeta");
+      const coworkModalSubtitle = document.getElementById("coworkModalSubtitle");
+      const coworkModalFeedback = document.getElementById("coworkModalFeedback");
+      const coworkModalFeedbackText = document.getElementById("coworkModalFeedbackText");
       let resourcePickerResolver = null;
       let resourcePickerItems = [];
       let resourcePickerFocusTarget = null;
@@ -5428,9 +6426,223 @@
       const syncOverlayScrollLock = () => {
         const hasOpenOverlay = Boolean(
           (publishModal && !publishModal.hidden) ||
-          (resourcePickerModal && !resourcePickerModal.hidden)
+          (resourcePickerModal && !resourcePickerModal.hidden) ||
+          (coworkModal && !coworkModal.hidden)
         );
         document.body.style.overflow = hasOpenOverlay ? "hidden" : "";
+      };
+      const normalizeCoworkSearchResults = (payload) => {
+        const unwrapped = unwrapEnvelope(payload);
+        const users = Array.isArray(unwrapped)
+          ? unwrapped
+          : Array.isArray(unwrapped?.items)
+            ? unwrapped.items
+            : Array.isArray(unwrapped?.users)
+              ? unwrapped.users
+              : [];
+        return users
+          .map((user, index) => normalizeMember({
+            ...user,
+            name: user?.name || user?.attributes?.displayname || user?.displayname || user?.preferred_username || user?.email,
+            role: "Author",
+            meta: [
+              [user?.hr_profile?.org, user?.hr_profile?.position].filter(Boolean).join(" · "),
+              user?.attributes?.displayname,
+              user?.displayname,
+              user?.userid
+            ].find((value) => String(value || "").trim()) || "workspace collaborator"
+          }, index + 1))
+          .filter((user) => getMemberLookupKey(user));
+      };
+      const getAvailableCoworkCandidates = () => {
+        return coworkSearchResults
+          .map((candidate, index) => normalizeMember(candidate, index + 1))
+          .filter((candidate) => !project.team.some((member, memberIndex) => getMemberLookupKey(normalizeMember(member, memberIndex)) === getMemberLookupKey(candidate)));
+      };
+      const searchCoworkUsers = async (keyword) => {
+        const trimmedKeyword = String(keyword || "").trim();
+        coworkSearchTerm = trimmedKeyword;
+        selectedCoworkMemberKey = "";
+        coworkSearchError = "";
+
+        if (coworkSearchTimer) {
+          window.clearTimeout(coworkSearchTimer);
+          coworkSearchTimer = null;
+        }
+        if (coworkSearchAbortController) {
+          coworkSearchAbortController.abort();
+          coworkSearchAbortController = null;
+        }
+        if (!trimmedKeyword) {
+          coworkSearchLoading = false;
+          coworkSearchResults = [];
+          renderCoworkModal();
+          return;
+        }
+
+        coworkSearchLoading = true;
+        coworkSearchResults = [];
+        renderCoworkModal();
+
+        const requestSequence = ++coworkSearchRequestSequence;
+        coworkSearchTimer = window.setTimeout(async () => {
+          coworkSearchAbortController = new AbortController();
+          try {
+            const payload = await requestJson(`/api/account/user?keyword=${encodeURIComponent(trimmedKeyword)}`, {
+              signal: coworkSearchAbortController.signal
+            });
+            if (requestSequence !== coworkSearchRequestSequence) return;
+            coworkSearchResults = normalizeCoworkSearchResults(payload);
+            coworkSearchError = "";
+          } catch (error) {
+            if (error?.name === "AbortError") return;
+            if (requestSequence !== coworkSearchRequestSequence) return;
+            coworkSearchResults = [];
+            coworkSearchError = getErrorMessage(error, "사용자 검색 결과를 불러오지 못했습니다.");
+          } finally {
+            if (requestSequence === coworkSearchRequestSequence) {
+              coworkSearchLoading = false;
+              coworkSearchAbortController = null;
+              renderCoworkModal();
+            }
+          }
+        }, 300);
+      };
+      const getProjectAuthorIds = () => {
+        const explicitAuthorIds = Array.isArray(project.authorIds)
+          ? project.authorIds.map((value) => String(value || "").trim()).filter(Boolean)
+          : [];
+        if (explicitAuthorIds.length) return Array.from(new Set(explicitAuthorIds));
+        return project.team
+          .map((member, index) => normalizeMember(member, index))
+          .filter((member) => member.role !== "Owner")
+          .map((member) => String(member.id || member._id || member.sub || member.userid || "").trim())
+          .filter(Boolean);
+      };
+      const saveCoworkAuthors = async (nextAuthorIds) => {
+        if (!ensureLiveProjectId()) return null;
+        const dedupedAuthorIds = Array.from(new Set((nextAuthorIds || []).map((value) => String(value || "").trim()).filter(Boolean)));
+        return requestJson(`/api/v2/projects/${encodeURIComponent(resolvedProjectId)}/cowork`, {
+          method: "POST",
+          body: JSON.stringify({
+            author: dedupedAuthorIds
+          })
+        });
+      };
+      const renderCoworkModal = () => {
+        if (!coworkInviteList || !coworkCurrentList || !coworkInviteButton) return;
+
+        project.team = project.team.map((member, index) => normalizeMember(member, index));
+        const availableCandidates = getAvailableCoworkCandidates();
+        const selectedCandidate = availableCandidates.find((candidate) => getMemberLookupKey(candidate) === selectedCoworkMemberKey) || null;
+        if (!selectedCandidate) {
+          selectedCoworkMemberKey = "";
+        }
+
+        if (coworkModalSubtitle) {
+          coworkModalSubtitle.textContent = `${project.name} 프로젝트에 함께 작업할 인원을 선택하고 현재 collaborator를 관리합니다.`;
+        }
+        if (coworkMemberSearch && coworkMemberSearch.value !== coworkSearchTerm) {
+          coworkMemberSearch.value = coworkSearchTerm;
+        }
+        if (coworkModalFeedback && coworkModalFeedbackText) {
+          coworkModalFeedback.hidden = !coworkFeedback;
+          coworkModalFeedbackText.textContent = coworkFeedback;
+        }
+        if (coworkSelectedCard && coworkSelectedName && coworkSelectedMeta) {
+          coworkSelectedCard.hidden = !selectedCandidate;
+          coworkSelectedName.textContent = selectedCandidate?.name || "";
+          coworkSelectedMeta.textContent = selectedCandidate
+            ? `${selectedCandidate.email} · ${selectedCandidate.meta}`
+            : "";
+        }
+        if (coworkCurrentCount) {
+          coworkCurrentCount.textContent = `${project.team.length} collaborators`;
+        }
+
+        const coworkListEmptyMessage = !coworkSearchTerm
+          ? "이름 또는 메일을 입력하면 계정 검색 API로 초대 후보를 불러옵니다."
+          : coworkSearchLoading
+            ? "사용자를 검색하고 있습니다..."
+            : coworkSearchError
+              ? coworkSearchError
+              : availableCandidates.length
+                ? ""
+                : coworkSearchResults.length
+                  ? "검색 결과 사용자가 이미 collaborator로 추가되어 있습니다."
+                  : "검색 결과가 없습니다.";
+
+        coworkInviteList.innerHTML = availableCandidates.length
+          ? availableCandidates.map((candidate) => {
+            const candidateKey = getMemberLookupKey(candidate);
+            const selectedClass = candidateKey === selectedCoworkMemberKey ? " is-selected" : "";
+            return `
+              <button class="cowork-candidate${selectedClass}" type="button" data-cowork-candidate="${candidateKey}">
+                <div class="cowork-avatar" style="background:${candidate.color}">${escapeHtml(getMemberInitials(candidate.name))}</div>
+                <div class="cowork-candidate-main">
+                  <div class="cowork-candidate-name">${escapeHtml(candidate.name)}</div>
+                  <div class="cowork-candidate-meta">${escapeHtml(candidate.email)} · ${escapeHtml(candidate.meta)}</div>
+                </div>
+                <div class="cowork-candidate-role">${escapeHtml(candidate.role)}</div>
+              </button>
+            `;
+          }).join("")
+          : `<div class="cowork-empty">${escapeHtml(coworkListEmptyMessage)}</div>`;
+
+        coworkCurrentList.innerHTML = project.team.length
+          ? project.team.map((member, index) => {
+            const normalizedMember = normalizeMember(member, index);
+            const canRemove = normalizedMember.role !== "Owner" && index !== 0;
+            return `
+              <div class="cowork-current-item">
+                <div class="cowork-avatar" style="background:${normalizedMember.color}">${escapeHtml(getMemberInitials(normalizedMember.name))}</div>
+                <div class="cowork-current-main">
+                  <div class="cowork-current-name">${escapeHtml(normalizedMember.name)}</div>
+                  <div class="cowork-current-meta">${escapeHtml(normalizedMember.email)} · ${escapeHtml(normalizedMember.meta)}</div>
+                </div>
+                <div class="cowork-current-actions">
+                  <div class="cowork-role-badge">${escapeHtml(normalizedMember.role)}</div>
+                  ${canRemove ? `<button class="cowork-remove-btn" type="button" data-cowork-remove="${index}"><span class="material-icons-round">delete_outline</span>제거</button>` : ""}
+                </div>
+              </div>
+            `;
+          }).join("")
+          : '<div class="cowork-empty">현재 등록된 협업 인원이 없습니다.</div>';
+
+        coworkInviteButton.disabled = !selectedCandidate || coworkActionPending;
+      };
+      const setCoworkModalOpen = (isOpen) => {
+        if (!coworkModal) return;
+        if (isOpen) {
+          if (!coworkSearchTerm) {
+            coworkSearchResults = [];
+            coworkSearchLoading = false;
+            coworkSearchError = "";
+          }
+          coworkSearchError = "";
+          coworkModalFocusTarget = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+          renderCoworkModal();
+        }
+        coworkModal.hidden = !isOpen;
+        syncOverlayScrollLock();
+        if (isOpen) {
+          window.setTimeout(() => coworkMemberSearch?.focus(), 0);
+          return;
+        }
+        if (coworkSearchTimer) {
+          window.clearTimeout(coworkSearchTimer);
+          coworkSearchTimer = null;
+        }
+        if (coworkSearchAbortController) {
+          coworkSearchAbortController.abort();
+          coworkSearchAbortController = null;
+        }
+        coworkSearchLoading = false;
+        const focusTarget = coworkModalFocusTarget;
+        coworkModalFocusTarget = null;
+        if (focusTarget && typeof focusTarget.focus === "function") {
+          window.setTimeout(() => focusTarget.focus(), 0);
+        }
       };
       const setResourcePickerOpen = (isOpen) => {
         if (!resourcePickerModal) return;
@@ -5533,9 +6745,41 @@
       };
 
       const backButton = document.querySelector(".hero-btn.ghost");
+      let favoriteTogglePending = false;
       if (backButton) {
         backButton.addEventListener("click", () => {
           window.location.href = "workspace_projects_hub.html";
+        });
+      }
+
+      if (favoriteToggleButton) {
+        favoriteToggleButton.addEventListener("click", async () => {
+          if (favoriteTogglePending) return;
+          if (!ensureLiveProjectId()) return;
+
+          favoriteTogglePending = true;
+          favoriteToggleButton.disabled = true;
+          favoriteToggleButton.setAttribute("aria-busy", "true");
+
+          try {
+            favoriteProjects = await requestFavoriteProjects();
+            const isAlreadyFavorite = favoriteProjects.includes(resolvedProjectId);
+            const nextFavoriteProjects = isAlreadyFavorite
+              ? favoriteProjects.filter((item) => item !== resolvedProjectId)
+              : [...favoriteProjects, resolvedProjectId];
+
+            await updateFavoriteProjects(nextFavoriteProjects);
+
+            favoriteProjects = nextFavoriteProjects;
+            project.favorite = !isAlreadyFavorite;
+            renderFavoriteUi();
+          } catch (error) {
+            window.alert(getErrorMessage(error, "favorite 상태를 저장하지 못했습니다."));
+          } finally {
+            favoriteTogglePending = false;
+            favoriteToggleButton.disabled = false;
+            favoriteToggleButton.removeAttribute("aria-busy");
+          }
         });
       }
 
@@ -5571,6 +6815,13 @@
           }
         });
       }
+      if (coworkModal) {
+        coworkModal.addEventListener("click", (event) => {
+          if (event.target === coworkModal) {
+            setCoworkModalOpen(false);
+          }
+        });
+      }
 
       [publishModalClose, publishCancelButton].forEach((button) => {
         if (!button) return;
@@ -5586,6 +6837,109 @@
           resolveResourcePicker(null);
         });
       });
+      [coworkModalClose, coworkCancelButton].forEach((button) => {
+        if (!button) return;
+        button.addEventListener("click", () => {
+          setCoworkModalOpen(false);
+        });
+      });
+
+      if (coworkMemberSearch) {
+        coworkMemberSearch.addEventListener("input", (event) => {
+          const nextKeyword = event.target.value;
+          coworkFeedback = "";
+          searchCoworkUsers(nextKeyword);
+        });
+      }
+
+      if (coworkInviteList) {
+        coworkInviteList.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-cowork-candidate]");
+          if (!(button instanceof HTMLElement)) return;
+          selectedCoworkMemberKey = button.dataset.coworkCandidate || "";
+          coworkFeedback = "";
+          renderCoworkModal();
+        });
+      }
+
+      if (coworkCurrentList) {
+        coworkCurrentList.addEventListener("click", async (event) => {
+          const button = event.target.closest("[data-cowork-remove]");
+          if (!(button instanceof HTMLElement)) return;
+          const targetIndex = Number(button.dataset.coworkRemove);
+          if (!Number.isInteger(targetIndex) || targetIndex <= 0 || coworkActionPending) return;
+          const removedMember = normalizeMember(project.team[targetIndex], targetIndex);
+          const removedId = String(removedMember.id || removedMember._id || removedMember.sub || removedMember.userid || "").trim();
+          if (!removedId) {
+            coworkFeedback = "선택한 collaborator의 id 정보를 찾지 못했습니다.";
+            renderCoworkModal();
+            return;
+          }
+
+          coworkActionPending = true;
+          setActionButtonBusy(coworkInviteButton, true, '<span class="material-icons-round">hourglass_top</span>저장 중');
+          coworkFeedback = "";
+          renderCoworkModal();
+
+          try {
+            const nextAuthorIds = getProjectAuthorIds().filter((id) => id !== removedId);
+            const payload = await saveCoworkAuthors(nextAuthorIds);
+            const updatedProject = unwrapEnvelope(payload);
+            project.authorIds = Array.isArray(updatedProject?.author)
+              ? updatedProject.author.map((value) => String(value || "").trim()).filter(Boolean)
+              : nextAuthorIds;
+            project.team.splice(targetIndex, 1);
+            coworkFeedback = `${removedMember.name}님의 협업 권한을 제거했습니다.`;
+            renderHeroMembers();
+          } catch (error) {
+            coworkFeedback = getErrorMessage(error, "협업 인원 제거에 실패했습니다.");
+          } finally {
+            coworkActionPending = false;
+            setActionButtonBusy(coworkInviteButton, false);
+            renderCoworkModal();
+          }
+        });
+      }
+
+      if (coworkInviteButton) {
+        coworkInviteButton.addEventListener("click", async () => {
+          if (coworkActionPending) return;
+          const selectedCandidate = getAvailableCoworkCandidates().find((candidate) => getMemberLookupKey(candidate) === selectedCoworkMemberKey);
+          if (!selectedCandidate) return;
+          const selectedId = String(selectedCandidate.id || selectedCandidate._id || selectedCandidate.sub || selectedCandidate.userid || "").trim();
+          if (!selectedId) {
+            coworkFeedback = "선택한 사용자의 id 정보를 찾지 못했습니다.";
+            renderCoworkModal();
+            return;
+          }
+
+          coworkActionPending = true;
+          setActionButtonBusy(coworkInviteButton, true, '<span class="material-icons-round">hourglass_top</span>초대 중');
+          coworkFeedback = "";
+          renderCoworkModal();
+
+          try {
+            const nextAuthorIds = Array.from(new Set([...getProjectAuthorIds(), selectedId]));
+            const payload = await saveCoworkAuthors(nextAuthorIds);
+            const updatedProject = unwrapEnvelope(payload);
+            project.authorIds = Array.isArray(updatedProject?.author)
+              ? updatedProject.author.map((value) => String(value || "").trim()).filter(Boolean)
+              : nextAuthorIds;
+            project.team.push(selectedCandidate);
+            coworkFeedback = `${selectedCandidate.name}님을 collaborator로 추가했습니다.`;
+            coworkSearchTerm = "";
+            coworkSearchResults = [];
+            selectedCoworkMemberKey = "";
+            renderHeroMembers();
+          } catch (error) {
+            coworkFeedback = getErrorMessage(error, "협업 인원 추가에 실패했습니다.");
+          } finally {
+            coworkActionPending = false;
+            setActionButtonBusy(coworkInviteButton, false);
+            renderCoworkModal();
+          }
+        });
+      }
 
       if (resourcePickerList) {
         resourcePickerList.addEventListener("click", (event) => {
@@ -5703,6 +7057,10 @@
       }
 
       document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && coworkModal && !coworkModal.hidden) {
+          setCoworkModalOpen(false);
+          return;
+        }
         if (event.key === "Escape" && resourcePickerModal && !resourcePickerModal.hidden) {
           resolveResourcePicker(null);
           return;
@@ -5755,25 +7113,76 @@
       const domainSelect = document.getElementById("domainSelect");
       if (domainSelect) {
         domainSelect.innerHTML = domainOptions.map((option, index) => `
-          <option value="${index}">${option.label} · ${option.value}</option>
+          <option value="${index}">${option.label} · ${option.value}${option.boundProjectId && option.boundProjectId !== resolvedProjectId ? ` · ${option.boundProjectLabel}` : ""}</option>
         `).join("");
-        domainSelect.addEventListener("change", (event) => {
-          selectedDomain = domainOptions[Number(event.target.value)] || domainOptions[0];
-          configUpdatedAt = formatTimelineStamp(new Date());
+        domainSelect.value = String(Math.max(domainOptions.findIndex((option) => option.id === selectedDomain.id && option.value === selectedDomain.value), 0));
+        domainSelect.addEventListener("change", async (event) => {
+          const nextDomain = domainOptions[Number(event.target.value)] || domainOptions[0];
+          const previousDomain = selectedDomain;
+          selectedDomain = nextDomain;
           renderDomainStatus();
-          renderTimeline();
+          if (!ensureLiveProjectId()) return;
+          if ((previousDomain?.id || "") === (nextDomain?.id || "")) {
+            renderTimeline();
+            return;
+          }
+          domainSelect.disabled = true;
+          try {
+            if (!nextDomain?.id) {
+              if (previousDomain?.id) {
+                await requestJson(`/api/v2/domains/${encodeURIComponent(previousDomain.id)}/bind`, {
+                  method: "DELETE"
+                });
+              }
+            } else {
+              await requestJson(`/api/v2/domains/${encodeURIComponent(nextDomain.id)}/bind`, {
+                method: "POST",
+                body: JSON.stringify({
+                  projectId: resolvedProjectId
+                })
+              });
+            }
+            configUpdatedAt = formatTimelineStamp(new Date());
+            window.alert(nextDomain?.id ? "도메인을 프로젝트에 연결했습니다." : "프로젝트 도메인 연결을 해제했습니다.");
+            reloadCurrentView();
+          } catch (error) {
+            selectedDomain = previousDomain;
+            domainSelect.value = String(Math.max(domainOptions.findIndex((option) => option.id === previousDomain?.id && option.value === previousDomain?.value), 0));
+            renderDomainStatus();
+            window.alert(getErrorMessage(error, "도메인 연결에 실패했습니다."));
+          } finally {
+            domainSelect.disabled = false;
+          }
         });
       }
       renderDomainStatus();
       const prefixInput = document.getElementById("prefixInput");
       if (prefixInput) {
-        prefixInput.value = globalPrefix;
+        prefixInput.value = draftGlobalPrefix;
         prefixInput.addEventListener("input", (event) => {
-          globalPrefix = event.target.value;
-          configUpdatedAt = formatTimelineStamp(new Date());
-          renderVariables();
+          draftGlobalPrefix = event.target.value;
           syncVariablePreview();
-          renderTimeline();
+        });
+      }
+      const savePrefixButton = document.getElementById("savePrefixButton");
+      if (savePrefixButton) {
+        savePrefixButton.addEventListener("click", async () => {
+          const originalHtml = setActionButtonBusy(savePrefixButton, true, '<span class="material-icons-round">sync</span>저장 중');
+          try {
+            await syncEnvironmentVariablesPrefix(draftGlobalPrefix);
+            globalPrefix = draftGlobalPrefix;
+            configUpdatedAt = formatTimelineStamp(new Date());
+            renderVariables();
+            renderTimeline();
+            savePrefixButton.disabled = false;
+            savePrefixButton.innerHTML = '<span class="material-icons-round">check</span>저장됨';
+            window.setTimeout(() => {
+              savePrefixButton.innerHTML = originalHtml || '<span class="material-icons-round">save</span>Prefix 저장';
+            }, 900);
+          } catch (error) {
+            setActionButtonBusy(savePrefixButton, false);
+            window.alert(getErrorMessage(error, "Prefix 저장에 실패했습니다."));
+          }
         });
       }
       const newVariableKey = document.getElementById("newVariableKey");
@@ -5787,12 +7196,7 @@
       document.getElementById("tagRow").innerHTML = project.tags.map(tag => `<span class="tag">#${tag}</span>`).join("");
       renderHeroMembers();
 
-      document.getElementById("portList").innerHTML = project.ports.map(port => `
-        <div class="port-row">
-          <div class="port-name mono">${port.name}</div>
-          <div class="port-meta">${port.meta}</div>
-        </div>
-      `).join("");
+      renderPorts();
       renderVariables();
 
       const variableList = document.getElementById("varList");
@@ -5806,7 +7210,7 @@
           variableState[index][field] = event.target.value;
         });
 
-        variableList.addEventListener("click", (event) => {
+        variableList.addEventListener("click", async (event) => {
           const button = event.target.closest("[data-action]");
           const row = event.target.closest("[data-variable-index]");
           if (!button || !row) return;
@@ -5815,10 +7219,19 @@
           if (Number.isNaN(index) || !variableState[index]) return;
 
           if (action === "delete") {
-            variableState.splice(index, 1);
-            configUpdatedAt = formatTimelineStamp(new Date());
-            renderVariables();
-            renderTimeline();
+            const originalHtml = setActionButtonBusy(button, true, '<span class="material-icons-round">sync</span>삭제 중');
+            try {
+              const nextVariables = variableState.filter((_, candidateIndex) => candidateIndex !== index);
+              await syncEnvironmentVariables(nextVariables);
+              variableState = nextVariables;
+              configUpdatedAt = formatTimelineStamp(new Date());
+              renderVariables();
+              renderTimeline();
+            } catch (error) {
+              setActionButtonBusy(button, false);
+              button.innerHTML = originalHtml || '<span class="material-icons-round">delete_outline</span>삭제';
+              window.alert(getErrorMessage(error, "환경 변수 삭제에 실패했습니다."));
+            }
             return;
           }
 
@@ -5842,51 +7255,230 @@
             const nextKey = (variableState[index].draftKey || "").trim();
             const nextValue = (variableState[index].draftValue || "").trim();
             if (!nextKey || !nextValue) return;
-            variableState[index].key = nextKey;
-            variableState[index].value = nextValue;
-            variableState[index].draftKey = nextKey;
-            variableState[index].draftValue = nextValue;
-            variableState[index].editing = false;
-            configUpdatedAt = formatTimelineStamp(new Date());
-            renderVariables();
-            renderTimeline();
+            if (variableState.some((variable, candidateIndex) => candidateIndex !== index && normalizeToken(variable.key) === normalizeToken(nextKey))) {
+              window.alert("같은 이름의 변수가 이미 있습니다. 기존 항목을 수정하거나 다른 이름을 사용해 주세요.");
+              return;
+            }
+            const originalHtml = setActionButtonBusy(button, true, '<span class="material-icons-round">sync</span>저장 중');
+            try {
+              const nextVariables = variableState.map((variable, candidateIndex) => candidateIndex === index
+                ? {
+                  ...variable,
+                  key: nextKey,
+                  value: nextValue,
+                  draftKey: nextKey,
+                  draftValue: nextValue,
+                  editing: false
+                }
+                : variable
+              );
+              await syncEnvironmentVariables(nextVariables);
+              variableState = nextVariables;
+              configUpdatedAt = formatTimelineStamp(new Date());
+              renderVariables();
+              renderTimeline();
+            } catch (error) {
+              setActionButtonBusy(button, false);
+              button.innerHTML = originalHtml || '<span class="material-icons-round">check</span>저장';
+              window.alert(getErrorMessage(error, "환경 변수 저장에 실패했습니다."));
+            }
+          }
+        });
+      }
+      const portList = document.getElementById("portList");
+      if (portList) {
+        portList.addEventListener("input", (event) => {
+          const row = event.target.closest("[data-port-index]");
+          if (!row) return;
+          const index = Number(row.dataset.portIndex);
+          const field = event.target.dataset.field;
+          if (Number.isNaN(index) || !field || !portState[index]) return;
+          portState[index][field] = event.target.value;
+        });
+
+        portList.addEventListener("click", async (event) => {
+          const button = event.target.closest("[data-action]");
+          const row = event.target.closest("[data-port-index]");
+          if (!button || !row) return;
+          const index = Number(row.dataset.portIndex);
+          const action = button.dataset.action;
+          if (Number.isNaN(index) || !portState[index]) return;
+
+          if (action === "delete") {
+            const originalHtml = setActionButtonBusy(button, true, '<span class="material-icons-round">sync</span>삭제 중');
+            try {
+              const nextPorts = portState.filter((_, candidateIndex) => candidateIndex !== index);
+              await syncPorts(nextPorts);
+              portState = nextPorts;
+              configUpdatedAt = formatTimelineStamp(new Date());
+              renderPorts();
+              renderTimeline();
+            } catch (error) {
+              setActionButtonBusy(button, false);
+              button.innerHTML = originalHtml || '<span class="material-icons-round">delete_outline</span>삭제';
+              window.alert(getErrorMessage(error, "포트 삭제에 실패했습니다."));
+            }
+            return;
+          }
+
+          if (action === "edit") {
+            portState[index].editing = true;
+            portState[index].draftName = portState[index].name;
+            portState[index].draftMeta = portState[index].meta;
+            renderPorts();
+            return;
+          }
+
+          if (action === "cancel") {
+            portState[index].editing = false;
+            portState[index].draftName = portState[index].name;
+            portState[index].draftMeta = portState[index].meta;
+            renderPorts();
+            return;
+          }
+
+          if (action === "save") {
+            const nextName = String(portState[index].draftName || "").trim();
+            const nextMeta = String(portState[index].draftMeta || "").trim();
+            if (!nextName) return;
+            if (portState.some((port, candidateIndex) => candidateIndex !== index && String(port.name || "").trim() === nextName)) {
+              window.alert("같은 포트가 이미 있습니다. 기존 항목을 수정하거나 다른 포트를 입력해 주세요.");
+              return;
+            }
+            const originalHtml = setActionButtonBusy(button, true, '<span class="material-icons-round">sync</span>저장 중');
+            try {
+              const nextPorts = portState.map((port, candidateIndex) => candidateIndex === index
+                ? {
+                  ...port,
+                  name: nextName,
+                  meta: nextMeta,
+                  draftName: nextName,
+                  draftMeta: nextMeta,
+                  editing: false
+                }
+                : port
+              );
+              await syncPorts(nextPorts);
+              portState = nextPorts;
+              configUpdatedAt = formatTimelineStamp(new Date());
+              renderPorts();
+              renderTimeline();
+            } catch (error) {
+              setActionButtonBusy(button, false);
+              button.innerHTML = originalHtml || '<span class="material-icons-round">check</span>저장';
+              window.alert(getErrorMessage(error, "포트 저장에 실패했습니다."));
+            }
           }
         });
       }
 
       const addVariableButton = document.getElementById("addVariableButton");
       if (addVariableButton) {
-        addVariableButton.addEventListener("click", () => {
+        addVariableButton.addEventListener("click", async () => {
           const keyInput = document.getElementById("newVariableKey");
           const valueInput = document.getElementById("newVariableValue");
           if (!keyInput || !valueInput) return;
           const nextKey = keyInput.value.trim();
           const nextValue = valueInput.value.trim();
           if (!nextKey || !nextValue) return;
-          variableState.unshift({
-            key: nextKey,
-            value: nextValue,
+          if (variableState.some((variable) => normalizeToken(variable.key) === normalizeToken(nextKey))) {
+            window.alert("같은 이름의 변수가 이미 있습니다. 기존 항목을 수정하거나 다른 이름을 사용해 주세요.");
+            return;
+          }
+          const originalHtml = setActionButtonBusy(addVariableButton, true, '<span class="material-icons-round">sync</span>저장 중');
+          try {
+            const nextVariables = [{
+              key: nextKey,
+              value: nextValue,
+              editing: false,
+              draftKey: nextKey,
+              draftValue: nextValue
+            }, ...variableState];
+            await syncEnvironmentVariables(nextVariables);
+            variableState = nextVariables;
+            configUpdatedAt = formatTimelineStamp(new Date());
+            renderVariables();
+            renderTimeline();
+            keyInput.value = "";
+            valueInput.value = "";
+            syncVariablePreview();
+            addVariableButton.disabled = false;
+            addVariableButton.innerHTML = '<span class="material-icons-round">check</span>추가됨';
+            window.setTimeout(() => {
+              addVariableButton.innerHTML = originalHtml || '<span class="material-icons-round">add</span>추가 완료';
+            }, 900);
+          } catch (error) {
+            setActionButtonBusy(addVariableButton, false);
+            window.alert(getErrorMessage(error, "환경 변수 추가에 실패했습니다."));
+          }
+        });
+      }
+      const addPortButton = document.getElementById("addPortButton");
+      if (addPortButton) {
+        addPortButton.addEventListener("click", async () => {
+          const portInput = document.getElementById("newPortNumber");
+          const metaInput = document.getElementById("newPortMeta");
+          if (!portInput || !metaInput) return;
+          const nextName = portInput.value.trim();
+          const nextMeta = metaInput.value.trim();
+          if (!nextName) return;
+          if (portState.some((port) => String(port.name || "").trim() === nextName)) {
+            window.alert("같은 포트가 이미 있습니다. 기존 항목을 수정하거나 다른 포트를 입력해 주세요.");
+            return;
+          }
+          const originalHtml = setActionButtonBusy(addPortButton, true, '<span class="material-icons-round">sync</span>저장 중');
+          try {
+            const nextPorts = [{
+            name: nextName,
+            meta: nextMeta,
             editing: false,
-            draftKey: nextKey,
-            draftValue: nextValue
-          });
-          configUpdatedAt = formatTimelineStamp(new Date());
-          renderVariables();
-          renderTimeline();
-          keyInput.value = "";
-          valueInput.value = "";
-          syncVariablePreview();
-          addVariableButton.innerHTML = '<span class="material-icons-round">check</span>추가됨';
-          window.setTimeout(() => {
-          addVariableButton.innerHTML = '<span class="material-icons-round">add</span>추가 완료';
-          }, 900);
+            draftName: nextName,
+            draftMeta: nextMeta
+            }, ...portState];
+            await syncPorts(nextPorts);
+            portState = nextPorts;
+            configUpdatedAt = formatTimelineStamp(new Date());
+            renderPorts();
+            renderTimeline();
+            portInput.value = "";
+            metaInput.value = "";
+            addPortButton.disabled = false;
+            addPortButton.innerHTML = '<span class="material-icons-round">check</span>추가됨';
+            window.setTimeout(() => {
+              addPortButton.innerHTML = originalHtml || '<span class="material-icons-round">add</span>추가 완료';
+            }, 900);
+          } catch (error) {
+            setActionButtonBusy(addPortButton, false);
+            window.alert(getErrorMessage(error, "포트 추가에 실패했습니다."));
+          }
         });
       }
 
-      const metricsDashboard = buildMetricsDashboard(project);
-      let activeResourceRange = "1h";
+      const hasLiveProject = Boolean(liveProjectBundle?.detail);
+      const fallbackMetricsDashboard = buildMetricsDashboard(project);
+      const userAnalyticsDashboard = hasLiveProject
+        ? buildLiveUserAnalyticsDashboard(project.analytics)
+        : {
+            userKpis: fallbackMetricsDashboard.userKpis,
+            visitTrend: fallbackMetricsDashboard.visitTrend,
+            visitTrendLabels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].slice(0, fallbackMetricsDashboard.visitTrend.length),
+            topPages: fallbackMetricsDashboard.topPages
+          };
+      const liveObservability = project.observability && typeof project.observability === "object"
+        ? project.observability
+        : null;
+      const resourceRangeMap = hasLiveProject
+        ? liveObservability?.resourceRanges && typeof liveObservability.resourceRanges === "object"
+          ? liveObservability.resourceRanges
+          : {}
+        : fallbackMetricsDashboard.resourceRanges;
+      let activeResourceRange = resourceRangeMap[liveObservability?.selectedRange]
+        ? liveObservability.selectedRange
+        : resourceRangeMap["1h"]
+          ? "1h"
+          : Object.keys(resourceRangeMap)[0] || "1h";
 
-      document.getElementById("matomoMetricGrid").innerHTML = metricsDashboard.userKpis.map((item) => `
+      document.getElementById("matomoMetricGrid").innerHTML = userAnalyticsDashboard.userKpis.map((item) => `
         <div class="metric-card ${item.tone}">
           <div class="metric-label">${item.label}</div>
           <div class="metric-value">${item.value}</div>
@@ -5894,18 +7486,19 @@
         </div>
       `).join("");
 
-      renderTrendBars("matomoTrendBars", metricsDashboard.visitTrend, "analytics");
-      renderPageList("topPagesList", metricsDashboard.topPages);
+      renderTrendBars("matomoTrendBars", userAnalyticsDashboard.visitTrend, "analytics", userAnalyticsDashboard.visitTrendLabels);
+      renderPageList("topPagesList", userAnalyticsDashboard.topPages);
 
       const renderServiceAnalysis = () => {
-        renderResourceChart("resourceChartSvg", "resourceChartLabels", metricsDashboard.resourceRanges[activeResourceRange]);
+        renderResourceChart("resourceChartSvg", "resourceChartLabels", resourceRangeMap[activeResourceRange]);
       };
 
       renderServiceAnalysis();
 
       const logList = document.getElementById("logList");
       if (logList) {
-        logList.textContent = metricsDashboard.liveLogs.join("\n");
+        const livePreviewLogs = Array.isArray(liveObservability?.logs?.preview) ? liveObservability.logs.preview : [];
+        logList.textContent = livePreviewLogs.length ? livePreviewLogs.join("\n") : "";
       }
 
       const resourceRangeTabs = document.getElementById("resourceRangeTabs");
@@ -5923,8 +7516,11 @@
 
       const openTerminalButton = document.getElementById("openTerminalButton");
       if (openTerminalButton) {
+        const terminalUrl = String(liveObservability?.terminal?.openUrl || "").trim();
+        openTerminalButton.disabled = !terminalUrl;
         openTerminalButton.addEventListener("click", () => {
-          window.open(metricsDashboard.terminalUrl, "_blank", "noopener,noreferrer");
+          if (!terminalUrl) return;
+          window.open(terminalUrl, "_blank", "noopener,noreferrer");
         });
       }
 
@@ -5940,29 +7536,54 @@
       setDetailView(resolveInitialDetailView());
       focusInitialSection();
 
-      document.getElementById("harvestCountChip").textContent = `${project.harvest.length} Docs`;
-      document.getElementById("harvestList").innerHTML = project.harvest.map(item => `
-        <div class="harvest-row">
-          <div>
-            <div class="harvest-title">${item.keyword}</div>
+      const harvestSearchInput = document.getElementById("harvestSearchInput");
+      const harvestCountChip = document.getElementById("harvestCountChip");
+      const harvestList = document.getElementById("harvestList");
+      const renderHarvestList = (keyword = "") => {
+        if (!harvestCountChip || !harvestList) return;
+        const normalizedKeyword = normalizeToken(keyword);
+        const filteredHarvest = normalizedKeyword
+          ? project.harvest.filter((item) => [item.keyword, item.url].some((value) => normalizeToken(value).includes(normalizedKeyword)))
+          : project.harvest;
+
+        harvestCountChip.textContent = `${filteredHarvest.length} Docs`;
+        if (!filteredHarvest.length) {
+          harvestList.innerHTML = `<div class="harvest-row"><div class="harvest-meta">No harvest documents</div><div class="harvest-meta">-</div><div class="harvest-meta">-</div><div class="harvest-meta">-</div></div>`;
+          return;
+        }
+        harvestList.innerHTML = filteredHarvest.map(item => `
+          <div class="harvest-row">
+            <div>
+              <div class="harvest-title">${item.keyword}</div>
+            </div>
+            <div><a class="row-link" href="${item.url === "-" ? "#" : item.url}" target="_blank" rel="noreferrer noopener">${item.url}</a></div>
+            <div class="harvest-meta">${item.created}</div>
+            <div class="harvest-meta">${item.updated}</div>
           </div>
-          <div><a class="row-link" href="#">${item.url}</a></div>
-          <div class="harvest-meta">${item.created}</div>
-          <div class="harvest-meta">${item.updated}</div>
-        </div>
-      `).join("");
+        `).join("");
+      };
+
+      renderHarvestList(harvestSearchInput?.value || "");
+
+      if (harvestSearchInput) {
+        harvestSearchInput.addEventListener("input", (event) => {
+          renderHarvestList(event.target.value);
+        });
+      }
 
       document.getElementById("securityCountChip").textContent = `${project.security.length} Findings`;
-      document.getElementById("securityList").innerHTML = project.security.map(item => `
+      document.getElementById("securityList").innerHTML = project.security.length
+        ? project.security.map(item => `
         <div class="security-row">
           <div>
             <div class="security-title-row">${item.issue}</div>
           </div>
           <div><span class="security-score" style="${severityClass(item.score)}">${item.score}</span></div>
           <div class="security-meta">${item.resource}</div>
-          <div><a class="row-link" href="#">${item.link}</a></div>
+          <div><a class="row-link" href="${item.link === "-" ? "#" : item.link}" target="_blank" rel="noreferrer noopener">${item.link}</a></div>
         </div>
-      `).join("");
+      `).join("")
+        : `<div class="security-row"><div class="security-meta">No vulnerabilities found</div><div class="security-meta">-</div><div class="security-meta">-</div><div class="security-meta">-</div></div>`;
 
       renderResourceState();
 

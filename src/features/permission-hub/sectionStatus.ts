@@ -3,16 +3,20 @@ import type { SectionStatusInfo } from '@/components/reference-status';
 export const permissionHubSectionStatus = {
   blockedSections: {
     apis: [
-      { contract: 'missing', method: 'POST', path: '/api/v2/permissions/realms' },
       { contract: 'missing', method: 'DELETE', path: '/api/v2/permissions/realms/:id' },
       { contract: 'missing', method: 'GET', path: '/api/v2/permissions/realms/:id' },
       { contract: 'missing', method: 'GET', path: '/api/v2/permissions/realms/:id/roles' },
-      { contract: 'missing', method: 'GET', path: '/api/v2/permissions/requests (paged)' },
       { contract: 'missing', method: 'POST', path: '/api/v2/permissions/realms/:id/requests' },
+      {
+        contract: 'missing',
+        method: 'DELETE',
+        path: '/api/v2/permissions/realms/:id/bindings/:projectId',
+      },
     ],
     blockers: [
-      'Missing accepted response contracts for POST /api/v2/permissions/realms, DELETE /api/v2/permissions/realms/:id, GET /api/v2/permissions/realms/:id, and GET /api/v2/permissions/realms/:id/roles, so create, delete, detail, and role management controls stay disabled.',
-      'Missing accepted response contracts for GET /api/v2/permissions/requests (paged) and POST /api/v2/permissions/realms/:id/requests, so the request inbox and request submission flow remain blocked.',
+      'Missing accepted response contracts for DELETE /api/v2/permissions/realms/:id, GET /api/v2/permissions/realms/:id, and GET /api/v2/permissions/realms/:id/roles, so delete, detail, and role management controls stay disabled.',
+      'Missing accepted response contract for POST /api/v2/permissions/realms/:id/requests, so role request submission stays disabled.',
+      'Missing accepted response contract for DELETE /api/v2/permissions/realms/:id/bindings/:projectId, so the project-binding modal remains blocked.',
     ],
     id: 'permission-hub-blocked-sections',
     nextAction: 'Provide documented contracts, sample payloads, or approved fixtures.',
@@ -20,18 +24,18 @@ export const permissionHubSectionStatus = {
     progress: 'blocked',
     readiness: 'Blocked',
     reference: 'workspace_permission_hub.html',
-    section: 'Action flows / request inbox',
+    section: 'Remaining action flows',
   },
   cards: {
     apis: [
       { contract: 'accepted', method: 'GET', path: '/api/v2/permissions/realms (paged)' },
-      { contract: 'missing', method: 'POST', path: '/api/v2/permissions/realms' },
+      { contract: 'accepted', method: 'POST', path: '/api/v2/permissions/realms' },
       { contract: 'missing', method: 'DELETE', path: '/api/v2/permissions/realms/:id' },
       { contract: 'missing', method: 'GET', path: '/api/v2/permissions/realms/:id' },
       { contract: 'missing', method: 'POST', path: '/api/v2/permissions/realms/:id/requests' },
     ],
     blockers: [
-      'Create, delete, detail, and request controls are disabled because the exact action response contracts are missing.',
+      'Delete, detail, and request controls are disabled because the exact action response contracts are missing.',
     ],
     evidence:
       'Read-only realm card bodies render from the accepted list payload: name, kind, status, members, roles, project bindings, capabilities, and current-user roles.',
@@ -52,7 +56,7 @@ export const permissionHubSectionStatus = {
       'page.total',
     ],
     id: 'permission-hub-realm-cards',
-    nextAction: 'Provide accepted action/detail/request contracts before enabling card controls.',
+    nextAction: 'Provide accepted delete/detail/request contracts before enabling card controls.',
     page: 'Permission Hub',
     progress: 'in-progress',
     readiness: 'Blocked',
@@ -95,9 +99,10 @@ export const permissionHubSectionStatus = {
     apis: [
       { contract: 'accepted', method: 'GET', path: '/api/v2/permissions/realms/stats' },
       { contract: 'accepted', method: 'GET', path: '/api/v2/permissions/realms/filters' },
+      { contract: 'accepted', method: 'POST', path: '/api/v2/permissions/realms' },
     ],
     evidence:
-      'React renders the current reference hero summary from accepted stats and filter fields. Create action remains disabled under the action-flow blocker.',
+      'React renders the current reference hero summary from accepted stats and filter fields and opens the accepted scoped Realm create flow.',
     fieldsUsed: [
       'totalRealms',
       'totalMembers',
@@ -115,21 +120,26 @@ export const permissionHubSectionStatus = {
   },
   requestInbox: {
     apis: [
-      { contract: 'missing', method: 'GET', path: '/api/v2/permissions/requests (paged)' },
-      { contract: 'missing', method: 'GET', path: '/api/v2/permissions/requests/:reqId' },
-      { contract: 'missing', method: 'POST', path: '/api/v2/permissions/realms/:id/requests' },
-      { contract: 'missing', method: 'POST', path: '/api/v2/permissions/requests/:reqId/approve' },
-      { contract: 'missing', method: 'POST', path: '/api/v2/permissions/requests/:reqId/reject' },
+      {
+        contract: 'accepted',
+        method: 'GET',
+        path: '/api/v2/permissions/requests?limit=8&sort=-createdAt',
+      },
     ],
-    blockers: [
-      'Missing accepted response contract for GET /api/v2/permissions/requests (paged), so the current request list cannot render API-backed rows.',
-      'Missing accepted response contracts for request create, approve, reject, and detail endpoints, so request actions stay disabled.',
+    evidence:
+      'React renders the accepted request inbox list with status pills and expandable reason rows; action handling remains tracked separately.',
+    fieldsUsed: [
+      'items[].id',
+      'items[].realmName',
+      'items[].roleName',
+      'items[].status',
+      'items[].rejectReason',
+      'page.total',
     ],
     id: 'permission-hub-request-inbox',
-    nextAction: 'Provide accepted request inbox and request action response contracts.',
     page: 'Permission Hub',
-    progress: 'blocked',
-    readiness: 'Blocked',
+    progress: 'implemented',
+    readiness: 'Ready',
     reference: 'workspace_permission_hub.html',
     section: 'Request inbox rail',
   },

@@ -1,6 +1,6 @@
 export function getArticleGradient(category: string) {
-  if (category === 'ai') return 'linear-gradient(135deg,#a78bfa,#7c5fcf)';
-  if (category === 'security') return 'linear-gradient(135deg,#f472b6,#b40e4d)';
+  if (category === 'development') return 'linear-gradient(135deg,#3157b7,#111827)';
+  if (category === 'security') return 'linear-gradient(135deg,#b91c1c,#111827)';
 
-  return 'linear-gradient(135deg,#22d3ee,#0086cc)';
+  return 'linear-gradient(135deg,#475569,#111827)';
 }

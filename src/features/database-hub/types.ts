@@ -1,11 +1,13 @@
 export type DatabaseEndpoint = {
-  host: string;
-  port: number;
+  host: string | null;
+  port: number | string | null;
 };
 
 export type DatabaseUsage = {
+  quotaLabel?: string;
   quotaBytes: number;
   storageLabel: string;
+  usedLabel?: string;
   usagePercent: number;
   usedBytes: number;
 };
@@ -49,6 +51,77 @@ export type DatabaseResource = {
   version: string | null;
 };
 
+export type DatabaseAccount = {
+  host: string | null;
+  password: string | null;
+  port: number | string | null;
+  uri: string | null;
+  username: string | null;
+};
+
+export type DatabaseRuntimeTopology = {
+  primaryMembers: number | null;
+  replicaMembers: number | null;
+  runningMembers: number | null;
+  totalMembers: number | null;
+};
+
+export type DatabaseRuntime = {
+  reason: string | null;
+  storageSize: string | null;
+  topology: DatabaseRuntimeTopology | null;
+  usage: string | null;
+};
+
+export type DatabaseSnapshot = {
+  id?: string;
+  label?: string;
+  name?: string;
+  status?: string;
+};
+
+export type DatabaseSnapshots = {
+  items: DatabaseSnapshot[];
+  total: number;
+};
+
+export type DatabaseBinding = {
+  description: string;
+  id: string;
+  label: string;
+  targetId: string;
+  targetName: string;
+  targetType: string;
+};
+
+export type DatabaseBindingsPayload = {
+  items: DatabaseBinding[];
+};
+
+export type DatabaseDetail = DatabaseResource & {
+  account: DatabaseAccount | null;
+  activity: Record<string, unknown> | null;
+  bindings: DatabaseBinding[];
+  runtime: DatabaseRuntime | null;
+  snapshots: DatabaseSnapshots | null;
+};
+
+export type CreateDatabaseRequest = {
+  engine: string;
+  name: string;
+  size: string;
+};
+
+export type DatabaseRestartJob = {
+  action: string;
+  jobId: string;
+  resource: {
+    id: string;
+    type: string;
+  };
+  status: string;
+};
+
 export type DatabaseHubStats = {
   bindingCount: number;
   issueCount: number;
@@ -56,6 +129,9 @@ export type DatabaseHubStats = {
   totalDatabases: number;
   totalQuotaBytes: number;
   totalUsedBytes: number;
+  weeklyResourceViews?: number;
+  weeklyViewCount?: number;
+  weeklyViews?: number;
 };
 
 export type DatabaseFilterCount = {

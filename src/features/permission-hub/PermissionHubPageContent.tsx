@@ -7,6 +7,7 @@ import { PermissionGuideLinksPanel } from '@/features/permission-hub/components/
 import { PermissionHubFilterBar } from '@/features/permission-hub/components/PermissionHubFilterBar';
 import { PermissionHubHero } from '@/features/permission-hub/components/PermissionHubHero';
 import { PermissionRealmCardsPanel } from '@/features/permission-hub/components/PermissionRealmCardsPanel';
+import { PermissionRealmCreateDialog } from '@/features/permission-hub/components/PermissionRealmCreateDialog';
 import { PermissionRequestInboxRail } from '@/features/permission-hub/components/PermissionRequestInboxRail';
 import { PermissionTipsPanel } from '@/features/permission-hub/components/PermissionTipsPanel';
 import {
@@ -15,12 +16,15 @@ import {
   usePermissionHubStatsQuery,
   usePermissionHubTipsQuery,
   usePermissionRealmsQuery,
+  usePermissionRequestsQuery,
 } from '@/features/permission-hub/hooks/usePermissionHubQueries';
 import type { PermissionKindFilter, PermissionRealm } from '@/features/permission-hub/types';
 
 export function PermissionHubPageContent() {
   const [activeKind, setActiveKind] = useState<PermissionKindFilter>('all');
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
   const realmsQuery = usePermissionRealmsQuery(100, '', '', '-updatedAt');
+  const requestsQuery = usePermissionRequestsQuery(8, '', '-createdAt');
   const filtersQuery = usePermissionHubFiltersQuery();
   const statsQuery = usePermissionHubStatsQuery();
   const tipsQuery = usePermissionHubTipsQuery();
@@ -33,6 +37,7 @@ export function PermissionHubPageContent() {
       <PermissionHubHero
         filters={filtersQuery.data}
         isLoading={statsQuery.isLoading || filtersQuery.isLoading}
+        onCreateClick={() => setIsCreateOpen(true)}
         stats={statsQuery.data}
       />
       <PermissionHubFilterBar
@@ -62,9 +67,17 @@ export function PermissionHubPageContent() {
           </CardGrid>
         </Stack>
         <Stack spacing={2.5}>
-          <PermissionRequestInboxRail />
+          <PermissionRequestInboxRail
+            isLoading={requestsQuery.isLoading}
+            requests={requestsQuery.data?.items ?? []}
+          />
         </Stack>
       </MainGrid>
+      <PermissionRealmCreateDialog
+        existingRealmNames={realms.map((realm) => realm.name)}
+        onClose={() => setIsCreateOpen(false)}
+        open={isCreateOpen}
+      />
       <QueryErrorAlerts
         alerts={[
           {
@@ -90,6 +103,11 @@ export function PermissionHubPageContent() {
             isError: guideLinksQuery.isError,
             message:
               'Permission guide links could not be loaded. Try refreshing the page in a moment.',
+          },
+          {
+            isError: requestsQuery.isError,
+            message:
+              'Permission request inbox could not be loaded. Try refreshing the page in a moment.',
           },
         ]}
       />

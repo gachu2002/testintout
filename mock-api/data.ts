@@ -1928,6 +1928,162 @@ export const databasesResponse = {
   page: { cursor: null, nextCursor: null, hasNext: false, total: 11 },
 };
 
+export const databaseCreateResponse = {
+  data: {
+    id: '6a4c7d1a622fdcc6d35f9081',
+    name: 'dsadsa',
+    engine: 'mysql',
+    version: null,
+    status: 'error',
+    summary: 'MariaDB database',
+    endpoint: null,
+    usage: {
+      storageLabel: '0 B / 20Gi',
+      usedLabel: '0 B',
+      quotaLabel: '20Gi',
+      usedBytes: 0,
+      quotaBytes: 21474836480,
+      usagePercent: 0,
+    },
+    owner: resourceOwner,
+    collaborators: [],
+    backup: 'none',
+    bindingCount: 0,
+    health: {
+      severity: 'degraded',
+      label: 'Needs attention',
+      message: '운영 상태 점검이 필요합니다.',
+    },
+    capabilities: { canEdit: true, canDelete: true, canRestart: true, canManageBindings: true },
+    createdAt: '2026-07-07T04:14:18.353Z',
+    updatedAt: '2026-07-07T04:14:18.352Z',
+    bindings: [],
+    account: null,
+    runtime: {
+      createdAt: '2026-07-07T04:14:18Z',
+      storageSize: '20Gi',
+      usage: '0 B',
+      reason: null,
+      topology: {
+        totalMembers: 1,
+        runningMembers: null,
+        primaryMembers: 1,
+        replicaMembers: 0,
+      },
+    },
+    activity: null,
+    snapshots: { total: 0, items: [] },
+  },
+};
+
+export const databaseDetailsById = {
+  '6a4c7d1a622fdcc6d35f9081': databaseCreateResponse,
+  '6a4c6d76622fdcc6d35f88eb': {
+    data: {
+      id: '6a4c6d76622fdcc6d35f88eb',
+      name: 'fghgfh',
+      engine: 'elastic',
+      version: '8.11.4',
+      status: 'running',
+      summary: 'Elasticsearch database',
+      endpoint: null,
+      usage: {
+        storageLabel: '184 MB / 20Gi',
+        usedLabel: '184 MB',
+        quotaLabel: '20Gi',
+        usedBytes: 184000000,
+        quotaBytes: 21474836480,
+        usagePercent: 0.9,
+      },
+      owner: resourceOwner,
+      collaborators: [],
+      backup: 'none',
+      bindingCount: 0,
+      health: {
+        severity: 'healthy',
+        label: 'Healthy',
+        message: '최근 상태 점검 기준으로 이상 징후가 없습니다.',
+      },
+      capabilities: { canEdit: true, canDelete: true, canRestart: true, canManageBindings: true },
+      createdAt: '2026-07-07T03:07:34.416Z',
+      updatedAt: '2026-07-07T03:07:34.415Z',
+      bindings: [],
+      account: {
+        username: 'elastic',
+        password: '<redacted>',
+        host: null,
+        port: null,
+        uri: 'https://elastic:@fghgfh-es-default-0.fghgfh-es-default.elasticsearch-dev.svc:9200',
+      },
+      runtime: {
+        createdAt: '2026-07-07T03:07:34Z',
+        storageSize: '20Gi',
+        usage: '184 MB',
+        reason: null,
+        topology: {
+          totalMembers: 1,
+          runningMembers: null,
+          primaryMembers: 1,
+          replicaMembers: 0,
+        },
+      },
+      activity: null,
+      snapshots: { total: 0, items: [] },
+    },
+  },
+};
+
+export const databaseBindingsByDatabaseId = {
+  '6a4747a60c6c2e61836ecdcf': {
+    data: {
+      items: [
+        {
+          id: 'console:6a4747f50c6c2e61836ecf76',
+          targetType: 'console',
+          targetId: '6a4747f50c6c2e61836ecf76',
+          targetName: 'yg-test123',
+          label: 'yg-test123',
+          description: '',
+        },
+      ],
+    },
+  },
+  '69d7027fd4b8dae70bc092df': {
+    data: {
+      items: [
+        {
+          id: 'console:69d6e0c733ca0a425ed6c569',
+          targetType: 'console',
+          targetId: '69d6e0c733ca0a425ed6c569',
+          targetName: 'yg-sadqweqeqwe',
+          label: 'yg-sadqweqeqwe',
+          description: 'test',
+        },
+        {
+          id: 'project:69ccc8da042659d77d59aa17',
+          targetType: 'project',
+          targetId: '69ccc8da042659d77d59aa17',
+          targetName: 'yg-sdk-check-node',
+          label: 'yg-sdk-check-node',
+          description: '',
+        },
+      ],
+    },
+  },
+};
+
+export const databaseRestartResponse = {
+  data: {
+    jobId: '6a4c7e11622fdcc6d35f916e',
+    status: 'queued',
+    action: 'restart',
+    resource: {
+      type: 'database',
+      id: '6a4c7d1a622fdcc6d35f9081',
+    },
+  },
+};
+
 export const databasesStatsResponse = {
   data: {
     totalDatabases: 11,
@@ -2289,8 +2445,8 @@ export const domainsResponse = {
       capabilities: { canEdit: true, canDelete: true, canBind: true },
     },
     {
-      id: '686750f502ff307210f64334',
-      name: 'as.hedej.lge.com',
+      id: '68413d0ed01905535cf9c318',
+      name: 'nhitest.com',
       description: '',
       kind: 'custom',
       status: 'review',
@@ -2301,7 +2457,7 @@ export const domainsResponse = {
     },
     {
       id: '68413d15d01905535cf9c31a',
-      name: 'alpha.workspace.hedej.lge.com',
+      name: 'nhitest.com',
       description: '',
       kind: 'custom',
       status: 'review',
@@ -2311,8 +2467,8 @@ export const domainsResponse = {
       capabilities: { canEdit: true, canDelete: true, canBind: true },
     },
     {
-      id: '68413d15d01905535cf9c31b',
-      name: 'beta-review.workspace.hedej.lge.com',
+      id: '68413db8d01905535cf9c320',
+      name: 'nhitesttt.com',
       description: '',
       kind: 'custom',
       status: 'review',
@@ -2322,8 +2478,8 @@ export const domainsResponse = {
       capabilities: { canEdit: true, canDelete: true, canBind: true },
     },
     {
-      id: '68413d15d01905535cf9c31c',
-      name: 'gamma.workspace.hedej.lge.com',
+      id: '68413dbcd01905535cf9c322',
+      name: 'nhitesttt.com',
       description: '',
       kind: 'custom',
       status: 'review',
@@ -2333,15 +2489,38 @@ export const domainsResponse = {
       capabilities: { canEdit: true, canDelete: true, canBind: true },
     },
   ],
-  page: { cursor: null, nextCursor: 'eyJvZmZzZXQiOjZ9', hasNext: true, total: 30 },
+  page: { cursor: null, nextCursor: 'eyJvZmZzZXQiOjh9', hasNext: true, total: 35 },
 };
 
 export const domainsStatsResponse = {
   data: {
-    connected: 0,
-    pending: 0,
-    review: 30,
-    total: 30,
+    total: 37,
+    pending: 3,
+    review: 31,
+    connected: 3,
+  },
+};
+
+export const domainCreateResponse = {
+  data: {
+    id: '6a4c865c7412a8524752fec1',
+    name: 'abcd',
+    description: '',
+    kind: 'custom',
+    status: 'pending',
+    certificate: {
+      status: 'none',
+      expiresAt: null,
+    },
+    connection: {
+      status: 'none',
+    },
+    boundProject: null,
+    capabilities: {
+      canEdit: true,
+      canDelete: true,
+      canBind: true,
+    },
   },
 };
 
@@ -2637,11 +2816,11 @@ export const permissionRealmsResponse = {
 
 export const permissionRealmStatsResponse = {
   data: {
-    totalRealms: 23,
-    totalMembers: 332,
-    boundProjectCount: 11,
+    totalRealms: 22,
+    totalMembers: 333,
+    boundProjectCount: 9,
     pendingRequests: 2,
-    manageableRealms: 23,
+    manageableRealms: 22,
   },
 };
 
@@ -2651,12 +2830,220 @@ export const permissionRealmFiltersResponse = {
       { value: 'platform', count: 0 },
       { value: 'project', count: 0 },
       { value: 'resource', count: 0 },
-      { value: 'scoped', count: 23 },
+      { value: 'scoped', count: 22 },
     ],
     statuses: [
-      { value: 'active', count: 23 },
+      { value: 'active', count: 22 },
       { value: 'review', count: 0 },
     ],
+  },
+};
+
+export const permissionRequestsResponse = {
+  items: [
+    {
+      id: '6a4c7ec1622fdcc6d35f940f',
+      realmId: '6801e6a15d5e09cbf6042666',
+      realmName: 'sirius',
+      requester: {
+        id: '1640a460-e7cb-481f-bea2-bbdd38c99dab',
+        name: 'LeThanhNguyen',
+        role: 'guest-test',
+        avatarUrl: null,
+      },
+      roleName: 'guest-test',
+      reason: 'fgdgfd',
+      status: 'pending',
+      createdAt: '2026-07-07T04:21:21.251Z',
+      decidedAt: null,
+      decidedBy: null,
+      rejectReason: '',
+    },
+    {
+      id: '6a47179dba28a6121eafecff',
+      realmId: '67f4c4b7d5be39c414c0291f',
+      realmName: 'jean',
+      requester: {
+        id: 'b5775984-d4fa-4430-8107-c8b871535011',
+        name: 'TVSWRelease',
+        role: 'admin',
+        avatarUrl: null,
+      },
+      roleName: 'admin',
+      reason: '관리자 권한 요청',
+      status: 'pending',
+      createdAt: '2026-07-03T01:59:57.945Z',
+      decidedAt: null,
+      decidedBy: null,
+      rejectReason: '',
+    },
+    {
+      id: '6a44717f932607322dbccb4d',
+      realmId: '69e9a5b5ca5f4e91bab43d53',
+      realmName: 'yg-permissions-test-a',
+      requester: {
+        id: 'b5775984-d4fa-4430-8107-c8b871535011',
+        name: 'TVSWRelease',
+        role: 'user',
+        avatarUrl: null,
+      },
+      roleName: 'user',
+      reason: 'user권한 사용하고 싶어요',
+      status: 'approved',
+      createdAt: '2026-07-01T01:46:39.893Z',
+      decidedAt: '2026-07-01T01:47:44.398Z',
+      decidedBy: {
+        id: 'b5775984-d4fa-4430-8107-c8b871535011',
+        name: 'TVSWRelease/*/webOS플랫폼Engineering팀',
+        role: null,
+        avatarUrl: null,
+      },
+      rejectReason: '',
+    },
+    {
+      id: '6a446c74ddcb29e3f6878cd1',
+      realmId: '6801e6a15d5e09cbf6042666',
+      realmName: 'sirius',
+      requester: {
+        id: 'b5775984-d4fa-4430-8107-c8b871535011',
+        name: 'TVSWRelease',
+        role: 'admin',
+        avatarUrl: null,
+      },
+      roleName: 'admin',
+      reason: 'TEST TEST',
+      status: 'approved',
+      createdAt: '2026-07-01T01:25:08.577Z',
+      decidedAt: '2026-07-06T02:08:44.319Z',
+      decidedBy: {
+        id: '4ff875af-7807-472b-ac5d-907232b3bcce',
+        name: '이승현/책임연구원/MS DEJ Task',
+        role: null,
+        avatarUrl: null,
+      },
+      rejectReason: '',
+    },
+    {
+      id: '6a4468ee845affde685e45df',
+      realmId: '69e9a5b5ca5f4e91bab43d53',
+      realmName: 'yg-permissions-test-a',
+      requester: {
+        id: 'b5775984-d4fa-4430-8107-c8b871535011',
+        name: 'TVSWRelease',
+        role: 'user',
+        avatarUrl: null,
+      },
+      roleName: 'user',
+      reason: 'user 사용자권한 요청',
+      status: 'rejected',
+      createdAt: '2026-07-01T01:10:06.761Z',
+      decidedAt: '2026-07-01T01:40:13.566Z',
+      decidedBy: {
+        id: 'b5775984-d4fa-4430-8107-c8b871535011',
+        name: 'TVSWRelease/*/webOS플랫폼Engineering팀',
+        role: null,
+        avatarUrl: null,
+      },
+      rejectReason: 'admin은 user권한불필요',
+    },
+    {
+      id: '6a437fb0b1da117dbb63b5e9',
+      realmId: '6801e6a15d5e09cbf6042666',
+      realmName: 'sirius',
+      requester: {
+        id: 'b5775984-d4fa-4430-8107-c8b871535011',
+        name: 'TVSWRelease',
+        role: 'admin',
+        avatarUrl: null,
+      },
+      roleName: 'admin',
+      reason: 'admin permisson req',
+      status: 'approved',
+      createdAt: '2026-06-30T08:34:56.666Z',
+      decidedAt: '2026-06-30T08:47:17.947Z',
+      decidedBy: {
+        id: '4ff875af-7807-472b-ac5d-907232b3bcce',
+        name: '이승현/책임연구원/MS DEJ Task',
+        role: null,
+        avatarUrl: null,
+      },
+      rejectReason: '',
+    },
+    {
+      id: '6a437ee5b1da117dbb63b5ca',
+      realmId: '6801e6a15d5e09cbf6042666',
+      realmName: 'sirius',
+      requester: {
+        id: '4ff875af-7807-472b-ac5d-907232b3bcce',
+        name: '이승현',
+        role: 'admin',
+        avatarUrl: null,
+      },
+      roleName: 'admin',
+      reason: 'admin re request',
+      status: 'rejected',
+      createdAt: '2026-06-30T08:31:33.219Z',
+      decidedAt: '2026-06-30T08:47:35.744Z',
+      decidedBy: {
+        id: '4ff875af-7807-472b-ac5d-907232b3bcce',
+        name: '이승현/책임연구원/MS DEJ Task',
+        role: null,
+        avatarUrl: null,
+      },
+      rejectReason: 'admin 권한있음',
+    },
+    {
+      id: '6a0fe2a0ccdf3c466d307786',
+      realmId: '6a0fde02ccdf3c466d307747',
+      realmName: 'workspace-developers',
+      requester: {
+        id: 'd30683b8-52ee-4b61-a63f-6210b9547058',
+        name: '정용근/선임연구원/MS DEJ Task',
+        role: 'admin',
+        avatarUrl: null,
+      },
+      roleName: 'admin',
+      reason: '그냥1',
+      status: 'rejected',
+      createdAt: '2026-05-22T04:59:12.986Z',
+      decidedAt: '2026-05-22T04:59:39.747Z',
+      decidedBy: {
+        id: 'd30683b8-52ee-4b61-a63f-6210b9547058',
+        name: '정용근/선임연구원/MS DEJ Task',
+        role: null,
+        avatarUrl: null,
+      },
+      rejectReason: '안돼',
+    },
+  ],
+  page: { cursor: null, nextCursor: 'eyJvZmZzZXQiOjh9', hasNext: true, total: 9 },
+};
+
+export const permissionRealmCreateResponse = {
+  data: {
+    id: '6a4c8bcfd3a4e3cfdea82840',
+    name: 'testt',
+    description: '',
+    kind: 'scoped',
+    status: 'active',
+    boundProjects: [],
+    roles: [{ name: 'admin', memberCount: 0 }],
+    capabilities: permissionRealmCapabilities,
+    currentUserRoles: ['admin'],
+    access: { ...permissionRealmManageAccess, isOwner: true },
+    updatedAt: '2026-07-07T05:17:03.514Z',
+    memberCount: 0,
+    projectCount: 0,
+    summary: '',
+    owner: {
+      id: '1640a460-e7cb-481f-bea2-bbdd38c99dab',
+      userId: 'lethanh.nguyen',
+      name: 'LeThanhNguyen/(협력사) 선임/MS DEJ Task',
+      email: 'lethanh.nguyen@lge.com',
+      avatarUrl: null,
+      role: 'owner',
+    },
+    oidcAccessPath: '/api/v2/permissions/realms/6a4c8bcfd3a4e3cfdea82840/oidc',
   },
 };
 

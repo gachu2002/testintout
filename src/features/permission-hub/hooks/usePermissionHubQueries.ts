@@ -1,12 +1,15 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
+  createPermissionRealm,
   getPermissionHubFilters,
   getPermissionHubGuideLinksPanel,
   getPermissionHubStats,
   getPermissionHubTipsPanel,
   getPermissionRealms,
+  getPermissionRequests,
 } from '@/features/permission-hub/api/permissionHubApi';
+import type { PermissionRealmCreateRequest } from '@/features/permission-hub/types';
 
 export const permissionHubQueryKeys = {
   all: ['permission-hub'] as const,
@@ -14,6 +17,8 @@ export const permissionHubQueryKeys = {
   guideLinks: () => [...permissionHubQueryKeys.all, 'guide-links', 'permissions'] as const,
   realms: (limit: number, cursor: string, q: string, sort: string) =>
     [...permissionHubQueryKeys.all, 'realms', limit, cursor, q, sort] as const,
+  requests: (limit: number, cursor: string, sort: string) =>
+    [...permissionHubQueryKeys.all, 'requests', limit, cursor, sort] as const,
   stats: () => [...permissionHubQueryKeys.all, 'stats'] as const,
   tips: () => [...permissionHubQueryKeys.all, 'tips', 'permissions'] as const,
 };
@@ -22,6 +27,24 @@ export function usePermissionRealmsQuery(limit = 6, cursor = '', q = '', sort = 
   return useQuery({
     queryFn: () => getPermissionRealms({ cursor, limit, q, sort }),
     queryKey: permissionHubQueryKeys.realms(limit, cursor, q, sort),
+  });
+}
+
+export function useCreatePermissionRealmMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: PermissionRealmCreateRequest) => createPermissionRealm(payload),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: permissionHubQueryKeys.all });
+    },
+  });
+}
+
+export function usePermissionRequestsQuery(limit = 8, cursor = '', sort = '-createdAt') {
+  return useQuery({
+    queryFn: () => getPermissionRequests({ cursor, limit, sort }),
+    queryKey: permissionHubQueryKeys.requests(limit, cursor, sort),
   });
 }
 

@@ -76,6 +76,134 @@
     muted: "tone-muted"
   };
 
+  let activeHubTooltipTarget = null;
+  let hubTooltipElement = null;
+  let hubTooltipBound = false;
+
+  const getHubTooltipTarget = (node) => node?.closest?.(".hub-briefing-overview-stat.has-tooltip[data-tooltip]") || null;
+
+  const ensureHubTooltipElement = () => {
+    if (hubTooltipElement) {
+      return hubTooltipElement;
+    }
+
+    hubTooltipElement = document.createElement("div");
+    hubTooltipElement.className = "hub-floating-tooltip";
+    hubTooltipElement.setAttribute("role", "tooltip");
+    hubTooltipElement.hidden = true;
+    document.body.appendChild(hubTooltipElement);
+    return hubTooltipElement;
+  };
+
+  const hideHubTooltip = () => {
+    activeHubTooltipTarget = null;
+    if (!hubTooltipElement) {
+      return;
+    }
+
+    hubTooltipElement.classList.remove("is-visible");
+    hubTooltipElement.hidden = true;
+  };
+
+  const positionHubTooltip = (target) => {
+    const tooltip = ensureHubTooltipElement();
+    const message = String(target?.dataset?.tooltip || "").trim();
+    if (!target || !message) {
+      hideHubTooltip();
+      return;
+    }
+
+    tooltip.textContent = message;
+    tooltip.hidden = false;
+    tooltip.classList.add("is-visible");
+    tooltip.style.maxWidth = `${Math.max(180, Math.min(260, window.innerWidth - 24))}px`;
+
+    const targetRect = target.getBoundingClientRect();
+    const tooltipRect = tooltip.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const gap = 10;
+    const margin = 12;
+    const placeAbove = targetRect.top >= tooltipRect.height + gap + margin;
+
+    let left = targetRect.left + (targetRect.width / 2) - (tooltipRect.width / 2);
+    left = Math.min(Math.max(left, margin), viewportWidth - tooltipRect.width - margin);
+
+    let top = placeAbove
+      ? targetRect.top - tooltipRect.height - gap
+      : targetRect.bottom + gap;
+    top = Math.min(Math.max(top, margin), viewportHeight - tooltipRect.height - margin);
+
+    tooltip.dataset.placement = placeAbove ? "top" : "bottom";
+    tooltip.style.left = `${Math.round(left)}px`;
+    tooltip.style.top = `${Math.round(top)}px`;
+  };
+
+  const showHubTooltip = (target) => {
+    activeHubTooltipTarget = target;
+    positionHubTooltip(target);
+  };
+
+  const bindHubTooltips = () => {
+    if (hubTooltipBound) {
+      return;
+    }
+
+    hubTooltipBound = true;
+
+    document.addEventListener("pointerover", (event) => {
+      const target = getHubTooltipTarget(event.target);
+      if (!target) {
+        return;
+      }
+      showHubTooltip(target);
+    });
+
+    document.addEventListener("pointerout", (event) => {
+      if (!activeHubTooltipTarget) {
+        return;
+      }
+
+      const currentTarget = getHubTooltipTarget(event.target);
+      const nextTarget = getHubTooltipTarget(event.relatedTarget);
+      if (currentTarget && currentTarget === activeHubTooltipTarget && nextTarget !== activeHubTooltipTarget) {
+        hideHubTooltip();
+      }
+    });
+
+    document.addEventListener("focusin", (event) => {
+      const target = getHubTooltipTarget(event.target);
+      if (!target) {
+        return;
+      }
+      showHubTooltip(target);
+    });
+
+    document.addEventListener("focusout", (event) => {
+      if (!activeHubTooltipTarget) {
+        return;
+      }
+
+      const currentTarget = getHubTooltipTarget(event.target);
+      const nextTarget = getHubTooltipTarget(event.relatedTarget);
+      if (currentTarget && currentTarget === activeHubTooltipTarget && nextTarget !== activeHubTooltipTarget) {
+        hideHubTooltip();
+      }
+    });
+
+    window.addEventListener("scroll", () => {
+      if (activeHubTooltipTarget) {
+        positionHubTooltip(activeHubTooltipTarget);
+      }
+    }, true);
+
+    window.addEventListener("resize", () => {
+      if (activeHubTooltipTarget) {
+        positionHubTooltip(activeHubTooltipTarget);
+      }
+    });
+  };
+
   const getWorkspacePaginationPages = (totalPages, currentPage) => {
     if (totalPages <= 7) {
       return Array.from({ length: totalPages }, (_, index) => index + 1);
@@ -292,11 +420,30 @@
     `;
   };
 
-  const renderDetails = (details) => (details || []).map((item) => `
-    <span class="${["metric-chip", item.className || ""].filter(Boolean).join(" ")}">
-      <span class="material-icons-round">${item.icon}</span>${item.text}
-    </span>
-  `).join("");
+  const renderDetails = (details) => (details || []).map((item) => {
+    const className = ["metric-chip", item.className || ""].filter(Boolean).join(" ");
+    const title = item.title ? ` title="${escapeAttribute(item.title)}"` : "";
+    const extraAttributes = Object.entries(item.attributes || {})
+      .map(([key, value]) => {
+        if (value === false || value == null) return "";
+        if (value === true) return key;
+        return `${key}="${escapeAttribute(value)}"`;
+      })
+      .filter(Boolean)
+      .join(" ");
+    const attrs = extraAttributes ? ` ${extraAttributes}` : "";
+    const body = `<span class="material-icons-round">${item.icon}</span>${item.text}`;
+
+    if (item.href) {
+      return `<a class="${className}" href="${item.href}"${title}${attrs}>${body}</a>`;
+    }
+
+    if (item.button) {
+      return `<button class="${className}" type="button"${title}${attrs}>${body}</button>`;
+    }
+
+    return `<span class="${className}"${title}${attrs}>${body}</span>`;
+  }).join("");
 
   const renderTags = (tags) => (tags || []).map((item) => {
     const tagClassName = ["tag", item.className || ""].filter(Boolean).join(" ");
@@ -807,7 +954,10 @@
             </div>
             <div class="hub-briefing-overview-grid">
               ${overviewStats.map((item) => `
-                <div class="hub-briefing-overview-stat">
+                <div
+                  class="hub-briefing-overview-stat${item?.description ? " has-tooltip" : ""}"
+                  ${item?.description ? `data-tooltip="${escapeAttribute(item.description)}" tabindex="0" aria-label="${escapeAttribute(`${item?.label || ""}: ${item.description}`)}"` : ""}
+                >
                   <div class="hub-briefing-overview-label">${item?.label || ""}</div>
                   <div class="hub-briefing-overview-number">${item?.value ?? 0}</div>
                 </div>
@@ -902,7 +1052,7 @@
                 ${config.resourceHeaderLink ? `<a class="panel-link" href="${config.resourceHeaderLink.href}">${config.resourceHeaderLink.label}<span class="material-icons-round">chevron_right</span></a>` : ""}
               </div>
               <div class="resource-grid" id="resourceGrid">${renderResources()}</div>
-              <div class="empty-state" id="resourceEmptyState">선택한 필터에 맞는 리소스가 없습니다. 다른 뷰를 선택해보세요.</div>
+              <div class="empty-state" id="resourceEmptyState">${config.resourceEmptyStateMessage || "선택한 필터에 맞는 리소스가 없습니다. 다른 뷰를 선택해보세요."}</div>
               <div class="resource-pagination" id="resourcePagination" aria-label="리소스 페이지네이션"></div>
             </section>
 
@@ -1008,5 +1158,6 @@
 
   window.renderWorkspaceResourceHub = renderWorkspaceResourceHub;
   window.renderWorkspacePagination = renderWorkspacePagination;
+  bindHubTooltips();
   renderWorkspaceResourceHub(window.HUB_CONFIG);
 })();

@@ -277,9 +277,21 @@ export type AiGallerySpotlight = {
   capabilities: {
     canInstall: boolean;
     canOpen: boolean;
+    canOpenWeb?: boolean;
+    canTryNow?: boolean;
   };
   category: string;
+  chatbotTypeLabel?: string;
   iconColor: string;
+  linkedChatbotCount?: number;
+  linkedChatbots?: Array<{
+    hasApi?: boolean;
+    name: string;
+    trialUrl?: string | null;
+    type?: string;
+    typeLabel?: string;
+    webUrl?: string | null;
+  }>;
   openUrl: string;
   provider: string;
   slug: string;
@@ -290,7 +302,9 @@ export type AiGallerySpotlight = {
   tags: string[];
   title: string;
   toolCount: number;
+  trialUrl?: string | null;
   updatedAt: string;
+  webUrl?: string | null;
 };
 
 export type ArticlesResponseData = {

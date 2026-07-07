@@ -44,10 +44,11 @@
     {
       title: "Support",
       links: [
+        { key: "messages", title: "Message Center", desc: "수신, 발신, 요청, 승인 메시지를 한 화면에서 관리", icon: "mark_email_unread", href: "workspace_message_hub.html" },
         { key: "docs", title: "다큐먼트", desc: "가이드와 운영 문서를 확인합니다", icon: "description", href: "#" },
         { key: "about-dej", title: "About DEJ", desc: "DEJ의 역사와 CEJ·DEJ 흐름을 확인합니다", icon: "timeline", href: "about_dej.html" },
         { key: "chatbot", title: "챗봇", desc: "지원 챗봇으로 빠르게 문의합니다", icon: "chat_bubble_outline", href: "dej_chatbot_trial.html" },
-        { key: "request", title: "요청하기", desc: "기능 요청이나 지원 요청을 등록합니다", icon: "campaign", href: "#" }
+        { key: "request", title: "요청하기", desc: "기능 요청이나 승인 요청을 바로 등록합니다", icon: "campaign", href: "workspace_message_hub.html?box=requests" }
       ]
     }
   ];
@@ -231,6 +232,7 @@
     const searchSourceLabel = host.dataset.searchSourceLabel || "";
     const searchDefaultType = host.dataset.searchDefaultType || "";
     const launchpadHref = host.dataset.launchpadHref || "portal_launchpad.html";
+    const settingsHref = host.dataset.settingsHref || "workspace_settings.html";
     const serviceGroups = await loadServiceGroups();
 
     host.innerHTML = `
@@ -264,7 +266,7 @@
           </form>
           <div class="tb-spacer"></div>
           <div class="tb-icon"><span class="material-icons-round">notifications_none</span><div class="dot"></div></div>
-          <div class="avatar">TN</div>
+          <a class="avatar avatar-link" href="${escapeAttribute(settingsHref)}" aria-label="설정 페이지 열기">TN</a>
         </div>
       </header>
     `;

@@ -92,6 +92,7 @@
       display: grid;
       gap: 8px;
       min-width: 0;
+      position: relative;
     }
     .key-create-field label {
       font-size: 12px;
@@ -202,23 +203,66 @@
       color: var(--t3);
       line-height: 1.55;
     }
-    .key-role-switch {
-      display: inline-flex;
-      align-items: center;
+    .key-create-owner-results {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      z-index: 30;
+      display: grid;
       gap: 6px;
-      padding: 6px;
-      border: 1px solid rgba(214, 216, 219, .94);
+      max-height: 240px;
+      overflow: auto;
+      padding: 10px;
       border-radius: 16px;
-      background: rgba(255, 255, 255, .92);
-      box-shadow: 0 10px 20px rgba(15, 23, 42, .04);
+      border: 1px solid rgba(214, 216, 219, .94);
+      background: rgba(255, 255, 255, .98);
+      box-shadow: 0 20px 36px rgba(15, 23, 42, .12);
     }
-    .key-role-switch.is-floating {
-      position: fixed;
-      top: 84px;
-      right: 28px;
-      z-index: 40;
-      width: fit-content;
-      backdrop-filter: blur(10px);
+    .key-create-owner-results[hidden] {
+      display: none !important;
+    }
+    .key-create-owner-option {
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      background: rgba(248, 250, 252, .96);
+      padding: 12px 14px;
+      text-align: left;
+      display: grid;
+      gap: 4px;
+      color: var(--t1);
+      transition: background-color .15s ease, transform .15s ease;
+    }
+    .key-create-owner-option:hover,
+    .key-create-owner-option:focus-visible {
+      outline: none;
+      background: rgba(255, 251, 235, .96);
+      transform: translateY(-1px);
+    }
+    .key-create-owner-option-name {
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+    .key-create-owner-option-meta {
+      font-size: 12px;
+      color: var(--t3);
+      line-height: 1.5;
+      word-break: break-word;
+    }
+    .key-create-owner-status {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--t3);
+    }
+    .key-create-owner-status[data-tone="error"] {
+      color: #b91c1c;
+    }
+    .key-create-owner-selection {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--brand);
     }
     .hero-shell {
       position: relative;
@@ -234,30 +278,6 @@
     .hero-actions .hero-btn {
       min-width: 188px;
       justify-content: center;
-    }
-    .key-role-switch-btn {
-      min-width: 96px;
-      height: 38px;
-      padding: 0 14px;
-      border: none;
-      border-radius: 12px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      background: transparent;
-      color: var(--t2);
-      font-size: 12px;
-      font-weight: 800;
-      transition: background .15s ease, color .15s ease, box-shadow .15s ease;
-    }
-    .key-role-switch-btn.is-active {
-      background: linear-gradient(135deg, rgba(245, 158, 11, .12), rgba(249, 115, 22, .12));
-      color: var(--brand);
-      box-shadow: inset 0 0 0 1px rgba(245, 158, 11, .18);
-    }
-    .key-role-switch-btn .material-icons-round {
-      font-size: 16px;
     }
     .key-create-mode-note {
       display: inline-flex;
@@ -275,6 +295,143 @@
     .key-create-mode-note .material-icons-round {
       font-size: 15px;
     }
+    .request-review-shell {
+      width: min(100%, 720px);
+    }
+    .request-review-summary {
+      display: grid;
+      gap: 12px;
+      padding: 18px;
+      border-radius: 20px;
+      border: 1px solid rgba(214, 216, 219, .82);
+      background: rgba(255, 255, 255, .92);
+    }
+    .request-review-summary-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .request-review-summary-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--t1);
+      line-height: 1.5;
+      letter-spacing: -.02em;
+    }
+    .request-review-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 28px;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: -.01em;
+      background: rgba(226, 232, 240, .72);
+      color: var(--t2);
+    }
+    .request-review-pill.is-pending {
+      background: rgba(245, 158, 11, .14);
+      color: #b45309;
+    }
+    .request-review-pill.is-approved {
+      background: rgba(16, 185, 129, .14);
+      color: #047857;
+    }
+    .request-review-pill.is-rejected {
+      background: rgba(239, 68, 68, .14);
+      color: #b91c1c;
+    }
+    .request-review-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .request-review-meta {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+    .request-review-meta-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--t3);
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+    .request-review-meta-value {
+      font-size: 13px;
+      color: var(--t1);
+      line-height: 1.6;
+      word-break: break-word;
+    }
+    .request-review-note {
+      display: grid;
+      gap: 6px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(248, 250, 252, .92);
+      border: 1px solid rgba(226, 232, 240, .9);
+    }
+    .request-review-note-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--t2);
+    }
+    .request-review-note-value {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--t1);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .request-review-note-textarea {
+      width: 100%;
+      min-height: 128px;
+      resize: vertical;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(214, 216, 219, .94);
+      background: #fff;
+      color: var(--t1);
+      font: inherit;
+      line-height: 1.6;
+      outline: none;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+    .request-review-note-textarea:focus {
+      border-color: rgba(245, 158, 11, .42);
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, .12);
+    }
+    .request-review-feedback {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--t3);
+    }
+    .request-review-feedback[data-tone="error"] {
+      color: #b91c1c;
+    }
+    .request-review-feedback[data-tone="ok"] {
+      color: #047857;
+    }
+    .list-row.is-request-review-link {
+      cursor: pointer;
+      transition: border-color .15s ease, background-color .15s ease, box-shadow .15s ease, transform .15s ease;
+    }
+    .list-row.is-request-review-link:hover {
+      border-color: rgba(245, 158, 11, .24);
+      background: rgba(255, 251, 235, .78);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, .05);
+      transform: translateY(-1px);
+    }
+    .list-row.is-request-review-link:focus-visible {
+      outline: none;
+      border-color: rgba(245, 158, 11, .38);
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, .12);
+    }
     @media (max-width: 1100px) {
       .key-create-tier-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -282,12 +439,9 @@
     }
     @media (max-width: 820px) {
       .key-create-field-grid,
-      .key-create-tier-grid {
+      .key-create-tier-grid,
+      .request-review-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-      .key-role-switch.is-floating {
-        top: 76px;
-        right: 16px;
       }
       .hero-actions {
         width: 100%;
@@ -300,12 +454,9 @@
     }
     @media (max-width: 640px) {
       .key-create-field-grid,
-      .key-create-tier-grid {
+      .key-create-tier-grid,
+      .request-review-grid {
         grid-template-columns: 1fr;
-      }
-      .key-role-switch.is-floating {
-        top: 72px;
-        right: 12px;
       }
     }
   </style>
@@ -329,241 +480,24 @@
       eyebrow: "AI · Key Usage and Inventory",
       title: "Keycenter",
       description: "LLM key를 발급하고 기간별 사용량, key tier, 허용 모델, 회전 주기, 연결된 사용처를 함께 관리합니다. 상단은 usage 집계, 본문은 실제 issued key inventory를 보여주는 구성을 기준으로 정리했습니다.",
-      primaryAction: { href: "#key-create", icon: "vpn_key", label: "새 Key 발급 요청" },
+      createAction: { href: "#key-create", icon: "vpn_key", label: "새 Key 발급 요청" },
       secondaryAction: { href: "workspace_chatbot_hub.html", icon: "chat", label: "Chatbot Hub 보기" },
       heroStats: [
-        { icon: "query_stats", value: "184K", label: "Requests (7d)", note: "접근 가능한 key 기준 최근 7일", color: "linear-gradient(135deg,#f59e0b,#f97316)" },
-        { icon: "token", value: "92.6M", label: "Tokens (7d)", note: "input · output · cache 포함", color: "linear-gradient(135deg,#d97706,#f59e0b)" },
-        { icon: "paid", value: "$428.37", label: "Usage Cost (7d)", note: "최근 7일 LiteLLM aggregate spend", color: "linear-gradient(135deg,#ea580c,#fb923c)" },
-        { icon: "model_training", value: "7", label: "Active Models", note: "최근 7일 실제 호출 발생 모델", color: "linear-gradient(135deg,#f59e0b,#fbbf24)" }
+        { icon: "query_stats", value: "-", label: "Requests (7d)", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#f59e0b,#f97316)" },
+        { icon: "token", value: "-", label: "Tokens (7d)", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#d97706,#f59e0b)" },
+        { icon: "paid", value: "-", label: "Usage Cost (7d)", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#ea580c,#fb923c)" },
+        { icon: "model_training", value: "-", label: "Active Models", note: "데이터를 불러오는 중입니다.", color: "linear-gradient(135deg,#f59e0b,#fbbf24)" }
       ],
       filters: [
-        { id: "all", icon: "apps", label: "전체" },
-        { id: "dej-base", icon: "apartment", label: "dej-base" },
-        { id: "openai", icon: "auto_awesome", label: "OpenAI" },
-        { id: "anthropic", icon: "psychology", label: "Anthropic" },
-        { id: "azure", icon: "cloud", label: "Azure" },
-        { id: "internal", icon: "apartment", label: "Internal" },
-        { id: "production", icon: "rocket_launch", label: "Production" },
-        { id: "review", icon: "fact_check", label: "Review" }
+        { id: "all", icon: "apps", label: "전체" }
       ],
       resourceSectionIcon: "vpn_key",
       resourceSectionLabel: "Issued Key Inventory",
       resourceTitle: "LLM Keys",
-      resourceDescription: "각 카드는 하나의 발급된 key를 나타냅니다. 상단 usage 집계로 전체 흐름을 먼저 보고, 아래에서 key tier, 허용 모델, 회전 일정, 연결된 사용처를 key 단위로 이어서 확인하는 구성을 기준으로 합니다.",
+      resourceDescription: "실제 Keycenter Hub API 응답을 불러오는 중입니다.",
+      resourceEmptyStateMessage: "데이터를 불러오는 중입니다.",
       resourceHeaderLink: { href: "workspace_tool_inventory_hub.html", label: "Tool Inventory 연결 보기" },
-      resources: [
-        {
-          categories: ["all", "openai", "production"],
-          status: { label: "Active", tone: "healthy" },
-          engine: "paid",
-          icon: "vpn_key",
-          name: "openai-support-prod-key",
-          meta: "support-assistant-api와 campaign-orchestrator가 함께 사용하는 paid tier key입니다.",
-          color: "linear-gradient(135deg,#f59e0b,#f97316)",
-          usage: {
-            label: "Usage",
-            value: 74,
-            meta: "주요 운영 surface에서 지속 사용 중",
-            color: "linear-gradient(90deg,#f59e0b,#fbbf24)"
-          },
-          details: [
-            { icon: "model_training", text: "Models 2" },
-            { icon: "link", text: "Bound Surfaces 3" }
-          ],
-          owner: {
-            label: "Owner",
-            initials: "TN",
-            name: "Taehun Nam",
-            meta: "Support Platform",
-            color: "linear-gradient(135deg,#f59e0b,#f97316)"
-          },
-          tagsLabel: "Allowed Models",
-          tags: [
-            { icon: "model_training", text: "gpt-4.1" },
-            { icon: "model_training", text: "gpt-4o" },
-            { icon: "schedule", text: "rotate 11d" }
-          ],
-          actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?id=kc-openai-prod-014" }
-          ]
-        },
-        {
-          categories: ["all", "anthropic", "production"],
-          status: { label: "Active", tone: "healthy" },
-          engine: "paid",
-          icon: "vpn_key",
-          name: "anthropic-review-guard-key",
-          meta: "repo-review-guard와 release-notes-pilot이 참조하는 reasoning 중심 key입니다.",
-          color: "linear-gradient(135deg,#2563eb,#60a5fa)",
-          usage: {
-            label: "Usage",
-            value: 62,
-            meta: "review와 문서 자동화 흐름에서 사용",
-            color: "linear-gradient(90deg,#2563eb,#60a5fa)"
-          },
-          details: [
-            { icon: "model_training", text: "Models 1" },
-            { icon: "link", text: "Bound Surfaces 2" }
-          ],
-          owner: {
-            label: "Owner",
-            initials: "HK",
-            name: "Hyunki Kim",
-            meta: "Core Infra",
-            color: "linear-gradient(135deg,#2563eb,#60a5fa)"
-          },
-          tagsLabel: "Allowed Models",
-          tags: [
-            { icon: "model_training", text: "claude-3.7-sonnet" },
-            { icon: "schedule", text: "rotate 18d" },
-            { icon: "psychology", text: "reasoning" }
-          ],
-          actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?id=kc-anthropic-shared-007" }
-          ]
-        },
-        {
-          categories: ["all", "internal", "production"],
-          status: { label: "Active", tone: "healthy" },
-          engine: "asf",
-          icon: "vpn_key",
-          name: "internal-docs-rag-key",
-          meta: "docs-guide-widget와 workspace-knowledge가 함께 참조하는 asf tier key입니다.",
-          color: "linear-gradient(135deg,#14b8a6,#06b6d4)",
-          usage: {
-            label: "Usage",
-            value: 57,
-            meta: "문서 검색과 보강 응답에서 안정적으로 사용 중",
-            color: "linear-gradient(90deg,#14b8a6,#06b6d4)"
-          },
-          details: [
-            { icon: "model_training", text: "Models 2" },
-            { icon: "link", text: "Bound Surfaces 3" }
-          ],
-          owner: {
-            label: "Owner",
-            initials: "MK",
-            name: "Mina Kim",
-            meta: "Docs Experience",
-            color: "linear-gradient(135deg,#14b8a6,#06b6d4)"
-          },
-          tagsLabel: "Allowed Models",
-          tags: [
-            { icon: "model_training", text: "asf-rag-base" },
-            { icon: "model_training", text: "rerank-lite" },
-            { icon: "schedule", text: "rotate 24d" }
-          ],
-          actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?id=kc-internal-rag-021" }
-          ]
-        },
-        {
-          categories: ["all", "azure", "production"],
-          status: { label: "Active", tone: "healthy" },
-          engine: "paid",
-          icon: "vpn_key",
-          name: "azure-ops-briefing-key",
-          meta: "ops-briefing-bot과 incident-triage-bot이 공유하는 paid tier key입니다.",
-          color: "linear-gradient(135deg,#7c3aed,#a78bfa)",
-          usage: {
-            label: "Usage",
-            value: 69,
-            meta: "운영 브리핑 시간대에 요청이 집중됩니다",
-            color: "linear-gradient(90deg,#7c3aed,#a78bfa)"
-          },
-          details: [
-            { icon: "model_training", text: "Models 2" },
-            { icon: "link", text: "Bound Surfaces 2" }
-          ],
-          owner: {
-            label: "Owner",
-            initials: "JP",
-            name: "Jiho Park",
-            meta: "Site Reliability",
-            color: "linear-gradient(135deg,#7c3aed,#a78bfa)"
-          },
-          tagsLabel: "Allowed Models",
-          tags: [
-            { icon: "model_training", text: "azure-gpt-4.1" },
-            { icon: "model_training", text: "azure-gpt-4o-mini" },
-            { icon: "schedule", text: "rotate 9d" }
-          ],
-          actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?id=kc-azure-ops-005" }
-          ]
-        },
-        {
-          categories: ["all", "openai", "review"],
-          status: { label: "Review", tone: "review" },
-          engine: "free",
-          icon: "vpn_key",
-          name: "partner-pricing-review-key",
-          meta: "pricing-advisor-bot 파일럿 검토에 사용하는 파트너 상담용 key입니다.",
-          color: "linear-gradient(135deg,#ef4444,#f97316)",
-          usage: {
-            label: "Usage",
-            value: 28,
-            meta: "파일럿 구간만 제한적으로 호출 중",
-            color: "linear-gradient(90deg,#ef4444,#f97316)"
-          },
-          details: [
-            { icon: "model_training", text: "Models 2" },
-            { icon: "link", text: "Bound Surfaces 1" }
-          ],
-          owner: {
-            label: "Owner",
-            initials: "SL",
-            name: "Sora Lee",
-            meta: "Partner Solutions",
-            color: "linear-gradient(135deg,#ef4444,#f97316)"
-          },
-          tagsLabel: "Allowed Models",
-          tags: [
-            { icon: "model_training", text: "gpt-4.1" },
-            { icon: "model_training", text: "gpt-4o" },
-            { icon: "fact_check", text: "review state" }
-          ],
-          actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?id=kc-openai-partner-003" }
-          ]
-        },
-        {
-          categories: ["all", "dej-base", "internal", "production"],
-          status: { label: "Active", tone: "healthy" },
-          engine: "dej-base",
-          icon: "vpn_key",
-          name: "internal-tool-runtime-key",
-          meta: "workspace-knowledge와 billing-service가 공유하는 dej-base tier key입니다.",
-          color: "linear-gradient(135deg,#0f766e,#34d399)",
-          usage: {
-            label: "Usage",
-            value: 48,
-            meta: "tool inventory에서 다수의 호출을 안정적으로 처리합니다",
-            color: "linear-gradient(90deg,#0f766e,#34d399)"
-          },
-          details: [
-            { icon: "model_training", text: "Models 2" },
-            { icon: "link", text: "Bound Surfaces 3" }
-          ],
-          owner: {
-            label: "Owner",
-            initials: "AR",
-            name: "Aaron Ryu",
-            meta: "ASF Lab",
-            color: "linear-gradient(135deg,#0f766e,#34d399)"
-          },
-          tagsLabel: "Allowed Models",
-          tags: [
-            { icon: "model_training", text: "internal-rag-1" },
-            { icon: "model_training", text: "function-router" },
-            { icon: "schedule", text: "rotate 21d" }
-          ],
-          actions: [
-            { label: "Open", icon: "open_in_new", kind: "open", href: "workspace_keycenter_detail.html?id=kc-internal-tool-010" }
-          ]
-        }
-      ],
+      resources: [],
       mainPanels: [
         {
           icon: "tips_and_updates",
@@ -593,25 +527,41 @@
       sidebarPanels: [
         {
           icon: "published_with_changes",
-          label: "Rotate Soon",
-          title: "회전 예정 Key",
-          description: "곧 교체가 필요한 key를 먼저 확인할 수 있습니다.",
+          label: "Quota Alerts",
+          title: "quota alert를 불러오는 중입니다.",
+          description: "주의가 필요한 key 상태를 불러오는 중입니다.",
           rows: [
-            { title: "azure-ops-briefing-key", meta: "9일 후 회전 예정 · ops-briefing-bot", pill: { label: "Soon", tone: "review" } },
-            { title: "openai-support-prod-key", meta: "11일 후 회전 예정 · support-assistant-api", pill: { label: "Soon", tone: "review" } },
-            { title: "partner-pricing-review-key", meta: "검토 완료 후 정식 key 발급 필요", pill: { label: "Review", tone: "review" } }
+            {
+              title: "데이터를 불러오는 중입니다.",
+              meta: "quota alert 패널 응답을 기다리고 있습니다.",
+              pill: { label: "Loading", tone: "info" }
+            }
+          ]
+        },
+        {
+          icon: "assignment",
+          label: "Requests",
+          title: "요청 상태를 불러오는 중입니다.",
+          description: "내 요청 또는 승인 대기 요청을 불러오는 중입니다.",
+          rows: [
+            {
+              title: "데이터를 불러오는 중입니다.",
+              meta: "requests 패널 응답을 기다리고 있습니다.",
+              pill: { label: "Loading", tone: "info" }
+            }
           ]
         },
         {
           icon: "model_training",
           label: "Model Usage",
-          title: "주요 모델 사용 현황",
-          description: "현재 선택한 기간에 실제 usage가 발생한 모델 흐름을 요약해서 볼 수 있습니다.",
+          title: "모델 사용 현황을 불러오는 중입니다.",
+          description: "현재 선택한 기간의 모델 usage를 불러오는 중입니다.",
           rows: [
-            { title: "gpt-4.1", meta: "최근 7일 요청과 비용 비중이 가장 큰 운영 모델", pill: { label: "Top Usage", tone: "healthy" } },
-            { title: "gpt-4o", meta: "고속 응답 흐름에서 호출량이 꾸준히 유지됨", pill: { label: "Active", tone: "info" } },
-            { title: "claude-3.7-sonnet", meta: "review와 문서 reasoning 구간에서 집중 사용", pill: { label: "Focused", tone: "healthy" } },
-            { title: "internal-rag-1", meta: "retrieval 및 tool runtime 전용으로 제한적 사용", pill: { label: "Scoped", tone: "pending" } }
+            {
+              title: "데이터를 불러오는 중입니다.",
+              meta: "model usage 패널 응답을 기다리고 있습니다.",
+              pill: { label: "Loading", tone: "info" }
+            }
           ]
         }
       ]
@@ -621,10 +571,15 @@
   <script>
     (() => {
       const API_BASE = "/api/v2/keycenter";
-      const fallbackConfig = window.HUB_CONFIG || {};
+      const fallbackConfig = {
+        ...(window.HUB_CONFIG || {}),
+        resourcePageSize: 6
+      };
       const PAGE_LIMIT = 100;
-      const PAGE_SIZE = 6;
-      const KEYCENTER_STORAGE_KEY = "workspace.sample.keycenter.drafts.v1";
+      const ACCOUNT_USER_SEARCH_API = "/api/account/user";
+      const LEGACY_KEYCENTER_STORAGE_KEY = "workspace.sample.keycenter.drafts.v1";
+      const REQUEST_REVIEW_HASH_PREFIX = "#request-review:";
+      const DEFAULT_RESOURCE_EMPTY_STATE_MESSAGE = "조회 가능한 key가 없습니다. 권한 또는 등록 상태를 확인해 주세요.";
       const KEY_ROLE_OPTIONS = {
         user: {
           id: "user",
@@ -662,7 +617,7 @@
         "linear-gradient(135deg,#f59e0b,#fbbf24)",
         "linear-gradient(135deg,#b45309,#f59e0b)"
       ];
-      const KEY_TIER_OPTIONS = [
+      const DEFAULT_KEY_TIER_OPTIONS = [
         { id: "free-tier", title: "Free Tier", description: "$5 monthly limit, 10 requests per minute", icon: "auto_awesome" },
         { id: "paid-tier", title: "Paid Tier", description: "$100 monthly limit, 60 requests per minute", icon: "paid" },
         { id: "hw-deposit-tier", title: "HW Deposit Tier", description: "Dynamic RPM based on hardware performance", icon: "memory" },
@@ -677,26 +632,48 @@
         { id: "asf-enterprise-tier", title: "ASF Enterprise Tier", description: "ASF Production Enterprise token deposited Tier", icon: "domain_verification" },
         { id: "dej-base-tier", title: "DEJ Base Tier", description: "DEJ Base token deposited Tier", icon: "apartment" }
       ];
-      const paginationState = {
-        currentPage: 1,
-        activeFilter: "all"
-      };
+      let keyTierOptions = DEFAULT_KEY_TIER_OPTIONS.slice();
       const keyCreateState = {
         step: 1,
         name: "",
         owner: "",
-        tierId: KEY_TIER_OPTIONS[0].id
+        ownerSearchKeyword: "",
+        selectedOwnerSub: "",
+        ownerResults: [],
+        ownerResultsOpen: false,
+        ownerSearchLoading: false,
+        ownerSearchMessage: "",
+        ownerSearchTone: "",
+        ownerSearchSeq: 0,
+        ownerSearchDebounce: null,
+        tierId: DEFAULT_KEY_TIER_OPTIONS[0].id,
+        submitting: false,
+        feedback: "",
+        feedbackTone: ""
       };
       const keyRoleState = {
         current: "user"
       };
-      let lastResolvedConfig = fallbackConfig;
-
+      const requestReviewState = {
+        reqId: "",
+        detail: null,
+        loading: false,
+        submitting: false,
+        feedback: "",
+        feedbackTone: "",
+        draftReason: ""
+      };
       const normalizeKey = (value) => String(value || "")
         .toLowerCase()
         .trim()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)/g, "");
+      const escapeHtml = (value) => String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
 
       const toArray = (value) => Array.isArray(value) ? value : [];
       const getPayloadData = (payload) => (
@@ -711,6 +688,14 @@
         return new Intl.NumberFormat("en-US", {
           notation: "compact",
           maximumFractionDigits: number >= 100 ? 0 : 1
+        }).format(number);
+      };
+
+      const formatWholeNumber = (value) => {
+        const number = Number(value);
+        if (!Number.isFinite(number)) return "0";
+        return new Intl.NumberFormat("en-US", {
+          maximumFractionDigits: 0
         }).format(number);
       };
 
@@ -730,6 +715,20 @@
         if (!normalized) return "";
         return normalized.slice(0, 10);
       };
+      const formatDateTime = (value) => {
+        const normalized = String(value || "").trim();
+        if (!normalized) return "-";
+        const parsed = new Date(normalized);
+        if (Number.isNaN(parsed.valueOf())) return normalized;
+        return new Intl.DateTimeFormat("ko-KR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false
+        }).format(parsed).replace(/\./g, ".").replace(/\s/g, " ").trim();
+      };
 
       const capitalize = (value) => {
         const normalized = String(value || "").trim();
@@ -737,21 +736,15 @@
         return normalized.charAt(0).toUpperCase() + normalized.slice(1);
       };
 
-      const parseStoredKeys = () => {
+      const clearLegacyStoredKeys = () => {
         try {
-          const parsed = JSON.parse(window.localStorage.getItem(KEYCENTER_STORAGE_KEY) || "[]");
-          return toArray(parsed).filter((item) => item && typeof item === "object");
+          window.localStorage.removeItem(LEGACY_KEYCENTER_STORAGE_KEY);
         } catch (error) {
-          console.warn("Failed to parse stored key drafts", error);
-          return [];
+          console.warn("Failed to clear legacy key drafts", error);
         }
       };
 
-      const saveStoredKeys = (items) => {
-        window.localStorage.setItem(KEYCENTER_STORAGE_KEY, JSON.stringify(toArray(items)));
-      };
-
-      const getKeyTierMeta = (tierId) => KEY_TIER_OPTIONS.find((item) => item.id === tierId) || KEY_TIER_OPTIONS[0];
+      const getKeyTierMeta = (tierId) => keyTierOptions.find((item) => item.id === tierId) || keyTierOptions[0] || DEFAULT_KEY_TIER_OPTIONS[0];
       const getKeyRoleMeta = () => KEY_ROLE_OPTIONS[keyRoleState.current] || KEY_ROLE_OPTIONS.user;
 
       const resetKeyCreateState = () => {
@@ -759,7 +752,21 @@
         keyCreateState.step = 1;
         keyCreateState.name = "";
         keyCreateState.owner = roleMeta.ownerLocked ? roleMeta.ownerValue : "";
-        keyCreateState.tierId = KEY_TIER_OPTIONS[0].id;
+        keyCreateState.ownerSearchKeyword = "";
+        keyCreateState.selectedOwnerSub = "";
+        keyCreateState.ownerResults = [];
+        keyCreateState.ownerResultsOpen = false;
+        keyCreateState.ownerSearchLoading = false;
+        keyCreateState.ownerSearchMessage = "";
+        keyCreateState.ownerSearchTone = "";
+        if (keyCreateState.ownerSearchDebounce) {
+          window.clearTimeout(keyCreateState.ownerSearchDebounce);
+          keyCreateState.ownerSearchDebounce = null;
+        }
+        keyCreateState.tierId = keyTierOptions[0]?.id || DEFAULT_KEY_TIER_OPTIONS[0].id;
+        keyCreateState.submitting = false;
+        keyCreateState.feedback = "";
+        keyCreateState.feedbackTone = "";
       };
 
       const toTitleWords = (value) => String(value || "")
@@ -834,52 +841,165 @@
         return "vpn_key";
       };
 
+      const describeTierOption = (tier) => {
+        const summary = String(tier?.summary || "").trim();
+        if (summary) return summary;
+
+        const providers = toArray(tier?.providers).filter(Boolean);
+        const modelCount = Number(tier?.availableModelCount ?? toArray(tier?.availableModels).length);
+        const parts = [];
+
+        if (providers.length) {
+          parts.push(`${providers.slice(0, 2).join(" / ")} provider`);
+        }
+        if (Number.isFinite(modelCount) && modelCount > 0) {
+          parts.push(`${modelCount} models`);
+        }
+
+        return parts.join(" · ") || "Key 발급 가능 tier";
+      };
+
+      const buildKeyTierOptionsFromApi = (tiers) => {
+        const items = toArray(tiers)
+          .map((tier) => {
+            const id = String(tier?.id || "").trim();
+            if (!id) return null;
+
+            return {
+              id,
+              title: tier?.name || tier?.label || tier?.code || id,
+              description: describeTierOption(tier),
+              icon: inferFilterIcon(tier)
+            };
+          })
+          .filter(Boolean);
+
+        return items.length ? items : DEFAULT_KEY_TIER_OPTIONS.slice();
+      };
+
       const buildFilters = (filterItems) => toArray(filterItems).map((item, index) => ({
         id: item?.id || (index === 0 ? "all" : `tier-${index}`),
         icon: inferFilterIcon(item),
         label: item?.label || item?.code || item?.id || `Tier ${index + 1}`
       }));
 
-      const resourceSignals = (resource) => {
-        const tags = toArray(resource?.tags).map((tag) => tag?.text || "");
-        const detailTexts = toArray(resource?.details).map((detail) => detail?.text || "");
-        return [
-          resource?.engine,
-          resource?.name,
-          resource?.meta,
-          ...tags,
-          ...detailTexts
-        ]
-          .map((value) => normalizeKey(value))
-          .filter(Boolean);
-      };
+      const buildModelUsageSidebarPanel = (panelPayload) => {
+        const panel = getPayloadData(panelPayload);
+        const rows = toArray(panel?.rows);
+        if (!rows.length) return null;
 
-      const findMatchingTierIds = (resource, filterItems) => {
-        const signals = resourceSignals(resource);
-        return toArray(filterItems)
-          .filter((item) => item?.id && item.id !== "all")
-          .filter((item) => {
-            const aliases = [
-              normalizeKey(item?.id).replace(/-tier$/g, ""),
-              normalizeKey(item?.code),
-              normalizeKey(item?.label)
-            ]
-              .flatMap((value) => [value, ...String(value || "").split("-")])
-              .filter((value) => value && value.length >= 3);
-
-            return aliases.some((alias) => signals.some((signal) => signal === alias || signal.includes(alias) || alias.includes(signal)));
-          })
-          .map((item) => item.id);
-      };
-
-      const applyFilterCategories = (resources, filterItems) => toArray(resources).map((resource) => {
-        const categories = new Set(["all", ...toArray(resource?.categories)]);
-        findMatchingTierIds(resource, filterItems).forEach((filterId) => categories.add(filterId));
         return {
-          ...resource,
-          categories: Array.from(categories)
+          icon: "model_training",
+          label: panel?.label || "Model Usage",
+          title: panel?.title || "주요 모델 사용 현황",
+          description: panel?.description || "최근 7일 LiteLLM 집계 기준 주요 모델 요약입니다.",
+          rows
         };
-      });
+      };
+
+      const buildResourceDescription = (count) => {
+        const total = Number(count || 0);
+        if (total > 0) {
+          return `${formatWholeNumber(total)}개의 key를 실제 API 응답으로 렌더링합니다. 카드에서는 tier, usage, 연결된 project를 바로 확인할 수 있습니다.`;
+        }
+        return DEFAULT_RESOURCE_EMPTY_STATE_MESSAGE;
+      };
+
+      const buildQuotaAlertsSidebarPanel = (panelPayload) => {
+        const panel = getPayloadData(panelPayload);
+        const items = toArray(panel?.items).filter((item) => {
+          const pillLabel = String(item?.pill?.label || "").trim().toLowerCase();
+          const meta = String(item?.meta || "").trim().toLowerCase();
+          return pillLabel !== "no limit" && !meta.includes("limit 없음");
+        });
+        const severitySummary = items.reduce((summary, item) => {
+          const tone = String(item?.pill?.tone || "").trim().toLowerCase();
+          if (tone === "pending") {
+            summary.critical += 1;
+          } else if (tone === "review") {
+            summary.warning += 1;
+          } else {
+            summary.info += 1;
+          }
+          return summary;
+        }, { critical: 0, warning: 0, info: 0 });
+
+        return {
+          icon: "published_with_changes",
+          label: panel?.label || "Quota Alerts",
+          title: panel?.title || "주의가 필요한 Key",
+          description: "사용률이 높은 key를 빠르게 확인합니다.",
+          summary: {
+            total: items.length,
+            stats: [
+              { label: "Critical", value: severitySummary.critical ?? 0, description: "즉시 확인이 필요한 key" },
+              { label: "Warning", value: severitySummary.warning ?? 0, description: "사용량 추적이 필요한 key" },
+              { label: "Info", value: severitySummary.info ?? 0, description: "참고용 quota 상태" }
+            ]
+          },
+          rows: items.length
+            ? items.map((item) => ({
+                title: item?.title || "key",
+                meta: item?.meta || "",
+                pill: item?.pill || null
+              }))
+            : [
+                {
+                  title: "주의가 필요한 key가 없습니다.",
+                  meta: "현재 예산 기준으로 특별한 경고가 없습니다.",
+                  pill: { label: "Stable", tone: "healthy" }
+                }
+              ]
+        };
+      };
+
+      const buildRequestsSidebarPanel = (panelPayload) => {
+        const panel = getPayloadData(panelPayload);
+        const isAdminQueue = String(panel?.id || "").trim().toLowerCase() === "request-queue";
+        const items = toArray(panel?.items)
+          .filter((item) => {
+            if (!isAdminQueue) return true;
+            return String(item?.pill?.label || "").trim().toLowerCase() === "pending";
+          })
+          .map((item) => {
+            const metaParts = String(item?.meta || "")
+              .split(" · ")
+              .map((part) => String(part || "").trim())
+              .filter(Boolean);
+
+            if (metaParts.length >= 2) {
+              metaParts[1] = formatRequestOwnerLabel(metaParts[1]);
+            }
+
+            return {
+              ...item,
+              meta: metaParts.join(" · ")
+            };
+          });
+
+        return {
+          icon: "assignment",
+          label: panel?.label || "My Requests",
+          title: panel?.title || "내 요청 상태",
+          description: panel?.description || "최근 key 요청 상태를 확인합니다.",
+          capabilities: panel?.capabilities || null,
+          rows: items.length
+            ? items.map((item) => ({
+                title: item?.title || "요청",
+                subtitle: item?.subtitle || (item?.capabilities?.canApprove ? "클릭해 승인/거절을 진행합니다." : "클릭해 요청 상세를 확인합니다."),
+                meta: item?.meta || "",
+                pill: item?.pill || null,
+                href: item?.id ? `${REQUEST_REVIEW_HASH_PREFIX}${encodeURIComponent(item.id)}` : ""
+              }))
+            : [
+                {
+                  title: isAdminQueue ? "승인 대기 요청이 없습니다." : "표시할 요청이 없습니다.",
+                  meta: isAdminQueue ? "현재 pending 상태 요청이 없습니다." : "최근 요청이 없으면 이 영역은 비어 있습니다.",
+                  pill: { label: "Empty", tone: "info" }
+                }
+              ]
+        };
+      };
 
       const fetchJson = async (url) => {
         const response = await fetch(url, {
@@ -898,172 +1018,53 @@
         return response.json();
       };
 
-      const getResourcePanel = () => document.getElementById("resource-panel");
-      const getResourceGrid = () => document.getElementById("resourceGrid");
-      const getResourceCards = () => Array.from(document.querySelectorAll("[data-resource-card]"));
-      const getEmptyState = () => document.getElementById("resourceEmptyState");
-      const getActiveFilter = () => {
-        const activeTab = document.querySelector("[data-resource-filter].is-active");
-        return activeTab?.dataset?.resourceFilter || "all";
-      };
-      const getCardTags = (card) => String(card?.dataset?.resourceTags || "")
-        .split(/\s+/)
-        .filter(Boolean);
-
-      const ensurePagination = () => {
-        const panel = getResourcePanel();
-        const emptyState = getEmptyState();
-        if (!panel || !emptyState) return null;
-
-        let pagination = document.getElementById("keycenterFleetPagination");
-        if (pagination) return pagination;
-
-        pagination = document.createElement("nav");
-        pagination.id = "keycenterFleetPagination";
-        pagination.className = "resource-pagination";
-        pagination.hidden = true;
-        pagination.setAttribute("aria-label", "LLM Keys pagination");
-        pagination.innerHTML = `
-          <div class="resource-pagination-summary" id="keycenterFleetPaginationSummary"></div>
-          <div class="resource-pagination-controls" id="keycenterFleetPaginationControls"></div>
-        `;
-        emptyState.insertAdjacentElement("afterend", pagination);
-        return pagination;
-      };
-
-      const renderPaginationControls = (totalItems, totalPages) => {
-        const pagination = ensurePagination();
-        if (!pagination) return;
-
-        const summary = document.getElementById("keycenterFleetPaginationSummary");
-        const controls = document.getElementById("keycenterFleetPaginationControls");
-        if (!summary || !controls) return;
-
-        if (totalItems <= PAGE_SIZE) {
-          pagination.hidden = true;
-          controls.innerHTML = "";
-          summary.textContent = totalItems ? `총 ${totalItems}개` : "";
-          return;
-        }
-
-        pagination.hidden = false;
-        const startItem = (paginationState.currentPage - 1) * PAGE_SIZE + 1;
-        const endItem = Math.min(totalItems, paginationState.currentPage * PAGE_SIZE);
-        summary.textContent = `${startItem}-${endItem} / 총 ${totalItems}개`;
-
-        const pageButtons = Array.from({ length: totalPages }, (_, index) => {
-          const page = index + 1;
-          return `
-            <button
-              class="resource-pagination-btn${page === paginationState.currentPage ? " is-active" : ""}"
-              type="button"
-              data-resource-page="${page}"
-              aria-label="${page}페이지"
-              aria-current="${page === paginationState.currentPage ? "page" : "false"}"
-            >${page}</button>
-          `;
-        }).join("");
-
-        controls.innerHTML = `
-          <button
-            class="resource-pagination-btn"
-            type="button"
-            data-resource-page-nav="prev"
-            ${paginationState.currentPage === 1 ? "disabled" : ""}
-            aria-label="이전 페이지"
-          >
-            <span class="material-icons-round">chevron_left</span>
-          </button>
-          ${pageButtons}
-          <button
-            class="resource-pagination-btn"
-            type="button"
-            data-resource-page-nav="next"
-            ${paginationState.currentPage === totalPages ? "disabled" : ""}
-            aria-label="다음 페이지"
-          >
-            <span class="material-icons-round">chevron_right</span>
-          </button>
-        `;
-      };
-
-      const applyPagination = ({ resetPage = false } = {}) => {
-        const grid = getResourceGrid();
-        if (!grid) return;
-
-        const cards = getResourceCards();
-        const activeFilter = getActiveFilter();
-        if (resetPage || paginationState.activeFilter !== activeFilter) {
-          paginationState.currentPage = 1;
-          paginationState.activeFilter = activeFilter;
-        }
-
-        const filteredCards = cards.filter((card) => {
-          const tags = getCardTags(card);
-          return activeFilter === "all" || tags.includes(activeFilter);
+      const requestJson = async (path, { method = "GET", body } = {}) => {
+        const response = await fetch(`${API_BASE}${path}`, {
+          method,
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: {
+            Accept: "application/json",
+            ...(body ? { "Content-Type": "application/json" } : {})
+          },
+          ...(body ? { body: JSON.stringify(body) } : {})
         });
 
-        const totalItems = filteredCards.length;
-        const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
-        paginationState.currentPage = Math.min(paginationState.currentPage, totalPages);
-
-        const startIndex = (paginationState.currentPage - 1) * PAGE_SIZE;
-        const endIndex = startIndex + PAGE_SIZE;
-        const visibleCards = new Set(filteredCards.slice(startIndex, endIndex));
-
-        cards.forEach((card) => {
-          card.hidden = !visibleCards.has(card);
-        });
-
-        const emptyState = getEmptyState();
-        if (emptyState) {
-          emptyState.classList.toggle("is-visible", totalItems === 0);
+        if (!response.ok) {
+          let message = `Request failed: ${response.status} ${response.statusText}`;
+          try {
+            const payload = await response.json();
+            message = payload?.error?.message || payload?.message || message;
+          } catch (error) {
+            console.warn("Failed to parse keycenter request error payload", error);
+          }
+          throw new Error(message);
         }
 
-        renderPaginationControls(totalItems, totalPages);
+        if (response.status === 204) {
+          return {};
+        }
+
+        return response.json();
       };
 
-      const bindPagination = () => {
-        if (window.__keycenterPaginationBound) return;
-        window.__keycenterPaginationBound = true;
-
-        document.addEventListener("click", (event) => {
-          const filterButton = event.target.closest("[data-resource-filter]");
-          if (filterButton) {
-            window.setTimeout(() => applyPagination({ resetPage: true }), 0);
-            return;
+      const searchAccountUsers = async (keyword) => {
+        const params = new URLSearchParams({ keyword: String(keyword || "").trim() });
+        const response = await fetch(`${ACCOUNT_USER_SEARCH_API}?${params.toString()}`, {
+          method: "GET",
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: {
+            Accept: "application/json"
           }
-
-          const pageButton = event.target.closest("[data-resource-page]");
-          if (pageButton) {
-            const nextPage = Number(pageButton.dataset.resourcePage || 1);
-            if (Number.isFinite(nextPage) && nextPage > 0) {
-              paginationState.currentPage = nextPage;
-              applyPagination();
-            }
-            return;
-          }
-
-          const navButton = event.target.closest("[data-resource-page-nav]");
-          if (!navButton) return;
-
-          const totalCards = getResourceCards().filter((card) => {
-            const tags = getCardTags(card);
-            const activeFilter = getActiveFilter();
-            return activeFilter === "all" || tags.includes(activeFilter);
-          }).length;
-          const totalPages = Math.max(1, Math.ceil(totalCards / PAGE_SIZE));
-
-          if (navButton.dataset.resourcePageNav === "prev" && paginationState.currentPage > 1) {
-            paginationState.currentPage -= 1;
-          }
-
-          if (navButton.dataset.resourcePageNav === "next" && paginationState.currentPage < totalPages) {
-            paginationState.currentPage += 1;
-          }
-
-          applyPagination();
         });
+
+        if (!response.ok) {
+          throw new Error(`User search failed: ${response.status} ${response.statusText}`);
+        }
+
+        const payload = await response.json();
+        return toArray(payload);
       };
 
       const hookRenderer = () => {
@@ -1076,12 +1077,10 @@
         window.__keycenterPaginationHooked = true;
         const originalRender = window.renderWorkspaceResourceHub;
         window.renderWorkspaceResourceHub = (config) => {
-          lastResolvedConfig = config;
           originalRender(config);
-          ensureKeyRoleSwitch();
-          syncKeyHeroAction();
+          syncKeyCreateAction();
           wireKeyCreateAction();
-          window.setTimeout(() => applyPagination({ resetPage: true }), 0);
+          wireRequestReviewRows();
         };
       };
 
@@ -1135,17 +1134,6 @@
         return "linear-gradient(135deg,#b45309,#f59e0b)";
       };
 
-      const getDraftTierGradient = (tierId) => {
-        const normalizedTier = String(tierId || "").toLowerCase();
-        if (normalizedTier.includes("free")) return "linear-gradient(135deg,#ef4444,#f97316)";
-        if (normalizedTier.includes("paid")) return "linear-gradient(135deg,#f59e0b,#fbbf24)";
-        if (normalizedTier.includes("hw")) return "linear-gradient(135deg,#475569,#60a5fa)";
-        if (normalizedTier.includes("aidd")) return "linear-gradient(135deg,#0f766e,#34d399)";
-        if (normalizedTier.includes("asf")) return "linear-gradient(135deg,#7c3aed,#a78bfa)";
-        if (normalizedTier.includes("dej")) return "linear-gradient(135deg,#b45309,#f59e0b)";
-        return "linear-gradient(135deg,#b45309,#f59e0b)";
-      };
-
       const normalizeOwnerDisplay = (owner) => {
         const raw = String(owner || "").trim();
         if (!raw) {
@@ -1168,6 +1156,13 @@
           initials: getInitials(name),
           meta: raw
         };
+      };
+
+      const formatRequestOwnerLabel = (value) => {
+        const raw = String(value || "").trim();
+        if (!raw) return "";
+        const normalized = normalizeOwnerDisplay(raw);
+        return normalized.meta === raw && normalized.name.startsWith("User ") ? normalized.name : raw;
       };
 
       const buildUsageMeta = (usage) => {
@@ -1263,64 +1258,8 @@
         };
       };
 
-      const buildKeyDraftRecord = () => ({
-        id: `draft-${normalizeKey(keyCreateState.name || "key")}-${Date.now()}`,
-        name: keyCreateState.name,
-        owner: keyCreateState.owner,
-        tierId: keyCreateState.tierId,
-        createdAt: new Date().toISOString()
-      });
-
-      const buildStoredKeyResource = (item) => {
-        const tierMeta = getKeyTierMeta(item?.tierId);
-        const ownerInfo = normalizeOwnerDisplay(item?.owner);
-        const color = getDraftTierGradient(item?.tierId);
-        return {
-          _draftStored: true,
-          categories: ["all", tierMeta.id],
-          status: { label: "Draft", tone: "draft" },
-          engine: tierMeta.title,
-          icon: "vpn_key",
-          name: item?.name || "new-key",
-          meta: `${ownerInfo.name} · 발급 요청 준비 중`,
-          color,
-          usage: {
-            label: "Usage",
-            value: 0,
-            meta: "아직 사용량이 없습니다.",
-            color: `linear-gradient(90deg,${color.match(/#(?:[0-9a-fA-F]{3}){1,2}/)?.[0] || "#f59e0b"},#fbbf24)`
-          },
-          details: [
-            { icon: "sell", text: tierMeta.title },
-            { icon: "person", text: ownerInfo.name }
-          ],
-          owner: {
-            label: "Owner",
-            initials: ownerInfo.initials,
-            name: ownerInfo.name,
-            meta: ownerInfo.meta,
-            color
-          },
-          tagsLabel: "Tier Summary",
-          tags: [
-            { icon: "info", text: tierMeta.description },
-            { icon: "schedule", text: "발급 전 검토 필요" }
-          ],
-          footer: item?.createdAt ? `Requested ${formatShortDate(item.createdAt)}` : "",
-          actions: []
-        };
-      };
-
-      const mergeStoredResources = (config) => ({
-        ...config,
-        resources: [
-          ...parseStoredKeys().map(buildStoredKeyResource),
-          ...toArray(config?.resources).filter((item) => !item?._draftStored)
-        ]
-      });
-
-      const syncKeyHeroAction = () => {
-        const button = document.querySelector(".hero-actions .hero-btn.primary");
+      const syncKeyCreateAction = () => {
+        const button = document.querySelector(".control-actions .create-btn");
         if (!button) return;
         const roleMeta = getKeyRoleMeta();
         const icon = button.querySelector(".material-icons-round");
@@ -1333,54 +1272,330 @@
         }
       };
 
-      const syncKeyRoleSwitch = () => {
-        const switcher = document.getElementById("keyRoleSwitch");
-        if (!switcher) return;
-        switcher.querySelectorAll("[data-key-role]").forEach((button) => {
-          button.classList.toggle("is-active", button.dataset.keyRole === keyRoleState.current);
+      const mountKeyFloatingControls = () => {
+        syncKeyCreateAction();
+        wireRequestReviewRows();
+      };
+
+      const getRequestStatusToneClass = (status) => {
+        const normalized = String(status || "").trim().toLowerCase();
+        if (normalized === "approved") return "is-approved";
+        if (normalized === "rejected") return "is-rejected";
+        return "is-pending";
+      };
+
+      const parseRequestReviewHash = () => {
+        const hash = String(window.location.hash || "");
+        if (!hash.startsWith(REQUEST_REVIEW_HASH_PREFIX)) return "";
+        return decodeURIComponent(hash.slice(REQUEST_REVIEW_HASH_PREFIX.length));
+      };
+
+      const ensureRequestReviewModal = () => {
+        let modal = document.getElementById("requestReviewModal");
+        if (modal) return modal;
+
+        modal = document.createElement("div");
+        modal.className = "hub-lite-create-backdrop";
+        modal.id = "requestReviewModal";
+        modal.hidden = true;
+        modal.innerHTML = `
+          <div class="hub-lite-create-shell request-review-shell" role="dialog" aria-modal="true" aria-labelledby="requestReviewTitle">
+            <div class="hub-lite-create-head">
+              <div class="hub-lite-create-copy">
+                <div class="hub-lite-create-title-row">
+                  <span class="hub-lite-create-step-badge">RQ</span>
+                  <h2 id="requestReviewTitle">Key 요청 검토</h2>
+                </div>
+                <p class="hub-lite-create-subtitle" id="requestReviewSubtitle">요청 상세를 확인하고 승인 또는 거절을 진행합니다.</p>
+              </div>
+              <div class="hub-lite-create-head-actions">
+                <div class="hub-lite-create-hero" aria-hidden="true"><span class="material-icons-round">assignment</span></div>
+                <button class="hub-lite-create-close" type="button" id="requestReviewClose" aria-label="요청 검토 닫기">
+                  <span class="material-icons-round">close</span>
+                </button>
+              </div>
+            </div>
+            <div class="hub-lite-create-form">
+              <section class="request-review-summary" id="requestReviewSummary"></section>
+              <section class="hub-lite-create-panel">
+                <div class="hub-lite-create-panel-title">결정 사유</div>
+                <div class="hub-lite-create-note"><span class="material-icons-round">edit_note</span>승인 또는 거절에 대한 메모를 남기고 처리할 수 있습니다.</div>
+                <textarea class="request-review-note-textarea" id="requestReviewReason" placeholder="승인 또는 거절 사유를 입력해 주세요."></textarea>
+                <div class="request-review-feedback" id="requestReviewFeedback"></div>
+              </section>
+              <div class="hub-lite-create-actions">
+                <button class="hub-lite-create-action ghost" type="button" id="requestReviewCancel">닫기</button>
+                <button class="hub-lite-create-action ghost" type="button" id="requestReviewReject"><span class="material-icons-round">close</span>거절</button>
+                <button class="hub-lite-create-action primary" type="button" id="requestReviewApprove"><span class="material-icons-round">check_circle</span>승인</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        const summary = modal.querySelector("#requestReviewSummary");
+        const subtitle = modal.querySelector("#requestReviewSubtitle");
+        const feedback = modal.querySelector("#requestReviewFeedback");
+        const reasonInput = modal.querySelector("#requestReviewReason");
+        const approveButton = modal.querySelector("#requestReviewApprove");
+        const rejectButton = modal.querySelector("#requestReviewReject");
+        const closeButton = modal.querySelector("#requestReviewClose");
+        const cancelButton = modal.querySelector("#requestReviewCancel");
+
+        const close = ({ keepHash = false } = {}) => {
+          modal.hidden = true;
+          document.body.style.overflow = "";
+          requestReviewState.reqId = "";
+          requestReviewState.detail = null;
+          requestReviewState.loading = false;
+          requestReviewState.submitting = false;
+          requestReviewState.feedback = "";
+          requestReviewState.feedbackTone = "";
+          requestReviewState.draftReason = "";
+          if (reasonInput) {
+            reasonInput.value = "";
+          }
+          if (!keepHash && parseRequestReviewHash()) {
+            window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+          }
+        };
+
+        const render = () => {
+          const detail = requestReviewState.detail;
+          if (requestReviewState.loading) {
+            subtitle.textContent = "요청 상세를 불러오는 중입니다.";
+            summary.innerHTML = `
+              <div class="request-review-summary-title">요청 정보를 불러오는 중입니다.</div>
+              <div class="request-review-feedback">잠시만 기다려 주세요.</div>
+            `;
+          } else if (!detail) {
+            subtitle.textContent = "요청 상세를 확인하고 승인 또는 거절을 진행합니다.";
+            summary.innerHTML = `
+              <div class="request-review-summary-title">요청 정보를 불러오지 못했습니다.</div>
+              <div class="request-review-feedback" data-tone="error">${escapeHtml(requestReviewState.feedback || "다시 시도해 주세요.")}</div>
+            `;
+          } else {
+            subtitle.textContent = detail?.capabilities?.canApprove || detail?.capabilities?.canReject
+              ? "요청 내용을 검토하고 승인 또는 거절을 선택할 수 있습니다."
+              : "요청 상세와 처리 이력을 확인할 수 있습니다.";
+            summary.innerHTML = `
+              <div class="request-review-summary-top">
+                <div class="request-review-summary-title">${escapeHtml(detail.title || "Key 요청")}</div>
+                <span class="request-review-pill ${getRequestStatusToneClass(detail.status)}">${escapeHtml(String(detail.status || "pending").toUpperCase())}</span>
+              </div>
+              <div class="request-review-grid">
+                <div class="request-review-meta">
+                  <div class="request-review-meta-label">Tier</div>
+                  <div class="request-review-meta-value">${escapeHtml(detail.requestedTierLabel || detail.requestedTierCode || "-")}</div>
+                </div>
+                <div class="request-review-meta">
+                  <div class="request-review-meta-label">요청 Key 이름</div>
+                  <div class="request-review-meta-value">${escapeHtml(detail.requestedName || "-")}</div>
+                </div>
+                <div class="request-review-meta">
+                  <div class="request-review-meta-label">요청자</div>
+                  <div class="request-review-meta-value">${escapeHtml(detail.requestedByName || detail.requestedBy || "-")}</div>
+                </div>
+                <div class="request-review-meta">
+                  <div class="request-review-meta-label">대상 Owner</div>
+                  <div class="request-review-meta-value">${escapeHtml(detail.targetOwnerName || detail.targetOwner || "-")}</div>
+                </div>
+                <div class="request-review-meta">
+                  <div class="request-review-meta-label">요청 일시</div>
+                  <div class="request-review-meta-value">${escapeHtml(formatDateTime(detail.createdAt))}</div>
+                </div>
+                <div class="request-review-meta">
+                  <div class="request-review-meta-label">처리자</div>
+                  <div class="request-review-meta-value">${escapeHtml(detail.decidedByName || detail.decidedBy || "-")}</div>
+                </div>
+              </div>
+              <div class="request-review-note">
+                <div class="request-review-note-label">요청 사유</div>
+                <div class="request-review-note-value">${escapeHtml(detail.requestReason || "요청 사유가 없습니다.")}</div>
+              </div>
+              <div class="request-review-note">
+                <div class="request-review-note-label">최근 처리 메모</div>
+                <div class="request-review-note-value">${escapeHtml(detail.decisionReason || "아직 처리 메모가 없습니다.")}</div>
+              </div>
+              ${detail.execution?.keyId ? `
+              <div class="request-review-note">
+                <div class="request-review-note-label">실행 결과</div>
+                <div class="request-review-note-value">발급된 Key ID ${escapeHtml(detail.execution.keyId)}${detail.execution.secretPreview ? ` · ${escapeHtml(detail.execution.secretPreview)}` : ""}</div>
+              </div>
+              ` : ""}
+            `;
+          }
+
+          feedback.textContent = requestReviewState.feedback || "";
+          feedback.dataset.tone = requestReviewState.feedbackTone || "";
+          reasonInput.disabled = requestReviewState.loading || requestReviewState.submitting || !(detail?.capabilities?.canApprove || detail?.capabilities?.canReject);
+          if (!requestReviewState.loading && !requestReviewState.submitting && reasonInput.value !== requestReviewState.draftReason) {
+            reasonInput.value = requestReviewState.draftReason || "";
+          }
+          approveButton.hidden = !detail?.capabilities?.canApprove;
+          rejectButton.hidden = !detail?.capabilities?.canReject;
+          approveButton.disabled = requestReviewState.loading || requestReviewState.submitting;
+          rejectButton.disabled = requestReviewState.loading || requestReviewState.submitting;
+        };
+
+        const loadDetail = async (reqId) => {
+          requestReviewState.reqId = reqId;
+          requestReviewState.detail = null;
+          requestReviewState.loading = true;
+          requestReviewState.submitting = false;
+          requestReviewState.feedback = "";
+          requestReviewState.feedbackTone = "";
+          requestReviewState.draftReason = "";
+          modal.hidden = false;
+          document.body.style.overflow = "hidden";
+          render();
+          try {
+            const payload = await fetchJson(`${API_BASE}/requests/${encodeURIComponent(reqId)}`);
+            requestReviewState.detail = getPayloadData(payload);
+          } catch (error) {
+            requestReviewState.feedback = error && error.message ? error.message : "요청 상세를 불러오지 못했습니다.";
+            requestReviewState.feedbackTone = "error";
+          } finally {
+            requestReviewState.loading = false;
+            render();
+            if (!requestReviewState.feedback && !reasonInput.disabled) {
+              window.requestAnimationFrame(() => {
+                reasonInput.focus();
+              });
+            }
+          }
+        };
+
+        const submitDecision = async (action) => {
+          if (!requestReviewState.reqId || requestReviewState.submitting) return;
+          const reason = String(reasonInput.value || "").trim();
+          if (!reason) {
+            requestReviewState.feedback = "승인 또는 거절 사유를 입력해 주세요.";
+            requestReviewState.feedbackTone = "error";
+            render();
+            reasonInput.focus();
+            return;
+          }
+
+          requestReviewState.submitting = true;
+          requestReviewState.feedback = action === "approve" ? "승인 처리 중입니다." : "거절 처리 중입니다.";
+          requestReviewState.feedbackTone = "";
+          requestReviewState.draftReason = reason;
+          render();
+
+          try {
+            const payload = await requestJson(`/requests/${encodeURIComponent(requestReviewState.reqId)}/${action}`, {
+              method: "POST",
+              body: { reason }
+            });
+            requestReviewState.detail = getPayloadData(payload);
+            requestReviewState.feedback = action === "approve" ? "요청을 승인했습니다." : "요청을 거절했습니다.";
+            requestReviewState.feedbackTone = "ok";
+            requestReviewState.draftReason = "";
+            reasonInput.value = "";
+            await bootstrap();
+          } catch (error) {
+            requestReviewState.feedback = error && error.message ? error.message : "요청 처리에 실패했습니다.";
+            requestReviewState.feedbackTone = "error";
+          } finally {
+            requestReviewState.submitting = false;
+            render();
+          }
+        };
+
+        modal.addEventListener("click", (event) => {
+          if (event.target === modal) {
+            close();
+          }
+        });
+        modal.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && !modal.hidden) {
+            close();
+          }
+        });
+        reasonInput.addEventListener("input", () => {
+          requestReviewState.draftReason = String(reasonInput.value || "");
+          if (requestReviewState.feedbackTone === "error") {
+            requestReviewState.feedback = "";
+            requestReviewState.feedbackTone = "";
+            render();
+          }
+        });
+        closeButton.addEventListener("click", () => close());
+        cancelButton.addEventListener("click", () => close());
+        approveButton.addEventListener("click", () => submitDecision("approve"));
+        rejectButton.addEventListener("click", () => submitDecision("reject"));
+
+        modal.__closeRequestReview = close;
+        modal.__loadRequestReview = loadDetail;
+        modal.__renderRequestReview = render;
+        return modal;
+      };
+
+      const openRequestReviewModal = (reqId) => {
+        const normalized = String(reqId || "").trim();
+        if (!normalized) return;
+        const modal = ensureRequestReviewModal();
+        modal.__loadRequestReview(normalized);
+      };
+
+      const wireRequestReviewRows = () => {
+        document.querySelectorAll(".list-row").forEach((row) => {
+          const anchor = row.querySelector(`.list-row-title a[href^="${REQUEST_REVIEW_HASH_PREFIX}"]`);
+          if (!anchor) return;
+
+          row.classList.add("is-request-review-link");
+          row.setAttribute("role", "link");
+          row.setAttribute("tabindex", "0");
+          row.setAttribute("aria-label", `${anchor.textContent || "요청"} 상세 열기`);
+
+          if (row.dataset.requestReviewRowBound === "true") return;
+          row.dataset.requestReviewRowBound = "true";
+
+          const openFromRow = () => {
+            const href = String(anchor.getAttribute("href") || "").trim();
+            if (!href) return;
+            if (window.location.hash === href) {
+              openRequestReviewModal(decodeURIComponent(href.slice(REQUEST_REVIEW_HASH_PREFIX.length)));
+              return;
+            }
+            window.location.hash = href;
+          };
+
+          row.addEventListener("click", (event) => {
+            if (event.target.closest("a, button, input, textarea, select, label")) return;
+            openFromRow();
+          });
+
+          row.addEventListener("keydown", (event) => {
+            if (event.key !== "Enter" && event.key !== " ") return;
+            event.preventDefault();
+            openFromRow();
+          });
         });
       };
 
-      const ensureKeyRoleSwitch = () => {
-        const app = document.body;
-        if (!app) return;
+      const wireRequestReviewHash = () => {
+        if (window.__requestReviewHashBound) return;
+        window.__requestReviewHashBound = true;
 
-        let switcher = document.getElementById("keyRoleSwitch");
-        if (!switcher) {
-          switcher = document.createElement("div");
-          switcher.id = "keyRoleSwitch";
-          switcher.className = "key-role-switch is-floating";
-          switcher.innerHTML = `
-            <button class="key-role-switch-btn" type="button" data-key-role="user">
-              <span class="material-icons-round">person</span>일반 사용자
-            </button>
-            <button class="key-role-switch-btn" type="button" data-key-role="admin">
-              <span class="material-icons-round">admin_panel_settings</span>Admin
-            </button>
-          `;
-          app.appendChild(switcher);
-          switcher.addEventListener("click", (event) => {
-            const button = event.target.closest("[data-key-role]");
-            if (!button) return;
-            const nextRole = button.dataset.keyRole === "admin" ? "admin" : "user";
-            if (nextRole === keyRoleState.current) return;
-            keyRoleState.current = nextRole;
-            syncKeyRoleSwitch();
-            syncKeyHeroAction();
-            syncKeyModalRole();
-          });
+        window.addEventListener("hashchange", () => {
+          const reqId = parseRequestReviewHash();
+          const modal = document.getElementById("requestReviewModal");
+          if (reqId) {
+            openRequestReviewModal(reqId);
+            return;
+          }
+          if (modal && typeof modal.__closeRequestReview === "function" && !modal.hidden) {
+            modal.__closeRequestReview({ keepHash: true });
+          }
+        });
+
+        const initialReqId = parseRequestReviewHash();
+        if (initialReqId) {
+          openRequestReviewModal(initialReqId);
         }
-
-        if (switcher.parentElement !== app) {
-          app.appendChild(switcher);
-        }
-
-        syncKeyRoleSwitch();
-      };
-
-      const mountKeyFloatingControls = () => {
-        ensureKeyRoleSwitch();
-        syncKeyHeroAction();
       };
 
       const ensureKeyCreateModal = () => {
@@ -1426,6 +1641,9 @@
                     <div class="key-create-field">
                       <label for="keyCreateOwner">소유자</label>
                       <input class="hub-lite-create-input" id="keyCreateOwner" type="text" placeholder="현재 로그인 사용자" required />
+                      <div class="key-create-owner-selection" id="keyCreateOwnerSelection" hidden></div>
+                      <div class="key-create-owner-status" id="keyCreateOwnerStatus" hidden></div>
+                      <div class="key-create-owner-results" id="keyCreateOwnerResults" hidden></div>
                     </div>
                   </div>
                   <div class="hub-lite-create-note" id="keyCreateOwnerNote"><span class="material-icons-round">info</span>소유자는 현재 로그인 사용자로 자동 지정됩니다.</div>
@@ -1443,6 +1661,7 @@
                 <button class="hub-lite-create-action primary" type="button" id="keyCreateNext">다음</button>
                 <button class="hub-lite-create-action primary" type="submit" id="keyCreateSubmit" hidden disabled><span class="material-icons-round">check_circle</span>Key 발급 요청</button>
               </div>
+              <div class="request-review-feedback" id="keyCreateFeedback"></div>
             </form>
           </div>
         `;
@@ -1460,8 +1679,12 @@
         const panelTitle = modal.querySelector("#keyCreatePanelTitle");
         const modeNote = modal.querySelector("#keyCreateModeNote");
         const ownerNote = modal.querySelector("#keyCreateOwnerNote");
+        const ownerSelection = modal.querySelector("#keyCreateOwnerSelection");
+        const ownerStatus = modal.querySelector("#keyCreateOwnerStatus");
+        const ownerResults = modal.querySelector("#keyCreateOwnerResults");
         const summary = modal.querySelector("#keyCreateSummary");
         const tierGrid = modal.querySelector("#keyCreateTierGrid");
+        const feedback = modal.querySelector("#keyCreateFeedback");
         const back = modal.querySelector("#keyCreateBack");
         const next = modal.querySelector("#keyCreateNext");
         const submit = modal.querySelector("#keyCreateSubmit");
@@ -1470,6 +1693,136 @@
           { label: "Key Tier", getSubtitle: () => getKeyRoleMeta().stepTwoSubtitle }
         ];
 
+        const formatOwnerCandidate = (candidate) => {
+          const attributes = candidate?.attributes || {};
+          const attributeDisplayName = Array.isArray(attributes.displayname) ? attributes.displayname[0] : attributes.displayname;
+          const name = String(
+            attributeDisplayName
+            || candidate?.displayName
+            || candidate?.displayname
+            || candidate?.name
+            || [candidate?.firstName, candidate?.lastName].filter(Boolean).join(" ")
+            || candidate?.username
+            || candidate?.email
+            || candidate?.id
+            || ""
+          ).trim();
+          const sub = String(candidate?.id || candidate?.sub || "").trim();
+          const email = String(candidate?.email || "").trim();
+          const username = String(candidate?.username || candidate?.preferred_username || "").trim();
+          return {
+            name: name || sub || "사용자",
+            sub,
+            email,
+            username
+          };
+        };
+
+        const renderOwnerSearch = () => {
+          const roleMeta = getKeyRoleMeta();
+          if (roleMeta.ownerLocked) {
+            ownerSelection.hidden = true;
+            ownerSelection.textContent = "";
+            ownerStatus.hidden = true;
+            ownerStatus.textContent = "";
+            ownerStatus.dataset.tone = "";
+            ownerResults.hidden = true;
+            ownerResults.innerHTML = "";
+            return;
+          }
+
+          ownerSelection.hidden = !keyCreateState.selectedOwnerSub;
+          ownerSelection.textContent = keyCreateState.selectedOwnerSub
+            ? `선택된 사용자 sub: ${keyCreateState.selectedOwnerSub}`
+            : "";
+
+          const hasStatus = keyCreateState.ownerSearchLoading || keyCreateState.ownerSearchMessage;
+          ownerStatus.hidden = !hasStatus;
+          ownerStatus.dataset.tone = keyCreateState.ownerSearchTone || "";
+          ownerStatus.textContent = keyCreateState.ownerSearchLoading
+            ? "사용자를 검색하는 중입니다."
+            : (keyCreateState.ownerSearchMessage || "");
+
+          ownerResults.hidden = !keyCreateState.ownerResultsOpen || !keyCreateState.ownerResults.length;
+          ownerResults.innerHTML = keyCreateState.ownerResults.map((item, index) => `
+            <button class="key-create-owner-option" type="button" data-owner-option-index="${index}">
+              <div class="key-create-owner-option-name">${escapeHtml(item.name)}</div>
+              <div class="key-create-owner-option-meta">${escapeHtml([item.email, item.username, item.sub].filter(Boolean).join(" · "))}</div>
+            </button>
+          `).join("");
+        };
+
+        const applyOwnerCandidate = (candidate) => {
+          const item = formatOwnerCandidate(candidate);
+          if (!item.sub) {
+            return;
+          }
+
+          keyCreateState.owner = item.sub;
+          keyCreateState.selectedOwnerSub = item.sub;
+          keyCreateState.ownerSearchKeyword = item.name;
+          keyCreateState.ownerResults = [];
+          keyCreateState.ownerResultsOpen = false;
+          keyCreateState.ownerSearchLoading = false;
+          keyCreateState.ownerSearchMessage = item.email || item.username || item.sub;
+          keyCreateState.ownerSearchTone = "";
+          ownerInput.value = item.name;
+          renderProgress();
+          renderSummary();
+          syncActions();
+          renderOwnerSearch();
+        };
+
+        const runOwnerSearch = async (keyword) => {
+          const normalized = String(keyword || "").trim();
+          const roleMeta = getKeyRoleMeta();
+          if (roleMeta.ownerLocked) {
+            return;
+          }
+
+          if (normalized.length < 2) {
+            keyCreateState.ownerResults = [];
+            keyCreateState.ownerResultsOpen = false;
+            keyCreateState.ownerSearchLoading = false;
+            keyCreateState.ownerSearchMessage = normalized ? "두 글자 이상 입력하면 검색합니다." : "";
+            keyCreateState.ownerSearchTone = "";
+            renderOwnerSearch();
+            return;
+          }
+
+          const searchSeq = ++keyCreateState.ownerSearchSeq;
+          keyCreateState.ownerSearchLoading = true;
+          keyCreateState.ownerSearchMessage = "";
+          keyCreateState.ownerSearchTone = "";
+          keyCreateState.ownerResultsOpen = false;
+          renderOwnerSearch();
+
+          try {
+            const results = await searchAccountUsers(normalized);
+            if (searchSeq !== keyCreateState.ownerSearchSeq) return;
+
+            keyCreateState.ownerResults = results
+              .map(formatOwnerCandidate)
+              .filter((item) => item.sub);
+            keyCreateState.ownerResultsOpen = keyCreateState.ownerResults.length > 0;
+            keyCreateState.ownerSearchLoading = false;
+            keyCreateState.ownerSearchMessage = keyCreateState.ownerResults.length
+              ? "검색 결과에서 사용자를 선택해 주세요."
+              : "일치하는 사용자를 찾지 못했습니다.";
+            keyCreateState.ownerSearchTone = keyCreateState.ownerResults.length ? "" : "error";
+            renderOwnerSearch();
+          } catch (error) {
+            if (searchSeq !== keyCreateState.ownerSearchSeq) return;
+
+            keyCreateState.ownerResults = [];
+            keyCreateState.ownerResultsOpen = false;
+            keyCreateState.ownerSearchLoading = false;
+            keyCreateState.ownerSearchMessage = error && error.message ? error.message : "사용자 검색에 실패했습니다.";
+            keyCreateState.ownerSearchTone = "error";
+            renderOwnerSearch();
+          }
+        };
+
         const syncRolePresentation = () => {
           const roleMeta = getKeyRoleMeta();
           title.textContent = roleMeta.modalTitle;
@@ -1477,17 +1830,25 @@
           modeNote.innerHTML = `<span class="material-icons-round">${roleMeta.ownerLocked ? "lock" : "tune"}</span>${roleMeta.modeHint}`;
           ownerInput.disabled = roleMeta.ownerLocked;
           ownerInput.readOnly = roleMeta.ownerLocked;
-          ownerInput.placeholder = roleMeta.ownerLocked ? roleMeta.ownerValue : "예: Taehun Nam 또는 Support Platform";
+          ownerInput.placeholder = roleMeta.ownerLocked ? roleMeta.ownerValue : "이름, 메일, sub로 사용자 검색";
           ownerNote.innerHTML = roleMeta.ownerLocked
             ? '<span class="material-icons-round">info</span>소유자는 현재 로그인 사용자로 자동 지정됩니다.'
-            : '<span class="material-icons-round">info</span>Admin은 실제 사용자, 팀, 혹은 운영 조직 이름으로 소유자를 직접 지정할 수 있습니다.';
+            : '<span class="material-icons-round">info</span>Admin은 이름, 메일, sub로 사용자를 검색한 뒤 목록에서 선택할 수 있습니다. 비워두면 현재 로그인 사용자로 발급합니다.';
           if (roleMeta.ownerLocked) {
             keyCreateState.owner = roleMeta.ownerValue;
+            keyCreateState.selectedOwnerSub = "";
+            keyCreateState.ownerSearchKeyword = "";
+            keyCreateState.ownerResults = [];
+            keyCreateState.ownerResultsOpen = false;
+            keyCreateState.ownerSearchLoading = false;
+            keyCreateState.ownerSearchMessage = "";
+            keyCreateState.ownerSearchTone = "";
             ownerInput.value = roleMeta.ownerValue;
           } else {
-            ownerInput.value = keyCreateState.owner;
+            ownerInput.value = keyCreateState.ownerSearchKeyword || "";
           }
           submit.innerHTML = `<span class="material-icons-round">check_circle</span>${roleMeta.submitLabel}`;
+          renderOwnerSearch();
         };
 
         const renderProgress = () => {
@@ -1524,7 +1885,7 @@
         };
 
         const renderTierGrid = () => {
-          tierGrid.innerHTML = KEY_TIER_OPTIONS.map((item) => `
+          tierGrid.innerHTML = keyTierOptions.map((item) => `
             <button class="key-create-tier-card ${keyCreateState.tierId === item.id ? "is-selected" : ""}" type="button" data-key-tier="${item.id}">
               <div class="key-create-tier-head">
                 <span class="key-create-tier-icon" aria-hidden="true"><span class="material-icons-round">${item.icon}</span></span>
@@ -1549,14 +1910,27 @@
         };
 
         const syncActions = () => {
-          const canAdvance = Boolean(keyCreateState.name.trim() && keyCreateState.owner.trim());
           const roleMeta = getKeyRoleMeta();
+          const hasValidOwner = roleMeta.ownerLocked
+            ? Boolean(keyCreateState.owner.trim())
+            : Boolean(keyCreateState.selectedOwnerSub);
+          const canAdvance = Boolean(keyCreateState.name.trim() && hasValidOwner);
           back.textContent = keyCreateState.step === 1 ? "취소" : "뒤로";
           next.hidden = keyCreateState.step === 2;
           submit.hidden = keyCreateState.step !== 2;
-          next.disabled = !canAdvance;
-          submit.disabled = !(canAdvance && keyCreateState.tierId);
-          submit.innerHTML = `<span class="material-icons-round">check_circle</span>${roleMeta.submitLabel}`;
+          nameInput.disabled = keyCreateState.submitting;
+          ownerInput.disabled = roleMeta.ownerLocked || keyCreateState.submitting;
+          tierGrid.querySelectorAll("[data-key-tier]").forEach((button) => {
+            button.disabled = keyCreateState.submitting;
+          });
+          back.disabled = keyCreateState.submitting;
+          next.disabled = keyCreateState.submitting || !canAdvance;
+          submit.disabled = keyCreateState.submitting || !(canAdvance && keyCreateState.tierId);
+          submit.innerHTML = keyCreateState.submitting
+            ? '<span class="material-icons-round">hourglass_top</span>처리 중...'
+            : `<span class="material-icons-round">check_circle</span>${roleMeta.submitLabel}`;
+          feedback.textContent = keyCreateState.feedback || "";
+          feedback.dataset.tone = keyCreateState.feedbackTone || "";
         };
 
         const rerender = () => {
@@ -1591,6 +1965,10 @@
         modal.querySelector("#keyCreateClose").addEventListener("click", close);
 
         nameInput.addEventListener("input", () => {
+          if (keyCreateState.feedbackTone === "error") {
+            keyCreateState.feedback = "";
+            keyCreateState.feedbackTone = "";
+          }
           keyCreateState.name = String(nameInput.value || "").trim();
           renderProgress();
           renderSummary();
@@ -1599,16 +1977,61 @@
 
         ownerInput.addEventListener("input", () => {
           if (getKeyRoleMeta().ownerLocked) return;
-          keyCreateState.owner = String(ownerInput.value || "").trim();
+          if (keyCreateState.feedbackTone === "error") {
+            keyCreateState.feedback = "";
+            keyCreateState.feedbackTone = "";
+          }
+          const keyword = String(ownerInput.value || "").trim();
+          keyCreateState.ownerSearchKeyword = keyword;
+          keyCreateState.owner = "";
+          keyCreateState.selectedOwnerSub = "";
+          keyCreateState.ownerResults = [];
+          keyCreateState.ownerResultsOpen = false;
+          keyCreateState.ownerSearchTone = "";
+          if (keyCreateState.ownerSearchDebounce) {
+            window.clearTimeout(keyCreateState.ownerSearchDebounce);
+            keyCreateState.ownerSearchDebounce = null;
+          }
+          keyCreateState.ownerSearchMessage = keyword ? "검색 결과에서 사용자를 선택해 주세요." : "";
           renderProgress();
           renderSummary();
           syncActions();
+          renderOwnerSearch();
+          keyCreateState.ownerSearchDebounce = window.setTimeout(() => {
+            runOwnerSearch(keyword);
+          }, 220);
+        });
+
+        ownerInput.addEventListener("focus", () => {
+          if (getKeyRoleMeta().ownerLocked) return;
+          if (keyCreateState.ownerResults.length) {
+            keyCreateState.ownerResultsOpen = true;
+            renderOwnerSearch();
+          }
+        });
+
+        ownerInput.addEventListener("blur", () => {
+          window.setTimeout(() => {
+            keyCreateState.ownerResultsOpen = false;
+            renderOwnerSearch();
+          }, 120);
+        });
+
+        ownerResults.addEventListener("mousedown", (event) => {
+          const button = event.target.closest("[data-owner-option-index]");
+          if (!button) return;
+          event.preventDefault();
+          const index = Number(button.dataset.ownerOptionIndex);
+          const candidate = keyCreateState.ownerResults[index];
+          if (!candidate) return;
+          applyOwnerCandidate(candidate);
         });
 
         tierGrid.addEventListener("click", (event) => {
+          if (keyCreateState.submitting) return;
           const button = event.target.closest("[data-key-tier]");
           if (!button) return;
-          keyCreateState.tierId = button.dataset.keyTier || KEY_TIER_OPTIONS[0].id;
+          keyCreateState.tierId = button.dataset.keyTier || keyTierOptions[0]?.id || DEFAULT_KEY_TIER_OPTIONS[0].id;
           renderProgress();
           renderSummary();
           renderTierGrid();
@@ -1616,6 +2039,7 @@
         });
 
         back.addEventListener("click", () => {
+          if (keyCreateState.submitting) return;
           if (keyCreateState.step === 1) {
             close();
             return;
@@ -1625,7 +2049,11 @@
         });
 
         next.addEventListener("click", () => {
-          if (!(keyCreateState.name.trim() && keyCreateState.owner.trim())) return;
+          if (keyCreateState.submitting) return;
+          const canAdvance = getKeyRoleMeta().ownerLocked
+            ? Boolean(keyCreateState.name.trim() && keyCreateState.owner.trim())
+            : Boolean(keyCreateState.name.trim() && keyCreateState.selectedOwnerSub);
+          if (!canAdvance) return;
           keyCreateState.step = 2;
           rerender();
           requestAnimationFrame(() => {
@@ -1633,16 +2061,46 @@
           });
         });
 
-        form.addEventListener("submit", (event) => {
+        form.addEventListener("submit", async (event) => {
           event.preventDefault();
-          if (!(keyCreateState.name.trim() && keyCreateState.owner.trim() && keyCreateState.tierId)) {
+          if (keyCreateState.submitting) return;
+          const roleMeta = getKeyRoleMeta();
+          const resolvedOwner = roleMeta.ownerLocked ? keyCreateState.owner.trim() : keyCreateState.selectedOwnerSub.trim();
+          if (!(keyCreateState.name.trim() && resolvedOwner && keyCreateState.tierId)) {
             syncActions();
             return;
           }
-          saveStoredKeys([buildKeyDraftRecord(), ...parseStoredKeys()]);
-          close();
-          if (typeof window.renderWorkspaceResourceHub === "function") {
-            window.renderWorkspaceResourceHub(mergeStoredResources(lastResolvedConfig));
+
+          keyCreateState.submitting = true;
+          keyCreateState.feedback = "Key 요청을 전송하는 중입니다.";
+          keyCreateState.feedbackTone = "";
+          rerender();
+
+          const owner = String(resolvedOwner || "").trim();
+          const requestBody = {
+            name: keyCreateState.name.trim(),
+            tierId: keyCreateState.tierId,
+            ...(!roleMeta.ownerLocked && owner ? { owner } : {})
+          };
+
+          try {
+            const payload = await requestJson("/keys", {
+              method: "POST",
+              body: requestBody
+            });
+            const createdItem = getPayloadData(payload);
+            clearLegacyStoredKeys();
+            close();
+            await bootstrap();
+
+            if (createdItem?.status && createdItem?.id) {
+              window.location.hash = `${REQUEST_REVIEW_HASH_PREFIX}${encodeURIComponent(createdItem.id)}`;
+            }
+          } catch (error) {
+            keyCreateState.submitting = false;
+            keyCreateState.feedback = error && error.message ? error.message : "Key 요청 처리에 실패했습니다.";
+            keyCreateState.feedbackTone = "error";
+            rerender();
           }
         });
 
@@ -1673,7 +2131,7 @@
       };
 
       const wireKeyCreateAction = () => {
-        const button = document.querySelector(".hero-actions .hero-btn.primary");
+        const button = document.querySelector(".control-actions .create-btn");
         if (!button || button.dataset.keyCreateBound === "true") return;
         button.dataset.keyCreateBound = "true";
         button.addEventListener("click", (event) => {
@@ -1698,11 +2156,24 @@
       };
 
       const bootstrap = async () => {
-        const [statsResult, filtersResult, tiersResult, keysResult] = await Promise.allSettled([
+        const [
+          statsResult,
+          filtersResult,
+          tiersResult,
+          keysResult,
+          modelUsagePanelResult,
+          quotaAlertsPanelResult,
+          myRequestsPanelResult,
+          requestQueuePanelResult
+        ] = await Promise.allSettled([
           fetchJson(`${API_BASE}/tiers/stats`),
           fetchJson(`${API_BASE}/tiers/filters`),
           fetchPagedItems("/tiers"),
-          fetchPagedItems("/keys")
+          fetchPagedItems("/keys"),
+          fetchJson(`${API_BASE}/panels/model-usage`),
+          fetchJson(`${API_BASE}/panels/quota-alerts`),
+          fetchJson(`${API_BASE}/panels/my-requests`),
+          fetchJson(`${API_BASE}/panels/request-queue`)
         ]);
 
         const nextConfig = {
@@ -1714,10 +2185,20 @@
         }
 
         const tierItems = tiersResult.status === "fulfilled" ? toArray(tiersResult.value) : [];
+        keyTierOptions = buildKeyTierOptionsFromApi(tierItems);
+        if (!keyTierOptions.some((item) => item.id === keyCreateState.tierId)) {
+          keyCreateState.tierId = keyTierOptions[0]?.id || DEFAULT_KEY_TIER_OPTIONS[0].id;
+        }
         const tierLookup = buildTierLookup(tierItems);
         const filterItems = filtersResult.status === "fulfilled"
           ? toArray(getPayloadData(filtersResult.value).items)
           : deriveFilterItemsFromTiers(tierItems);
+
+        keyRoleState.current = (
+          requestQueuePanelResult.status === "fulfilled"
+          && String(getPayloadData(requestQueuePanelResult.value)?.scope?.type || "").trim().toLowerCase() === "admin"
+        ) ? "admin" : "user";
+        syncKeyModalRole();
 
         if (filterItems.length) {
           nextConfig.filters = buildFilters(filterItems);
@@ -1726,25 +2207,68 @@
         if (keysResult.status === "fulfilled") {
           const keyItems = toArray(keysResult.value);
           nextConfig.resources = keyItems.map((item) => buildKeyResource(item, tierLookup));
-        } else if (filterItems.length) {
-          nextConfig.resources = applyFilterCategories(fallbackConfig.resources, filterItems);
+          nextConfig.resourceDescription = buildResourceDescription(keyItems.length);
+          nextConfig.resourceEmptyStateMessage = DEFAULT_RESOURCE_EMPTY_STATE_MESSAGE;
+        } else {
+          nextConfig.resources = [];
+          nextConfig.resourceDescription = "Keycenter 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.";
+          nextConfig.resourceEmptyStateMessage = "Keycenter 데이터를 불러오지 못했습니다.";
         }
 
-        window.HUB_CONFIG = mergeStoredResources(nextConfig);
+        if (quotaAlertsPanelResult.status === "fulfilled") {
+          const sidebarPanels = toArray(nextConfig.sidebarPanels).slice();
+          sidebarPanels[0] = buildQuotaAlertsSidebarPanel(quotaAlertsPanelResult.value);
+          nextConfig.sidebarPanels = sidebarPanels;
+        }
+
+        const requestPanelResult = requestQueuePanelResult.status === "fulfilled"
+          ? requestQueuePanelResult
+          : myRequestsPanelResult;
+
+        if (requestPanelResult.status === "fulfilled") {
+          const sidebarPanels = toArray(nextConfig.sidebarPanels).slice();
+          sidebarPanels[1] = buildRequestsSidebarPanel(requestPanelResult.value);
+          nextConfig.sidebarPanels = sidebarPanels;
+        }
+
+        if (modelUsagePanelResult.status === "fulfilled") {
+          const modelUsagePanel = buildModelUsageSidebarPanel(modelUsagePanelResult.value);
+          if (modelUsagePanel) {
+            const sidebarPanels = toArray(nextConfig.sidebarPanels).slice();
+            const existingIndex = sidebarPanels.findIndex((panel) => String(panel?.label || "").toLowerCase() === "model usage");
+            if (existingIndex >= 0) {
+              sidebarPanels[existingIndex] = modelUsagePanel;
+            } else {
+              sidebarPanels.push(modelUsagePanel);
+            }
+            nextConfig.sidebarPanels = sidebarPanels;
+          }
+        }
+
+        window.HUB_CONFIG = nextConfig;
         if (typeof window.renderWorkspaceResourceHub === "function") {
           window.renderWorkspaceResourceHub(window.HUB_CONFIG);
           window.setTimeout(mountKeyFloatingControls, 0);
         }
       };
 
-      bindPagination();
       hookRenderer();
       window.setTimeout(mountKeyFloatingControls, 0);
       wireKeyCreateHash();
-      window.setTimeout(() => applyPagination({ resetPage: true }), 0);
+      wireRequestReviewHash();
+      clearLegacyStoredKeys();
 
       bootstrap().catch((error) => {
-        console.warn("Failed to load /api/v2/keycenter hub stats/filters", error);
+        window.HUB_CONFIG = {
+          ...fallbackConfig,
+          resources: [],
+          resourceDescription: "Keycenter 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.",
+          resourceEmptyStateMessage: "Keycenter 데이터를 불러오지 못했습니다."
+        };
+        if (typeof window.renderWorkspaceResourceHub === "function") {
+          window.renderWorkspaceResourceHub(window.HUB_CONFIG);
+        }
+        console.warn("Failed to load /api/v2/keycenter hub data", error);
       });
     })();
   </script>

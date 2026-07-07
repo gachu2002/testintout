@@ -1,14 +1,11 @@
-import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import VerifiedUserRoundedIcon from '@mui/icons-material/VerifiedUserRounded';
-import { Box, Skeleton } from '@mui/material';
+import { Skeleton } from '@mui/material';
 
 import { SectionStatusBadge } from '@/components/reference-status';
 import {
   Badge,
   Desc,
-  DetailGroup,
   Empty,
-  FooterLink,
   Head,
   HeadCopy,
   Kicker,
@@ -19,44 +16,44 @@ import {
   RowMeta,
   RowSkeletons,
   RowTitle,
-  SummaryHeader,
-  SummaryLabel,
-  SummaryValue,
   Title,
 } from '@/components/workspace';
-import { routes } from '@/config/routes';
 import { domainHubSectionStatus } from '@/features/domain-hub/sectionStatus';
 import type {
   DomainCertificateDetail,
   DomainCertificatePanel,
-  DomainCertificateStatus,
+  DomainResource,
 } from '@/features/domain-hub/types';
 import { formatDate, formatLabel } from '@/lib/formatters';
 import type { ToneName } from '@/styles/tokens';
 
 const railCopy = {
-  description: '우측 레일은 인증서 상태와 갱신/발급 진행 정도만 간단히 보여줍니다.',
-  emptyDetail: 'No selected domain certificate is available.',
-  emptySummary: 'No certificate summary is available.',
-  footerLabel: '승인/예외 보기',
   label: 'Certificate Status',
-  selectedLabel: 'Selected domain',
-  summaryLabel: 'Certificate summary',
   title: '현재 인증서 상태',
+};
+
+const certificateStatusOrder: Record<string, number> = {
+  expired: 0,
+  pending: 1,
+  issued: 2,
+  none: 3,
 };
 
 export function DomainCertificateRail({
   detail,
+  domains,
   isDetailLoading,
   isPanelLoading,
   panel,
 }: {
   detail?: DomainCertificateDetail;
+  domains: DomainResource[];
   isDetailLoading: boolean;
   isPanelLoading: boolean;
   panel?: DomainCertificatePanel;
 }) {
-  const items = panel?.items ?? [];
+  const isLoading = isPanelLoading || isDetailLoading;
+  const rows = buildCertificateRows(domains, detail);
 
   return (
     <Panel hub="domain">
@@ -71,102 +68,127 @@ export function DomainCertificateRail({
           {isPanelLoading ? (
             <Skeleton height={42} width="100%" />
           ) : (
-            <Desc>{railCopy.description}</Desc>
+            <Desc>{buildCertificatePanelDescription(panel)}</Desc>
           )}
         </HeadCopy>
       </Head>
 
-      {isPanelLoading ? (
+      {isLoading ? (
         <RowSkeletons count={4} height={66} />
-      ) : panel && items.length > 0 ? (
-        <Box>
-          <SummaryHeader>
-            <SummaryLabel>{railCopy.summaryLabel}</SummaryLabel>
-            <SummaryValue hub="domain">{panel.total.toLocaleString()} total</SummaryValue>
-          </SummaryHeader>
-          <RowList dense>
-            {items.map((item) => (
-              <ListRow center compact key={item.status}>
-                <RowCopy>
-                  <RowTitle noWrap>{getCertificateStatusLabel(item.status)}</RowTitle>
-                  <RowMeta>{buildSummaryMeta(item.status, item.count)}</RowMeta>
-                </RowCopy>
-                <Badge dot tone={getCertificateTone(item.status)}>
-                  {item.count.toLocaleString()}
-                </Badge>
-              </ListRow>
-            ))}
-          </RowList>
-        </Box>
+      ) : rows.length > 0 ? (
+        <RowList dense>
+          {rows.map((row, index) => (
+            <ListRow center compact key={`${row.title}-${row.pill.label}-${index}`}>
+              <RowCopy>
+                <RowTitle noWrap>{row.title}</RowTitle>
+                <RowMeta>{row.meta}</RowMeta>
+              </RowCopy>
+              <Badge dot tone={row.pill.tone}>
+                {row.pill.label}
+              </Badge>
+            </ListRow>
+          ))}
+        </RowList>
       ) : (
-        <Empty>{railCopy.emptySummary}</Empty>
+        <Empty>인증서가 등록된 도메인이 아직 없습니다.</Empty>
       )}
-
-      <DetailGroup>
-        <SummaryHeader>
-          <SummaryLabel>{railCopy.selectedLabel}</SummaryLabel>
-        </SummaryHeader>
-        {isDetailLoading ? (
-          <Skeleton height={72} sx={{ borderRadius: '16px' }} variant="rounded" />
-        ) : detail ? (
-          <ListRow center compact>
-            <RowCopy>
-              <RowTitle noWrap>{detail.name}</RowTitle>
-              <RowMeta>{buildDetailMeta(detail.status, detail.expiresAt)}</RowMeta>
-            </RowCopy>
-            <Badge dot tone={getCertificateTone(detail.status)}>
-              {getCertificateStatusLabel(detail.status)}
-            </Badge>
-          </ListRow>
-        ) : (
-          <Empty>{railCopy.emptyDetail}</Empty>
-        )}
-      </DetailGroup>
-
-      <FooterLink href={routes.permissions} hub="domain">
-        {railCopy.footerLabel}
-        <ChevronRightRoundedIcon sx={{ fontSize: 14 }} />
-      </FooterLink>
     </Panel>
   );
 }
 
-function buildSummaryMeta(status: DomainCertificateStatus, count: number) {
-  const label = count === 1 ? 'domain' : 'domains';
+function buildCertificatePanelDescription(panel: DomainCertificatePanel | undefined) {
+  const total = panel?.total ?? 0;
+  const summary = (panel?.items ?? [])
+    .filter((item) => item.count > 0)
+    .map((item) => `${getCertificateStatusLabel(item.status)} ${item.count.toLocaleString()}`)
+    .join(' · ');
 
-  if (status === 'none') return `${count.toLocaleString()} ${label} without a certificate`;
-  if (status === 'pending') return `${count.toLocaleString()} ${label} waiting for issuance`;
-  if (status === 'issued') return `${count.toLocaleString()} ${label} with issued certificates`;
-  if (status === 'expired') return `${count.toLocaleString()} ${label} with expired certificates`;
-
-  return `${count.toLocaleString()} ${label}`;
+  return total > 0
+    ? `총 ${total.toLocaleString()}개 도메인 기준 ${summary || '상태 정보 없음'}`
+    : '인증서 상태를 확인할 수 있는 도메인이 없습니다.';
 }
 
-function buildDetailMeta(status: DomainCertificateStatus, expiresAt: string | null) {
-  if (status === 'none') return 'SSL 미연결 · certificate request 전';
-  if (status === 'pending') return 'certificate request pending';
-  if (status === 'issued' && expiresAt) return `valid until ${formatDate(expiresAt)}`;
-  if (status === 'issued') return 'certificate issued';
-  if (status === 'expired' && expiresAt) return `expired ${formatDate(expiresAt)}`;
-  if (status === 'expired') return 'certificate expired';
+function buildCertificateRows(
+  domains: DomainResource[],
+  detail: DomainCertificateDetail | undefined,
+) {
+  const detailRow = detail ? buildCertificateRowFromDetail(detail) : null;
+  const detailId = detail?.id ?? '';
+  const domainRows = domains
+    .filter((domain) => domain.certificate.status !== 'none')
+    .sort(
+      (left, right) =>
+        (certificateStatusOrder[left.certificate.status] ?? 99) -
+        (certificateStatusOrder[right.certificate.status] ?? 99),
+    )
+    .filter((domain) => domain.id !== detailId)
+    .map((domain) => ({
+      meta: buildCertificateSummary(domain.certificate.status, domain.certificate.expiresAt),
+      pill: {
+        label: getCertificateStatusLabel(domain.certificate.status),
+        tone: getCertificateTone(domain.certificate.status),
+      },
+      title: domain.name || '도메인 정보 없음',
+    }));
+
+  const rows = [detailRow, ...domainRows].filter((row): row is CertificateRailRow => Boolean(row));
+
+  if (rows.length > 0) {
+    return rows.slice(0, 4);
+  }
+
+  return [
+    {
+      meta: '인증서가 등록된 도메인이 아직 없습니다.',
+      pill: { label: 'Empty', tone: 'draft' as const },
+      title: '표시할 인증서 상태가 없습니다.',
+    },
+  ];
+}
+
+function buildCertificateRowFromDetail(detail: DomainCertificateDetail): CertificateRailRow {
+  return {
+    meta: buildCertificateSummary(detail.status, detail.expiresAt),
+    pill: {
+      label: getCertificateStatusLabel(detail.status),
+      tone: getCertificateTone(detail.status),
+    },
+    title: detail.name || '도메인 정보 없음',
+  };
+}
+
+function buildCertificateSummary(status: string, expiresAt: string | null) {
+  if (status === 'issued' && expiresAt) return `인증서 유효 ${formatDate(expiresAt)}`;
+  if (status === 'expired') return '인증서 만료';
+  if (status === 'pending') return '인증서 발급 대기';
+  if (status === 'none') return '인증서 미등록';
 
   return formatLabel(status);
 }
 
-function getCertificateStatusLabel(status: DomainCertificateStatus) {
+function getCertificateStatusLabel(status: string) {
   if (status === 'none') return 'None';
   if (status === 'pending') return 'Pending';
-  if (status === 'issued') return 'Issued';
+  if (status === 'issued') return 'Valid';
   if (status === 'expired') return 'Expired';
 
   return formatLabel(status);
 }
 
-function getCertificateTone(status: DomainCertificateStatus): ToneName {
+function getCertificateTone(status: string): ToneName {
   if (status === 'none') return 'draft';
   if (status === 'pending') return 'pending';
   if (status === 'issued') return 'healthy';
-  if (status === 'expired') return 'incident';
+  if (status === 'expired') return 'warn';
 
   return 'info';
 }
+
+type CertificateRailRow = {
+  meta: string;
+  pill: {
+    label: string;
+    tone: ToneName;
+  };
+  title: string;
+};

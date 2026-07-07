@@ -1,9 +1,8 @@
 import ApartmentRoundedIcon from '@mui/icons-material/ApartmentRounded';
-import HubRoundedIcon from '@mui/icons-material/HubRounded';
 import LinkRoundedIcon from '@mui/icons-material/LinkRounded';
-import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
+import ScheduleRoundedIcon from '@mui/icons-material/ScheduleRounded';
 import ShieldRoundedIcon from '@mui/icons-material/ShieldRounded';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 import { Badge, buildResourceResultCopy, IconTile, Metric } from '@/components/workspace';
@@ -30,9 +29,7 @@ import { formatDate, formatLabel } from '@/lib/formatters';
 import type { ToneName } from '@/styles/tokens';
 
 const panelCopy = {
-  description:
-    'Review workspace DNS resources, certificate progress, and route connection state before opening or binding a domain.',
-  empty: 'No domains match the selected view.',
+  empty: '조회 가능한 도메인이 없습니다. 권한 또는 바인딩 상태를 확인해 주세요.',
   label: 'DNS Fleet',
   title: 'Domains',
 };
@@ -45,6 +42,16 @@ const KindPill = styled('span')(({ theme }) => ({
 
 const BoundProjectBlock = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(1.75),
+}));
+
+const FooterNote = styled(Typography)(({ theme }) => ({
+  alignItems: 'center',
+  color: theme.palette.text.disabled,
+  display: 'inline-flex',
+  fontSize: 11,
+  fontWeight: 800,
+  gap: theme.spacing(0.5),
+  marginRight: 'auto',
 }));
 
 const BlockLabel = styled(Typography)(({ theme }) => ({
@@ -71,7 +78,7 @@ export function DomainCardsPanel({
 }) {
   return (
     <WorkspaceResourceCardsPanel
-      description={panelCopy.description}
+      description={buildResourceDescription(total ?? loadedCount)}
       emptyCopy={panelCopy.empty}
       hub="domain"
       icon={<ApartmentRoundedIcon sx={{ fontSize: 14 }} />}
@@ -98,7 +105,8 @@ export function DomainCardsPanel({
 
 function DomainCard({ domain }: { domain: DomainResource }) {
   const iconBackground = getDomainIconBackground(domain.status);
-  const description = domain.description.trim() || 'No description provided';
+  const description = domain.description.trim() || buildResourceMeta(domain);
+  const boundProject = domain.boundProject;
 
   return (
     <ResourceCardRoot cardMinHeight={260} hub="domain">
@@ -108,7 +116,9 @@ function DomainCard({ domain }: { domain: DomainResource }) {
             <Badge dot tone={getDomainTone(domain.status)}>
               {getStatusLabel(domain.status)}
             </Badge>
-            <KindPill>{formatLabel(domain.kind)} DNS</KindPill>
+            <KindPill>{`${getKindLabel(domain.kind)} DNS · ${getConnectionStatusLabel(
+              domain.connection.status,
+            )} Route`}</KindPill>
           </ResourceStatusRow>
           <ResourceNameRow>
             <IconTile tileBackground={iconBackground} tileSize={42}>
@@ -134,47 +144,77 @@ function DomainCard({ domain }: { domain: DomainResource }) {
         </Metric>
       </ResourceMetricList>
 
-      <BoundProjectBlock>
-        <BlockLabel>Bound Project</BlockLabel>
-        <ResourceInfoCard>
-          <ResourceInfoBadge hub="domain" tileSize={30}>
-            {getProjectInitials(domain.boundProject?.name)}
-          </ResourceInfoBadge>
-          <ResourceInfoText
-            meta={domain.boundProject?.type ?? 'Bind a project when the domain is ready.'}
-            title={domain.boundProject?.name ?? 'No project bound'}
-          />
-        </ResourceInfoCard>
-      </BoundProjectBlock>
+      {boundProject ? (
+        <BoundProjectBlock>
+          <BlockLabel>Bound Project</BlockLabel>
+          <ResourceInfoCard>
+            <ResourceInfoBadge hub="domain" tileSize={30}>
+              {getProjectInitials(boundProject.name)}
+            </ResourceInfoBadge>
+            <ResourceInfoText meta={boundProject.type ?? 'project'} title={boundProject.name} />
+          </ResourceInfoCard>
+        </BoundProjectBlock>
+      ) : null}
 
       <ResourceCardFooter>
-        <Button disabled size="small" startIcon={<HubRoundedIcon />} variant="outlined">
-          Bind project
-        </Button>
-        <Button disabled size="small" startIcon={<OpenInNewRoundedIcon />} variant="contained">
-          Open
-        </Button>
+        <FooterNote>
+          <ScheduleRoundedIcon sx={{ fontSize: 14 }} />
+          {domain.capabilities.canEdit === false ? 'read-only' : 'api/v2/domains'}
+        </FooterNote>
       </ResourceCardFooter>
     </ResourceCardRoot>
   );
 }
 
-function getCertificateCopy(status: string, expiresAt: string | null) {
-  if (status === 'pending') return 'Certificate pending';
-  if (status === 'issued' && expiresAt) return `Valid until ${formatDate(expiresAt)}`;
-  if (status === 'issued') return 'Certificate issued';
-  if (status === 'expired') return 'Certificate expired';
-  if (status === 'none') return 'No certificate';
+function buildResourceDescription(total: number) {
+  if (total <= 0) {
+    return '조회 가능한 도메인이 없습니다. 권한 또는 바인딩 상태를 확인해 주세요.';
+  }
 
-  return `${formatLabel(status)} certificate`;
+  return `${total.toLocaleString()}개의 도메인 리소스를 실제 API 응답으로 렌더링합니다. 카드에서는 인증서 상태와 바인딩된 프로젝트를 바로 확인할 수 있습니다.`;
+}
+
+function buildResourceMeta(domain: DomainResource) {
+  return [
+    getCertificateCopy(domain.certificate.status, domain.certificate.expiresAt),
+    getConnectionCopy(domain.connection.status),
+  ]
+    .filter(Boolean)
+    .join(' · ');
+}
+
+function getCertificateCopy(status: string, expiresAt: string | null) {
+  if (status === 'pending') return '인증서 발급 대기';
+  if (status === 'issued' && expiresAt) return `인증서 유효 ${formatDate(expiresAt)}`;
+  if (status === 'issued') return '인증서 유효';
+  if (status === 'expired') return '인증서 만료';
+  if (status === 'none') return '인증서 미등록';
+
+  return `${formatLabel(status)} 인증서`;
 }
 
 function getConnectionCopy(status: string) {
-  if (status === 'none') return 'No route connected';
-  if (status === 'ready') return 'Route ready';
-  if (status === 'connected') return 'Route connected';
+  if (status === 'none') return '바인딩 전';
+  if (status === 'ready') return '라우트 연결 준비 완료';
+  if (status === 'connected') return '라우트 연결 완료';
 
   return `${formatLabel(status)} route`;
+}
+
+function getConnectionStatusLabel(status: string) {
+  if (status === 'none') return 'None';
+  if (status === 'ready') return 'Ready';
+  if (status === 'connected') return 'Connected';
+
+  return formatLabel(status);
+}
+
+function getKindLabel(kind: string) {
+  if (kind === 'custom') return 'Custom';
+  if (kind === 'managed') return 'Managed';
+  if (kind === 'internal') return 'Internal';
+
+  return formatLabel(kind || 'custom');
 }
 
 function getDomainIconBackground(status: string) {
@@ -207,7 +247,9 @@ function getProjectInitials(name: string | undefined) {
 
 function getStatusLabel(status: string) {
   if (status === 'certificate') return '인증서';
-  if (status === 'review') return 'In Review';
+  if (status === 'review') return 'Review';
+  if (status === 'pending') return 'Pending';
+  if (status === 'connected') return 'Connected';
 
   return formatLabel(status);
 }

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { CardGrid, MainGrid } from '@/components/workspace';
 import { QueryErrorAlerts } from '@/components/workspace/QueryErrorAlerts';
 import { DatabaseCardsPanel } from '@/features/database-hub/components/DatabaseCardsPanel';
+import { DatabaseCreateDialog } from '@/features/database-hub/components/DatabaseCreateDialog';
 import { DatabaseGuideLinksPanel } from '@/features/database-hub/components/DatabaseGuideLinksPanel';
 import { DatabaseHealthRail } from '@/features/database-hub/components/DatabaseHealthRail';
 import { DatabaseHubFilterBar } from '@/features/database-hub/components/DatabaseHubFilterBar';
@@ -18,43 +19,53 @@ import {
   useDatabaseHubTipsQuery,
 } from '@/features/database-hub/hooks/useDatabaseHubQueries';
 
+const DATABASE_FETCH_LIMIT = 100;
+
 export function DatabaseHubPageContent() {
-  const [activeEngine, setActiveEngine] = useState('all');
-  const databasesQuery = useDatabaseHubDatabasesQuery(12, '', '', '');
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [createOpen, setCreateOpen] = useState(false);
+  const databasesQuery = useDatabaseHubDatabasesQuery(DATABASE_FETCH_LIMIT, '', '', '');
   const filtersQuery = useDatabaseHubFiltersQuery();
   const statsQuery = useDatabaseHubStatsQuery();
   const tipsQuery = useDatabaseHubTipsQuery();
   const guideLinksQuery = useDatabaseHubGuideLinksQuery();
   const healthPanelQuery = useDatabaseHealthPanelQuery();
   const databases = databasesQuery.data?.items ?? [];
-  const visibleDatabases = databases.filter((database) => {
-    if (activeEngine === 'all') return true;
+  const sortedDatabases = databases.slice().sort((left, right) => {
+    const leftTime = new Date(left.createdAt || left.updatedAt || 0).getTime();
+    const rightTime = new Date(right.createdAt || right.updatedAt || 0).getTime();
 
-    return database.engine === activeEngine;
+    return rightTime - leftTime;
+  });
+  const visibleDatabases = sortedDatabases.filter((database) => {
+    if (activeCategory === 'all') return true;
+
+    return getDatabaseEngineCategory(database.engine) === activeCategory;
   });
 
   return (
     <Stack spacing={2.5}>
       <DatabaseHubHero
-        filters={filtersQuery.data}
-        isLoading={statsQuery.isLoading || filtersQuery.isLoading}
+        healthPanel={healthPanelQuery.data}
+        isLoading={statsQuery.isLoading || filtersQuery.isLoading || healthPanelQuery.isLoading}
+        onCreateClick={() => setCreateOpen(true)}
         stats={statsQuery.data}
       />
       <DatabaseHubFilterBar
-        activeEngine={activeEngine}
+        activeCategory={activeCategory}
         filters={filtersQuery.data}
         isLoading={filtersQuery.isLoading}
         loadedCount={databases.length}
-        onEngineChange={setActiveEngine}
+        onCategoryChange={setActiveCategory}
         total={databasesQuery.data?.page.total}
       />
       <MainGrid>
         <Stack spacing={2.5}>
           <DatabaseCardsPanel
-            activeEngine={activeEngine}
+            activeCategory={activeCategory}
             databases={visibleDatabases}
             isLoading={databasesQuery.isLoading}
-            loadedCount={databases.length}
+            loadedCount={sortedDatabases.length}
             total={databasesQuery.data?.page.total}
           />
           <CardGrid collapseAt="md">
@@ -72,6 +83,7 @@ export function DatabaseHubPageContent() {
           />
         </Stack>
       </MainGrid>
+      <DatabaseCreateDialog onClose={() => setCreateOpen(false)} open={createOpen} />
       <QueryErrorAlerts
         alerts={[
           {
@@ -104,4 +116,14 @@ export function DatabaseHubPageContent() {
       />
     </Stack>
   );
+}
+
+function getDatabaseEngineCategory(engine: string) {
+  if (engine === 'mysql' || engine === 'postgres') return 'relational';
+  if (engine === 'mongo') return 'document';
+  if (engine === 'redis') return 'cache';
+  if (engine === 'elastic') return 'search';
+  if (engine === 'milvus') return 'vector';
+
+  return 'unknown';
 }

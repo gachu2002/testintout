@@ -19,7 +19,7 @@ const LoadingPanel = styled(Panel)(({ theme }) => ({
 const HeroRoot = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   display: 'flex',
-  gap: theme.spacing(2),
+  gap: theme.spacing(3),
   justifyContent: 'space-between',
   [theme.breakpoints.down('md')]: {
     alignItems: 'flex-start',
@@ -32,35 +32,35 @@ const HeroCopy = styled(Box)({
 });
 
 const HeroTitle = styled('h1')({
-  fontSize: 20,
+  fontSize: 22,
   fontWeight: 700,
-  letterSpacing: '-.45px',
-  lineHeight: 1.4,
+  letterSpacing: '-.5px',
+  lineHeight: 1.2,
   margin: 0,
 });
 
 const HeroSubtitle = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.secondary,
-  fontSize: 12,
-  marginTop: theme.spacing(0.25),
+  fontSize: 13,
+  marginTop: theme.spacing(0.5),
 }));
 
 const StatsList = styled(Stack)({
   flexDirection: 'row',
   flexShrink: 0,
   flexWrap: 'wrap',
-  gap: 8,
+  gap: 10,
 });
 
 const statCardStyles = (theme: Theme) => ({
   alignItems: 'center',
   backgroundColor: theme.palette.background.paper,
   border: `1px solid ${theme.workspace.colors.border}`,
-  borderRadius: theme.workspace.radii.sm,
+  borderRadius: 10,
   color: theme.palette.text.primary,
   display: 'flex',
-  gap: 7,
-  padding: '6px 10px',
+  gap: 9,
+  padding: '10px 16px',
   textDecoration: 'none',
   transition: theme.transitions.create(['border-color', 'box-shadow', 'transform'], {
     duration: theme.transitions.duration.shortest,
@@ -84,18 +84,18 @@ const StatValue = styled(Typography, {
 })<{ statColor: string }>(({ statColor }) => ({
   background: statColor,
   backgroundClip: 'text',
-  fontSize: 13,
+  fontSize: 15,
   fontWeight: 700,
-  lineHeight: 1.15,
+  lineHeight: 1.2,
   WebkitBackgroundClip: 'text',
   WebkitTextFillColor: 'transparent',
 }));
 
 const StatLabel = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.disabled,
-  fontSize: 9,
+  fontSize: 10,
   lineHeight: 1.2,
-  marginTop: theme.spacing(0.125),
+  marginTop: theme.spacing(0.25),
 }));
 
 export function HeroSummary({
@@ -195,8 +195,8 @@ function StatItem({ stat }: { stat: HeroStat }) {
   const isWorkspaceStat = stat.key === 'workspace';
   const statContent = (
     <>
-      <IconTile sx={{ borderRadius: '7px' }} tileBackground={stat.color} tileSize={24}>
-        <WorkspaceIcon name={stat.icon} sx={{ fontSize: 13 }} />
+      <IconTile sx={{ borderRadius: '8px' }} tileBackground={stat.color} tileSize={30}>
+        <WorkspaceIcon name={stat.icon} sx={{ fontSize: 15 }} />
       </IconTile>
       <Box minWidth={0}>
         <StatValue noWrap statColor={stat.color}>

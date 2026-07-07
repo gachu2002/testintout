@@ -1552,6 +1552,7 @@
         agents: [],
         workflowPacks: [],
         trustMatrix: null,
+        toolInventoryMcp: [],
         linkedMcp: null,
         approvals: null,
         insights: null,
@@ -1763,22 +1764,76 @@
       }
 
       function getCategoryCount(categoryId) {
+        if (categoryId === "mcp") {
+          return getDisplayMcpRows().length;
+        }
+
         const item = state.categories.find((entry) => entry.id === categoryId);
         return item ? item.count : 0;
       }
 
-      function getCombinedSkillRows() {
-        const mcpRows = ((state.linkedMcp && state.linkedMcp.rows) || []).map((row) => ({
+      function normalizeLinkedMcpRows(rows) {
+        return (rows || []).map((row) => ({
           kind: "mcp",
+          slug: row.slug || slugify(row.title),
           title: row.title,
           meta: row.meta || "Tool Inventory MCP",
           description: row.description || "내 AI Assistant에 연결할 수 있는 MCP 자산입니다.",
           pill: row.pill || { label: "MCP", tone: "connected" },
-          tags: ["MCP", "Tool Inventory"],
+          summary: row.summary || row.description || "",
+          tags: row.tags || ["MCP", "Tool Inventory"],
           itemType: "MCP",
+          toolCount: typeof row.toolCount === "number" ? row.toolCount : undefined,
+          consumerCount: typeof row.consumerCount === "number" ? row.consumerCount : undefined,
+          updatedAt: row.updatedAt,
+          statusLabel: row.statusLabel || (row.pill && row.pill.label) || "Connected",
+          openUrl: row.openUrl || "",
         }));
+      }
 
-        return mcpRows.concat(toolInventorySkills);
+      function mapInventoryMcpRow(item) {
+        if (!item || item.kind !== "mcp") {
+          return null;
+        }
+
+        const metaParts = [
+          item.typeLabel || item.scopeLabel || "Tool Inventory",
+          typeof item.toolCount === "number" ? item.toolCount + " tools" : "",
+          typeof item.consumerCount === "number" && item.consumerCount > 0 ? item.consumerCount + " consumers" : "",
+        ].filter(Boolean);
+
+        return {
+          kind: "mcp",
+          id: item.id,
+          slug: item.slug || slugify(item.name),
+          title: item.name || item.title || item.id,
+          meta: metaParts.join(" · ") || "Tool Inventory MCP",
+          description: item.description || "Tool Inventory에 등록된 MCP 자산입니다.",
+          summary: item.summary || item.description || "",
+          pill: {
+            label: item.statusLabel || "Connected",
+            tone: item.status === "review" ? "review" : "connected",
+          },
+          tags: ["MCP", "Tool Inventory"].concat([item.typeLabel, item.scopeLabel].filter(Boolean)),
+          itemType: "MCP",
+          toolCount: item.toolCount,
+          consumerCount: item.consumerCount,
+          updatedAt: item.updatedAt,
+          statusLabel: item.statusLabel || "Connected",
+          openUrl: item.openUrl || "",
+        };
+      }
+
+      function getDisplayMcpRows() {
+        if (Array.isArray(state.toolInventoryMcp) && state.toolInventoryMcp.length) {
+          return state.toolInventoryMcp;
+        }
+
+        return normalizeLinkedMcpRows((state.linkedMcp && state.linkedMcp.rows) || []);
+      }
+
+      function getSkillRows() {
+        return toolInventorySkills;
       }
 
       function getPrimaryLinkedChatbot(item) {
@@ -1898,7 +1953,7 @@
       }
 
       function getFilteredMcpRows() {
-        const rows = (state.linkedMcp && state.linkedMcp.rows) || [];
+        const rows = getDisplayMcpRows();
         return rows.filter((row) => {
           const haystack = getSearchHaystack([
             row.title,
@@ -1911,7 +1966,7 @@
       }
 
       function getFilteredSkillRows() {
-        return getCombinedSkillRows().filter((row) => {
+        return getSkillRows().filter((row) => {
           const haystack = getSearchHaystack([
             row.title,
             row.meta,
@@ -1990,13 +2045,20 @@
       }
 
       function renderPageHead() {
+        const displayMcpCount = getDisplayMcpRows().length;
         elements.pageTitle.textContent = (state.hero && state.hero.title) || "AI Gallery";
         elements.pageDesc.textContent = "챗봇과 AI 자산을 모아둔 공간입니다.";
 
         const tags = []
-          .concat(((state.hero && state.hero.stats) || []).map((stat) => renderTag(getCategoryIcon(stat.id), stat.label + " " + stat.value)))
-          .concat(state.categories.filter((item) => item.id !== "all").slice(0, 4).map((item) => renderTag(getCategoryIcon(item.id), item.label + " " + item.count)))
-          .concat([renderTag("extension", "Skills " + getCombinedSkillRows().length)]);
+          .concat(((state.hero && state.hero.stats) || []).map((stat) => {
+            const value = stat.id === "mcp" ? String(displayMcpCount) : stat.value;
+            return renderTag(getCategoryIcon(stat.id), stat.label + " " + value);
+          }))
+          .concat(state.categories.filter((item) => item.id !== "all").slice(0, 4).map((item) => {
+            const value = item.id === "mcp" ? String(displayMcpCount) : item.count;
+            return renderTag(getCategoryIcon(item.id), item.label + " " + value);
+          }))
+          .concat([renderTag("extension", "Skills " + getSkillRows().length)]);
 
         elements.pageTags.innerHTML = tags.join("");
       }
@@ -2029,7 +2091,7 @@
           : renderEmpty("지금 바로 시험하거나 열어볼 수 있는 챗봇이 없습니다.");
 
         elements.heroRightTitle.textContent = "챗봇 다음은 Skills";
-        elements.heroRightDesc.textContent = "함께 보면 좋은 MCP와 Skill을 모아 보여줍니다.";
+        elements.heroRightDesc.textContent = "함께 보면 좋은 Skill을 모아 보여줍니다.";
         elements.heroRightList.innerHTML = mcpItems.length
           ? mcpItems.map((item, index) => renderMiniRow(item, item.icon === "extension" ? "#f59e0b,#ea580c" : index % 2 ? "#a855f7,#7c3aed" : "#0ea5e9,#2563eb")).join("")
           : renderEmpty("함께 볼 Skill이 아직 없습니다.");
@@ -2037,7 +2099,7 @@
 
       function renderSpotlight() {
         const item = state.spotlight;
-        const firstMcp = ((state.linkedMcp && state.linkedMcp.rows) || [])[0];
+        const firstMcp = getDisplayMcpRows()[0];
 
         if (!item) {
           elements.spotlightMain.innerHTML = renderEmpty("spotlight 항목이 없습니다.");
@@ -2066,7 +2128,7 @@
           '<div class="tag-row">',
           renderTag("chat", "Chatbots " + getCategoryCount("agent")),
           renderTag("lan", "MCP " + getCategoryCount("mcp")),
-          renderTag("extension", "Skills " + getCombinedSkillRows().length),
+          renderTag("extension", "Skills " + getSkillRows().length),
           renderTag("lightbulb", "Tips " + getOnboardingCards().length),
           renderTag("explore", "Easy Start"),
           "</div>",
@@ -2144,7 +2206,13 @@
       }
 
       function buildMcpCard(row) {
-        const slug = slugify(row.title);
+        const slug = row.slug || slugify(row.title);
+        const typeLabel = typeof row.toolCount === "number"
+          ? row.toolCount + " tools"
+          : (row.meta || "Tool Inventory MCP");
+        const consumerLabel = typeof row.consumerCount === "number" && row.consumerCount > 0
+          ? row.consumerCount + " consumers"
+          : "MCP asset";
 
         return [
           '<article class="agent-card mcp-card">',
@@ -2156,14 +2224,14 @@
           '<div class="card-name">',
           escapeHtml(row.title),
           '</div><div class="card-meta">',
-          escapeHtml(row.meta || "Linked MCP"),
+          escapeHtml(row.meta || "Tool Inventory MCP"),
           '</div><div class="card-desc">',
-          escapeHtml(row.description || "연결된 consumer가 있는 도구 자산입니다."),
+          escapeHtml(row.description || "Tool Inventory에 등록된 MCP 자산입니다."),
           '</div><div class="card-stats">',
-          '<span class="card-stat"><span class="material-icons-round">hub</span>Linked MCP</span>',
-          row.meta ? '<span class="card-stat"><span class="material-icons-round">group_work</span>' + escapeHtml(row.meta) + "</span>" : "",
-          '<span class="card-stat"><span class="material-icons-round">insights</span>챗봇과 함께 이해</span>',
-          '</div><div class="card-foot"><span class="scope-note">챗봇이 어떤 정보를 읽는지 함께 이해하기 좋은 연결 도구</span><div class="card-actions">',
+          '<span class="card-stat"><span class="material-icons-round">inventory_2</span>Tool Inventory</span>',
+          '<span class="card-stat"><span class="material-icons-round">build</span>' + escapeHtml(typeLabel) + "</span>",
+          '<span class="card-stat"><span class="material-icons-round">group_work</span>' + escapeHtml(consumerLabel) + "</span>",
+          '</div><div class="card-foot"><span class="scope-note">챗봇과 Assistant에 연결할 MCP 자산을 확인하기 좋은 항목</span><div class="card-actions">',
           '<a class="action-link" href="workspace_tool_inventory_hub.html">살펴보기 <span class="material-icons-round">chevron_right</span></a>',
           '<button class="action-link secondary" type="button" data-open-contract data-item-slug="' + escapeHtml(slug) + '" data-item-kind="mcp">상세 정보 <span class="material-icons-round">receipt_long</span></button>',
           "</div></div></article>",
@@ -2273,8 +2341,8 @@
           {
             icon: "extension",
             title: "Skills",
-            meta: "내 AI Assistant에 붙여 쓸 수 있는 MCP와 Skill 자산 " + getCombinedSkillRows().length + "개",
-            value: String(getCombinedSkillRows().length),
+            meta: "내 AI Assistant에 붙여 쓸 수 있는 Skill 자산 " + getSkillRows().length + "개",
+            value: String(getSkillRows().length),
           },
           {
             icon: "lightbulb",
@@ -2367,12 +2435,11 @@
       }
 
       function findMcpBySlug(slug) {
-        const rows = (state.linkedMcp && state.linkedMcp.rows) || [];
-        return rows.find((item) => slugify(item.title) === slug);
+        return getDisplayMcpRows().find((item) => (item.slug || slugify(item.title)) === slug);
       }
 
       function findSkillBySlug(slug) {
-        return getCombinedSkillRows().find((item) => slugify(item.title) === slug);
+        return getSkillRows().find((item) => slugify(item.title) === slug);
       }
 
       function openDetail(slug, kind) {
@@ -2468,6 +2535,7 @@
             connectableAgents,
             workflowPacks,
             trustMatrix,
+            toolInventoryMcp,
             linkedMcp,
             approvals,
             insights,
@@ -2479,6 +2547,7 @@
             apiGet("/api/v2/ai-gallery/connectable-agents?limit=12"),
             apiGet("/api/v2/ai-gallery/workflow-packs?limit=12"),
             apiGet("/api/v2/ai-gallery/trust-matrix"),
+            apiGet("/api/v2/tool-inventory?limit=100&sort=-updatedAt&filter[kind]=mcp"),
             apiGet("/api/v2/ai-gallery/linked-mcp"),
             apiGet("/api/v2/ai-gallery/approvals"),
             apiGet("/api/v2/ai-gallery/insights"),
@@ -2491,6 +2560,9 @@
           state.agents = connectableAgents.items || [];
           state.workflowPacks = workflowPacks.items || [];
           state.trustMatrix = trustMatrix;
+          state.toolInventoryMcp = ((toolInventoryMcp && toolInventoryMcp.items) || [])
+            .map((item) => mapInventoryMcpRow(item))
+            .filter(Boolean);
           state.linkedMcp = linkedMcp;
           state.approvals = approvals;
           state.insights = insights;

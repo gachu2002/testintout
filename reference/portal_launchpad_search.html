@@ -2,1535 +2,3262 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AX Studio Search</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Launchpad latest FE contract: /api/v2/launchpad/overview(banners 포함), /api/v2/launchpad/my-work, /api/v2/launchpad/resources -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AX Studio</title>
   <style>
+    /* ─────────────────────────────────────────────────────
+       TOKENS
+    ───────────────────────────────────────────────────── */
     :root {
-      --bg: #f4f6f9;
-      --surface: rgba(255,255,255,.9);
-      --surface-strong: #ffffff;
-      --border: #e8ebf0;
-      --border-strong: #d7dce4;
-      --text-1: #2f3236;
-      --text-2: #616873;
-      --text-3: #9298a0;
-      --brand: #b40e4d;
-      --brand-strong: #d5115b;
-      --brand-soft: #feeff5;
-      --blue: #2563eb;
-      --blue-soft: #e8f0ff;
-      --teal: #0d9488;
-      --teal-soft: #e7faf7;
-      --violet: #7c5fcf;
-      --violet-soft: #f3edff;
-      --amber: #d97706;
-      --amber-soft: #fff5df;
-      --shadow: 0 22px 44px rgba(15,23,42,.08);
-      --radius-lg: 22px;
-      --radius-md: 16px;
-      --radius-sm: 12px;
-      --nav-max: 1320px;
-      --max: 1320px;
+      --bg:        #f4f6f9;
+      --surface:   #ffffff;
+      --border:    #ebedf0;
+      --border-2:  #d6d8db;
+      --t1: rgba(47,50,54,1);
+      --t2: rgba(95,101,109,1);
+      --t3: rgba(146,152,160,1);
+      --brand:   #b40e4d;
+      --brand-h: #d5115b;
+      --brand-bg:#feeff5;
+      --blue:    #0086cc;
+      --blue-bg: #e2f3ff;
+      --green:   #0d9488;
+      --green-bg:#ecfdf5;
+      --purple:  #7c5fcf;
+      --purple-bg:#f1e7ff;
+      --orange:  #e07020;
+      --indigo:  #4f46e5;
+      --red:     #b91c1c;
+
+      --gap: 20px;          /* single gap token */
+      --r:   14px;          /* border-radius token */
+      --max: 1280px;
+      --nav-max: 1520px;
     }
 
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; }
+    /* ─────────────────────────────────────────────────────
+       RESET
+    ───────────────────────────────────────────────────── */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--text-1);
-      background:
-        radial-gradient(circle at top left, rgba(180,14,77,.08), transparent 30%),
-        radial-gradient(circle at top right, rgba(37,99,235,.08), transparent 28%),
-        linear-gradient(180deg, #f7f8fb 0%, #f4f6f9 34%, #eef2f7 100%);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
+      font-family:'Inter',-apple-system,sans-serif;
+      background:var(--bg); color:var(--t1); min-height:100vh;
+      -webkit-font-smoothing:antialiased;
     }
-    a { color: inherit; text-decoration: none; }
-    button, input { font: inherit; }
+    a { color:inherit; text-decoration:none; }
+    button { font-family:inherit; cursor:pointer; }
 
+    /* ─────────────────────────────────────────────────────
+       TOPBAR
+    ───────────────────────────────────────────────────── */
     .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 200;
-      height: 56px;
-      background: var(--surface-strong);
-      border-bottom: 1px solid var(--border);
+      position:sticky; top:0; z-index:200;
+      height:56px; background:var(--surface);
+      border-bottom:1px solid var(--border);
     }
     .topbar-inner {
-      max-width: var(--nav-max);
-      margin: 0 auto;
-      height: 100%;
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      position: relative;
+      max-width:var(--nav-max); margin:0 auto; height:100%;
+      padding:0 24px;
+      display:flex; align-items:center; gap:12px;
+      position:relative;
     }
     .topbar-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-shrink: 0;
-      padding-right: 2px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-shrink:0;
+      padding-right:2px;
     }
     .brand-mark {
-      width: 40px;
-      height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
+      width:40px;
+      height:24px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
     }
     .brand-mark img {
-      display: block;
-      width: 35px;
-      height: 20px;
+      display:block;
+      width:35px;
+      height:20px;
     }
     .brand-name {
-      font-size: 15px;
-      font-weight: 800;
-      color: var(--text-1);
-      letter-spacing: -.35px;
-      white-space: nowrap;
+      font-size:15px;
+      font-weight:800;
+      color:var(--t1);
+      letter-spacing:-.35px;
+      white-space:nowrap;
     }
     .logo-menu {
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
+      flex-shrink:0;
+      display:flex;
+      align-items:center;
     }
     .menu-trigger {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      height: 40px;
-      padding: 0 11px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: #fbfcfe;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-1);
-      letter-spacing: -.2px;
-      transition: background .15s, box-shadow .15s;
+      display:flex; align-items:center; gap:8px;
+      height:40px; padding:0 11px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:#fbfcfe;
+      font-size:13px; font-weight:700; color:var(--t1);
+      letter-spacing:-.2px;
+      transition:background .15s, box-shadow .15s;
     }
     .menu-trigger:hover,
     .logo-menu.is-open .menu-trigger {
-      background: var(--bg);
-      box-shadow: inset 0 0 0 1px var(--border);
+      background:var(--bg);
+      box-shadow:inset 0 0 0 1px var(--border);
     }
     .menu-trigger .material-icons-round:first-child {
-      font-size: 18px;
-      color: var(--text-2);
+      font-size:18px;
+      color:var(--t2);
     }
     .menu-caret {
-      font-size: 18px;
-      color: var(--text-3);
-      transition: transform .18s ease, color .15s ease;
+      font-size:18px;
+      color:var(--t3);
+      transition:transform .18s ease, color .15s ease;
     }
     .logo-menu.is-open .menu-caret {
-      transform: rotate(180deg);
-      color: var(--brand);
+      transform:rotate(180deg);
+      color:var(--brand);
     }
     .service-popover {
-      position: fixed;
-      left: 0;
-      top: 56px;
-      width: 100vw;
-      background: linear-gradient(180deg, rgba(247,248,251,.98) 0%, rgba(243,245,249,.98) 100%);
-      border-top: 1px solid rgba(235,237,240,.9);
-      border-bottom: 1px solid var(--border);
-      box-shadow: 0 18px 36px rgba(15,23,42,.08);
-      padding: 18px 0 20px;
-      z-index: 240;
+      position:fixed;
+      left:0;
+      top:56px;
+      width:100vw;
+      background:
+        linear-gradient(180deg, rgba(247,248,251,.98) 0%, rgba(243,245,249,.98) 100%);
+      border-top:1px solid rgba(235,237,240,.9);
+      border-bottom:1px solid var(--border);
+      box-shadow:0 18px 36px rgba(15,23,42,.08);
+      padding:18px 0 20px;
+      z-index:240;
     }
-    .service-popover[hidden] { display: none; }
+    .service-popover[hidden] { display:none; }
     .service-popover-inner {
-      max-width: var(--nav-max);
-      margin: 0 auto;
-      padding: 0 24px;
+      max-width:var(--nav-max);
+      margin:0 auto;
+      padding:0 24px;
     }
     .service-groups {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0,1fr));
-      gap: 0;
+      display:grid;
+      grid-template-columns:repeat(6, minmax(0,1fr));
+      gap:0;
     }
     .service-group {
-      min-width: 0;
-      padding: 0 30px;
+      min-width:0;
+      padding:0 30px;
     }
-    .service-group + .service-group { border-left: 1px solid var(--border); }
-    .service-group-head { margin-bottom: 18px; }
-    .service-group-copy { min-width: 0; }
+    .service-group + .service-group { border-left:1px solid var(--border); }
+    .service-group-head {
+      margin-bottom:18px;
+    }
+    .service-group-copy { min-width:0; }
+    .service-group-title-row { margin-bottom:0; }
     .service-group-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text-1);
+      font-size:15px; font-weight:700; color:var(--t1);
     }
+    .service-group-icon,
+    .service-group-count,
+    .service-group-desc { display:none; }
     .service-links {
-      display: grid;
-      gap: 18px;
-      margin-left: 0;
+      display:grid;
+      gap:18px;
+      margin-left:0;
     }
     .service-link {
-      display: grid;
-      grid-template-columns: 18px minmax(0,1fr);
-      align-items: flex-start;
-      gap: 10px;
-      padding: 7px 10px;
-      margin: 0 -10px;
-      border-radius: 10px;
-      background: transparent;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-1);
-      transition: background .15s ease, color .15s ease;
+      display:grid;
+      grid-template-columns:18px minmax(0,1fr);
+      align-items:flex-start;
+      gap:10px;
+      padding:7px 10px;
+      margin:0 -10px;
+      border-radius:10px;
+      background:transparent;
+      border:none;
+      font-size:13px; font-weight:600; color:var(--t1);
+      transition:background .15s ease, color .15s ease;
     }
     .service-link:hover {
-      background: rgba(255,255,255,.84);
-      color: var(--brand);
+      background:rgba(255,255,255,.84);
+      color:var(--brand);
     }
     .service-link-icon {
-      font-size: 17px;
-      color: var(--text-2);
-      margin-top: 2px;
-      transition: color .15s ease;
+      font-size:17px;
+      color:var(--t2);
+      margin-top:2px;
+      transition:color .15s ease;
     }
-    .service-link:hover .service-link-icon { color: var(--brand); }
+    .service-link:hover .service-link-icon {
+      color:var(--brand);
+    }
     .service-link-copy {
-      min-width: 0;
-      display: grid;
-      gap: 4px;
+      min-width:0;
+      display:grid;
+      gap:4px;
+    }
+    .service-link-title {
+      line-height:1.3;
     }
     .service-link-desc {
-      font-size: 12px;
-      font-weight: 400;
-      line-height: 1.45;
-      color: var(--text-2);
+      font-size:12px;
+      font-weight:400;
+      line-height:1.45;
+      color:var(--t2);
     }
-    .service-link:hover .service-link-desc { color: var(--text-1); }
-    .service-outlinks {
-      position: relative;
-      left: 50%;
-      width: 100vw;
-      box-sizing: border-box;
-      margin: 16px 0 -20px;
-      padding: 9px max(24px, calc((100vw - var(--nav-max)) / 2 + 24px)) 10px;
-      transform: translateX(-50%);
-      border-top: 1px solid rgba(15,23,42,.10);
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      flex-wrap: wrap;
-      gap: 10px;
-      background: rgba(248,250,252,.72);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.72);
+    .service-link:hover .service-link-desc {
+      color:var(--t1);
     }
-    .service-outlinks-title {
-      color: var(--text-3);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      opacity: .72;
-    }
-    .service-outlink-list {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      flex-wrap: wrap;
-      gap: 0;
-    }
-    .service-outlink {
-      min-width: 0;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 8px;
-      color: var(--text-2);
-      font-size: 12px;
-      font-weight: 600;
-      transition: color .15s ease;
-    }
-    .service-outlink + .service-outlink { border-left: 1px solid var(--border); }
-    .service-outlink:hover { color: var(--brand); }
-    .service-outlink-icon,
-    .service-outlink-arrow {
-      color: currentColor;
-      font-size: 13px;
-      opacity: .48;
-      transition: opacity .15s ease;
-    }
-    .service-outlink:hover .service-outlink-icon,
-    .service-outlink:hover .service-outlink-arrow {
-      opacity: .8;
-    }
-    .service-outlink-copy {
-      min-width: 0;
-      display: inline-flex;
-      align-items: center;
-    }
-    .search-wrap {
-      flex: 1;
-      max-width: 440px;
-      min-width: 0;
-      position: relative;
-    }
+    
+
+.service-outlinks {
+  position:relative;
+  left:50%;
+  width:100vw;
+  box-sizing:border-box;
+  margin:16px 0 -20px;
+  padding:9px max(24px, calc((100vw - var(--nav-max)) / 2 + 24px)) 10px;
+  transform:translateX(-50%);
+  border-top:1px solid rgba(15,23,42,.10);
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  flex-wrap:wrap;
+  gap:10px;
+  background:rgba(248,250,252,.72);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.72);
+}
+.service-outlinks-title {
+  color:var(--t3);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  opacity:.72;
+}
+.service-outlink-list {
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  flex-wrap:wrap;
+  gap:0;
+}
+.service-outlink {
+  min-width:0;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:3px 8px;
+  color:var(--t2);
+  text-decoration:none;
+  font-size:12px;
+  font-weight:600;
+  transition:color .15s ease;
+}
+.service-outlink + .service-outlink {
+  border-left:1px solid var(--border);
+}
+.service-outlink:hover {
+  color:var(--brand);
+}
+.service-outlink-icon,
+.service-outlink-arrow {
+  color:currentColor;
+  font-size:13px;
+  opacity:.48;
+  transition:opacity .15s ease;
+}
+.service-outlink:hover .service-outlink-icon,
+.service-outlink:hover .service-outlink-arrow {
+  opacity:.8;
+}
+.service-outlink-copy {
+  min-width:0;
+  display:inline-flex;
+  align-items:center;
+}
+.service-outlink-title {
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.service-outlink-desc {
+  display:none;
+}
+
+.search-wrap { flex:1; max-width:440px; min-width:0; position:relative; }
     .search-wrap .ico {
-      position: absolute;
-      left: 13px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 17px;
-      color: var(--text-3);
-      pointer-events: none;
+      position:absolute; left:13px; top:50%; transform:translateY(-50%);
+      font-size:17px; color:var(--t3); pointer-events:none;
     }
     .search-input {
-      width: 100%;
-      height: 36px;
-      border: 1.5px solid var(--border);
-      border-radius: 20px;
-      padding: 0 72px 0 38px;
-      font-size: 13px;
-      color: var(--text-1);
-      background: var(--bg);
-      outline: none;
-      transition: border .15s, box-shadow .15s;
+      width:100%; height:36px; border:1.5px solid var(--border);
+      border-radius:20px; padding:0 72px 0 38px;
+      font-size:13px; font-family:inherit; color:var(--t1);
+      background:var(--bg); outline:none;
+      transition:border .15s, box-shadow .15s;
     }
-    .search-input:focus {
-      border-color: var(--brand);
-      background: var(--surface-strong);
-      box-shadow: 0 0 0 3px rgba(180,14,77,.08);
-    }
-    .search-input::placeholder { color: var(--text-3); }
+    .search-input:focus { border-color:var(--brand); background:var(--surface); box-shadow:0 0 0 3px rgba(180,14,77,.08); }
+    .search-input::placeholder { color:var(--t3); }
     .search-ai {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      height: 18px;
-      padding: 0;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      color: var(--text-3);
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: .02em;
-      white-space: nowrap;
-      pointer-events: none;
+      position:absolute;
+      right:12px;
+      top:50%;
+      transform:translateY(-50%);
+      height:18px;
+      padding:0;
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      color:var(--t3);
+      font-size:10px;
+      font-weight:500;
+      letter-spacing:.02em;
+      white-space:nowrap;
+      pointer-events:none;
     }
-    .search-ai .material-icons-round { font-size: 11px; }
-    .tb-spacer { flex: 1; }
+    .search-ai .material-icons-round {
+      font-size:11px;
+    }
+    .tb-spacer { flex:1; }
     .tb-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-2);
-      position: relative;
-      transition: background .15s;
-      flex-shrink: 0;
+      width:34px; height:34px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      color:var(--t2); position:relative; transition:background .15s;
+      flex-shrink:0;
     }
-    .tb-icon:hover { background: var(--bg); }
-    .tb-icon .material-icons-round { font-size: 20px; }
+    .tb-icon:hover { background:var(--bg); }
+    .tb-icon .material-icons-round { font-size:20px; }
     .tb-icon .dot {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--brand);
-      border: 2px solid var(--surface-strong);
+      position:absolute; top:5px; right:5px;
+      width:7px; height:7px; border-radius:50%;
+      background:var(--brand); border:2px solid var(--surface);
     }
     .avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--brand);
-      color: #fff;
-      font-size: 12px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
+      width:32px; height:32px; border-radius:50%;
+      background:var(--brand); color:#fff;
+      font-size:12px; font-weight:600;
+      display:flex; align-items:center; justify-content:center;
+      flex-shrink:0;
     }
 
-    .page {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 28px 24px 72px;
+    /* ─────────────────────────────────────────────────────
+       PAGE WRAPPER — 모든 섹션이 공유하는 최대 너비 + 패딩
+    ───────────────────────────────────────────────────── */
+    .page { max-width:var(--max); margin:0 auto; padding:24px 24px 72px; }
+
+    /* ─────────────────────────────────────────────────────
+       SECTION LABEL (소섹션 헤더 공통)
+    ───────────────────────────────────────────────────── */
+    .sec-label {
+      display:flex; align-items:center; gap:6px;
+      font-size:11px; font-weight:700; color:var(--t3);
+      text-transform:uppercase; letter-spacing:.8px;
+      margin-bottom:12px;
     }
+    .sec-label .material-icons-round { font-size:14px; }
+    .sec-label-more {
+      margin-left:auto;
+      font-size:11px; font-weight:500; color:var(--t3);
+      text-transform:none; letter-spacing:0;
+      display:flex; align-items:center; gap:2px; cursor:pointer;
+    }
+    .sec-label-more:hover { color:var(--brand); }
+    .sec-label-more .material-icons-round { font-size:14px; }
+
+    /* ─────────────────────────────────────────────────────
+       PANEL (카드 컨테이너 공통)
+    ───────────────────────────────────────────────────── */
     .panel {
-      border: 1px solid rgba(232,235,240,.9);
-      background: var(--surface);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(16px);
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:var(--r); padding:20px;
     }
 
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(0,1.6fr) minmax(300px,.74fr);
-      gap: 22px;
-      align-items: start;
+    .resource-rail-list {
+      display:grid;
+      gap:8px;
+      max-height:560px;
+      overflow:auto;
+      padding-right:4px;
+      scrollbar-width:thin;
+      scrollbar-color:rgba(146,152,160,.45) transparent;
     }
-    .stack {
-      display: grid;
-      gap: 22px;
+    .resource-rail-list::-webkit-scrollbar {
+      width:8px;
     }
-    .panel {
-      border-radius: 24px;
-      padding: 22px;
+    .resource-rail-list::-webkit-scrollbar-thumb {
+      background:rgba(146,152,160,.42);
+      border-radius:999px;
     }
-    .ask-ai-banner {
-      display: grid;
-      gap: 12px;
-      margin-bottom: 18px;
-      padding: 16px 18px;
-      border-radius: 18px;
-      border: 1px solid rgba(215,220,228,.92);
-      background: rgba(255,255,255,.92);
-      box-shadow: 0 6px 18px rgba(15,23,42,.03);
+    .resource-rail-list::-webkit-scrollbar-track {
+      background:transparent;
     }
-    .ask-ai-copy {
-      min-width: 0;
-      display: grid;
-      gap: 6px;
+    .resource-rail-item {
+      display:grid;
+      grid-template-columns:auto minmax(0,1fr);
+      gap:10px;
+      align-items:center;
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid rgba(214,216,219,.88);
+      background:rgba(255,255,255,.9);
+      transition:border-color .15s ease, background .15s ease, transform .15s ease;
     }
-    .ask-ai-title {
-      margin: 0;
-      font-size: 19px;
-      line-height: 1.35;
-      letter-spacing: -.03em;
+    a.resource-rail-item:hover {
+      border-color:rgba(180,14,77,.18);
+      background:#fff;
+      transform:translateY(-1px);
     }
-    .ask-ai-title mark {
-      background: none;
-      color: inherit;
-      padding: 0;
-      font-weight: 800;
+    .resource-rail-icon {
+      width:34px;
+      height:34px;
+      border-radius:11px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      flex-shrink:0;
     }
-    .ask-ai-desc {
-      margin: 0;
-      color: var(--text-2);
-      font-size: 12px;
-      line-height: 1.55;
-      letter-spacing: -.01em;
+    .resource-rail-icon .material-icons-round { font-size:18px; }
+    .resource-rail-copy-item {
+      min-width:0;
     }
-    .ask-ai-meta {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(226,230,236,.96);
+    .resource-rail-type {
+      display:block;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--t3);
+      margin-bottom:3px;
     }
-    .ask-ai-meta-items {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      min-width: 0;
-    }
-    .ask-ai-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #f5f7fa;
-      color: var(--text-2);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: -.01em;
-      white-space: nowrap;
-    }
-    .ask-ai-chip strong {
-      color: var(--text-1);
-      font-weight: 800;
-    }
-    .ask-ai-chip .material-icons-round {
-      font-size: 14px;
-      color: var(--text-3);
-    }
-    .ask-ai-cta {
-      padding: 0;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: transparent;
-      color: var(--text-2);
-      border: none;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: -.01em;
-      transition: color .15s ease;
-      white-space: nowrap;
-    }
-    .ask-ai-cta:hover {
-      color: var(--brand);
-    }
-    .ask-ai-cta .material-icons-round { font-size: 14px; }
-    .panel-head {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-    .panel-head .title {
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -.03em;
-    }
-    .panel-head .meta {
-      margin-left: auto;
-      color: var(--text-3);
-      font-size: 12px;
-      font-weight: 600;
+    .resource-rail-title-item {
+      display:block;
+      font-size:12px;
+      font-weight:700;
+      color:var(--t1);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
-    .featured-card {
-      position: relative;
-      overflow: hidden;
-      padding: 24px;
-      border-radius: 24px;
-      border: 1px solid rgba(37,99,235,.12);
+    /* ─────────────────────────────────────────────────────
+       [A] HERO ROW
+       구획: 인사말 (left) | 전체 통계 4개 (right)
+       ────────────────────────────────────────────────────
+       .hero
+         .hero-left  (flex, grow)
+         .hero-right (flex, shrink:0, 4 stat chips)
+    ───────────────────────────────────────────────────── */
+    .hero {
+      display:flex; align-items:center; justify-content:space-between;
+      gap:24px; margin-bottom:var(--gap);
+    }
+    .hero-greet h1 { font-size:22px; font-weight:700; letter-spacing:-.5px; }
+    .hero-greet p  { font-size:13px; color:var(--t2); margin-top:4px; }
+
+    .hero-stats { display:flex; gap:10px; flex-shrink:0; }
+    .stat-chip {
+      display:flex; align-items:center; gap:9px;
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:10px; padding:10px 16px; white-space:nowrap;
+    }
+    .stat-chip-link {
+      transition:border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+    }
+    .stat-chip-link:hover {
+      border-color:rgba(79,140,255,.26);
+      box-shadow:0 10px 22px rgba(79,140,255,.1);
+      transform:translateY(-1px);
+    }
+    .stat-chip-icon {
+      width:30px; height:30px; border-radius:8px;
+      display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    }
+    .stat-chip-icon .material-icons-round { font-size:15px; color:#fff; }
+    .stat-chip-val   { font-size:15px; font-weight:700; line-height:1.2; }
+    .stat-chip-label { font-size:10px; color:var(--t3); margin-top:2px; }
+
+    /* ─────────────────────────────────────────────────────
+       [B] BANNER
+       구획: 전체 너비, 라이트 그라디언트
+    ───────────────────────────────────────────────────── */
+    .banner-carousel {
+      margin-bottom:var(--gap);
+    }
+    .banner-track {
+      display:grid;
+    }
+    .banner-slide {
+      grid-area:1 / 1;
+      opacity:0;
+      pointer-events:none;
+      transform:translateX(12px);
+      transition:opacity .45s ease, transform .45s ease;
+    }
+    .banner-slide.is-active {
+      opacity:1;
+      pointer-events:auto;
+      transform:translateX(0);
+    }
+    .banner {
+      position:relative; overflow:hidden; border-radius:18px;
       background:
-        radial-gradient(circle at 84% 18%, rgba(37,99,235,.14), transparent 26%),
-        linear-gradient(135deg, #f8fbff 0%, #eef5ff 50%, #f8f8ff 100%);
+        radial-gradient(circle at 12% 18%, rgba(14,165,233,.12), transparent 30%),
+        radial-gradient(circle at 82% 20%, rgba(99,102,241,.12), transparent 32%),
+        linear-gradient(90deg, #eff6ff 0%, #eef8ff 52%, #f5f3ff 100%);
+      border:1px solid rgba(214,216,219,.75);
+      padding:30px 32px 24px;
+      display:flex; align-items:center; justify-content:space-between; gap:24px;
+      margin-bottom:var(--gap);
+      min-height:152px;
     }
-    .featured-kicker {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(37,99,235,.1);
-      color: var(--blue);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-    .featured-kicker .material-icons-round { font-size: 14px; }
-    .featured-grid {
-      margin-top: 16px;
-      display: grid;
-      grid-template-columns: minmax(0,1fr) auto;
-      gap: 18px;
-      align-items: center;
-    }
-    .featured-title {
-      margin: 0 0 10px;
-      font-size: 28px;
-      line-height: 1.18;
-      letter-spacing: -.05em;
-    }
-    .featured-title strong { color: var(--blue); }
-    .featured-desc {
-      margin: 0;
-      color: var(--text-2);
-      font-size: 14px;
-      line-height: 1.7;
-      max-width: 700px;
-    }
-    .featured-tags {
-      margin-top: 16px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      min-height: 30px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .01em;
-    }
-    .tag .material-icons-round { font-size: 14px; }
-    .tag.blue { background: var(--blue-soft); color: var(--blue); }
-    .tag.teal { background: var(--teal-soft); color: var(--teal); }
-    .tag.violet { background: var(--violet-soft); color: var(--violet); }
-    .tag.amber { background: var(--amber-soft); color: var(--amber); }
-    .featured-actions {
-      display: grid;
-      gap: 10px;
-      min-width: 190px;
-    }
-    .action-primary,
-    .action-secondary {
-      height: 42px;
-      border-radius: 14px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-size: 13px;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-    }
-    .action-primary {
-      background: linear-gradient(135deg, #2563eb 0%, #4f8cff 100%);
-      color: #fff;
-      box-shadow: 0 14px 24px rgba(37,99,235,.18);
-    }
-    .action-secondary {
-      border: 1px solid rgba(37,99,235,.14);
-      background: rgba(255,255,255,.86);
-      color: var(--blue);
-    }
-    .action-primary .material-icons-round,
-    .action-secondary .material-icons-round { font-size: 17px; }
-
-    .filter-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-    .filter-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      height: 38px;
-      padding: 0 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(215,220,228,.9);
-      background: rgba(255,255,255,.88);
-      color: var(--text-2);
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: border-color .15s ease, background .15s ease, color .15s ease, transform .15s ease;
-    }
-    .filter-chip .material-icons-round { font-size: 16px; }
-    .filter-chip.is-active {
-      background: var(--brand-soft);
-      border-color: rgba(180,14,77,.18);
-      color: var(--brand);
-      transform: translateY(-1px);
-    }
-
-    .result-list {
-      display: grid;
-      gap: 14px;
-    }
-    .result-card {
-      display: grid;
-      grid-template-columns: auto minmax(0,1fr) auto;
-      gap: 14px;
-      align-items: start;
-      padding: 18px;
-      border-radius: 20px;
-      border: 1px solid rgba(215,220,228,.88);
-      background: rgba(255,255,255,.82);
-      transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
-    }
-    .result-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(180,14,77,.16);
-      box-shadow: 0 18px 34px rgba(15,23,42,.08);
-      background: #fff;
-    }
-    .result-icon {
-      width: 46px;
-      height: 46px;
-      border-radius: 16px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      flex-shrink: 0;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.16);
-    }
-    .result-icon .material-icons-round { font-size: 22px; }
-    .result-copy { min-width: 0; }
-    .result-type {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 8px;
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--text-3);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-    .result-type .material-icons-round { font-size: 14px; }
-    .result-title {
-      margin: 0 0 8px;
-      font-size: 18px;
-      line-height: 1.3;
-      letter-spacing: -.03em;
-    }
-    .result-title mark {
-      background: linear-gradient(180deg, rgba(180,14,77,0) 0%, rgba(180,14,77,.18) 100%);
-      color: inherit;
-      padding: 0 .12em;
-    }
-    .result-desc {
-      margin: 0;
-      color: var(--text-2);
-      font-size: 13px;
-      line-height: 1.65;
-    }
-    .result-meta {
-      margin-top: 12px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .meta-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      min-height: 28px;
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: rgba(244,246,249,.9);
-      color: var(--text-2);
-      font-size: 11px;
-      font-weight: 700;
-    }
-    .meta-pill .material-icons-round { font-size: 14px; }
-    .result-side {
-      display: grid;
-      gap: 8px;
-      justify-items: end;
-    }
-    .score-pill,
-    .route-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      min-height: 30px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: .02em;
-      white-space: nowrap;
-    }
-    .score-pill {
-      color: var(--teal);
-      background: var(--teal-soft);
-    }
-    .route-pill {
-      color: var(--blue);
-      background: var(--blue-soft);
-    }
-    .score-pill .material-icons-round,
-    .route-pill .material-icons-round { font-size: 14px; }
-    .empty-state {
-      padding: 22px;
-      border-radius: 18px;
-      border: 1px dashed rgba(215,220,228,.98);
-      background: rgba(244,246,249,.7);
-      color: var(--text-2);
-      text-align: center;
-      font-size: 13px;
-      line-height: 1.7;
-    }
-
-    .rail-panel {
-      display: grid;
-      gap: 14px;
-    }
-    .summary-box {
-      padding: 16px;
-      border-radius: 18px;
+    .banner-carousel .banner { margin-bottom:0; }
+    .banner.dej-banner {
+      min-height:168px;
+      padding:24px 28px 22px;
       background:
-        linear-gradient(135deg, rgba(180,14,77,.06) 0%, rgba(124,95,207,.08) 100%);
-      border: 1px solid rgba(180,14,77,.1);
+        radial-gradient(circle at 10% 16%, rgba(255,255,255,.22), transparent 24%),
+        radial-gradient(circle at 18% 80%, rgba(34,211,238,.28), transparent 28%),
+        radial-gradient(circle at 78% 24%, rgba(59,130,246,.34), transparent 30%),
+        radial-gradient(circle at 88% 78%, rgba(168,85,247,.24), transparent 26%),
+        linear-gradient(135deg, #081a3a 0%, #0f4c81 42%, #26145c 100%);
+      border-color:rgba(255,255,255,.16);
+      box-shadow:0 20px 48px rgba(12,19,43,.22);
     }
-    .summary-box h3,
-    .quick-card h3,
-    .timeline-card h3 {
-      margin: 0 0 8px;
-      font-size: 15px;
-      line-height: 1.35;
-      letter-spacing: -.02em;
+    .dej-banner::before {
+      content:'';
+      position:absolute;
+      inset:0;
+      z-index:1;
+      background:
+        linear-gradient(90deg, rgba(2,12,24,.56) 0%, rgba(3,20,38,.36) 42%, rgba(3,20,38,.12) 72%, rgba(3,20,38,.04) 100%),
+        radial-gradient(circle at center, rgba(255,255,255,.04), transparent 60%);
+      pointer-events:none;
     }
-    .summary-box p,
-    .quick-card p,
-    .timeline-card p {
-      margin: 0;
-      color: var(--text-2);
-      font-size: 13px;
-      line-height: 1.7;
+    .banner-body { position:relative; z-index:2; }
+    .banner-eye {
+      display:inline-flex; align-items:center; gap:5px;
+      font-size:11px; font-weight:800; letter-spacing:1.6px;
+      text-transform:uppercase; color:var(--brand); margin-bottom:12px;
     }
-    .summary-list,
-    .quick-links,
-    .timeline-list {
-      display: grid;
-      gap: 10px;
-      margin-top: 12px;
+    .dej-banner .banner-eye {
+      padding:6px 9px;
+      border-radius:999px;
+      background:rgba(255,255,255,.12);
+      color:#d9f4ff;
+      letter-spacing:.1em;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);
     }
-    .summary-list-item,
-    .timeline-item {
-      display: grid;
-      grid-template-columns: 28px minmax(0,1fr);
-      gap: 10px;
-      align-items: start;
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: rgba(255,255,255,.74);
-      border: 1px solid rgba(215,220,228,.88);
+    .banner-eye .material-icons-round { font-size:13px; }
+    .banner-title  { font-size:23px; font-weight:800; color:var(--t1); letter-spacing:-.5px; margin-bottom:10px; line-height:1.3; }
+    .dej-banner .banner-title { max-width:700px; font-size:24px; letter-spacing:-.7px; line-height:1.26; color:#fff; text-shadow:0 3px 16px rgba(0,0,0,.72), 0 0 1px rgba(255,255,255,.6); }
+    .banner-desc   { font-size:13px; color:var(--t2); line-height:1.6; max-width:520px; }
+    .dej-banner .banner-desc { max-width:700px; font-size:13px; line-height:1.65; color:rgba(236,249,255,.92); text-shadow:0 2px 10px rgba(0,0,0,.58); }
+    .banner-desc strong { color:var(--brand); }
+    .banner-side   {
+      position:relative; z-index:2; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:16px; flex-shrink:0;
+      min-width:240px;
     }
-    .summary-list-item .material-icons-round,
-    .timeline-item .material-icons-round {
-      width: 28px;
-      height: 28px;
-      border-radius: 10px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(124,95,207,.1);
-      color: var(--violet);
-      font-size: 16px;
+    .banner-actions {
+      display:flex;
+      align-items:center;
+      gap:12px;
     }
-    .summary-list-item strong,
-    .timeline-item strong {
-      display: block;
-      font-size: 13px;
-      margin-bottom: 4px;
+    .banner-cta {
+      min-width:106px;
+      height:40px;
+      padding:0 20px; border-radius:10px;
+      background:var(--brand); color:#fff;
+      font-size:13px; font-weight:700; border:none;
+      box-shadow:0 8px 20px rgba(180,14,77,.18);
+      transition:all .15s;
     }
-    .summary-list-item span,
-    .timeline-item span {
-      color: var(--text-2);
-      font-size: 12px;
-      line-height: 1.55;
+    .banner-cta:hover { background:var(--brand-h); transform:translateY(-1px); }
+    .banner-ghost {
+      min-width:88px;
+      height:40px;
+      padding:0 18px; border-radius:10px;
+      background:rgba(255,255,255,.62); color:var(--t1);
+      font-size:13px; font-weight:600;
+      border:1px solid rgba(214,216,219,.95); transition:all .15s;
     }
-    .quick-link {
-      display: grid;
-      grid-template-columns: 36px minmax(0,1fr) auto;
-      gap: 10px;
-      align-items: center;
-      padding: 12px 14px;
-      border-radius: 16px;
-      border: 1px solid rgba(215,220,228,.88);
-      background: rgba(255,255,255,.82);
+    .banner-ghost:hover { background:#fff; border-color:rgba(180,14,77,.18); }
+    .banner-dots { display:flex; gap:6px; justify-content:center; margin-top:2px; }
+    .banner-dot { width:6px; height:6px; border:0; padding:0; border-radius:999px; background:rgba(95,101,109,.45); cursor:pointer; transition:all .2s; }
+    .banner-dot.on { width:20px; border-radius:999px; background:var(--brand); }
+    .dej-banner .banner-cta {
+      background:linear-gradient(135deg, #38bdf8, #818cf8);
+      color:#f8fbff;
+      box-shadow:0 12px 28px rgba(59,130,246,.28);
     }
-    .quick-link:hover {
-      border-color: rgba(37,99,235,.16);
-      background: #fff;
+    .dej-banner .banner-cta:hover { background:linear-gradient(135deg, #0ea5e9, #6366f1); }
+    .dej-banner .banner-ghost {
+      background:rgba(7,29,48,.72);
+      color:#e0f7ff;
+      border-color:rgba(125,211,252,.28);
     }
-    .quick-link-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 12px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
+    .dej-banner .banner-ghost:hover { background:rgba(14,165,233,.16); border-color:rgba(125,211,252,.46); }
+    .dej-banner .banner-dot.on { background:#38bdf8; }
+    .release-banner,
+    .learning-banner,
+    .research-banner,
+    .security-banner {
+      min-height:168px;
+      padding:26px 30px 24px;
+      border-color:rgba(255,255,255,.18);
+      color:#fff;
+      box-shadow:0 18px 44px rgba(12,19,43,.16);
     }
-    .quick-link-icon .material-icons-round { font-size: 18px; }
-    .quick-link strong {
-      display: block;
-      font-size: 13px;
-      margin-bottom: 4px;
+    .release-banner {
+      background:
+        radial-gradient(circle at 16% 18%, rgba(255,255,255,.95), transparent 20%),
+        radial-gradient(circle at 84% 18%, rgba(244,114,182,.18), transparent 28%),
+        radial-gradient(circle at 72% 84%, rgba(251,113,133,.12), transparent 24%),
+        linear-gradient(135deg, #fff8fc 0%, #fff1f6 46%, #ffe4ee 100%);
+      border-color:rgba(244,114,182,.22);
+      box-shadow:0 18px 40px rgba(244,114,182,.12);
     }
-    .quick-link span {
-      color: var(--text-2);
-      font-size: 12px;
-      line-height: 1.45;
+    .learning-banner {
+      background:
+        radial-gradient(circle at 18% 16%, rgba(255,255,255,.18), transparent 22%),
+        radial-gradient(circle at 84% 20%, rgba(56,189,248,.38), transparent 28%),
+        radial-gradient(circle at 66% 84%, rgba(168,85,247,.3), transparent 30%),
+        linear-gradient(135deg, #1d4ed8 0%, #0f766e 54%, #312e81 100%);
     }
-    .quick-link .material-icons-round.trailing {
-      color: var(--text-3);
-      font-size: 18px;
+    .research-banner {
+      background:
+        radial-gradient(circle at 16% 18%, rgba(255,255,255,.16), transparent 22%),
+        radial-gradient(circle at 84% 22%, rgba(16,185,129,.36), transparent 28%),
+        radial-gradient(circle at 70% 82%, rgba(45,212,191,.24), transparent 28%),
+        linear-gradient(135deg, #14532d 0%, #0f766e 48%, #164e63 100%);
+    }
+    .security-banner {
+      background:
+        radial-gradient(circle at 16% 20%, rgba(255,255,255,.14), transparent 22%),
+        radial-gradient(circle at 86% 18%, rgba(34,197,94,.26), transparent 28%),
+        radial-gradient(circle at 70% 82%, rgba(250,204,21,.18), transparent 24%),
+        linear-gradient(135deg, #111827 0%, #0f172a 34%, #14532d 100%);
+    }
+    .release-banner::before,
+    .learning-banner::before,
+    .research-banner::before,
+    .security-banner::before {
+      content:'';
+      position:absolute;
+      inset:0;
+      z-index:1;
+      background:linear-gradient(90deg, rgba(2,12,24,.58) 0%, rgba(3,20,38,.28) 52%, rgba(3,20,38,.05) 100%);
+      pointer-events:none;
+    }
+    .release-banner::before {
+      background:
+        linear-gradient(90deg, rgba(122,28,74,.16) 0%, rgba(190,24,93,.06) 46%, rgba(255,255,255,0) 100%);
+    }
+    .release-banner .banner-eye,
+    .learning-banner .banner-eye,
+    .research-banner .banner-eye,
+    .security-banner .banner-eye {
+      padding:6px 9px;
+      border-radius:999px;
+      background:rgba(255,255,255,.13);
+      color:#e0f7ff;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
+    }
+    .release-banner .banner-eye {
+      background:rgba(255,255,255,.82);
+      color:#be185d;
+      box-shadow:inset 0 0 0 1px rgba(244,114,182,.18);
+    }
+    .release-banner .banner-title,
+    .learning-banner .banner-title,
+    .research-banner .banner-title,
+    .security-banner .banner-title {
+      max-width:680px;
+      color:#fff;
+      text-shadow:0 3px 16px rgba(0,0,0,.55);
+    }
+    .release-banner .banner-title {
+      color:#831843;
+      text-shadow:none;
+    }
+    .release-banner .banner-desc,
+    .learning-banner .banner-desc,
+    .research-banner .banner-desc,
+    .security-banner .banner-desc {
+      max-width:680px;
+      color:rgba(236,249,255,.9);
+      text-shadow:0 2px 10px rgba(0,0,0,.44);
+    }
+    .release-banner .banner-desc {
+      color:rgba(131,24,67,.84);
+      text-shadow:none;
+    }
+    .release-banner .banner-cta { background:linear-gradient(135deg, #fdf2f8, #fbcfe8); color:#9d174d; box-shadow:0 12px 28px rgba(190,24,93,.24); }
+    .release-banner .banner-cta:hover { background:linear-gradient(135deg, #fce7f3, #f9a8d4); }
+    .learning-banner .banner-cta { background:linear-gradient(135deg, #dbeafe, #c4b5fd); color:#1e3a8a; box-shadow:0 12px 28px rgba(49,46,129,.24); }
+    .learning-banner .banner-cta:hover { background:linear-gradient(135deg, #bfdbfe, #a78bfa); }
+    .research-banner .banner-cta { background:linear-gradient(135deg, #d1fae5, #99f6e4); color:#115e59; box-shadow:0 12px 28px rgba(15,118,110,.24); }
+    .research-banner .banner-cta:hover { background:linear-gradient(135deg, #a7f3d0, #5eead4); }
+    .security-banner .banner-cta { background:linear-gradient(135deg, #dcfce7, #fde68a); color:#14532d; box-shadow:0 12px 28px rgba(20,83,45,.24); }
+    .security-banner .banner-cta:hover { background:linear-gradient(135deg, #bbf7d0, #fcd34d); }
+    .release-banner .banner-ghost,
+    .learning-banner .banner-ghost,
+    .research-banner .banner-ghost,
+    .security-banner .banner-ghost {
+      background:rgba(7,29,48,.68);
+      color:#e0f7ff;
+      border-color:rgba(125,211,252,.26);
+    }
+    .release-banner .banner-ghost {
+      background:rgba(255,255,255,.88);
+      color:#9d174d;
+      border-color:rgba(244,114,182,.24);
+    }
+    .release-banner .banner-ghost:hover,
+    .learning-banner .banner-ghost:hover,
+    .research-banner .banner-ghost:hover,
+    .security-banner .banner-ghost:hover { background:rgba(14,165,233,.16); border-color:rgba(125,211,252,.46); }
+    .release-banner .banner-ghost:hover { background:#fff1f6; border-color:rgba(244,114,182,.38); }
+    .release-banner .banner-dot.on { background:#f472b6; }
+    .learning-banner .banner-dot.on { background:#8b5cf6; }
+    .research-banner .banner-dot.on { background:#14b8a6; }
+    .security-banner .banner-dot.on { background:#84cc16; }
+    .banner-no-side {
+      display:block;
+      min-height:0;
+    }
+    .banner-no-side .banner-body {
+      max-width:100%;
+    }
+    .banner-no-side .banner-title,
+    .banner-no-side .banner-desc {
+      max-width:860px;
+    }
+    .banner-visual-card {
+      position:relative;
+      z-index:2;
+      width:292px;
+      padding:16px;
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:18px;
+      background:rgba(255,255,255,.12);
+      backdrop-filter:blur(12px);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.14);
+    }
+    .visual-card-top { display:flex; align-items:center; gap:10px; color:rgba(255,255,255,.74); font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
+    .visual-card-icon {
+      width:38px;
+      height:38px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:13px;
+      background:rgba(255,255,255,.16);
+      color:#e0f7ff;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);
+    }
+    .visual-card-icon .material-icons-round { font-size:20px; }
+    .visual-card-title { margin-top:14px; color:#fff; font-size:20px; font-weight:800; letter-spacing:-.04em; }
+    .visual-card-meta { margin-top:8px; color:rgba(236,249,255,.78); font-size:12px; line-height:1.5; }
+    .visual-chip-row { display:flex; flex-wrap:wrap; gap:7px; margin-top:14px; }
+    .visual-chip { padding:6px 8px; border-radius:999px; background:rgba(255,255,255,.13); color:rgba(236,249,255,.86); font-size:11px; font-weight:700; }
+    .dej-snapshot {
+      width:300px;
+      display:grid;
+      gap:8px;
+      padding:14px;
+      border:1px solid rgba(255,255,255,.16);
+      border-radius:18px;
+      background:rgba(255,255,255,.1);
+      backdrop-filter:blur(12px);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.12);
+    }
+    .dej-snapshot-title {
+      color:rgba(255,255,255,.72);
+      font-size:11px;
+      font-weight:800;
+    }
+    .dej-snapshot-item {
+      display:grid;
+      grid-template-columns:34px minmax(0, 1fr);
+      gap:10px;
+      align-items:center;
+      padding:10px;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:13px;
+      background:rgba(255,255,255,.92);
+    }
+    .dej-snapshot-icon {
+      width:34px;
+      height:34px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:12px;
+      background:linear-gradient(135deg, rgba(255,255,255,.96), rgba(207,244,255,.92));
+      color:#0369a1;
+    }
+    .dej-snapshot-icon .material-icons-round { font-size:18px; }
+    .dej-snapshot-name { font-size:13px; font-weight:800; letter-spacing:-.03em; }
+    .dej-snapshot-desc { margin-top:2px; color:var(--t2); font-size:11px; line-height:1.4; }
+    .dej-pipeline-bg {
+      position:absolute;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
+      overflow:hidden;
+      opacity:.7;
+    }
+    .dej-pipeline-bg::before {
+      content:'';
+      position:absolute;
+      inset:-18px;
+      background:
+        linear-gradient(28deg, transparent 0 22%, rgba(125,211,252,.18) 22.3%, transparent 22.8% 42%, rgba(125,211,252,.1) 42.3%, transparent 42.8%),
+        linear-gradient(147deg, transparent 0 30%, rgba(255,255,255,.12) 30.2%, transparent 30.7% 58%, rgba(34,211,238,.1) 58.2%, transparent 58.8%),
+        radial-gradient(circle at 8% 58%, rgba(125,211,252,.7) 0 1.5px, transparent 2.8px),
+        radial-gradient(circle at 18% 18%, rgba(255,255,255,.65) 0 1.3px, transparent 2.8px),
+        radial-gradient(circle at 30% 72%, rgba(125,211,252,.72) 0 1.4px, transparent 2.8px),
+        radial-gradient(circle at 47% 30%, rgba(255,255,255,.7) 0 1.4px, transparent 2.8px),
+        radial-gradient(circle at 67% 68%, rgba(125,211,252,.55) 0 1.4px, transparent 2.8px),
+        radial-gradient(circle at 86% 22%, rgba(255,255,255,.55) 0 1.2px, transparent 2.8px);
+      opacity:.46;
+    }
+    .pipeline-orbit {
+      position:absolute;
+      left:34%;
+      top:50%;
+      width:360px;
+      height:118px;
+      transform:translate(-50%, -48%);
+      opacity:.7;
+      filter:drop-shadow(0 0 16px rgba(125,211,252,.18));
+    }
+    .pipeline-loop {
+      position:absolute;
+      top:8px;
+      width:146px;
+      height:102px;
+      border:12px solid rgba(188,218,232,.32);
+      border-radius:50%;
+      box-shadow:
+        inset 0 0 0 5px rgba(255,255,255,.08),
+        0 0 0 1px rgba(255,255,255,.1),
+        0 0 28px rgba(125,211,252,.12);
+    }
+    .pipeline-loop.left {
+      left:40px;
+      transform:rotate(31deg);
+    }
+    .pipeline-loop.right {
+      right:40px;
+      transform:rotate(-31deg);
+    }
+    .pipeline-loop::before,
+    .pipeline-loop::after {
+      content:'';
+      position:absolute;
+      width:18px;
+      height:18px;
+      border-top:7px solid rgba(218,239,249,.58);
+      border-right:7px solid rgba(218,239,249,.58);
+      border-radius:4px;
+    }
+    .pipeline-loop.left::before { left:12px; top:18px; transform:rotate(-12deg); }
+    .pipeline-loop.left::after { right:15px; bottom:13px; transform:rotate(162deg); }
+    .pipeline-loop.right::before { left:15px; bottom:13px; transform:rotate(-18deg); }
+    .pipeline-loop.right::after { right:12px; top:18px; transform:rotate(102deg); }
+    .pipeline-knot {
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:78px;
+      height:38px;
+      border:10px solid rgba(188,218,232,.28);
+      border-left-color:rgba(188,218,232,.16);
+      border-right-color:rgba(188,218,232,.16);
+      border-radius:16px;
+      transform:translate(-50%, -50%) rotate(-8deg);
+      box-shadow:0 0 24px rgba(125,211,252,.1);
+    }
+    .pipeline-label {
+      position:absolute;
+      top:42px;
+      display:grid;
+      justify-items:center;
+      gap:1px;
+      min-width:80px;
+      color:rgba(255,255,255,.92);
+      text-align:center;
+      text-shadow:0 4px 14px rgba(0,0,0,.35);
+    }
+    .pipeline-label.cej { left:72px; }
+    .pipeline-label.dej { right:72px; }
+    .pipeline-label strong {
+      font-size:19px;
+      line-height:1;
+      font-weight:500;
+      letter-spacing:.02em;
+    }
+    .pipeline-label span {
+      max-width:72px;
+      font-size:8px;
+      line-height:1.15;
+      color:rgba(255,255,255,.74);
+    }
+    .pipeline-side-label {
+      position:absolute;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:rgba(219,242,255,.72);
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:-.02em;
+      text-shadow:0 3px 12px rgba(0,0,0,.52);
+    }
+    .pipeline-side-label::before {
+      content:'';
+      width:28px;
+      height:28px;
+      border-radius:50%;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:inset 0 0 0 7px rgba(255,255,255,.1), 0 0 16px rgba(125,211,252,.16);
+    }
+    .pipeline-side-label.connectivity { left:19%; top:28%; }
+    .pipeline-side-label.customization { left:14%; top:48%; }
+    .pipeline-side-label.core { right:20%; top:38%; }
+    .pipeline-side-label.speed { right:17%; top:58%; }
+    .pipeline-side-label.data {
+      left:4%;
+      top:60%;
+      max-width:118px;
+      display:block;
+      line-height:1.35;
+      color:rgba(219,242,255,.78);
+    }
+    .pipeline-side-label.data::before { display:none; }
+    .pipeline-side-label.value {
+      right:6%;
+      top:49%;
+      color:rgba(219,242,255,.82);
+    }
+    .pipeline-side-label.value::before { display:none; }
+
+
+    /* ─────────────────────────────────────────────────────
+       [D] CONTENT ZONE
+       구획: 좌(공용 콘텐츠) | 우(개인화 레일)
+       ─────────────────────────────────────────────────
+       공용 영역은 정렬을 유지하고, 개인 영역은 오른쪽으로
+       살짝 돌출시켜 별도 레일처럼 보이도록 구성.
+
+       grid-template-columns: 1fr 1fr 1fr 340px
+                               ←── main(3/4) ──→ ← side →
+       row 1: store   (span 3)  | sidebar (span 1, row-span 2)
+       row 2: articles(span 1.5)+ guides(span 1.5)  | (sidebar cont.)
+    ───────────────────────────────────────────────────── */
+    .content-zone {
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr 340px;
+      grid-template-rows: auto auto;
+      gap:var(--gap);
+      margin-bottom:var(--gap);
+      align-items:start;
+      overflow:visible;
+    }
+    .cz-gallery    { grid-column:1 / 4; grid-row:2; }
+    .cz-articles {
+      grid-column:1 / 3; grid-row:1; align-self:stretch;
+      display:flex; flex-direction:column;
+    }
+    .cz-guides   { grid-column:3 / 4; grid-row:1; align-self:stretch; }
+    .cz-sidebar  {
+      grid-column:4 / 5; grid-row:1 / 3;
+      display:flex; flex-direction:column; gap:var(--gap);
+      position:relative;
+    }
+    .cz-sidebar::before {
+      content:'';
+      position:absolute;
+      left:-10px; top:8px; bottom:8px;
+      width:1px;
+      background:linear-gradient(
+        180deg,
+        rgba(214,216,219,0) 0%,
+        rgba(214,216,219,.95) 12%,
+        rgba(214,216,219,.95) 88%,
+        rgba(214,216,219,0) 100%
+      );
+    }
+    .personal-rail-card {
+      border-color:rgba(180,14,77,.16);
+      background:linear-gradient(180deg,#ffffff 0%,#fff9fb 100%);
+      box-shadow:0 16px 34px rgba(15,23,42,.08);
+    }
+    .personal-rail-card .sec-label {
+      color:rgba(95,101,109,.88);
+    }
+    .usage-rail-card > .sec-label {
+      width:100%;
+      justify-self:start;
+      justify-content:flex-start;
+      text-align:left;
+      margin-left:0;
+    }
+    .usage-summary {
+      padding:16px;
+      border-radius:14px;
+      border:1px solid rgba(180,14,77,.12);
+      background:
+        radial-gradient(circle at top right, rgba(124,95,207,.14), transparent 42%),
+        linear-gradient(145deg, #fff8fb 0%, #ffffff 72%);
+    }
+    .usage-summary-kicker {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--brand);
+      margin-bottom:8px;
+    }
+    .usage-summary-kicker .material-icons-round { font-size:14px; }
+    .usage-summary-value {
+      font-size:26px;
+      font-weight:800;
+      letter-spacing:-.6px;
+      color:var(--t1);
+      line-height:1;
+      margin-bottom:6px;
+    }
+    .usage-summary-value small {
+      font-size:12px;
+      font-weight:600;
+      color:var(--t3);
+    }
+    .usage-summary-desc {
+      font-size:12px;
+      color:var(--t2);
+      line-height:1.55;
+    }
+    .usage-metrics {
+      display:grid;
+      gap:10px;
+    }
+    .usage-metric {
+      display:grid;
+      grid-template-columns:auto minmax(0,1fr);
+      gap:10px 12px;
+      align-items:center;
+      padding:12px 13px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.88);
+    }
+    .usage-metric-icon {
+      width:34px;
+      height:34px;
+      border-radius:11px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+    }
+    .usage-metric-icon .material-icons-round { font-size:17px; }
+    .usage-metric-copy {
+      min-width:0;
+      display:grid;
+      gap:2px;
+    }
+    .usage-metric-label {
+      font-size:11px;
+      color:var(--t3);
+    }
+    .usage-metric-value {
+      font-size:16px;
+      font-weight:800;
+      letter-spacing:-.3px;
+      color:var(--t1);
+    }
+    .usage-metric-note {
+      font-size:10px;
+      font-weight:700;
+    }
+    .usage-subsection {
+      display:grid;
+      gap:8px;
+    }
+    .usage-subtitle {
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--t3);
+    }
+    .usage-rank-item {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 2px;
+      border-radius:8px;
+    }
+    a.usage-rank-item {
+      transition:background .15s ease, color .15s ease;
+    }
+    a.usage-rank-item:hover {
+      background:rgba(180,14,77,.05);
+    }
+    a.usage-rank-item:hover .usage-rank-name {
+      color:var(--brand);
+    }
+    .usage-rank-no {
+      width:18px;
+      font-size:11px;
+      font-weight:800;
+      color:var(--brand);
+      text-align:center;
+    }
+    .usage-rank-name {
+      flex:1;
+      min-width:0;
+      font-size:12px;
+      font-weight:600;
+      color:var(--t1);
+    }
+    .usage-rank-val {
+      font-size:11px;
+      color:var(--t3);
+      white-space:nowrap;
+    }
+    .usage-key-item {
+      display:grid;
+      grid-template-columns:auto minmax(0,1fr) auto;
+      gap:8px;
+      align-items:center;
+    }
+    .usage-key-badge {
+      width:26px;
+      height:26px;
+      border-radius:8px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:11px;
+      font-weight:800;
+    }
+    .usage-key-copy {
+      min-width:0;
+    }
+    .usage-key-name {
+      font-size:12px;
+      font-weight:600;
+      color:var(--t1);
+      margin-bottom:4px;
+    }
+    .usage-key-bar {
+      height:4px;
+      border-radius:999px;
+      background:var(--border);
+      overflow:hidden;
+    }
+    .usage-key-fill {
+      height:100%;
+      border-radius:999px;
+    }
+    .usage-key-pct {
+      font-size:11px;
+      font-weight:700;
+      color:var(--t2);
+      white-space:nowrap;
     }
 
-    .footnote {
-      margin-top: 18px;
-      color: var(--text-3);
-      font-size: 12px;
-      line-height: 1.6;
+    .gallery-sections {
+      display:grid;
+      gap:18px;
+    }
+    .gallery-section {
+      display:grid;
+      gap:14px;
+    }
+    .gallery-section + .gallery-section {
+      padding-top:18px;
+      border-top:1px solid var(--border);
+    }
+    .gallery-section-head {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .gallery-section-copy {
+      display:grid;
+      gap:4px;
+    }
+    .gallery-section-kicker {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--t3);
+    }
+    .gallery-section-kicker .material-icons-round { font-size:14px; }
+    .gallery-section-title {
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:-.4px;
+      color:var(--t1);
+    }
+    .gallery-section-desc {
+      font-size:12px;
+      color:var(--t2);
+      line-height:1.6;
+      max-width:720px;
+    }
+    .gallery-divider {
+      display:flex;
+      align-items:center;
+      margin:4px 0;
+    }
+    .gallery-divider::before,
+    .gallery-divider::after {
+      content:'';
+      flex:1;
+      height:1px;
+      background:linear-gradient(90deg, rgba(214,216,219,0) 0%, rgba(214,216,219,.95) 18%, rgba(180,14,77,.22) 100%);
+    }
+    .gallery-divider::after {
+      background:linear-gradient(90deg, rgba(180,14,77,.22) 0%, rgba(214,216,219,.95) 82%, rgba(214,216,219,0) 100%);
+    }
+    .app-tile {
+      flex-shrink:0; width:124px;
+      background:var(--bg); border:1px solid var(--border);
+      border-radius:10px; padding:12px;
+      cursor:pointer; transition:all .15s;
+    }
+    .app-tile:hover { background:var(--surface); box-shadow:0 3px 10px rgba(0,0,0,.07); }
+    .app-tile-icon {
+      width:34px; height:34px; border-radius:9px;
+      display:flex; align-items:center; justify-content:center; margin-bottom:8px;
+    }
+    .app-tile-icon .material-icons-round { font-size:18px; color:#fff; }
+    .app-tile-name { font-size:12px; font-weight:600; margin-bottom:2px; }
+    .app-tile-type { font-size:10px; color:var(--t3); }
+    .app-tile-tag  {
+      display:inline-block; margin-top:6px;
+      font-size:9px; font-weight:700; padding:2px 6px;
+      border-radius:4px; text-transform:uppercase;
+    }
+    .agent-strip {
+      display:grid;
+      grid-template-columns:minmax(240px, 1.25fr) minmax(0, 2fr);
+      gap:14px;
+      align-items:stretch;
+    }
+    .agent-spotlight {
+      min-width:0;
+      padding:18px;
+      border:1px solid rgba(180,14,77,.12);
+      border-radius:14px;
+      background:
+        radial-gradient(circle at top right, rgba(124,95,207,.16), transparent 38%),
+        linear-gradient(145deg, #fff8fb 0%, #ffffff 65%);
+      box-shadow:0 12px 30px rgba(15,23,42,.06);
+    }
+    .agent-spotlight-top {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .agent-spotlight-icon {
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(135deg,var(--brand),var(--purple));
+      box-shadow:0 10px 24px rgba(180,14,77,.2);
+    }
+    .agent-spotlight-icon .material-icons-round { font-size:22px; color:#fff; }
+    .agent-spotlight-state {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:var(--brand-bg);
+      color:var(--brand);
+      font-size:10px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .agent-spotlight-state::before {
+      content:'';
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:var(--brand);
+    }
+    .agent-spotlight-eyebrow {
+      font-size:10px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--purple);
+      margin-bottom:8px;
+    }
+    .agent-spotlight-title {
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:-.4px;
+      margin-bottom:8px;
+    }
+    .agent-spotlight-desc {
+      font-size:12px;
+      line-height:1.65;
+      color:var(--t2);
+      margin-bottom:14px;
+    }
+    .agent-spotlight-points {
+      display:grid;
+      gap:8px;
+      margin-bottom:14px;
+    }
+    .agent-spotlight-point {
+      display:flex;
+      align-items:flex-start;
+      gap:8px;
+      font-size:11px;
+      color:var(--t1);
+      line-height:1.5;
+    }
+    .agent-spotlight-point .material-icons-round {
+      font-size:15px;
+      color:var(--brand);
+      margin-top:1px;
+      flex-shrink:0;
+    }
+    .agent-spotlight-tags {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .agent-spotlight-tag {
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.86);
+      border:1px solid rgba(214,216,219,.9);
+      font-size:10px;
+      font-weight:700;
+      color:var(--t2);
+    }
+    .agent-spotlight-tag .material-icons-round { font-size:13px; color:var(--t3); }
+    .app-spotlight {
+      border:1px solid rgba(79,70,229,.12);
+      background:
+        radial-gradient(circle at top right, rgba(34,211,238,.14), transparent 38%),
+        linear-gradient(145deg, #f6f9ff 0%, #ffffff 65%);
+    }
+    .app-spotlight .agent-spotlight-icon {
+      background:linear-gradient(135deg,#4f8cff,#22d3ee);
+      box-shadow:0 10px 24px rgba(79,140,255,.2);
+    }
+    .app-spotlight .agent-spotlight-state {
+      background:#e0edff;
+      color:#3157b7;
+    }
+    .app-spotlight .agent-spotlight-state::before { background:#4f8cff; }
+    .app-spotlight .agent-spotlight-eyebrow { color:#4f46e5; }
+    .app-spotlight .agent-spotlight-point .material-icons-round { color:#4f8cff; }
+    .app-spotlight .agent-spotlight-tag {
+      background:rgba(255,255,255,.9);
+      border-color:rgba(191,219,254,.95);
+    }
+    .agent-app-strip {
+      min-width:0;
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:12px;
+      align-items:stretch;
+    }
+    .agent-app-strip .app-tile {
+      width:auto;
+      min-height:152px;
+      padding:14px 13px 12px;
+      background:linear-gradient(180deg,#f8fafc 0%,#ffffff 100%);
+      border-radius:14px;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+    }
+    .agent-app-strip .app-tile:hover {
+      background:#fff;
+      border-color:rgba(180,14,77,.2);
+    }
+    .agent-app-strip .app-tile-icon {
+      width:36px;
+      height:36px;
+      border-radius:11px;
+      margin-bottom:10px;
+    }
+    .agent-app-strip .app-tile-name {
+      font-size:13px;
+      margin-bottom:6px;
+    }
+    .agent-app-strip .app-tile-type {
+      font-size:11px;
+      line-height:1.45;
+      min-height:48px;
+      margin-bottom:10px;
+      display:-webkit-box;
+      -webkit-line-clamp:3;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .agent-app-strip .app-tile-tag {
+      margin-top:auto;
     }
 
-    @media (max-width: 1120px) {
-      .topbar {
-        height: auto;
-      }
-      .topbar-inner {
-        min-height: 56px;
-        padding: 10px 16px;
-        flex-wrap: wrap;
-      }
-      .search-wrap {
-        order: 4;
-        flex-basis: 100%;
-        max-width: none;
-      }
-      .tb-spacer {
-        display: none;
-      }
-      .layout {
-        grid-template-columns: 1fr;
-      }
-      .ask-ai-cta {
-        width: auto;
-      }
-      .ask-ai-meta {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-      .featured-grid {
-        grid-template-columns: 1fr;
-      }
-      .featured-actions {
-        min-width: 0;
-        grid-template-columns: repeat(2, minmax(0,1fr));
-      }
+    /* ── Articles */
+    .article-head {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .article-head .sec-label {
+      margin-bottom:0;
+    }
+    .article-tabs {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .article-tab {
+      height:28px;
+      padding:0 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.82);
+      color:var(--t2);
+      font-size:11px;
+      font-weight:700;
+      transition:all .15s ease;
+    }
+    .article-tab:hover {
+      border-color:rgba(180,14,77,.16);
+      color:var(--brand);
+      background:var(--brand-bg);
+    }
+    .article-tab.is-active {
+      border-color:rgba(180,14,77,.2);
+      background:var(--brand-bg);
+      color:var(--brand);
+      box-shadow:inset 0 0 0 1px rgba(180,14,77,.04);
+    }
+    .article-item {
+      display:flex; align-items:flex-start; gap:12px;
+      flex:0 0 78px;
+      height:78px;
+      padding:9px 6px; border-radius:8px;
+      box-sizing:border-box;
+      border-bottom:1px solid var(--border);
+      cursor:pointer; transition:background .12s;
+    }
+    .article-item[hidden] { display:none; }
+    .article-item > div:last-child {
+      flex:1;
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+    .article-item:last-child { border-bottom:none; }
+    .article-item:hover { background:var(--bg); }
+    a.article-item,
+    a.guide-item,
+    a.resource-rail-item {
+      color:inherit;
+      text-decoration:none;
+    }
+    .article-thumb {
+      width:58px; height:42px; border-radius:7px; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .article-thumb .material-icons-round { font-size:19px; color:#fff; }
+    .article-title {
+      font-size:12px; font-weight:600; line-height:1.45;
+      display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+      margin-bottom:4px;
+    }
+    .article-meta { font-size:10px; color:var(--t3); display:flex; align-items:center; gap:5px; }
+    .article-tag  { font-size:10px; font-weight:600; padding:1px 6px; border-radius:4px; }
+
+    /* ── Guides */
+    .guide-item {
+      display:flex; align-items:center; gap:10px;
+      padding:8px 4px; border-radius:8px;
+      cursor:pointer; transition:background .12s;
+    }
+    .guide-item:hover { background:var(--bg); }
+    .guide-ico {
+      width:30px; height:30px; border-radius:8px; background:var(--bg);
+      display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    }
+    .guide-ico .material-icons-round { font-size:16px; }
+    .guide-name { font-size:12px; font-weight:600; flex:1; }
+    .guide-meta { font-size:10px; color:var(--t3); }
+    .guide-arr  { color:var(--t3); }
+    .guide-arr .material-icons-round { font-size:16px; vertical-align:middle; }
+
+    /* ── Sidebar: Notifications */
+    .notif-item {
+      display:flex; gap:8px;
+      padding:8px 4px; border-radius:7px;
+      cursor:pointer; transition:background .12s;
+    }
+    .notif-item:hover { background:var(--bg); }
+    .notif-dot { width:6px; height:6px; border-radius:50%; margin-top:5px; flex-shrink:0; }
+    .notif-dot.u { background:var(--brand); }
+    .notif-dot.r { background:transparent; border:1.5px solid var(--border-2); }
+    .notif-text { font-size:12px; color:var(--t2); line-height:1.5; }
+    .notif-text b { color:var(--t1); }
+    .notif-time { font-size:10px; color:var(--t3); margin-top:2px; }
+
+    /* ── Sidebar: Deploy apps */
+    .deploy-item {
+      display:flex; align-items:center; gap:10px;
+      padding:8px 4px; border-radius:8px;
+      cursor:pointer; transition:background .12s;
+    }
+    .deploy-item:hover { background:var(--bg); }
+    .deploy-ico {
+      width:30px; height:30px; border-radius:8px; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .deploy-ico .material-icons-round { font-size:15px; color:#fff; }
+    .deploy-name { font-size:12px; font-weight:600; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .deploy-ver  { font-size:10px; color:var(--t3); }
+    .pill { font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; flex-shrink:0; white-space:nowrap; }
+    .pill-run   { background:var(--green-bg); color:var(--green); }
+    .pill-build { background:var(--blue-bg);  color:var(--blue); }
+    .pill-err   { background:#fee2e2;          color:var(--red); }
+    .pill-stop  { background:var(--bg);        color:var(--t3); }
+    .deploy-summary {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .deploy-summary-card {
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:var(--bg);
+      padding:12px 14px;
+    }
+    .deploy-summary-label {
+      font-size:11px;
+      font-weight:700;
+      color:var(--t3);
+      letter-spacing:.02em;
+    }
+    .deploy-summary-value {
+      margin-top:4px;
+      font-size:18px;
+      font-weight:800;
+      color:var(--t1);
+    }
+    .resource-summary {
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:8px;
+      margin-bottom:12px;
+    }
+    .resource-summary-chip {
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:var(--bg);
+      padding:10px 12px;
+    }
+    .resource-summary-chip strong {
+      display:block;
+      font-size:16px;
+      line-height:1.2;
+      color:var(--t1);
+    }
+    .resource-summary-chip span {
+      display:block;
+      margin-top:4px;
+      font-size:11px;
+      color:var(--t3);
+    }
+    .empty-state,
+    .section-status {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:88px;
+      border:1px dashed rgba(148, 163, 184, 0.5);
+      border-radius:16px;
+      background:rgba(248, 250, 252, 0.8);
+      color:var(--t2);
+      font-size:13px;
+      line-height:1.6;
+      text-align:center;
+      padding:16px 18px;
+      box-sizing:border-box;
+    }
+    .section-status.is-error {
+      border-color:rgba(180, 14, 77, 0.22);
+      background:rgba(255, 244, 248, 0.92);
+      color:var(--brand);
     }
 
-    @media (max-width: 760px) {
-      .topbar-inner {
-        gap: 10px;
-      }
-      .page { padding: 20px 16px 48px; }
-      .panel { padding: 18px; }
+    /* ─────────────────────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────────────────────── */
+    @media (max-width:1100px) {
       .service-groups {
-        grid-template-columns: 1fr;
+        grid-template-columns:repeat(3, minmax(0,1fr));
       }
       .service-group {
-        padding: 14px 16px;
+        padding:18px 22px;
+        border-left:none;
       }
-      .service-group + .service-group {
-        border-left: none;
-        border-top: 1px solid var(--border);
+      .service-group:nth-child(3n + 1),
+      .service-group:nth-child(3n + 2) {
+        border-right:1px solid var(--border);
+      }
+      .service-group:nth-child(n + 4) {
+        border-top:1px solid var(--border);
+      }
+      .content-zone { grid-template-columns:1fr 1fr 320px; }
+      .cz-gallery    { grid-column:1 / 3; grid-row:2; }
+      .cz-articles { grid-column:1 / 2; grid-row:1; align-self:stretch; }
+      .cz-guides   { grid-column:2 / 3; grid-row:1; align-self:stretch; }
+      .cz-sidebar  {
+        grid-column:3 / 4;
+        grid-row:1 / 3;
+      }
+      .agent-app-strip { grid-template-columns:repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width:800px) {
+      .service-groups {
+        grid-template-columns:1fr;
+      }
+      .service-links {
+        margin-left:0;
+      }
+      .service-group {
+        padding:16px 18px;
+        border-right:none;
+        border-top:1px solid var(--border);
+      }
+      .service-group:first-child {
+        border-top:none;
+      }
+      .content-zone { grid-template-columns:1fr; }
+      .cz-gallery, .cz-articles, .cz-guides { grid-column:auto; }
+      .cz-articles { grid-row:1; }
+      .cz-guides { grid-row:2; }
+      .cz-gallery { grid-row:3; }
+      .cz-sidebar {
+        grid-column:auto; grid-row:4;
+        transform:none;
+      }
+      .cz-sidebar::before { display:none; }
+      .personal-rail-card {
+        border-color:var(--border);
+        background:var(--surface);
+        box-shadow:none;
+      }
+      .hero { flex-direction:column; align-items:flex-start; }
+      .banner {
+        flex-direction:column;
+        align-items:flex-start;
+        padding:24px 22px 20px;
+      }
+      .banner.dej-banner { min-height:auto; padding:24px 22px 20px; }
+      .dej-banner .banner-title { font-size:22px; }
+      .banner-side {
+        width:100%;
+        min-width:0;
+      }
+      .dej-snapshot { width:100%; }
+      .dej-pipeline-bg { opacity:.32; }
+      .pipeline-orbit { left:58%; transform:translate(-50%, -48%) scale(.78); }
+      .pipeline-side-label { display:none; }
+      .banner-actions { width:100%; }
+      .banner-cta,
+      .banner-ghost { flex:1; }
+      .agent-strip { grid-template-columns:1fr; }
+      .agent-app-strip { grid-template-columns:repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width:640px) {
+      .topbar-inner { padding:0 16px; gap:10px; }
+      .menu-trigger { padding:0 8px; }
+      .search-ai { display:none; }
+      .resource-rail-list {
+        max-height:none;
+        overflow:visible;
+        padding-right:0;
+      }
+      .agent-app-strip { grid-template-columns:1fr; }
+      .service-popover {
+        top:56px;
+        padding:14px 0 16px;
       }
       .service-popover-inner {
-        padding: 0 16px;
+        padding:0 16px;
       }
       .service-outlinks {
-        margin: 14px 0 -16px;
-        padding: 10px 16px;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
+        margin:14px 0 -16px;
+        padding:10px 16px;
+        flex-direction:column;
+        align-items:stretch;
+        gap:8px;
       }
       .service-outlink-list {
-        justify-content: flex-start;
+        justify-content:flex-start;
       }
-      .tb-icon {
-        display: none;
-      }
-      .ask-ai-title {
-        font-size: 18px;
-      }
-      .result-card {
-        grid-template-columns: auto minmax(0,1fr);
-      }
-      .result-side {
-        grid-column: 2;
-        justify-items: start;
-        grid-auto-flow: column;
-      }
-      .featured-actions {
-        grid-template-columns: 1fr;
-      }
-      .search-ai {
-        display: none;
+      .service-outlink {
+        padding:5px 9px;
+      }      .service-group {
+        padding:14px 16px;
       }
     }
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a class="topbar-brand" href="portal_launchpad.html" aria-label="AX Studio">
-        <span class="brand-mark" aria-hidden="true">
-          <img src="data:image/svg+xml,%3csvg%20width='35'%20height='20'%20viewBox='0%200%2035%2020'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M16.7961%2010.1421L21.022%2014.368C23.4543%2016.8004%2027.398%2016.8004%2029.8303%2014.368C32.2627%2011.9356%2032.2627%207.99197%2029.8303%205.5596C27.398%203.12723%2023.4543%203.12723%2021.022%205.5596L20.723%205.85861L18.7019%203.83756L19.0009%203.53856C22.5495%20-0.0100035%2028.3028%20-0.0100042%2031.8514%203.53856C35.4%207.08712%2035.4%2012.8405%2031.8514%2016.389C28.3028%2019.9376%2022.5495%2019.9376%2019.0009%2016.389L12.5757%209.96379L14.5948%207.9447L16.7941%2010.144L16.7961%2010.1421ZM17.6605%208.92103L19.6782%206.90332L17.6572%204.88228L15.6395%206.89998L17.6605%208.92103Z'%20fill='%236D6E72'/%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M14.3637%205.63217L18.6416%209.91016L18.6428%209.90899L20.7901%2012.0562L22.8099%2010.0364L16.3847%203.61113C12.8361%200.0625671%207.08278%200.0625666%203.53422%203.61113C-0.0143374%207.15969%20-0.0143374%2012.913%203.53422%2016.4616C7.08278%2020.0102%2012.8361%2020.0102%2016.3847%2016.4616L16.6801%2016.1662L14.6591%2014.1452L14.3637%2014.4406C11.9313%2016.8729%207.98764%2016.8729%205.55527%2014.4406C3.1229%2012.0082%203.1229%208.06454%205.55527%205.63217C7.98764%203.1998%2011.9313%203.1998%2014.3637%205.63217ZM15.7038%2013.1004L17.7248%2015.1215L19.7453%2013.101L17.7243%2011.0799L15.7038%2013.1004Z'%20fill='%23A50034'/%3e%3crect%20x='15.376'%20y='12.7714'%20width='2.85369'%20height='5.21909'%20transform='rotate(-45%2015.376%2012.7714)'%20fill='%236D6E72'/%3e%3c/svg%3e" alt="AX Studio" />
-        </span>
-        <span class="brand-name">AX Studio</span>
-      </a>
-      <div class="logo-menu" id="serviceMenuWrap">
-        <button class="menu-trigger" id="serviceMenuButton" type="button" aria-label="전체 메뉴 열기" aria-haspopup="true" aria-expanded="false" aria-controls="serviceMenuPopover">
-          <span class="material-icons-round">apps</span>
-          <span class="material-icons-round menu-caret">expand_more</span>
-        </button>
-        <div class="service-popover" id="serviceMenuPopover" aria-labelledby="serviceMenuButton" hidden>
-          <div class="service-popover-inner">
-            <div class="service-groups">
-              <section class="service-group">
-                <div class="service-group-head">
-                  <div class="service-group-copy">
-                    <div class="service-group-title">Gallery</div>
-                  </div>
-                </div>
-                <div class="service-links">
-                  <a class="service-link" href="dej_app_gallery.html">
-                    <span class="material-icons-round service-link-icon">widgets</span>
-                    <span class="service-link-copy">
-                      <span class="service-link-title">App Gallery</span>
-                      <span class="service-link-desc">실행형 개발 앱과 워크스페이스 도구를 발견하고 살펴보기</span>
-                    </span>
-                  </a>
-                  <a class="service-link" href="dej_ai_gallery.html">
-                    <span class="material-icons-round service-link-icon">smart_toy</span>
-                    <span class="service-link-copy">
-                      <span class="service-link-title">AI Gallery</span>
-                      <span class="service-link-desc">챗봇과 tool 자산을 전시하고 재사용 흐름으로 연결</span>
-                    </span>
-                  </a>
-                </div>
-              </section>
 
-              <section class="service-group">
-                <div class="service-group-head">
-                  <div class="service-group-copy">
-                    <div class="service-group-title">Accessibility</div>
-                  </div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="topbar-brand" href="index.html" aria-label="AX Studio">
+      <span class="brand-mark" aria-hidden="true">
+        <img src="data:image/svg+xml,%3csvg%20width='35'%20height='20'%20viewBox='0%200%2035%2020'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M16.7961%2010.1421L21.022%2014.368C23.4543%2016.8004%2027.398%2016.8004%2029.8303%2014.368C32.2627%2011.9356%2032.2627%207.99197%2029.8303%205.5596C27.398%203.12723%2023.4543%203.12723%2021.022%205.5596L20.723%205.85861L18.7019%203.83756L19.0009%203.53856C22.5495%20-0.0100035%2028.3028%20-0.0100042%2031.8514%203.53856C35.4%207.08712%2035.4%2012.8405%2031.8514%2016.389C28.3028%2019.9376%2022.5495%2019.9376%2019.0009%2016.389L12.5757%209.96379L14.5948%207.9447L16.7941%2010.144L16.7961%2010.1421ZM17.6605%208.92103L19.6782%206.90332L17.6572%204.88228L15.6395%206.89998L17.6605%208.92103Z'%20fill='%236D6E72'/%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M14.3637%205.63217L18.6416%209.91016L18.6428%209.90899L20.7901%2012.0562L22.8099%2010.0364L16.3847%203.61113C12.8361%200.0625671%207.08278%200.0625666%203.53422%203.61113C-0.0143374%207.15969%20-0.0143374%2012.913%203.53422%2016.4616C7.08278%2020.0102%2012.8361%2020.0102%2016.3847%2016.4616L16.6801%2016.1662L14.6591%2014.1452L14.3637%2014.4406C11.9313%2016.8729%207.98764%2016.8729%205.55527%2014.4406C3.1229%2012.0082%203.1229%208.06454%205.55527%205.63217C7.98764%203.1998%2011.9313%203.1998%2014.3637%205.63217ZM15.7038%2013.1004L17.7248%2015.1215L19.7453%2013.101L17.7243%2011.0799L15.7038%2013.1004Z'%20fill='%23A50034'/%3e%3crect%20x='15.376'%20y='12.7714'%20width='2.85369'%20height='5.21909'%20transform='rotate(-45%2015.376%2012.7714)'%20fill='%236D6E72'/%3e%3c/svg%3e" alt="AX Studio" />
+      </span>
+      <span class="brand-name">AX Studio</span>
+    </a>
+    <div class="logo-menu" id="serviceMenuWrap">
+      <button class="menu-trigger" id="serviceMenuButton" type="button" aria-label="전체 메뉴 열기" aria-haspopup="true" aria-expanded="false" aria-controls="serviceMenuPopover">
+        <span class="material-icons-round">apps</span>
+        <span class="material-icons-round menu-caret">expand_more</span>
+      </button>
+      <div class="service-popover" id="serviceMenuPopover" aria-labelledby="serviceMenuButton" hidden>
+        <div class="service-popover-inner">
+        <div class="service-groups" data-launchpad-service-groups>
+          <section class="service-group">
+            <div class="service-group-head">
+              <div class="service-group-copy">
+                <div class="service-group-title-row">
+                  <div class="service-group-title">Gallery</div>
                 </div>
-                <div class="service-links">
-                  <a class="service-link" href="workspace_domain_hub.html">
-                    <span class="material-icons-round service-link-icon">apartment</span>
-                    <span class="service-link-copy">
-                      <span class="service-link-title">Domain</span>
-                      <span class="service-link-desc">DNS 및 도메인 관리</span>
-                    </span>
-                  </a>
-                  <a class="service-link" href="workspace_permission_hub.html">
-                    <span class="material-icons-round service-link-icon">groups</span>
-                    <span class="service-link-copy">
-                      <span class="service-link-title">Permission</span>
-                      <span class="service-link-desc">IAM 및 권한 관리</span>
-                    </span>
-                  </a>
-                </div>
-              </section>
-
-              <section class="service-group">
-                <div class="service-group-head">
-                  <div class="service-group-copy">
-                    <div class="service-group-title">Storage</div>
-                  </div>
-                </div>
-                <div class="service-links">
-                  <a class="service-link" href="workspace_database_hub.html">
-                    <span class="material-icons-round service-link-icon">storage</span>
-                    <span class="service-link-copy">
-                      <span class="service-link-title">Database</span>
-                      <span class="service-link-desc">데이터베이스 관리(MongoDB, PostgreSQL, Redis 등)</span>
-                    </span>
-                  </a>
-                  <a class="service-link" href="workspace_s3_hub.html">
-                    <span class="material-icons-round service-link-icon">folder</span>
-                    <span class="service-link-copy">
-                      <span class="service-link-title">Buckets</span>
-                      <span class="service-link-desc">S3 스토리지 및 버킷 관리</span>
-                    </span>
-                  </a>
-                </div>
-              </section>
-
-              <section class="service-group">
-                <div class="service-group-head">
-                  <div class="service-group-copy">
-                    <div class="service-group-title">Development</div>
-                  </div>
-                </div>
-                <div class="service-links">
-                  <a class="service-link" href="workspace_tools_hub.html">
-                    <span class="material-icons-round service-link-icon">web</span>
-                    <span class="service-link-copy">
-                      <span class="service-link-title">Consoles</span>
-                      <span class="service-link-desc">데이터베이스 웹 콘솔 모음</span>
-                    </span>
-                  </a>
-                  <a class="service-link" href="workspace_projects_hub.html">
-                    <span class="material-icons-round service-link-icon">public</span>
-                    <span class="service-link-copy">
-                      <span class="service-link-title">Project/Publish</span>
-                      <span class="service-link-desc">개발 프로젝트 관리(IDE 작업 공간)</span>
-                    </span>
-                  </a>
-                  <a class="service-link" href="#">
-                    <span class="material-icons-round service-link-icon">science</span>
-                    <span class="service-link-copy">
-                      <span class="service-link-title">Jupyter</span>
-                      <span class="service-link-desc">노트북 실험 및 분석 환경</span>
-                    </span>
-                  </a>
-                </div>
-              </section>
-
-              <section class="service-group">
-                <div class="service-group-head">
-                  <div class="service-group-copy">
-                    <div class="service-group-title">AI</div>
-                  </div>
-                </div>
-                <div class="service-links">
-                  <a class="service-link" href="workspace_agent_hub.html">
-                    <span class="material-icons-round service-link-icon">smart_toy</span>
-                    <span class="service-link-copy">
-                      <span class="service-link-title">Workflow</span>
-                      <span class="service-link-desc">Dify workflow와 승인형 자동화 런타임을 운영</span>
-                    </span>
-                  </a>
-                  <a class="service-link" href="workspace_chatbot_hub.html">
-                    <span class="material-icons-round service-link-icon">chat</span>
-                    <span class="service-link-copy">
-                      <span class="service-link-title">Chatbot</span>
-                      <span class="service-link-desc">API와 Frontend URL 기반 챗봇 엔드포인트를 관리</span>
-                    </span>
-                  </a>
-                  <a class="service-link" href="workspace_tool_inventory_hub.html">
-                    <span class="material-icons-round service-link-icon">inventory_2</span>
-                    <span class="service-link-copy">
-                      <span class="service-link-title">Tool Inventory</span>
-                      <span class="service-link-desc">에이전트가 사용하는 연결된 MCP 및 도구 자산을 관리</span>
-                    </span>
-                  </a>
-                  <a class="service-link" href="workspace_keycenter_hub.html">
-                    <span class="material-icons-round service-link-icon">vpn_key</span>
-                    <span class="service-link-copy">
-                      <span class="service-link-title">Keycenter</span>
-                      <span class="service-link-desc">발급된 LLM 키와 연결된 사용처를 관리</span>
-                    </span>
-                  </a>
-                </div>
-              </section>
-
-              <section class="service-group">
-                <div class="service-group-head">
-                  <div class="service-group-copy">
-                    <div class="service-group-title">Support</div>
-                  </div>
-                </div>
-                <div class="service-links">
-                  <a class="service-link" href="#">
-                    <span class="material-icons-round service-link-icon">description</span>
-                    <span class="service-link-copy">
-                      <span class="service-link-title">다큐먼트</span>
-                      <span class="service-link-desc">가이드와 운영 문서를 확인합니다</span>
-                    </span>
-                  </a>
-                  <a class="service-link" href="about_dej.html">
-                    <span class="material-icons-round service-link-icon">timeline</span>
-                    <span class="service-link-copy">
-                      <span class="service-link-title">About DEJ</span>
-                      <span class="service-link-desc">DEJ의 역사와 CEJ·DEJ 흐름을 확인합니다</span>
-                    </span>
-                  </a>
-                  <a class="service-link" href="dej_chatbot_trial.html">
-                    <span class="material-icons-round service-link-icon">chat_bubble_outline</span>
-                    <span class="service-link-copy">
-                      <span class="service-link-title">챗봇</span>
-                      <span class="service-link-desc">지원 챗봇으로 빠르게 문의합니다</span>
-                    </span>
-                  </a>
-                  <a class="service-link" href="#">
-                    <span class="material-icons-round service-link-icon">campaign</span>
-                    <span class="service-link-copy">
-                      <span class="service-link-title">요청하기</span>
-                      <span class="service-link-desc">기능 요청이나 지원 요청을 등록합니다</span>
-                    </span>
-                  </a>
-                </div>
-              </section>
-            </div>
-            <div class="service-outlinks" aria-label="외부 서비스 바로가기">
-              <div class="service-outlinks-title">DEJ 시스템</div>
-              <div class="service-outlink-list">
-                <a class="service-outlink" href="https://dej-chatbot.apps.hedej.lge.com" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">forum</span><span class="service-outlink-copy"><span class="service-outlink-title">DEJ 챗봇</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
-                <a class="service-outlink" href="https://workspace.hedej.lge.com/heans" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">open_in_new</span><span class="service-outlink-copy"><span class="service-outlink-title">HEANS</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
-                <a class="service-outlink" href="https://workspace.hedej.lge.com/hevpds" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">open_in_new</span><span class="service-outlink-copy"><span class="service-outlink-title">HEVPDS</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
               </div>
             </div>
+            <div class="service-links">
+              <a class="service-link" href="dej_app_gallery.html">
+                <span class="material-icons-round service-link-icon">widgets</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">App Gallery</span>
+                  <span class="service-link-desc">실행형 개발 앱과 워크스페이스 도구를 발견하고 살펴보기</span>
+                </span>
+              </a>
+              <a class="service-link" href="dej_ai_gallery.html">
+                <span class="material-icons-round service-link-icon">smart_toy</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">AI Gallery</span>
+                  <span class="service-link-desc">업무에 바로 쓰는 AI Assistant와 Skills를 모아보기</span>
+                </span>
+              </a>
+            </div>
+          </section>
+
+          <section class="service-group">
+            <div class="service-group-head">
+              <div class="service-group-copy">
+                <div class="service-group-title-row">
+                  <div class="service-group-title">Accessibility</div>
+                </div>
+              </div>
+            </div>
+            <div class="service-links">
+              <a class="service-link" href="workspace_domain_hub.html">
+                <span class="material-icons-round service-link-icon">apartment</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">Domain</span>
+                  <span class="service-link-desc">DNS 및 도메인 관리</span>
+                </span>
+              </a>
+              <a class="service-link" href="workspace_permission_hub.html">
+                <span class="material-icons-round service-link-icon">groups</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">Permission</span>
+                  <span class="service-link-desc">IAM 및 권한 관리</span>
+                </span>
+              </a>
+            </div>
+          </section>
+
+          <section class="service-group">
+            <div class="service-group-head">
+              <div class="service-group-copy">
+                <div class="service-group-title-row">
+                  <div class="service-group-title">Storage</div>
+                </div>
+              </div>
+            </div>
+            <div class="service-links">
+              <a class="service-link" href="workspace_database_hub.html">
+                <span class="material-icons-round service-link-icon">storage</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">Database</span>
+                  <span class="service-link-desc">데이터베이스 관리(MongoDB, PostgreSQL, Redis 등)</span>
+                </span>
+              </a>
+              <a class="service-link" href="workspace_s3_hub.html">
+                <span class="material-icons-round service-link-icon">folder</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">Buckets</span>
+                  <span class="service-link-desc">S3 스토리지 및 버킷 관리</span>
+                </span>
+              </a>
+            </div>
+          </section>
+
+          <section class="service-group">
+            <div class="service-group-head">
+              <div class="service-group-copy">
+                <div class="service-group-title-row">
+                  <div class="service-group-title">Development</div>
+                </div>
+              </div>
+            </div>
+            <div class="service-links">
+              <a class="service-link" href="workspace_tools_hub.html">
+                <span class="material-icons-round service-link-icon">web</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">Consoles</span>
+                  <span class="service-link-desc">데이터베이스 웹 콘솔 모음</span>
+                </span>
+              </a>
+              <a class="service-link" href="workspace_projects_hub.html">
+                <span class="material-icons-round service-link-icon">public</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">Project/Publish</span>
+                  <span class="service-link-desc">개발 프로젝트 관리(IDE 작업 공간)</span>
+                </span>
+              </a>
+              <a class="service-link" href="#">
+                <span class="material-icons-round service-link-icon">science</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">Jupyter</span>
+                  <span class="service-link-desc">노트북 실험 및 분석 환경</span>
+                </span>
+              </a>
+            </div>
+          </section>
+
+          <section class="service-group">
+            <div class="service-group-head">
+              <div class="service-group-copy">
+                <div class="service-group-title-row">
+                  <div class="service-group-title">AI</div>
+                </div>
+              </div>
+            </div>
+            <div class="service-links">
+              <a class="service-link" href="workspace_agent_hub.html">
+                <span class="material-icons-round service-link-icon">smart_toy</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">Workflow</span>
+                  <span class="service-link-desc">Dify workflow와 승인형 자동화 런타임을 운영</span>
+                </span>
+              </a>
+              <a class="service-link" href="workspace_chatbot_hub.html">
+                <span class="material-icons-round service-link-icon">chat</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">Chatbot</span>
+                  <span class="service-link-desc">API와 Frontend URL 기반 챗봇 엔드포인트를 관리</span>
+                </span>
+              </a>
+              <a class="service-link" href="workspace_tool_inventory_hub.html">
+                <span class="material-icons-round service-link-icon">inventory_2</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">Tool Inventory</span>
+                  <span class="service-link-desc">쓸 수 있는 MCP, Skill, Tool을 한곳에서 관리</span>
+                </span>
+              </a>
+              <a class="service-link" href="workspace_keycenter_hub.html">
+                <span class="material-icons-round service-link-icon">vpn_key</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">Keycenter</span>
+                  <span class="service-link-desc">발급된 LLM 키와 연결된 사용처를 관리</span>
+                </span>
+              </a>
+            </div>
+          </section>
+
+          <section class="service-group">
+            <div class="service-group-head">
+              <div class="service-group-copy">
+                <div class="service-group-title-row">
+                  <div class="service-group-title">Support</div>
+                </div>
+              </div>
+            </div>
+            <div class="service-links">
+              <a class="service-link" href="workspace_message_hub.html">
+                <span class="material-icons-round service-link-icon">mark_email_unread</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">Message Center</span>
+                  <span class="service-link-desc">수신, 발신, 요청, 승인 메시지를 한 화면에서 관리합니다</span>
+                </span>
+              </a>
+              <a class="service-link" href="#">
+                <span class="material-icons-round service-link-icon">description</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">다큐먼트</span>
+                  <span class="service-link-desc">가이드와 운영 문서를 확인합니다</span>
+                </span>
+              </a>
+              <a class="service-link" href="about_dej.html">
+                <span class="material-icons-round service-link-icon">timeline</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">About DEJ</span>
+                  <span class="service-link-desc">DEJ 소개와 주요 소식을 확인합니다</span>
+                </span>
+              </a>
+              <a class="service-link" href="dej_chatbot_trial.html">
+                <span class="material-icons-round service-link-icon">chat_bubble_outline</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">챗봇</span>
+                  <span class="service-link-desc">지원 챗봇으로 빠르게 문의합니다</span>
+                </span>
+              </a>
+              <a class="service-link" href="workspace_message_hub.html?box=requests">
+                <span class="material-icons-round service-link-icon">campaign</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">요청하기</span>
+                  <span class="service-link-desc">기능 요청이나 승인 요청을 바로 등록합니다</span>
+                </span>
+              </a>
+            </div>
+          </section>
+
+        </div>
+        <div class="service-outlinks" aria-label="외부 서비스 바로가기">
+          <div class="service-outlinks-title">DEJ 시스템</div>
+          <div class="service-outlink-list">
+            <a class="service-outlink" href="https://dej-chatbot.apps.hedej.lge.com" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">forum</span><span class="service-outlink-copy"><span class="service-outlink-title">DEJ 챗봇</span><span class="service-outlink-desc">Workspace 지원 챗봇</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
+            <a class="service-outlink" href="https://workspace.hedej.lge.com/heans" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">open_in_new</span><span class="service-outlink-copy"><span class="service-outlink-title">HEANS</span><span class="service-outlink-desc">HEANS 서비스 바로가기</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
+            <a class="service-outlink" href="https://workspace.hedej.lge.com/hevpds" target="_blank" rel="noopener noreferrer"><span class="material-icons-round service-outlink-icon">open_in_new</span><span class="service-outlink-copy"><span class="service-outlink-title">HEVPDS</span><span class="service-outlink-desc">HEVPDS 서비스 바로가기</span></span><span class="material-icons-round service-outlink-arrow">north_east</span></a>
           </div>
         </div>
       </div>
-      <form class="search-wrap" action="portal_launchpad_search.html">
-        <span class="material-icons-round ico">search</span>
-        <input id="topbarSearchInput" class="search-input" name="q" type="search" placeholder="서비스 검색 또는 챗봇에게 물어보세요" aria-label="서비스 검색 또는 챗봇에게 물어보세요" />
-        <input id="topbarSourceInput" type="hidden" name="source" value="launchpad" />
-        <input id="topbarSourceLabelInput" type="hidden" name="sourceLabel" value="Launchpad" />
-        <input id="topbarDefaultTypeInput" type="hidden" name="defaultType" value="all" />
-        <span class="search-ai" aria-hidden="true">
-          <span class="material-icons-round">auto_awesome</span>
-          <span>AI 검색 가능</span>
-        </span>
-      </form>
-      <div class="tb-spacer"></div>
-      <div class="tb-icon"><span class="material-icons-round">notifications_none</span><div class="dot"></div></div>
-      <a class="avatar" href="workspace_settings.html" aria-label="설정 페이지 열기">TN</a>
+      </div>
     </div>
-  </header>
+    <form class="search-wrap" action="portal_launchpad_search.html">
+      <span class="material-icons-round ico">search</span>
+      <input class="search-input" name="q" type="search" placeholder="서비스 검색 또는 챗봇에게 물어보세요" aria-label="서비스 검색 또는 챗봇에게 물어보세요" />
+      <input type="hidden" name="source" value="launchpad" />
+      <input type="hidden" name="sourceLabel" value="Launchpad" />
+      <input type="hidden" name="defaultType" value="all" />
+      <span class="search-ai" aria-hidden="true">
+        <span class="material-icons-round">auto_awesome</span>
+        <span>AI 검색 가능</span>
+      </span>
+    </form>
+    <div class="tb-spacer"></div>
+    <div class="tb-icon"><span class="material-icons-round">notifications_none</span><div class="dot"></div></div>
+    <a class="avatar" href="workspace_settings.html" aria-label="설정 페이지 열기">TN</a>
+  </div>
+</header>
 
-  <div class="page">
-    <section class="ask-ai-banner">
-      <div class="ask-ai-copy">
-        <h2 class="ask-ai-title"><mark data-query></mark> 검색 결과</h2>
-        <p class="ask-ai-desc">현재는 시작한 위치를 기준으로 먼저 보여주고, 필터를 바꾸면 같은 검색어로 다른 범위 결과까지 바로 확장할 수 있습니다.</p>
+<div class="page">
+  <div class="hero">
+    <div class="hero-greet" data-launchpad-hero-greet>
+      <h1>안녕하세요, Taehun 👋</h1>
+      <p>오늘도 좋은 개발 되세요. 현재 3개의 알림이 있습니다.</p>
+    </div>
+    <div class="hero-stats" data-launchpad-hero-stats>
+      <a class="stat-chip stat-chip-link" href="workspace_projects_hub.html">
+        <div class="stat-chip-icon" style="background:var(--blue)"><span class="material-icons-round">cloud</span></div>
+        <div><div class="stat-chip-val" style="color:var(--blue)">47 <small style="font-size:11px;font-weight:400;color:var(--t3)">/ 60</small></div><div class="stat-chip-label">전체 Workspace</div></div>
+      </a>
+      <div class="stat-chip">
+        <div class="stat-chip-icon" style="background:var(--purple)"><span class="material-icons-round">group</span></div>
+        <div><div class="stat-chip-val" style="color:var(--purple)">1,284</div><div class="stat-chip-label">전체 사용자</div></div>
       </div>
-      <div class="ask-ai-meta">
-        <div class="ask-ai-meta-items">
-          <div class="ask-ai-chip"><span class="material-icons-round">tune</span><span>기본 범위 <strong data-default-type-label>전체</strong></span></div>
-        </div>
-        <a class="ask-ai-cta" data-ai-chat-link href="dej_chatbot_trial.html"><span class="material-icons-round">forum</span><span>AI에게 이어서 묻기</span></a>
+      <div class="stat-chip">
+        <div class="stat-chip-icon" style="background:var(--green)"><span class="material-icons-round">savings</span></div>
+        <div><div class="stat-chip-val" style="color:var(--green)">₩42.8M</div><div class="stat-chip-label">누적 절감 비용</div></div>
       </div>
-    </section>
-    <div class="layout">
-      <main class="stack">
-        <section class="panel">
-          <div class="panel-head">
-            <div class="title">AI 추천 결과</div>
-            <div class="meta">검색어와 가장 가까운 화면을 먼저 보여드려요</div>
-          </div>
-          <div class="featured-card">
-            <div class="featured-kicker"><span class="material-icons-round">auto_awesome</span>AI Pick</div>
-            <div class="featured-grid">
-              <div>
-                <h2 class="featured-title"><strong>MCP Hub</strong>에서 <span data-query></span> 흐름을 가장 빠르게 확인할 수 있습니다.</h2>
-                <p class="featured-desc">키 매핑, 허용된 MCP, 사용자별 접근 상태, 최근 실행 로그까지 한 번에 볼 수 있어 검색 결과의 중심 허브 역할을 합니다. Launchpad 검색 결과에서는 단순 상세 페이지보다 실제 의사결정에 가까운 화면을 최상단으로 배치했습니다.</p>
-                <div class="featured-tags">
-                  <span class="tag blue"><span class="material-icons-round">hub</span>MCP 연결 허브</span>
-                  <span class="tag violet"><span class="material-icons-round">shield</span>권한 제어</span>
-                  <span class="tag teal"><span class="material-icons-round">smart_toy</span>Agent 연동</span>
-                  <span class="tag amber"><span class="material-icons-round">travel_explore</span>실행 로그 탐색</span>
-                </div>
-              </div>
-              <div class="featured-actions">
-                <a class="action-primary" href="mcp_hub_v2.html"><span class="material-icons-round">open_in_new</span>MCP 허브 열기</a>
-                <a class="action-secondary" href="workspace_keycenter_hub.html"><span class="material-icons-round">vpn_key</span>Key Center 보기</a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-head">
-            <div class="title">검색 결과</div>
-            <div class="meta"><span data-visible-count>8</span> results</div>
-          </div>
-          <div class="filter-row" role="tablist" aria-label="검색 결과 타입 필터">
-            <button class="filter-chip is-active" type="button" data-filter="all"><span class="material-icons-round">apps</span>전체</button>
-            <button class="filter-chip" type="button" data-filter="hub"><span class="material-icons-round">hub</span>허브</button>
-            <button class="filter-chip" type="button" data-filter="project"><span class="material-icons-round">folder_open</span>프로젝트</button>
-            <button class="filter-chip" type="button" data-filter="guide"><span class="material-icons-round">menu_book</span>가이드</button>
-            <button class="filter-chip" type="button" data-filter="article"><span class="material-icons-round">article</span>문서</button>
-          </div>
-
-          <div class="result-list" id="resultList">
-            <a class="result-card" data-type="hub" href="mcp_hub_v2.html">
-              <div class="result-icon" style="background:linear-gradient(135deg,#b40e4d,#7c5fcf)"><span class="material-icons-round">hub</span></div>
-              <div class="result-copy">
-                <div class="result-type"><span class="material-icons-round">bolt</span>Hub Result</div>
-                <h3 class="result-title"><mark data-query></mark>과 가장 직접 연결되는 <strong>MCP Hub</strong></h3>
-                <p class="result-desc">사용 가능한 MCP 서버, LLM 키 매핑, 접근 허가 정책, 최근 실패 로그를 한 번에 확인할 수 있습니다.</p>
-                <div class="result-meta">
-                  <span class="meta-pill"><span class="material-icons-round">security</span>권한 확인</span>
-                  <span class="meta-pill"><span class="material-icons-round">lan</span>MCP 목록</span>
-                  <span class="meta-pill"><span class="material-icons-round">query_stats</span>실행 로그</span>
-                </div>
-              </div>
-              <div class="result-side">
-                <span class="score-pill"><span class="material-icons-round">verified</span>94% match</span>
-                <span class="route-pill"><span class="material-icons-round">open_in_new</span>허브 바로가기</span>
-              </div>
-            </a>
-
-            <a class="result-card" data-type="hub" href="workspace_keycenter_hub.html">
-              <div class="result-icon" style="background:linear-gradient(135deg,#2563eb,#06b6d4)"><span class="material-icons-round">vpn_key</span></div>
-              <div class="result-copy">
-                <div class="result-type"><span class="material-icons-round">key</span>Hub Result</div>
-                <h3 class="result-title">연결 키 상태를 확인하는 <strong>Key Center</strong></h3>
-                <p class="result-desc"><mark data-query></mark> 작업 전에 필요한 provider key, 만료 시점, consumer runtime 연결 상태를 점검하기 좋은 허브입니다.</p>
-                <div class="result-meta">
-                  <span class="meta-pill"><span class="material-icons-round">key</span>Provider Key</span>
-                  <span class="meta-pill"><span class="material-icons-round">schedule</span>만료 예정</span>
-                  <span class="meta-pill"><span class="material-icons-round">link</span>consumer 매핑</span>
-                </div>
-              </div>
-              <div class="result-side">
-                <span class="score-pill"><span class="material-icons-round">verified</span>88% match</span>
-                <span class="route-pill"><span class="material-icons-round">open_in_new</span>키 허브</span>
-              </div>
-            </a>
-
-            <a class="result-card" data-type="project" href="workspace_project_detail.html">
-              <div class="result-icon" style="background:linear-gradient(135deg,#4f8cff,#3b6fcf)"><span class="material-icons-round">folder_open</span></div>
-              <div class="result-copy">
-                <div class="result-type"><span class="material-icons-round">deployed_code</span>Project Result</div>
-                <h3 class="result-title"><strong>workspace.fe</strong> 프로젝트 상세에서 실제 연결 상태 보기</h3>
-                <p class="result-desc">검색 결과를 읽는 데서 끝나지 않고, 실제 앱과 문서 수집, 검색 대상, 배포 히스토리를 보는 실행 화면으로 이어집니다.</p>
-                <div class="result-meta">
-                  <span class="meta-pill"><span class="material-icons-round">terminal</span>Code Server</span>
-                  <span class="meta-pill"><span class="material-icons-round">menu_book</span>문서 수집</span>
-                  <span class="meta-pill"><span class="material-icons-round">rocket_launch</span>배포 이력</span>
-                </div>
-              </div>
-              <div class="result-side">
-                <span class="score-pill"><span class="material-icons-round">verified</span>83% match</span>
-                <span class="route-pill"><span class="material-icons-round">open_in_new</span>실행 화면</span>
-              </div>
-            </a>
-
-            <a class="result-card" data-type="hub" href="workspace_tools_hub.html">
-              <div class="result-icon" style="background:linear-gradient(135deg,#0d9488,#14b8a6)"><span class="material-icons-round">construction</span></div>
-              <div class="result-copy">
-                <div class="result-type"><span class="material-icons-round">build_circle</span>Hub Result</div>
-                <h3 class="result-title"><strong>Tools Hub</strong>에서 <mark data-query></mark>와 연결된 실행 도구 찾기</h3>
-                <p class="result-desc">Search Console, Kibana, pgAdmin, Redis Insight처럼 실제로 열어서 확인할 수 있는 도구들을 한데 모은 허브입니다.</p>
-                <div class="result-meta">
-                  <span class="meta-pill"><span class="material-icons-round">travel_explore</span>Search Console</span>
-                  <span class="meta-pill"><span class="material-icons-round">dashboard</span>Kibana</span>
-                  <span class="meta-pill"><span class="material-icons-round">tune</span>운영 도구</span>
-                </div>
-              </div>
-              <div class="result-side">
-                <span class="score-pill"><span class="material-icons-round">verified</span>80% match</span>
-                <span class="route-pill"><span class="material-icons-round">open_in_new</span>도구 허브</span>
-              </div>
-            </a>
-
-            <a class="result-card" data-type="guide" href="workspace_agent_hub.html">
-              <div class="result-icon" style="background:linear-gradient(135deg,#7c5fcf,#a78bfa)"><span class="material-icons-round">smart_toy</span></div>
-              <div class="result-copy">
-                <div class="result-type"><span class="material-icons-round">school</span>Guide Result</div>
-                <h3 class="result-title"><strong>Agent Hub</strong>로 이어지는 추천 학습 경로</h3>
-                <p class="result-desc"><mark data-query></mark>가 에이전트 연결이나 도구 사용과 맞물린다면, 어떤 LLM key와 agent 구성이 필요한지 함께 살펴보기 좋습니다.</p>
-                <div class="result-meta">
-                  <span class="meta-pill"><span class="material-icons-round">psychology</span>Agent 연결</span>
-                  <span class="meta-pill"><span class="material-icons-round">settings_suggest</span>실행 구성</span>
-                  <span class="meta-pill"><span class="material-icons-round">route</span>추천 경로</span>
-                </div>
-              </div>
-              <div class="result-side">
-                <span class="score-pill"><span class="material-icons-round">verified</span>77% match</span>
-                <span class="route-pill"><span class="material-icons-round">open_in_new</span>에이전트 허브</span>
-              </div>
-            </a>
-
-            <a class="result-card" data-type="guide" href="portal_launchpad.html">
-              <div class="result-icon" style="background:linear-gradient(135deg,#f59e0b,#f97316)"><span class="material-icons-round">rocket_launch</span></div>
-              <div class="result-copy">
-                <div class="result-type"><span class="material-icons-round">tips_and_updates</span>Guide Result</div>
-                <h3 class="result-title">Launchpad 첫 화면에서 자주 쓰는 흐름으로 다시 이동</h3>
-                <p class="result-desc">검색을 끝낸 뒤에는 앱 갤러리, AI 갤러리, 프로젝트 허브 같은 상위 동선으로 되돌아가 연속된 탐색을 이어갈 수 있습니다.</p>
-                <div class="result-meta">
-                  <span class="meta-pill"><span class="material-icons-round">home</span>홈 복귀</span>
-                  <span class="meta-pill"><span class="material-icons-round">apps</span>갤러리 탐색</span>
-                  <span class="meta-pill"><span class="material-icons-round">north_west</span>상위 동선</span>
-                </div>
-              </div>
-              <div class="result-side">
-                <span class="score-pill"><span class="material-icons-round">verified</span>71% match</span>
-                <span class="route-pill"><span class="material-icons-round">open_in_new</span>런치패드</span>
-              </div>
-            </a>
-
-            <a class="result-card" data-type="article" href="about_dej.html">
-              <div class="result-icon" style="background:linear-gradient(135deg,#0f172a,#334155)"><span class="material-icons-round">timeline</span></div>
-              <div class="result-copy">
-                <div class="result-type"><span class="material-icons-round">article</span>Document Result</div>
-                <h3 class="result-title"><strong>About DEJ</strong>에서 플랫폼 맥락 다시 보기</h3>
-                <p class="result-desc"><mark data-query></mark>가 왜 Launchpad 안에서 허브, 앱, 가이드 흐름으로 연결되는지 제품 철학과 역사 맥락을 함께 보여줍니다.</p>
-                <div class="result-meta">
-                  <span class="meta-pill"><span class="material-icons-round">account_tree</span>CEJ · DEJ</span>
-                  <span class="meta-pill"><span class="material-icons-round">history</span>히스토리</span>
-                  <span class="meta-pill"><span class="material-icons-round">lightbulb</span>배경 설명</span>
-                </div>
-              </div>
-              <div class="result-side">
-                <span class="score-pill"><span class="material-icons-round">verified</span>68% match</span>
-                <span class="route-pill"><span class="material-icons-round">open_in_new</span>배경 문서</span>
-              </div>
-            </a>
-
-            <a class="result-card" data-type="article" href="workspace_projects_hub.html">
-              <div class="result-icon" style="background:linear-gradient(135deg,#ef4444,#f97316)"><span class="material-icons-round">article</span></div>
-              <div class="result-copy">
-                <div class="result-type"><span class="material-icons-round">description</span>Document Result</div>
-                <h3 class="result-title"><strong>Projects Hub</strong>에서 연결된 사용자와 리소스 관점 확장</h3>
-                <p class="result-desc">검색어가 프로젝트 운영이나 협업 흐름과도 닿아 있다면, 프로젝트 허브에서 사람 검색, 리소스 상태, 초대 흐름까지 확장해서 볼 수 있습니다.</p>
-                <div class="result-meta">
-                  <span class="meta-pill"><span class="material-icons-round">group</span>사람 검색</span>
-                  <span class="meta-pill"><span class="material-icons-round">dns</span>리소스 연결</span>
-                  <span class="meta-pill"><span class="material-icons-round">manage_accounts</span>협업 관리</span>
-                </div>
-              </div>
-              <div class="result-side">
-                <span class="score-pill"><span class="material-icons-round">verified</span>65% match</span>
-                <span class="route-pill"><span class="material-icons-round">open_in_new</span>프로젝트 허브</span>
-              </div>
-            </a>
-          </div>
-
-          <div class="empty-state" id="emptyState" hidden>선택한 필터에 해당하는 결과가 없습니다. 다른 타입을 선택하거나 검색어를 바꿔보세요.</div>
-        </section>
-      </main>
-
-      <aside class="stack">
-        <section class="panel rail-panel">
-          <div class="panel-head">
-            <div class="title">빠른 액션</div>
-          </div>
-          <div class="quick-links">
-            <a class="quick-link" href="mcp_hub_v2.html">
-              <span class="quick-link-icon" style="background:linear-gradient(135deg,#b40e4d,#7c5fcf)"><span class="material-icons-round">hub</span></span>
-              <span><strong>MCP 허브 열기</strong><span>현재 검색어와 가장 가까운 연결 중심 화면</span></span>
-              <span class="material-icons-round trailing">chevron_right</span>
-            </a>
-            <a class="quick-link" href="workspace_keycenter_hub.html">
-              <span class="quick-link-icon" style="background:linear-gradient(135deg,#2563eb,#06b6d4)"><span class="material-icons-round">vpn_key</span></span>
-              <span><strong>Key Center 확인</strong><span>provider key와 consumer mapping 점검</span></span>
-              <span class="material-icons-round trailing">chevron_right</span>
-            </a>
-            <a class="quick-link" href="dej_ai_gallery.html">
-              <span class="quick-link-icon" style="background:linear-gradient(135deg,#0d9488,#14b8a6)"><span class="material-icons-round">smart_toy</span></span>
-              <span><strong>Agent Gallery 둘러보기</strong><span>연결 후 실제 활용 가능한 agent 시나리오 확인</span></span>
-              <span class="material-icons-round trailing">chevron_right</span>
-            </a>
-          </div>
-        </section>
-      </aside>
+      <div class="stat-chip">
+        <div class="stat-chip-icon" style="background:var(--orange)"><span class="material-icons-round">vpn_key</span></div>
+        <div><div class="stat-chip-val" style="color:var(--orange)">8.4M</div><div class="stat-chip-label">월간 LLM 토큰</div></div>
+      </div>
     </div>
   </div>
 
-  <script>
-    (() => {
-      const menuWrap = document.getElementById("serviceMenuWrap");
-      const menuButton = document.getElementById("serviceMenuButton");
-      const menuPopover = document.getElementById("serviceMenuPopover");
+  <div class="banner-carousel" data-banner-carousel>
+    <div class="banner-track" data-banner-track></div>
+    <div class="banner-dots" data-banner-dots aria-label="배너 선택"></div>
+  </div>
 
-      if (!menuWrap || !menuButton || !menuPopover) return;
+    <div class="content-zone">
 
-      const setOpen = (open) => {
-        menuWrap.classList.toggle("is-open", open);
-        menuButton.setAttribute("aria-expanded", String(open));
-        menuPopover.hidden = !open;
-      };
+        <div class="panel cz-gallery">
+      <div class="sec-label"><span class="material-icons-round">storefront</span>Gallery</div>
+      <div class="gallery-sections">
+        <section class="gallery-section" data-launchpad-gallery-section="app">
+          <div class="gallery-section-head">
+            <div class="gallery-section-copy">
+              <div class="gallery-section-title">DEJ App Gallery</div>
+              <div class="gallery-section-desc">자주 쓰는 개발 앱과 운영 도구를 한곳에서 열어볼 수 있습니다. 필요한 앱을 찾아 바로 실행해 보세요.</div>
+            </div>
+            <a class="sec-label-more" href="dej_app_gallery.html">갤러리 열기 <span class="material-icons-round">chevron_right</span></a>
+          </div>
+        <div class="agent-strip">
+          <div class="agent-spotlight app-spotlight" data-launchpad-app-spotlight>
+            <div class="agent-spotlight-top">
+              <div class="agent-spotlight-icon"><span class="material-icons-round">code</span></div>
+              <div class="agent-spotlight-state">앱 갤러리 추천</div>
+            </div>
+            <div class="agent-spotlight-eyebrow">DEJ App Gallery</div>
+            <div class="agent-spotlight-title">Code Server</div>
+            <div class="agent-spotlight-desc">브라우저에서 바로 코드를 열고 저장소, 터미널, 확장을 한 화면에서 사용할 수 있습니다. 프로젝트를 시작하거나 기존 작업을 이어갈 때 빠르게 들어갈 수 있는 작업 공간입니다.</div>
+            <div class="agent-spotlight-points">
+              <div class="agent-spotlight-point"><span class="material-icons-round">rocket_launch</span><span>프로젝트 생성 직후 바로 접속할 수 있어 온보딩 속도가 빠릅니다.</span></div>
+              <div class="agent-spotlight-point"><span class="material-icons-round">extension</span><span>사내 확장, Git 연동, 터미널 작업까지 브라우저 한 화면에서 이어집니다.</span></div>
+              <div class="agent-spotlight-point"><span class="material-icons-round">smart_toy</span><span>자주 쓰는 AI Assistant와 Skills를 함께 붙여 더 빠르게 작업할 수 있습니다.</span></div>
+            </div>
+            <div class="agent-spotlight-tags">
+              <span class="agent-spotlight-tag"><span class="material-icons-round">apps</span>실행형 앱</span>
+              <span class="agent-spotlight-tag"><span class="material-icons-round">link</span>AI 연결</span>
+              <span class="agent-spotlight-tag"><span class="material-icons-round">terminal</span>IDE · Web</span>
+              <span class="agent-spotlight-tag"><span class="material-icons-round">trending_up</span>주간 인기</span>
+            </div>
+          </div>
+          <div class="agent-app-strip" data-launchpad-app-strip>
+            <div class="app-tile"><div class="app-tile-icon" style="background:linear-gradient(135deg,#4f8cff,#3b6fcf)"><span class="material-icons-round">code</span></div><div class="app-tile-name">Code Server</div><div class="app-tile-type">브라우저 기반 IDE. 저장소 편집, 디버깅, 터미널 작업을 한 번에 수행</div><div class="app-tile-tag" style="background:#e0e7ff;color:#4f46e5">인기</div></div>
+            <div class="app-tile"><div class="app-tile-icon" style="background:linear-gradient(135deg,#fb923c,#e07020)"><span class="material-icons-round">hub</span></div><div class="app-tile-name">Jupyter Lab</div><div class="app-tile-type">데이터 탐색과 모델 실험에 적합한 노트북 환경. GPU 워크로드와 연결 가능</div><div class="app-tile-tag" style="background:#dcfce7;color:#16a34a">New</div></div>
+            <div class="app-tile"><div class="app-tile-icon" style="background:linear-gradient(135deg,#a78bfa,#7c5fcf)"><span class="material-icons-round">smart_toy</span></div><div class="app-tile-name">AI Assistant</div><div class="app-tile-type">문서 요약, 코드 설명, 초안 작성까지 도와주는 업무형 AI 도우미</div><div class="app-tile-tag" style="background:var(--brand-bg);color:var(--brand)">Beta</div></div>
+            <div class="app-tile"><div class="app-tile-icon" style="background:linear-gradient(135deg,#34d399,#0d9488)"><span class="material-icons-round">monitoring</span></div><div class="app-tile-name">Grafana</div><div class="app-tile-type">서비스 지표, 알림, 장애 추적을 위한 모니터링 대시보드</div><div class="app-tile-tag" style="background:#e0e7ff;color:#4f46e5">인기</div></div>
+          </div>
+        </div>
+        </section>
+        <div class="gallery-divider" aria-hidden="true"></div>
+        <section class="gallery-section" data-launchpad-gallery-section="ai">
+          <div class="gallery-section-head">
+            <div class="gallery-section-copy">
+              <div class="gallery-section-title">DEJ AI Gallery</div>
+              <div class="gallery-section-desc">업무에 바로 쓸 수 있는 AI Assistant와 Skills를 모아 두었습니다. 필요한 도우미를 찾아 바로 사용해 보세요.</div>
+            </div>
+            <a class="sec-label-more" href="dej_ai_gallery.html">갤러리 열기 <span class="material-icons-round">chevron_right</span></a>
+          </div>
+        <div class="agent-strip">
+          <div class="agent-spotlight" data-launchpad-ai-spotlight>
+            <div class="agent-spotlight-top">
+              <div class="agent-spotlight-icon"><span class="material-icons-round">hub</span></div>
+              <div class="agent-spotlight-state">AI Gallery Preview</div>
+            </div>
+            <div class="agent-spotlight-eyebrow">DEJ AI Gallery</div>
+            <div class="agent-spotlight-title">MCP 허브</div>
+            <div class="agent-spotlight-desc">MCP 허브에서는 키와 MCP 서버 연결 상태를 확인하고, 사용할 수 있는 도구를 한눈에 볼 수 있습니다. 필요한 연결을 정리한 뒤 바로 작업에 활용해 보세요.</div>
+            <div class="agent-spotlight-points">
+              <div class="agent-spotlight-point"><span class="material-icons-round">vpn_key</span><span>Keycenter에서 발급한 키를 연결해 바로 사용할 수 있습니다.</span></div>
+              <div class="agent-spotlight-point"><span class="material-icons-round">admin_panel_settings</span><span>MCP별 접근 권한과 만료 설정을 확인할 수 있습니다.</span></div>
+              <div class="agent-spotlight-point"><span class="material-icons-round">link</span><span>Code Server, Jupyter Lab 같은 작업 화면에서 바로 불러 쓸 수 있습니다.</span></div>
+              <div class="agent-spotlight-point"><span class="material-icons-round">rule</span><span>허용된 도구만 보여서 필요한 것만 빠르게 선택할 수 있습니다.</span></div>
+            </div>
+            <div class="agent-spotlight-tags">
+              <span class="agent-spotlight-tag"><span class="material-icons-round">smart_toy</span>에이전트 허브</span>
+              <span class="agent-spotlight-tag"><span class="material-icons-round">link</span>앱 연동</span>
+              <span class="agent-spotlight-tag"><span class="material-icons-round">key</span>키 연결</span>
+              <span class="agent-spotlight-tag"><span class="material-icons-round">toggle_on</span>접근 허가 제어</span>
+            </div>
+          </div>
+          <div class="agent-app-strip" data-launchpad-ai-strip>
+            <div class="app-tile"><div class="app-tile-icon" style="background:linear-gradient(135deg,#b40e4d,#7c5fcf)"><span class="material-icons-round">hub</span></div><div class="app-tile-name">MCP 허브</div><div class="app-tile-type">MCP 연결, 키 매핑, 접근 허가를 관리하는 DEJ Agent 허브</div><div class="app-tile-tag" style="background:var(--brand-bg);color:var(--brand)">Preview</div></div>
+            <div class="app-tile"><div class="app-tile-icon" style="background:linear-gradient(135deg,#4f8cff,#0086cc)"><span class="material-icons-round">rate_review</span></div><div class="app-tile-name">MR Review Agent</div><div class="app-tile-type">GitLab MCP와 연결해 코드 리뷰와 변경 영향 분석을 자동화</div><div class="app-tile-tag" style="background:#e0f2fe;color:#0369a1">Agent</div></div>
+            <div class="app-tile"><div class="app-tile-icon" style="background:linear-gradient(135deg,#34d399,#0d9488)"><span class="material-icons-round">terminal</span></div><div class="app-tile-name">Ops Agent</div><div class="app-tile-type">Kubernetes, Monitoring MCP를 사용해 장애 확인과 조치 가이드를 지원</div><div class="app-tile-tag" style="background:#dcfce7;color:#15803d">Agent</div></div>
+            <div class="app-tile"><div class="app-tile-icon" style="background:linear-gradient(135deg,#fbbf24,#e07020)"><span class="material-icons-round">menu_book</span></div><div class="app-tile-name">Knowledge Agent</div><div class="app-tile-type">문서, 위키, 검색 MCP를 묶어 사내 지식 탐색과 요약을 지원</div><div class="app-tile-tag" style="background:#fef3c7;color:#b45309">Draft</div></div>
+          </div>
+        </div>
+        </section>
+      </div>
+    </div>
 
-      setOpen(false);
+        <div class="panel cz-articles">
+      <div class="article-head">
+        <div class="sec-label">
+          <span class="material-icons-round">article</span>아티클
+          <span class="sec-label-more">더보기 <span class="material-icons-round">chevron_right</span></span>
+        </div>
+        <div class="article-tabs" role="tablist" aria-label="아티클 카테고리" data-launchpad-article-tabs>
+          <button class="article-tab is-active" type="button" role="tab" aria-selected="true" data-article-tab="all">전체</button>
+          <button class="article-tab" type="button" role="tab" aria-selected="false" data-article-tab="ai">AI</button>
+          <button class="article-tab" type="button" role="tab" aria-selected="false" data-article-tab="security">보안</button>
+          <button class="article-tab" type="button" role="tab" aria-selected="false" data-article-tab="dev">개발</button>
+        </div>
+      </div>
+      <div data-launchpad-article-list>
+      <div class="article-item" data-article-category="ai">
+        <div class="article-thumb" style="background:linear-gradient(135deg,#a78bfa,#7c5fcf)"><span class="material-icons-round">smart_toy</span></div>
+        <div><div class="article-title">MCP를 활용한 개발 워크플로우 자동화</div><div class="article-meta"><span class="article-tag" style="background:var(--purple-bg);color:var(--purple)">MCP</span>2026.04.05</div></div>
+      </div>
+      <div class="article-item" data-article-category="ai">
+        <div class="article-thumb" style="background:linear-gradient(135deg,#34d399,#0d9488)"><span class="material-icons-round">speed</span></div>
+        <div><div class="article-title">GPU 워크스페이스로 LLM 파인튜닝하기</div><div class="article-meta"><span class="article-tag" style="background:var(--green-bg);color:var(--green)">AI</span>2026.04.02</div></div>
+      </div>
+      <div class="article-item" data-article-category="security">
+        <div class="article-thumb" style="background:linear-gradient(135deg,#f472b6,#b40e4d)"><span class="material-icons-round">verified_user</span></div>
+        <div><div class="article-title">사내 MCP 연결을 위한 키 회전과 접근 정책 운영 가이드</div><div class="article-meta"><span class="article-tag" style="background:var(--brand-bg);color:var(--brand)">보안</span>2026.04.01</div></div>
+      </div>
+      <div class="article-item" data-article-category="dev">
+        <div class="article-thumb" style="background:linear-gradient(135deg,#22d3ee,#0086cc)"><span class="material-icons-round">build_circle</span></div>
+        <div><div class="article-title">Workspace 2.4 릴리즈 노트</div><div class="article-meta"><span class="article-tag" style="background:var(--blue-bg);color:var(--blue)">개발</span>2026.03.29</div></div>
+      </div>
+      <div class="article-item" data-article-category="dev">
+        <div class="article-thumb" style="background:linear-gradient(135deg,#4f8cff,#3b6fcf)"><span class="material-icons-round">rocket_launch</span></div>
+        <div><div class="article-title">CI/CD 파이프라인 최적화 팁</div><div class="article-meta"><span class="article-tag" style="background:var(--blue-bg);color:var(--blue)">DevOps</span>2026.03.25</div></div>
+      </div>
+      </div>
+    </div>
 
-      menuButton.addEventListener("click", (event) => {
-        event.preventDefault();
-        setOpen(!menuWrap.classList.contains("is-open"));
-      });
+        <div class="panel cz-guides">
+      <div class="sec-label"><span class="material-icons-round">menu_book</span>가이드<span class="sec-label-more">더보기 <span class="material-icons-round">chevron_right</span></span></div>
+      <div data-launchpad-guide-list>
+      <div class="guide-item">
+        <div class="guide-ico" style="background:var(--blue-bg)"><span class="material-icons-round" style="color:var(--blue)">play_circle</span></div>
+        <div class="guide-name">처음 시작하기</div><div class="guide-meta">10분</div><div class="guide-arr"><span class="material-icons-round">chevron_right</span></div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-ico" style="background:var(--brand-bg)"><span class="material-icons-round" style="color:var(--brand)">security</span></div>
+        <div class="guide-name">SSO 연동 설정</div><div class="guide-meta">15분</div><div class="guide-arr"><span class="material-icons-round">chevron_right</span></div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-ico" style="background:var(--green-bg)"><span class="material-icons-round" style="color:var(--green)">memory</span></div>
+        <div class="guide-name">GPU 리소스 요청</div><div class="guide-meta">8분</div><div class="guide-arr"><span class="material-icons-round">chevron_right</span></div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-ico" style="background:var(--purple-bg)"><span class="material-icons-round" style="color:var(--purple)">extension</span></div>
+        <div class="guide-name">MCP 서버 연결</div><div class="guide-meta">12분</div><div class="guide-arr"><span class="material-icons-round">chevron_right</span></div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-ico" style="background:#fef9c3"><span class="material-icons-round" style="color:#ca8a04">build</span></div>
+        <div class="guide-name">CI/CD 파이프라인</div><div class="guide-meta">20분</div><div class="guide-arr"><span class="material-icons-round">chevron_right</span></div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-ico" style="background:var(--blue-bg)"><span class="material-icons-round" style="color:var(--blue)">grid_view</span></div>
+        <div class="guide-name">Jupyter 노트북 배포</div><div class="guide-meta">7분</div><div class="guide-arr"><span class="material-icons-round">chevron_right</span></div>
+      </div>
+      </div>
+    </div>
 
-      menuPopover.addEventListener("click", (event) => {
-        if (event.target.closest(".service-link, .service-outlink")) {
-          setOpen(false);
-        }
-      });
+        <div class="cz-sidebar">
 
-      document.addEventListener("click", (event) => {
-        if (!menuWrap.contains(event.target)) {
-          setOpen(false);
-        }
-      });
+            <div class="panel personal-rail-card">
+        <div class="sec-label"><span class="material-icons-round">notifications_none</span>내 알림<span class="sec-label-more">모두 읽음</span></div>
+        <div data-launchpad-notifications-list>
+        <div class="notif-item"><div class="notif-dot u"></div><div><div class="notif-text"><b>my-project</b> 빌드가 완료되었습니다.</div><div class="notif-time">5분 전</div></div></div>
+        <div class="notif-item"><div class="notif-dot u"></div><div><div class="notif-text"><b>hedej-api</b> GPU 리소스 할당이 승인되었습니다.</div><div class="notif-time">32분 전</div></div></div>
+        <div class="notif-item"><div class="notif-dot u"></div><div><div class="notif-text"><b>시스템</b> Kubernetes 클러스터 노드 추가 완료</div><div class="notif-time">1시간 전</div></div></div>
+        <div class="notif-item"><div class="notif-dot r"></div><div><div class="notif-text"><b>workspace-v2.4</b> 배포가 완료되었습니다.</div><div class="notif-time">어제</div></div></div>
+        <div class="notif-item"><div class="notif-dot r"></div><div><div class="notif-text"><b>AI Code Review</b> 기능이 업데이트 되었습니다.</div><div class="notif-time">2일 전</div></div></div>
+        </div>
+      </div>
 
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          setOpen(false);
-          menuButton.focus();
-        }
-      });
-    })();
+            <div class="panel personal-rail-card">
+        <div class="sec-label"><span class="material-icons-round">rocket_launch</span>내 배포 앱<span class="sec-label-more">전체보기 <span class="material-icons-round">chevron_right</span></span></div>
+        <div data-launchpad-deploy-summary></div>
+        <div data-launchpad-deploy-list>
+        <div class="deploy-item">
+          <div class="deploy-ico" style="background:linear-gradient(135deg,#34d399,#0d9488)"><span class="material-icons-round">language</span></div>
+          <div><div class="deploy-name">hedej-api</div><div class="deploy-ver">v2.4.1 · 3시간 전</div></div>
+          <span class="pill pill-run">Running</span>
+        </div>
+        <div class="deploy-item">
+          <div class="deploy-ico" style="background:linear-gradient(135deg,#4f8cff,#3b6fcf)"><span class="material-icons-round">dashboard</span></div>
+          <div><div class="deploy-name">workspace-fe</div><div class="deploy-ver">v2.4.0 · 어제</div></div>
+          <span class="pill pill-run">Running</span>
+        </div>
+        <div class="deploy-item">
+          <div class="deploy-ico" style="background:linear-gradient(135deg,#22d3ee,#0086cc)"><span class="material-icons-round">schedule</span></div>
+          <div><div class="deploy-name">scheduler</div><div class="deploy-ver">v1.8.3 · 2일 전</div></div>
+          <span class="pill pill-build">Building</span>
+        </div>
+        <div class="deploy-item">
+          <div class="deploy-ico" style="background:linear-gradient(135deg,#a78bfa,#7c5fcf)"><span class="material-icons-round">smart_toy</span></div>
+          <div><div class="deploy-name">ai-gateway</div><div class="deploy-ver">v0.9.1 · 5일 전</div></div>
+          <span class="pill pill-err">Error</span>
+        </div>
+        <div class="deploy-item">
+          <div class="deploy-ico" style="background:linear-gradient(135deg,#d6d8db,#9298a0)"><span class="material-icons-round">inventory_2</span></div>
+          <div><div class="deploy-name">legacy-service</div><div class="deploy-ver">v1.2.0 · 2주 전</div></div>
+          <span class="pill pill-stop">Stopped</span>
+        </div>
+        </div>
+      </div>
 
-    (() => {
-      const params = new URLSearchParams(window.location.search);
-      const query = (params.get("q") || "").trim() || "MCP 연결";
-      const source = (params.get("source") || "launchpad").trim() || "launchpad";
-      const sourceLabelMap = {
-        launchpad: "Launchpad",
-        "workspace-projects-hub": "Projects Hub",
-        "mcp-hub": "MCP Hub"
-      };
-      const typeLabelMap = {
-        all: "전체",
-        hub: "허브",
-        project: "프로젝트",
-        guide: "가이드",
-        article: "문서"
-      };
-      const requestedDefaultType = (params.get("defaultType") || (source === "workspace-projects-hub" ? "project" : "all")).trim();
-      const defaultType = typeLabelMap[requestedDefaultType] ? requestedDefaultType : "all";
-      const sourceLabel = (params.get("sourceLabel") || sourceLabelMap[source] || "Launchpad").trim() || "Launchpad";
-      const queryTargets = Array.from(document.querySelectorAll("[data-query]"));
-      const sourceTargets = Array.from(document.querySelectorAll("[data-source-label]"));
-      const defaultTypeTargets = Array.from(document.querySelectorAll("[data-default-type-label]"));
-      const topbarInput = document.getElementById("topbarSearchInput");
-      const topbarSourceInput = document.getElementById("topbarSourceInput");
-      const topbarSourceLabelInput = document.getElementById("topbarSourceLabelInput");
-      const topbarDefaultTypeInput = document.getElementById("topbarDefaultTypeInput");
-      const aiChatLink = document.querySelector("[data-ai-chat-link]");
+      <div class="panel personal-rail-card usage-rail-card">
+        <div class="sec-label"><span class="material-icons-round">deployed_code</span>내 리소스</div>
+        <div data-launchpad-resource-summary></div>
+        <div class="resource-rail-list" data-launchpad-resource-list>
+          <a class="resource-rail-item" href="workspace_database_hub.html">
+            <span class="resource-rail-icon" style="background:linear-gradient(135deg,#2563eb,#06b6d4)"><span class="material-icons-round">storage</span></span>
+            <span class="resource-rail-copy-item">
+              <span class="resource-rail-type">DB · PostgreSQL</span>
+              <span class="resource-rail-title-item">prod-postgres-main</span>
+            </span>
+          </a>
+          <a class="resource-rail-item" href="workspace_database_hub.html">
+            <span class="resource-rail-icon" style="background:linear-gradient(135deg,#0f766e,#14b8a6)"><span class="material-icons-round">hub</span></span>
+            <span class="resource-rail-copy-item">
+              <span class="resource-rail-type">DB · MongoDB</span>
+              <span class="resource-rail-title-item">user-event-cluster</span>
+            </span>
+          </a>
+          <a class="resource-rail-item" href="workspace_s3_hub.html">
+            <span class="resource-rail-icon" style="background:linear-gradient(135deg,#0f766e,#2dd4bf)"><span class="material-icons-round">folder</span></span>
+            <span class="resource-rail-copy-item">
+              <span class="resource-rail-type">Bucket</span>
+              <span class="resource-rail-title-item">axstudio-assets-prod</span>
+            </span>
+          </a>
+          <a class="resource-rail-item" href="workspace_domain_hub.html">
+            <span class="resource-rail-icon" style="background:linear-gradient(135deg,#4f46e5,#60a5fa)"><span class="material-icons-round">apartment</span></span>
+            <span class="resource-rail-copy-item">
+              <span class="resource-rail-type">Domain</span>
+              <span class="resource-rail-title-item">studio.ax.dev</span>
+            </span>
+          </a>
+          <a class="resource-rail-item" href="workspace_projects_hub.html">
+            <span class="resource-rail-icon" style="background:linear-gradient(135deg,#4f8cff,#3b6fcf)"><span class="material-icons-round">folder_open</span></span>
+            <span class="resource-rail-copy-item">
+              <span class="resource-rail-type">Project</span>
+              <span class="resource-rail-title-item">workspace.fe</span>
+            </span>
+          </a>
+          <a class="resource-rail-item" href="workspace_message_hub.html">
+            <span class="resource-rail-icon" style="background:linear-gradient(135deg,#2563eb,#7c3aed)"><span class="material-icons-round">mark_email_unread</span></span>
+            <span class="resource-rail-copy-item">
+              <span class="resource-rail-type">Message</span>
+              <span class="resource-rail-title-item">message-center inbox</span>
+            </span>
+          </a>
+          <a class="resource-rail-item" href="workspace_tools_hub.html">
+            <span class="resource-rail-icon" style="background:linear-gradient(135deg,#2563eb,#06b6d4)"><span class="material-icons-round">database</span></span>
+            <span class="resource-rail-copy-item">
+              <span class="resource-rail-type">Console · pgAdmin</span>
+              <span class="resource-rail-title-item">pgadmin-workspace</span>
+            </span>
+          </a>
+          <a class="resource-rail-item" href="workspace_tools_hub.html">
+            <span class="resource-rail-icon" style="background:linear-gradient(135deg,#f97316,#fb923c)"><span class="material-icons-round">memory</span></span>
+            <span class="resource-rail-copy-item">
+              <span class="resource-rail-type">Console · Redis Insight</span>
+              <span class="resource-rail-title-item">redis-insight-session</span>
+            </span>
+          </a>
+        </div>
+      </div>
 
-      queryTargets.forEach((node) => {
-        node.textContent = query;
-      });
-      sourceTargets.forEach((node) => {
-        node.textContent = sourceLabel;
-      });
-      defaultTypeTargets.forEach((node) => {
-        node.textContent = typeLabelMap[defaultType] || typeLabelMap.all;
-      });
+    </div>
+  </div>
+</div>
 
-      if (topbarInput) topbarInput.value = query;
-      if (topbarSourceInput) topbarSourceInput.value = source;
-      if (topbarSourceLabelInput) topbarSourceLabelInput.value = sourceLabel;
-      if (topbarDefaultTypeInput) topbarDefaultTypeInput.value = defaultType;
-      if (aiChatLink) {
-        const chatParams = new URLSearchParams({
-          q: query,
-          source,
-          sourceLabel,
-          mode: "search-assist"
-        });
-        aiChatLink.href = `dej_chatbot_trial.html?${chatParams.toString()}`;
+<script>
+  (() => {
+    const menuWrap = document.getElementById('serviceMenuWrap');
+    const menuButton = document.getElementById('serviceMenuButton');
+    const menuPopover = document.getElementById('serviceMenuPopover');
+
+    if (!menuWrap || !menuButton || !menuPopover) return;
+
+    const setOpen = (open) => {
+      menuWrap.classList.toggle('is-open', open);
+      menuButton.setAttribute('aria-expanded', String(open));
+      menuPopover.hidden = !open;
+    };
+
+    setOpen(false);
+
+    menuButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      setOpen(!menuWrap.classList.contains('is-open'));
+    });
+
+    menuPopover.addEventListener('click', (event) => {
+      if (event.target.closest('.service-link, .service-outlink')) {
+        setOpen(false);
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!menuWrap.contains(event.target)) {
+        setOpen(false);
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        setOpen(false);
+        menuButton.focus();
+      }
+    });
+  })();
+
+  (() => {
+    const elements = {
+      serviceGroups: document.querySelector('[data-launchpad-service-groups]'),
+      heroGreet: document.querySelector('[data-launchpad-hero-greet]'),
+      heroStats: document.querySelector('[data-launchpad-hero-stats]'),
+      bannerCarousel: document.querySelector('[data-banner-carousel]'),
+      bannerTrack: document.querySelector('[data-banner-track]'),
+      bannerDots: document.querySelector('[data-banner-dots]'),
+      appSpotlight: document.querySelector('[data-launchpad-app-spotlight]'),
+      appStrip: document.querySelector('[data-launchpad-app-strip]'),
+      aiSpotlight: document.querySelector('[data-launchpad-ai-spotlight]'),
+      aiStrip: document.querySelector('[data-launchpad-ai-strip]'),
+      articleTabs: document.querySelector('[data-launchpad-article-tabs]'),
+      articleList: document.querySelector('[data-launchpad-article-list]'),
+      guideList: document.querySelector('[data-launchpad-guide-list]'),
+      notificationsList: document.querySelector('[data-launchpad-notifications-list]'),
+      deploySummary: document.querySelector('[data-launchpad-deploy-summary]'),
+      deployList: document.querySelector('[data-launchpad-deploy-list]'),
+      resourceSummary: document.querySelector('[data-launchpad-resource-summary]'),
+      resourceList: document.querySelector('[data-launchpad-resource-list]'),
+    };
+
+    const state = {
+      currentArticleTab: 'all',
+      articles: [],
+      articleTabs: [],
+      currentBannerIndex: 0,
+    };
+
+    const sampleHrefMap = {
+      '/workspace/app-gallery': 'dej_app_gallery.html',
+      '/workspace/ai-gallery': 'dej_ai_gallery.html',
+      '/workspace/domains': 'workspace_domain_hub.html',
+      '/workspace/permissions': 'workspace_permission_hub.html',
+      '/workspace/databases': 'workspace_database_hub.html',
+      '/workspace/buckets': 'workspace_s3_hub.html',
+      '/workspace/consoles': 'workspace_tools_hub.html',
+      '/workspace/projects': 'workspace_projects_hub.html',
+      '/workspace/messages': 'workspace_message_hub.html',
+      '/workspace/jupyter': 'workspace_projects_hub.html',
+      '/workspace/agents': 'workspace_agent_hub.html',
+      '/workspace/chatbots': 'workspace_chatbot_hub.html',
+      '/workspace/tool-inventory': 'workspace_tool_inventory_hub.html',
+      '/workspace/keycenter': 'workspace_keycenter_hub.html',
+      '/docs/about-dej': 'about_dej.html',
+      '/support/messages': 'workspace_message_hub.html',
+      '/support/requests': 'workspace_message_hub.html?box=requests',
+      '/support/chatbot': 'dej_chatbot_trial.html',
+    };
+
+    const iconMap = {
+      app_gallery: 'widgets',
+      ai_gallery: 'smart_toy',
+      domain: 'apartment',
+      group: 'groups',
+      database: 'storage',
+      bucket: 'folder',
+      console: 'web',
+      project: 'public',
+      science: 'science',
+      workflow: 'smart_toy',
+      chat: 'chat',
+      inventory: 'inventory_2',
+      keycenter: 'vpn_key',
+      description: 'description',
+      timeline: 'timeline',
+      chat_bubble: 'chat_bubble_outline',
+      campaign: 'campaign',
+    };
+
+    const typePalette = {
+      release: { icon: 'rocket_launch', badgeBg: '#e0edff', badgeColor: '#3157b7' },
+      security: { icon: 'security', badgeBg: '#fee2e2', badgeColor: '#b91c1c' },
+      info: { icon: 'campaign', badgeBg: '#f3e8ff', badgeColor: '#7c3aed' },
+      default: { icon: 'notifications', badgeBg: '#f3f4f6', badgeColor: '#475569' },
+    };
+
+    const categoryPalette = {
+      development: { icon: 'terminal', badgeBg: '#e0edff', badgeColor: '#3157b7' },
+      workspace: { icon: 'dashboard_customize', badgeBg: '#dcfce7', badgeColor: '#15803d' },
+      operations: { icon: 'rocket_launch', badgeBg: '#ffedd5', badgeColor: '#c2410c' },
+      analytics: { icon: 'query_stats', badgeBg: '#f3e8ff', badgeColor: '#7c3aed' },
+      agent: { icon: 'smart_toy', badgeBg: 'var(--brand-bg)', badgeColor: 'var(--brand)' },
+      default: { icon: 'widgets', badgeBg: '#f3f4f6', badgeColor: '#475569' },
+    };
+
+    function resolvePreviewHref(href, fallback = '#') {
+      if (!href) return fallback;
+      return sampleHrefMap[href] || href;
+    }
+
+    function getCategoryPalette(category) {
+      return categoryPalette[category] || categoryPalette.default;
+    }
+
+    function getTypePalette(type) {
+      return typePalette[type] || typePalette.default;
+    }
+
+    function getHeroGreetingName(value) {
+      const raw = String(value || '').trim();
+      const local = raw.split('@')[0].trim();
+
+      if (!local) return 'Workspace User';
+
+      if (/[._-]/.test(local) && !/\s/.test(local)) {
+        return local
+          .split(/[._-]+/)
+          .filter(Boolean)
+          .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(' ');
       }
 
-      const resultCards = Array.from(document.querySelectorAll(".result-card"));
-      const filterButtons = Array.from(document.querySelectorAll("[data-filter]"));
-      const visibleCountTargets = Array.from(document.querySelectorAll("[data-visible-count]"));
-      const emptyState = document.getElementById("emptyState");
+      return local;
+    }
 
-      const updateVisibleCount = () => {
-        const visible = resultCards.filter((card) => !card.hidden).length;
-        visibleCountTargets.forEach((node) => {
-          node.textContent = String(visible);
-        });
-        if (emptyState) emptyState.hidden = visible !== 0;
-      };
+    function getHeroTitle(hero) {
+      if (hero?.title) return hero.title;
+      return `${getHeroGreetingName(hero?.userName)} 님, 반갑습니다 👋`;
+    }
 
-      const setFilter = (type) => {
-        filterButtons.forEach((button) => {
-          const active = button.dataset.filter === type;
-          button.classList.toggle("is-active", active);
-          button.setAttribute("aria-selected", String(active));
-        });
-        if (topbarDefaultTypeInput) topbarDefaultTypeInput.value = type;
+    function getHeroSubtitle(summary, hero) {
+      if (!summary) return hero?.subtitle || '';
 
-        resultCards.forEach((card) => {
-          const visible = type === "all" || card.dataset.type === type;
-          card.hidden = !visible;
-        });
+      const unreadCount = Number(summary.unreadNotificationCount || 0);
+      const runningCount = Number(summary.recentJobStatus?.running || 0);
 
-        updateVisibleCount();
-      };
+      if (unreadCount > 0 && runningCount > 0) {
+        return `읽지 않은 알림 ${unreadCount}건과 진행 중인 작업 ${runningCount}건이 있습니다.`;
+      }
 
-      filterButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          setFilter(button.dataset.filter || "all");
-        });
+      if (unreadCount > 0) {
+        return `읽지 않은 알림 ${unreadCount}건을 먼저 확인해 보세요.`;
+      }
+
+      if (runningCount > 0) {
+        return `진행 중인 작업 ${runningCount}건을 여기에서 바로 확인할 수 있습니다.`;
+      }
+
+      return '새 알림 없이 작업을 바로 시작할 수 있습니다.';
+    }
+
+    function getBannerThemeClass(theme) {
+      return {
+        dej: 'dej-banner',
+        release: 'release-banner',
+        event: 'learning-banner',
+        learning: 'learning-banner',
+        research: 'research-banner',
+        security: 'security-banner',
+      }[theme] || '';
+    }
+
+    async function apiGet(path) {
+      const response = await fetch(path, {
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json' },
       });
 
-      updateVisibleCount();
-      setFilter(defaultType);
-    })();
-  </script>
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(payload?.error?.message || `Request failed: ${response.status}`);
+      }
+
+      return payload?.data ?? payload;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function renderStatus(message, { error = false } = {}) {
+      return `<div class="section-status${error ? ' is-error' : ''}">${escapeHtml(message)}</div>`;
+    }
+
+    function renderEmpty(message) {
+      return `<div class="empty-state">${escapeHtml(message)}</div>`;
+    }
+
+    function formatDate(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.valueOf())) return '-';
+      return new Intl.DateTimeFormat('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }).format(date).replace(/\.\s?/g, '.').replace(/\.$/, '');
+    }
+
+    function formatRelativeTime(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.valueOf())) return '-';
+
+      const diffMinutes = Math.round((date.getTime() - Date.now()) / 60000);
+      const rtf = new Intl.RelativeTimeFormat('ko', { numeric: 'auto' });
+      if (Math.abs(diffMinutes) < 60) return rtf.format(diffMinutes, 'minute');
+      const diffHours = Math.round(diffMinutes / 60);
+      if (Math.abs(diffHours) < 24) return rtf.format(diffHours, 'hour');
+      return rtf.format(Math.round(diffHours / 24), 'day');
+    }
+
+    function renderServiceMenu(groups) {
+      if (!elements.serviceGroups) return;
+      if (!Array.isArray(groups) || !groups.length) {
+        elements.serviceGroups.innerHTML = renderEmpty('서비스 메뉴를 불러오지 못했습니다.');
+        return;
+      }
+
+      elements.serviceGroups.innerHTML = groups.map((group) => `
+        <section class="service-group">
+          <div class="service-group-head">
+            <div class="service-group-copy">
+              <div class="service-group-title-row">
+                <div class="service-group-title">${escapeHtml(group.title)}</div>
+              </div>
+            </div>
+          </div>
+          <div class="service-links">
+            ${(group.links || []).map((link) => `
+              <a class="service-link" href="${escapeHtml(resolvePreviewHref(link.href, '#'))}">
+                <span class="material-icons-round service-link-icon">${escapeHtml(iconMap[link.icon] || link.icon || 'widgets')}</span>
+                <span class="service-link-copy">
+                  <span class="service-link-title">${escapeHtml(link.label)}</span>
+                  <span class="service-link-desc">${escapeHtml(link.description || '')}</span>
+                </span>
+              </a>
+            `).join('')}
+          </div>
+        </section>
+      `).join('');
+    }
+
+    function renderHero(hero, summary) {
+      if (!hero || !elements.heroGreet || !elements.heroStats) return;
+
+      const subtitle = getHeroSubtitle(summary, hero);
+
+      elements.heroGreet.innerHTML = `
+        <h1>${escapeHtml(getHeroTitle(hero))}</h1>
+        <p>${escapeHtml(subtitle)}</p>
+      `;
+
+      elements.heroStats.innerHTML = (hero.heroStats || []).map((stat) => {
+        const href = stat.key === 'workspace' ? 'workspace_projects_hub.html' : null;
+        const tag = href ? 'a' : 'div';
+        const cls = href ? 'stat-chip stat-chip-link' : 'stat-chip';
+        return `
+          <${tag} class="${cls}"${href ? ` href="${escapeHtml(href)}"` : ''}>
+            <div class="stat-chip-icon" style="background:${escapeHtml(stat.color || 'var(--blue)')}"><span class="material-icons-round">${escapeHtml(stat.icon || 'data_usage')}</span></div>
+            <div>
+              <div class="stat-chip-val">${escapeHtml(stat.value || '-')}</div>
+              <div class="stat-chip-label">${escapeHtml(stat.label || '-')}</div>
+            </div>
+          </${tag}>
+        `;
+      }).join('') || renderEmpty('Hero 지표가 없습니다.');
+    }
+
+    function buildDejBannerConfig(hero, serviceMenu) {
+      const quickLinks = (serviceMenu?.items || [])
+        .flatMap((group) => group.links || [])
+        .filter((link) => ['/workspace/app-gallery', '/workspace/ai-gallery', '/docs/about-dej'].includes(link.href))
+        .slice(0, 2);
+
+      return {
+        id: 'launchpad-overview',
+        type: 'info',
+        theme: 'dej',
+        visualMode: 'snapshot',
+        showBackdrop: true,
+        eyebrow: '오늘의 Workspace',
+        title: hero?.title || '오늘의 Workspace',
+        message: hero?.subtitle || '지금 필요한 앱과 작업 현황을 한눈에 확인해 보세요.',
+        primaryAction: (quickLinks[0] && {
+          label: quickLinks[0].label,
+          href: quickLinks[0].href,
+          icon: quickLinks[0].icon,
+        }) || { label: 'App Gallery', href: 'dej_app_gallery.html', icon: 'widgets' },
+        secondaryAction: (quickLinks[1] && {
+          label: quickLinks[1].label,
+          href: quickLinks[1].href,
+          icon: quickLinks[1].icon,
+        }) || { label: 'AI Gallery', href: 'dej_ai_gallery.html', icon: 'smart_toy' },
+        chips: (hero?.heroStats || []).slice(0, 3).map((stat) => stat.label).filter(Boolean),
+        snapshotTitle: hero?.workspaceName || 'DEJ Workspace',
+        snapshotRows: (hero?.heroStats || []).slice(0, 3).map((stat) => ({
+          icon: stat.icon || 'data_usage',
+          title: stat.label || '-',
+          description: stat.note ? `${stat.value || '-'} · ${stat.note}` : `${stat.value || '-'}`,
+        })),
+      };
+    }
+
+    function buildFallbackBanners(hero, serviceMenu, announcements) {
+      const releaseItem = announcements.find((item) => item.type !== 'security') || announcements[0] || null;
+      const spotlightItem = announcements[1] || releaseItem;
+      const securityItem = announcements.find((item) => item.type === 'security') || announcements[1] || announcements[0] || null;
+
+      return [
+        buildDejBannerConfig(hero, serviceMenu),
+        {
+          id: 'release-fallback',
+          type: 'release',
+          theme: 'release',
+          eyebrow: '새로운 소식',
+          title: releaseItem?.title || 'AI Code Review가 출시되었습니다',
+          message: releaseItem?.message || 'MR 코드를 AI가 자동으로 리뷰합니다. GitLab MCP와 연동하여 코드 품질을 한 단계 높여보세요.',
+          publishedAt: releaseItem?.publishedAt,
+          primaryAction: { label: '가이드 열기', href: releaseItem?.href || 'dej_app_gallery.html', icon: 'rocket_launch' },
+          secondaryAction: { label: 'App Gallery 보기', href: 'dej_app_gallery.html', icon: 'widgets' },
+          chips: [releaseItem?.type || 'release', releaseItem?.publishedAt ? formatRelativeTime(releaseItem.publishedAt) : '최근 등록', '추천 앱'],
+        },
+        {
+          id: 'spotlight-fallback',
+          type: 'info',
+          theme: 'learning',
+          eyebrow: '추천 보기',
+          title: spotlightItem?.title || 'AX Studio Conference 소식을 확인해 보세요.',
+          message: spotlightItem?.message || '새로 공개된 기능과 사용 방법을 한 번에 살펴볼 수 있습니다.',
+          publishedAt: spotlightItem?.publishedAt,
+          primaryAction: { label: '관련 문서 보기', href: spotlightItem?.href || 'about_dej.html', icon: 'campaign' },
+          secondaryAction: { label: 'AI Gallery 보기', href: 'dej_ai_gallery.html', icon: 'smart_toy' },
+          chips: ['Spotlight', 'App Gallery', 'AI Gallery'],
+        },
+        {
+          id: 'security-fallback',
+          type: 'security',
+          theme: 'security',
+          eyebrow: 'Security Notice',
+          title: securityItem?.title || 'AX Studio 보안 공지: MCP 연결과 API Key 관리 기준이 강화됩니다.',
+          message: securityItem?.message || '안전한 AI 활용을 위해 키 회전, 접근 권한, 외부 도구 연결 정책을 다시 점검해 주세요.',
+          publishedAt: securityItem?.publishedAt,
+          primaryAction: { label: '보안 가이드', href: securityItem?.href || 'workspace_keycenter_hub.html', icon: 'security' },
+          secondaryAction: { label: 'Keycenter 보기', href: 'workspace_keycenter_hub.html', icon: 'vpn_key' },
+          chips: ['Security', 'API Key', 'MCP Policy'],
+        },
+      ].filter(Boolean);
+    }
+
+    function getBannerVisualTitle(item) {
+      if (item.visualTitle) return item.visualTitle;
+      if (item.theme === 'learning' || item.theme === 'event') return 'Learning Spotlight';
+      if (item.theme === 'research') return 'Research Program';
+      if (item.theme === 'release') return 'Product Release';
+      if (item.theme === 'security') return 'Access Guard';
+      return item.title || 'Announcement';
+    }
+
+    function getBannerVisualMeta(item) {
+      if (item.visualMeta) return item.visualMeta;
+      if (item.publishedAt) return `${formatDate(item.publishedAt)} 기준`;
+      return item.theme === 'dej' ? '현재 작업 현황' : '최근 업데이트';
+    }
+
+    function getBannerChips(item) {
+      const chips = Array.isArray(item.chips) ? item.chips.filter(Boolean) : [];
+      if (chips.length) return chips.slice(0, 3);
+      return [
+        item.type || 'notice',
+        item.publishedAt ? formatRelativeTime(item.publishedAt) : '최근 등록',
+        '바로가기',
+      ];
+    }
+
+    function renderDejSide(item) {
+      const snapshotRows = Array.isArray(item.snapshotRows) ? item.snapshotRows : [];
+      if (!snapshotRows.length && !item.snapshotTitle) {
+        return '';
+      }
+      return `
+        <div class="dej-snapshot">
+          <div class="dej-snapshot-title">${escapeHtml(item.snapshotTitle || 'DEJ Workspace')}</div>
+          ${snapshotRows.map((row) => `
+            <div class="dej-snapshot-item">
+              <div class="dej-snapshot-icon"><span class="material-icons-round">${escapeHtml(row.icon || 'data_usage')}</span></div>
+              <div>
+                <div class="dej-snapshot-name">${escapeHtml(row.title || '-')}</div>
+                <div class="dej-snapshot-desc">${escapeHtml(row.description || '-')}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function renderBannerSide(item, palette) {
+      const visualMode = item?.visualMode || 'card';
+      if (visualMode === 'none') {
+        return '';
+      }
+
+      if (visualMode === 'snapshot') {
+        return renderDejSide(item);
+      }
+
+      return `
+        <div class="banner-visual-card">
+          <div class="visual-card-top"><div class="visual-card-icon"><span class="material-icons-round">${escapeHtml(item.visualIcon || palette.icon)}</span></div>${escapeHtml((item.type || 'announcement').toUpperCase())}</div>
+          <div class="visual-card-title">${escapeHtml(getBannerVisualTitle(item))}</div>
+          <div class="visual-card-meta">${escapeHtml(getBannerVisualMeta(item))}</div>
+          <div class="visual-chip-row">
+            ${getBannerChips(item).map((chip) => `<span class="visual-chip">${escapeHtml(chip)}</span>`).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderBannerSlide(item, index) {
+      const palette = getTypePalette(item?.type || 'default');
+      const primaryAction = item?.primaryAction || {};
+      const secondaryAction = item?.secondaryAction || {};
+      const primaryHref = primaryAction.href || item?.href || '';
+      const secondaryHref = secondaryAction.href || '';
+      const hasPrimaryAction = Boolean((primaryAction.label || '').trim() && primaryHref);
+      const hasSecondaryAction = Boolean((secondaryAction.label || '').trim() && secondaryHref);
+      const themeClass = getBannerThemeClass(item?.theme);
+      const sideHtml = renderBannerSide(item, palette);
+      const hasSide = Boolean(sideHtml.trim());
+      const slideClasses = ['banner', 'banner-slide', themeClass, hasSide ? '' : 'banner-no-side', index === 0 ? 'is-active' : ''].filter(Boolean).join(' ');
+
+      return `
+        <section class="${slideClasses}" data-banner-slide data-banner-id="${escapeHtml(item?.id || `banner-${index}`)}" aria-label="${escapeHtml(item?.title || 'Launchpad banner')}" aria-hidden="${index === 0 ? 'false' : 'true'}">
+          ${item?.showBackdrop ? `
+            <div class="dej-pipeline-bg" aria-hidden="true">
+              <div class="pipeline-orbit">
+                <span class="pipeline-loop left"></span>
+                <span class="pipeline-loop right"></span>
+                <span class="pipeline-knot"></span>
+                <span class="pipeline-label cej"><strong>CEJ</strong><span>Customer Experience Journey</span></span>
+                <span class="pipeline-label dej"><strong>DEJ</strong><span>Development Experience Journey</span></span>
+              </div>
+              <span class="pipeline-side-label connectivity">Connectivity</span>
+              <span class="pipeline-side-label customization">Customization</span>
+              <span class="pipeline-side-label data">3C 2S 고객경험 영역의 데이터</span>
+              <span class="pipeline-side-label core">품질무결성</span>
+              <span class="pipeline-side-label speed">제때개발</span>
+              <span class="pipeline-side-label value">Core Value</span>
+            </div>
+          ` : ''}
+          <div class="banner-body">
+            <div class="banner-eye"><span class="material-icons-round">${escapeHtml(item?.eyebrowIcon || palette.icon)}</span>${escapeHtml(item?.eyebrow || item?.title || 'Announcement')}</div>
+            <div class="banner-title">${escapeHtml(item?.title || '안내 배너')}</div>
+            <div class="banner-desc">${escapeHtml(item?.message || '표시할 안내 메시지가 없습니다.')}</div>
+            ${(hasPrimaryAction || hasSecondaryAction) ? `
+              <div class="banner-actions" style="margin-top:14px">
+                ${hasPrimaryAction ? `
+                  <a class="banner-cta" href="${escapeHtml(resolvePreviewHref(primaryHref, '#'))}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px"><span class="material-icons-round" style="font-size:17px">${escapeHtml(primaryAction.icon || palette.icon)}</span>${escapeHtml(primaryAction.label)}</a>
+                ` : ''}
+                ${hasSecondaryAction ? `
+                  <a class="banner-ghost" href="${escapeHtml(resolvePreviewHref(secondaryHref, '#'))}" style="display:inline-flex;align-items:center;justify-content:center;gap:6px"><span class="material-icons-round" style="font-size:17px">${escapeHtml(secondaryAction.icon || 'open_in_new')}</span>${escapeHtml(secondaryAction.label)}</a>
+                ` : ''}
+              </div>
+            ` : ''}
+          </div>
+          ${hasSide ? `
+            <div class="banner-side">
+              ${sideHtml}
+            </div>
+          ` : ''}
+        </section>
+      `;
+    }
+
+    function renderBannerDots(items) {
+      if (!elements.bannerDots) return;
+      if (!Array.isArray(items) || items.length < 2) {
+        elements.bannerDots.innerHTML = '';
+        return;
+      }
+
+      elements.bannerDots.innerHTML = items.map((item, index) => `
+        <button class="banner-dot${index === 0 ? ' on' : ''}" type="button" data-banner-dot="${index}" aria-label="${escapeHtml(item?.title || `배너 ${index + 1} 보기`)}" aria-current="${index === 0 ? 'true' : 'false'}"></button>
+      `).join('');
+    }
+
+    function isBannerVisible(item) {
+      if (!item || item.status === 'archived' || item.status === 'hidden') {
+        return false;
+      }
+
+      const now = Date.now();
+      const startAt = item.startAt ? new Date(item.startAt).getTime() : null;
+      const endAt = item.endAt ? new Date(item.endAt).getTime() : null;
+      if (startAt && !Number.isNaN(startAt) && startAt > now) return false;
+      if (endAt && !Number.isNaN(endAt) && endAt < now) return false;
+      return true;
+    }
+
+    function getSortedBanners(items) {
+      return items
+        .filter(isBannerVisible)
+        .sort((a, b) => {
+          const pinnedGap = Number(Boolean(b?.pinned)) - Number(Boolean(a?.pinned));
+          if (pinnedGap) return pinnedGap;
+          const priorityGap = (Number(b?.priority) || 0) - (Number(a?.priority) || 0);
+          if (priorityGap) return priorityGap;
+          const dateA = new Date(a?.publishedAt || a?.updatedAt || 0).getTime() || 0;
+          const dateB = new Date(b?.publishedAt || b?.updatedAt || 0).getTime() || 0;
+          return dateB - dateA;
+        });
+    }
+
+    function renderBanners(banners, hero, serviceMenu, announcements) {
+      if (!elements.bannerTrack || !elements.bannerCarousel) return;
+
+      const sourceBanners = Array.isArray(banners) && banners.length
+        ? getSortedBanners(banners)
+        : getSortedBanners(buildFallbackBanners(hero, serviceMenu, announcements));
+
+      if (!sourceBanners.length) {
+        elements.bannerTrack.innerHTML = `<section class="banner banner-slide is-active" data-banner-slide aria-hidden="false">${renderStatus('표시할 배너가 없습니다.')}</section>`;
+        if (elements.bannerDots) elements.bannerDots.innerHTML = '';
+        return;
+      }
+
+      state.currentBannerIndex = 0;
+      elements.bannerTrack.innerHTML = sourceBanners.map((item, index) => renderBannerSlide(item, index)).join('');
+      renderBannerDots(sourceBanners);
+    }
+
+    function renderAppPreview(items) {
+      if (!elements.appSpotlight || !elements.appStrip) return;
+      const spotlight = Array.isArray(items) ? items[0] : null;
+
+      if (!spotlight) {
+        elements.appSpotlight.innerHTML = renderEmpty('App Gallery preview 데이터가 없습니다.');
+        elements.appStrip.innerHTML = '';
+        return;
+      }
+
+      const palette = getCategoryPalette(spotlight.category);
+      const points = [
+        spotlight.installTargetLabel ? `${spotlight.installTargetLabel} 단위로 바로 연결` : null,
+        spotlight.capabilities?.canInstall ? '설치 API 연결 가능' : '조회 중심 프리뷰',
+        ...(spotlight.tags || []).slice(0, 2),
+      ].filter(Boolean);
+
+      elements.appSpotlight.innerHTML = `
+        <div class="agent-spotlight-top">
+          <div class="agent-spotlight-icon" style="background:${escapeHtml(spotlight.iconColor || '#2563eb')}"><span class="material-icons-round">${escapeHtml(spotlight.icon || palette.icon)}</span></div>
+          <div class="agent-spotlight-state">${escapeHtml(spotlight.badge || '앱 갤러리 추천')}</div>
+        </div>
+        <div class="agent-spotlight-eyebrow">DEJ App Gallery</div>
+        <div class="agent-spotlight-title">${escapeHtml(spotlight.title)}</div>
+        <div class="agent-spotlight-desc">${escapeHtml(spotlight.summary || spotlight.subtitle || '')}</div>
+        <div class="agent-spotlight-points">
+          ${points.map((point) => `<div class="agent-spotlight-point"><span class="material-icons-round">${escapeHtml(palette.icon)}</span><span>${escapeHtml(point)}</span></div>`).join('')}
+        </div>
+        <div class="agent-spotlight-tags">
+          ${(spotlight.tags || []).slice(0, 4).map((tag) => `<span class="agent-spotlight-tag"><span class="material-icons-round">sell</span>${escapeHtml(tag)}</span>`).join('')}
+        </div>
+      `;
+
+      elements.appStrip.innerHTML = items.slice(0, 4).map((item) => {
+        const itemPalette = getCategoryPalette(item.category);
+        return `
+          <a class="app-tile" href="dej_app_gallery.html">
+            <div class="app-tile-icon" style="background:${escapeHtml(item.iconColor || '#2563eb')}"><span class="material-icons-round">${escapeHtml(item.icon || itemPalette.icon)}</span></div>
+            <div class="app-tile-name">${escapeHtml(item.title)}</div>
+            <div class="app-tile-type">${escapeHtml(item.summary || item.subtitle || '')}</div>
+            <div class="app-tile-tag" style="background:${escapeHtml(itemPalette.badgeBg)};color:${escapeHtml(itemPalette.badgeColor)}">${escapeHtml(item.badge || item.categoryLabel || 'App')}</div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function renderAiPreview(spotlight) {
+      if (!elements.aiSpotlight || !elements.aiStrip) return;
+
+      if (!spotlight) {
+        elements.aiSpotlight.innerHTML = renderEmpty('AI Gallery preview 데이터가 없습니다.');
+        elements.aiStrip.innerHTML = '';
+        return;
+      }
+
+      const points = [
+        spotlight.chatbotTypeLabel ? `${spotlight.chatbotTypeLabel} 연결` : null,
+        typeof spotlight.linkedChatbotCount === 'number' ? `연결된 챗봇 ${spotlight.linkedChatbotCount}개` : null,
+        spotlight.capabilities?.canTryNow ? '바로 써보기 가능' : null,
+        spotlight.capabilities?.canOpenWeb ? '웹 열기 가능' : null,
+      ].filter(Boolean);
+
+      elements.aiSpotlight.innerHTML = `
+        <div class="agent-spotlight-top">
+          <div class="agent-spotlight-icon" style="background:${escapeHtml(spotlight.iconColor || '#b40e4d')}"><span class="material-icons-round">smart_toy</span></div>
+          <div class="agent-spotlight-state">AI Gallery Preview</div>
+        </div>
+        <div class="agent-spotlight-eyebrow">DEJ AI Gallery</div>
+        <div class="agent-spotlight-title">${escapeHtml(spotlight.title)}</div>
+        <div class="agent-spotlight-desc">${escapeHtml(spotlight.summary || spotlight.subtitle || '')}</div>
+        <div class="agent-spotlight-points">
+          ${points.map((point) => `<div class="agent-spotlight-point"><span class="material-icons-round">link</span><span>${escapeHtml(point)}</span></div>`).join('')}
+        </div>
+        <div class="agent-spotlight-tags">
+          ${(spotlight.tags || []).slice(0, 4).map((tag) => `<span class="agent-spotlight-tag"><span class="material-icons-round">sell</span>${escapeHtml(tag)}</span>`).join('')}
+        </div>
+      `;
+
+      const chatbotCards = Array.isArray(spotlight.linkedChatbots) && spotlight.linkedChatbots.length
+        ? spotlight.linkedChatbots.slice(0, 4).map((item) => ({
+            name: item.name,
+            summary: item.typeLabel || item.type || 'Connected chatbot',
+            badge: item.hasApi ? 'API 챗봇' : '웹페이지 챗봇',
+            href: item.trialUrl || item.webUrl || 'dej_ai_gallery.html',
+          }))
+        : (spotlight.tags || []).slice(0, 4).map((tag) => ({
+            name: tag,
+            summary: spotlight.chatbotTypeLabel || 'Connected chatbot',
+            badge: spotlight.statusLabel || 'Preview',
+            href: spotlight.trialUrl || spotlight.webUrl || 'dej_ai_gallery.html',
+          }));
+
+      elements.aiStrip.innerHTML = chatbotCards.map((item, index) => `
+        <a class="app-tile" href="${escapeHtml(resolvePreviewHref(item.href, 'dej_ai_gallery.html'))}">
+          <div class="app-tile-icon" style="background:${index % 2 === 0 ? 'linear-gradient(135deg,#b40e4d,#7c5fcf)' : 'linear-gradient(135deg,#4f8cff,#0086cc)'}"><span class="material-icons-round">${index % 2 === 0 ? 'hub' : 'chat'}</span></div>
+          <div class="app-tile-name">${escapeHtml(item.name)}</div>
+          <div class="app-tile-type">${escapeHtml(item.summary)}</div>
+          <div class="app-tile-tag" style="background:var(--brand-bg);color:var(--brand)">${escapeHtml(item.badge)}</div>
+        </a>
+      `).join('');
+    }
+
+    function renderArticles() {
+      if (!elements.articleTabs || !elements.articleList) return;
+
+      elements.articleTabs.innerHTML = (state.articleTabs || []).map((tab) => {
+        const active = tab.id === state.currentArticleTab;
+        return `<button class="article-tab${active ? ' is-active' : ''}" type="button" role="tab" aria-selected="${String(active)}" data-article-tab="${escapeHtml(tab.id)}">${escapeHtml(tab.label)}</button>`;
+      }).join('');
+
+      const visibleItems = state.currentArticleTab === 'all'
+        ? state.articles
+        : state.articles.filter((item) => item.category === state.currentArticleTab);
+
+      if (!visibleItems.length) {
+        elements.articleList.innerHTML = renderEmpty('선택한 카테고리의 아티클이 없습니다.');
+        return;
+      }
+
+      elements.articleList.innerHTML = visibleItems.map((item) => {
+        const palette = getCategoryPalette(item.category);
+        return `
+          <a class="article-item" href="${escapeHtml(resolvePreviewHref(item.href, '#'))}" data-article-category="${escapeHtml(item.category || 'all')}">
+            <div class="article-thumb" style="background:linear-gradient(135deg,${escapeHtml(palette.badgeColor)},#111827)"><span class="material-icons-round">article</span></div>
+            <div>
+              <div class="article-title">${escapeHtml(item.title)}</div>
+              <div class="article-meta"><span class="article-tag" style="background:${escapeHtml(palette.badgeBg)};color:${escapeHtml(palette.badgeColor)}">${escapeHtml(item.categoryLabel || item.category || 'Article')}</span>${escapeHtml(formatDate(item.publishedAt))}</div>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function renderGuides(rows) {
+      if (!elements.guideList) return;
+      if (!Array.isArray(rows) || !rows.length) {
+        elements.guideList.innerHTML = renderEmpty('가이드 링크가 없습니다.');
+        return;
+      }
+
+      const palettes = [
+        { bg: 'var(--blue-bg)', color: 'var(--blue)', icon: 'play_circle' },
+        { bg: 'var(--brand-bg)', color: 'var(--brand)', icon: 'security' },
+        { bg: 'var(--green-bg)', color: 'var(--green)', icon: 'memory' },
+        { bg: 'var(--purple-bg)', color: 'var(--purple)', icon: 'extension' },
+        { bg: '#fef9c3', color: '#ca8a04', icon: 'build' },
+      ];
+
+      elements.guideList.innerHTML = rows.map((row, index) => {
+        const palette = palettes[index % palettes.length];
+        return `
+          <a class="guide-item" href="${escapeHtml(resolvePreviewHref(row.href, '#'))}">
+            <div class="guide-ico" style="background:${palette.bg}"><span class="material-icons-round" style="color:${palette.color}">${palette.icon}</span></div>
+            <div class="guide-name">${escapeHtml(row.title || 'Guide')}</div>
+            <div class="guide-meta">${escapeHtml(row.meta || '바로가기')}</div>
+            <div class="guide-arr"><span class="material-icons-round">chevron_right</span></div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function renderNotifications(notifications) {
+      if (!elements.notificationsList) return;
+      const items = Array.isArray(notifications?.items) ? notifications.items : [];
+      if (!items.length) {
+        elements.notificationsList.innerHTML = renderEmpty('표시할 알림이 없습니다.');
+        return;
+      }
+
+      elements.notificationsList.innerHTML = items.map((item) => `
+        <div class="notif-item">
+          <div class="notif-dot ${item.isUnread ? 'u' : 'r'}"></div>
+          <div>
+            <div class="notif-text"><b>${escapeHtml(item.title || '알림')}</b> ${escapeHtml(item.message || '')}</div>
+            <div class="notif-time">${escapeHtml(formatRelativeTime(item.createdAt))}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function getProjectPill(project, jobs) {
+      const match = (jobs || []).find((job) => String(job.id || '').includes(project.id || ''));
+      if (match?.status === 'running') return { label: 'Running', className: 'pill pill-run' };
+      if (match?.status === 'queued') return { label: 'Queued', className: 'pill pill-build' };
+      if (match?.status === 'failed') return { label: 'Error', className: 'pill pill-err' };
+      return { label: 'Ready', className: 'pill pill-stop' };
+    }
+
+    function renderDeployments(myWork) {
+      if (!elements.deploySummary || !elements.deployList) return;
+
+      const summary = myWork?.summary || {};
+      const projects = Array.isArray(myWork?.projects?.items) ? myWork.projects.items : [];
+      const ides = Array.isArray(myWork?.ides?.items) ? myWork.ides.items : [];
+      const jobs = Array.isArray(myWork?.jobs?.items) ? myWork.jobs.items : [];
+
+      elements.deploySummary.innerHTML = `
+        <div class="deploy-summary">
+          <div class="deploy-summary-card">
+            <div class="deploy-summary-label">내 프로젝트</div>
+            <div class="deploy-summary-value">${escapeHtml(summary.projectCount ?? projects.length ?? 0)}</div>
+          </div>
+          <div class="deploy-summary-card">
+            <div class="deploy-summary-label">활성 IDE / Job</div>
+            <div class="deploy-summary-value">${escapeHtml(`${summary.ideCount ?? ides.length ?? 0} / ${summary.jobCount ?? jobs.length ?? 0}`)}</div>
+          </div>
+        </div>
+      `;
+
+      if (!projects.length) {
+        elements.deployList.innerHTML = renderEmpty('표시할 프로젝트가 없습니다.');
+        return;
+      }
+
+      const palettes = [
+        'linear-gradient(135deg,#34d399,#0d9488)',
+        'linear-gradient(135deg,#4f8cff,#3b6fcf)',
+        'linear-gradient(135deg,#22d3ee,#0086cc)',
+        'linear-gradient(135deg,#a78bfa,#7c5fcf)',
+        'linear-gradient(135deg,#d6d8db,#9298a0)',
+      ];
+
+      elements.deployList.innerHTML = projects.slice(0, 5).map((project, index) => {
+        const ide = ides.find((item) => item.projectId === project.id);
+        const pill = getProjectPill(project, jobs);
+        return `
+          <div class="deploy-item">
+            <div class="deploy-ico" style="background:${palettes[index % palettes.length]}"><span class="material-icons-round">${ide ? 'terminal' : 'rocket_launch'}</span></div>
+            <div>
+              <div class="deploy-name">${escapeHtml(project.name || project.id || 'project')}</div>
+              <div class="deploy-ver">${escapeHtml(project.ide || ide?.ide || project.projectType || 'workspace')} · ${escapeHtml(formatRelativeTime(project.updatedAt || ide?.lastTransitionAt || jobs[0]?.updatedAt))}</div>
+            </div>
+            <span class="${escapeHtml(pill.className)}">${escapeHtml(pill.label)}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderResources(resources) {
+      if (!elements.resourceSummary || !elements.resourceList) return;
+
+      const summary = resources?.summary || {};
+      elements.resourceSummary.innerHTML = `
+        <div class="resource-summary">
+          <div class="resource-summary-chip"><strong>${escapeHtml(summary.totalResources ?? 0)}</strong><span>전체 리소스</span></div>
+          <div class="resource-summary-chip"><strong>${escapeHtml(summary.attentionCount ?? 0)}</strong><span>점검 필요</span></div>
+          <div class="resource-summary-chip"><strong>${escapeHtml(summary.totalBindings ?? 0)}</strong><span>연결 수</span></div>
+        </div>
+      `;
+
+      const items = [
+        ...((resources?.databases?.items || []).map((item) => ({
+          type: 'database',
+          icon: 'storage',
+          href: 'workspace_database_hub.html',
+          title: item.name,
+          meta: `${item.engine || 'DB'} · ${item.status || '-'}`,
+        }))),
+        ...((resources?.buckets?.items || []).map((item) => ({
+          type: 'bucket',
+          icon: 'folder',
+          href: item.openUrl || item.browserUrl || 'workspace_s3_hub.html',
+          title: item.name,
+          meta: `${item.type || 'Bucket'} · ${item.status || '-'}`,
+        }))),
+        ...((resources?.domains?.items || []).map((item) => ({
+          type: 'domain',
+          icon: 'apartment',
+          href: 'workspace_domain_hub.html',
+          title: item.name,
+          meta: `${item.kind || 'Domain'} · ${item.status || '-'}`,
+        }))),
+        ...((resources?.consoles?.items || []).map((item) => ({
+          type: 'console',
+          icon: 'web',
+          href: item.openUrl || 'workspace_tools_hub.html',
+          title: item.name,
+          meta: `${item.typeLabel || item.type || 'Console'} · ${item.statusLabel || item.status || '-'}`,
+        }))),
+      ].slice(0, 7);
+
+      if (!items.length) {
+        elements.resourceList.innerHTML = renderEmpty('표시할 리소스가 없습니다.');
+        return;
+      }
+
+      elements.resourceList.innerHTML = items.map((item) => `
+        <a class="resource-rail-item" href="${escapeHtml(resolvePreviewHref(item.href, '#'))}">
+          <span class="resource-rail-icon" style="background:${item.type === 'database' ? 'linear-gradient(135deg,#2563eb,#06b6d4)' : item.type === 'bucket' ? 'linear-gradient(135deg,#0f766e,#2dd4bf)' : item.type === 'domain' ? 'linear-gradient(135deg,#4f46e5,#60a5fa)' : 'linear-gradient(135deg,#f97316,#fb923c)'}"><span class="material-icons-round">${escapeHtml(item.icon)}</span></span>
+          <span class="resource-rail-copy-item">
+            <span class="resource-rail-type">${escapeHtml(item.meta)}</span>
+            <span class="resource-rail-title-item">${escapeHtml(item.title)}</span>
+          </span>
+        </a>
+      `).join('');
+    }
+
+    function initBannerCarousel() {
+      const carousel = elements.bannerCarousel;
+      if (!carousel) return;
+
+      const slides = Array.from(carousel.querySelectorAll('[data-banner-slide]'));
+      const dots = Array.from(carousel.querySelectorAll('[data-banner-dot]'));
+      if (slides.length < 2 || !dots.length) return;
+      const rotationIntervalMs = 10000;
+      let rotationTimer = null;
+
+      const setSlide = (nextIndex) => {
+        const activeIndex = (Number(nextIndex) + slides.length) % slides.length;
+        state.currentBannerIndex = activeIndex;
+        slides.forEach((slide, index) => {
+          const active = index === activeIndex;
+          slide.classList.toggle('is-active', active);
+          slide.setAttribute('aria-hidden', String(!active));
+        });
+        dots.forEach((dot, index) => {
+          const active = index === activeIndex;
+          dot.classList.toggle('on', active);
+          dot.setAttribute('aria-current', String(active));
+        });
+      };
+
+      const stopRotation = () => {
+        if (rotationTimer) {
+          window.clearInterval(rotationTimer);
+          rotationTimer = null;
+        }
+      };
+
+      const startRotation = () => {
+        stopRotation();
+        rotationTimer = window.setInterval(() => {
+          setSlide(state.currentBannerIndex + 1);
+        }, rotationIntervalMs);
+      };
+
+      carousel.addEventListener('click', (event) => {
+        const dot = event.target.closest('[data-banner-dot]');
+        if (!dot) return;
+        setSlide(Number(dot.dataset.bannerDot) || 0);
+        startRotation();
+      });
+
+      carousel.addEventListener('mouseenter', stopRotation);
+      carousel.addEventListener('mouseleave', startRotation);
+
+      setSlide(0);
+      startRotation();
+    }
+
+    elements.articleTabs?.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-article-tab]');
+      if (!button) return;
+      state.currentArticleTab = button.dataset.articleTab || 'all';
+      renderArticles();
+    });
+
+    async function loadLaunchpad() {
+      const loadingMessage = 'Launchpad API를 연결하는 중입니다...';
+      if (elements.articleList) elements.articleList.innerHTML = renderStatus(loadingMessage);
+      if (elements.guideList) elements.guideList.innerHTML = renderStatus(loadingMessage);
+      if (elements.notificationsList) elements.notificationsList.innerHTML = renderStatus(loadingMessage);
+      if (elements.deployList) elements.deployList.innerHTML = renderStatus(loadingMessage);
+      if (elements.resourceList) elements.resourceList.innerHTML = renderStatus(loadingMessage);
+
+      try {
+        const [overview, myWork, resources] = await Promise.all([
+          apiGet('/api/v2/launchpad/overview'),
+          apiGet('/api/v2/launchpad/my-work'),
+          apiGet('/api/v2/launchpad/resources'),
+        ]);
+
+        renderServiceMenu(overview?.serviceMenu?.items || []);
+        renderHero(overview?.hero, myWork?.summary);
+        const announcements = Array.isArray(overview?.announcements?.items) ? overview.announcements.items : [];
+        renderBanners(overview?.banners, overview?.hero, overview?.serviceMenu, announcements);
+
+        renderAppPreview(overview?.storeSpotlight?.featuredApps || []);
+        renderAiPreview(overview?.storeSpotlight?.aiSpotlight || null);
+
+        state.articles = Array.isArray(overview?.articles?.items) ? overview.articles.items : [];
+        state.articleTabs = Array.isArray(overview?.articles?.tabs) ? overview.articles.tabs : [];
+        state.currentArticleTab = state.articleTabs[0]?.id || 'all';
+        renderArticles();
+
+        renderGuides(overview?.guides?.rows || []);
+        renderNotifications(myWork?.notifications);
+        renderDeployments(myWork);
+        renderResources(resources);
+        initBannerCarousel();
+      } catch (error) {
+        const message = error.message || 'Launchpad API를 불러오지 못했습니다.';
+        if (elements.articleList) elements.articleList.innerHTML = renderStatus(message, { error: true });
+        if (elements.guideList) elements.guideList.innerHTML = renderStatus(message, { error: true });
+        if (elements.notificationsList) elements.notificationsList.innerHTML = renderStatus(message, { error: true });
+        if (elements.deployList) elements.deployList.innerHTML = renderStatus(message, { error: true });
+        if (elements.resourceList) elements.resourceList.innerHTML = renderStatus(message, { error: true });
+      }
+    }
+
+    loadLaunchpad();
+  })();
+
+</script>
   <script src="concept_endpoint_overlay.js"></script>
 </body>
 </html>

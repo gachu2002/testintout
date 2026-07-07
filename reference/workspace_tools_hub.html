@@ -9,6 +9,16 @@
   <link rel="stylesheet" href="workspace_resource_hub_shared.css" />
   <link rel="stylesheet" href="ax_studio_topbar.css" />
   <style>
+    .console-create-progress-track {
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:0;
+    }
+
+    .hub-lite-create-progress-rail.is-hidden {
+      visibility:hidden;
+    }
+
     .console-create-stage[hidden] {
       display:none !important;
     }
@@ -192,6 +202,123 @@
       line-height:1.5;
     }
 
+    .console-create-status-card {
+      display:grid;
+      gap:16px;
+      padding:20px;
+      border-radius:22px;
+      border:1px solid rgba(214,216,219,.86);
+      background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,251,255,.94));
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.8),
+        0 12px 24px rgba(15,23,42,.04);
+    }
+
+    .console-create-status-head {
+      display:grid;
+      gap:8px;
+    }
+
+    .console-create-status-kicker {
+      width:max-content;
+      min-height:28px;
+      padding:0 10px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      background:var(--brand-bg);
+      color:var(--brand);
+      font-size:11px;
+      font-weight:800;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+
+    .console-create-status-title {
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:-.04em;
+      line-height:1.25;
+    }
+
+    .console-create-status-copy {
+      color:var(--t2);
+      font-size:14px;
+      line-height:1.7;
+    }
+
+    .console-create-status-list {
+      display:grid;
+      gap:12px;
+    }
+
+    .console-create-status-row {
+      display:grid;
+      grid-template-columns:auto minmax(0, 1fr) auto;
+      gap:12px;
+      align-items:center;
+      padding:14px 16px;
+      border-radius:16px;
+      border:1px solid rgba(214,216,219,.82);
+      background:#fff;
+    }
+
+    .console-create-status-row.is-active {
+      border-color:color-mix(in srgb, var(--brand) 26%, transparent);
+      background:color-mix(in srgb, var(--brand) 4%, #fff);
+    }
+
+    .console-create-status-row.is-complete {
+      border-color:rgba(16,185,129,.22);
+      background:rgba(236,253,245,.86);
+    }
+
+    .console-create-status-dot {
+      width:28px;
+      height:28px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:#d7dbe2;
+      color:#fff;
+      flex-shrink:0;
+    }
+
+    .console-create-status-row.is-active .console-create-status-dot {
+      background:var(--brand);
+    }
+
+    .console-create-status-row.is-complete .console-create-status-dot {
+      background:#10b981;
+    }
+
+    .console-create-status-dot .material-icons-round {
+      font-size:18px;
+    }
+
+    .console-create-status-label {
+      font-size:14px;
+      font-weight:700;
+      color:var(--t1);
+    }
+
+    .console-create-status-state {
+      font-size:12px;
+      font-weight:800;
+      color:var(--t3);
+      white-space:nowrap;
+    }
+
+    .console-create-status-row.is-active .console-create-status-state {
+      color:var(--brand);
+    }
+
+    .console-create-status-row.is-complete .console-create-status-state {
+      color:#059669;
+    }
+
     #consoleCreateDatabaseSelect {
       appearance:none;
       -webkit-appearance:none;
@@ -370,6 +497,11 @@
         kibana: "elastic",
         redisinsight: "redis"
       };
+      const CONSOLE_CREATE_STATUS_STEPS = [
+        "콘솔 엔드포인트를 준비하고 있습니다.",
+        "연결 가능한 데이터베이스 정보를 적용하고 있습니다.",
+        "생성 결과를 정리하고 있습니다."
+      ];
       const consoleCreateState = {
         step: 1,
         type: "",
@@ -377,9 +509,12 @@
         databaseId: "",
         availableDatabases: [],
         isLoadingDatabases: false,
+        statusIndex: 0,
+        statusDone: false,
         isSubmitting: false,
         created: false,
-        errorMessage: ""
+        errorMessage: "",
+        timer: null
       };
       let consoleCreateDatabaseCache = null;
       const pendingLifecycleActions = new Map();
@@ -993,12 +1128,18 @@
       }
 
       function resetConsoleCreateState() {
+        if (consoleCreateState.timer) {
+          window.clearTimeout(consoleCreateState.timer);
+          consoleCreateState.timer = null;
+        }
         consoleCreateState.step = 1;
         consoleCreateState.type = "";
         consoleCreateState.name = "";
         consoleCreateState.databaseId = "";
         consoleCreateState.availableDatabases = [];
         consoleCreateState.isLoadingDatabases = false;
+        consoleCreateState.statusIndex = 0;
+        consoleCreateState.statusDone = false;
         consoleCreateState.isSubmitting = false;
         consoleCreateState.created = false;
         consoleCreateState.errorMessage = "";
@@ -1055,7 +1196,7 @@
               </div>
             </div>
             <div class="hub-lite-create-progress">
-              <div class="hub-lite-create-progress-track" id="consoleCreateProgress"></div>
+              <div class="hub-lite-create-progress-track console-create-progress-track" id="consoleCreateProgress"></div>
             </div>
             <form class="hub-lite-create-form" id="consoleCreateForm">
               <section class="console-create-stage" data-console-create-step="1">
@@ -1075,11 +1216,20 @@
                   <div class="hub-lite-create-note"><span class="material-icons-round">info</span>생성 후 상세 화면에서 연결할 DB와 세부 접근 정책을 이어서 정리할 수 있습니다.</div>
                 </div>
               </section>
+              <section class="console-create-stage console-create-stage is-compact" data-console-create-step="3" hidden>
+                <div class="console-create-status-card">
+                  <div class="console-create-status-head">
+                    <div class="console-create-status-kicker"><span class="material-icons-round">sync</span>Create Status</div>
+                    <div class="console-create-status-title" id="consoleCreateStatusTitle">생성을 준비하고 있습니다</div>
+                    <div class="console-create-status-copy" id="consoleCreateStatusCopy">선택한 콘솔 정보를 기준으로 생성 단계를 순차적으로 진행합니다.</div>
+                  </div>
+                  <div class="console-create-status-list" id="consoleCreateStatusList"></div>
+                </div>
+              </section>
               <div class="hub-lite-create-actions">
                 <button class="hub-lite-create-action ghost" type="button" id="consoleCreateBack">취소</button>
                 <button class="hub-lite-create-action primary" type="button" id="consoleCreateNext">다음</button>
-                <button class="hub-lite-create-action primary" type="submit" id="consoleCreateSubmit" hidden disabled><span class="material-icons-round">check_circle</span>콘솔 생성</button>
-                <button class="hub-lite-create-action primary" type="button" id="consoleCreateDone" hidden>완료</button>
+                <button class="hub-lite-create-action primary" type="button" id="consoleCreateDone" hidden disabled><span class="material-icons-round">check_circle</span>완료</button>
               </div>
             </form>
           </div>
@@ -1087,39 +1237,48 @@
 
         document.body.appendChild(modal);
 
-        const form = modal.querySelector("#consoleCreateForm");
-        const stepBadge = modal.querySelector("#consoleCreateStepBadge");
-        const subtitle = modal.querySelector("#consoleCreateSubtitle");
-        const progress = modal.querySelector("#consoleCreateProgress");
-        const stages = Array.from(modal.querySelectorAll("[data-console-create-step]"));
-        const optionGrid = modal.querySelector("#consoleCreateOptionGrid");
-        const summary = modal.querySelector("#consoleCreateSummary");
-        const input = modal.querySelector("#consoleCreateName");
-        const databaseSelect = modal.querySelector("#consoleCreateDatabaseSelect");
-        const databaseNote = modal.querySelector("#consoleCreateDatabaseNote");
-        const submit = modal.querySelector("#consoleCreateSubmit");
-        const done = modal.querySelector("#consoleCreateDone");
-        const next = modal.querySelector("#consoleCreateNext");
-        const back = modal.querySelector("#consoleCreateBack");
+        const elements = {
+          modal,
+          form: modal.querySelector("#consoleCreateForm"),
+          stepBadge: modal.querySelector("#consoleCreateStepBadge"),
+          subtitle: modal.querySelector("#consoleCreateSubtitle"),
+          progress: modal.querySelector("#consoleCreateProgress"),
+          stages: Array.from(modal.querySelectorAll("[data-console-create-step]")),
+          optionGrid: modal.querySelector("#consoleCreateOptionGrid"),
+          summary: modal.querySelector("#consoleCreateSummary"),
+          input: modal.querySelector("#consoleCreateName"),
+          databaseSelect: modal.querySelector("#consoleCreateDatabaseSelect"),
+          databaseNote: modal.querySelector("#consoleCreateDatabaseNote"),
+          statusTitle: modal.querySelector("#consoleCreateStatusTitle"),
+          statusCopy: modal.querySelector("#consoleCreateStatusCopy"),
+          statusList: modal.querySelector("#consoleCreateStatusList"),
+          done: modal.querySelector("#consoleCreateDone"),
+          next: modal.querySelector("#consoleCreateNext"),
+          back: modal.querySelector("#consoleCreateBack"),
+          close: modal.querySelector("#consoleCreateClose")
+        };
         const stepMeta = [
           { label: "콘솔 타입", subtitle: "먼저 사용할 콘솔 타입을 선택해주세요." },
-          { label: "콘솔 정보", subtitle: "선택한 콘솔 이름을 입력하고 필요하면 연결 DB를 지정해주세요." }
+          { label: "콘솔 정보", subtitle: "선택한 콘솔 이름을 입력하고 필요하면 연결 DB를 지정해주세요." },
+          { label: "생성 상태", subtitle: "생성 진행 상황을 확인해주세요." }
         ];
 
         const renderProgress = () => {
-          progress.innerHTML = stepMeta.map((item, index) => {
+          elements.progress.innerHTML = stepMeta.map((item, index) => {
             const step = index + 1;
             const isCurrent = step === consoleCreateState.step;
-            const isComplete = step < consoleCreateState.step;
+            const isComplete = step < consoleCreateState.step || (step === 3 && consoleCreateState.statusDone);
             const value = step === 1
               ? (CONSOLE_CREATE_OPTIONS.find((option) => option.id === consoleCreateState.type)?.title || "")
-              : [String(consoleCreateState.name || "").trim(), consoleCreateState.availableDatabases.find((item) => String(item?.id || "") === String(consoleCreateState.databaseId || ""))?.name || ""].filter(Boolean).join(" · ");
+              : step === 2
+                ? [String(consoleCreateState.name || "").trim(), consoleCreateState.availableDatabases.find((item) => String(item?.id || "") === String(consoleCreateState.databaseId || ""))?.name || ""].filter(Boolean).join(" · ")
+                : (consoleCreateState.statusDone ? "완료" : "진행 중");
             return `
               <div class="hub-lite-create-progress-item ${isCurrent ? "is-current" : ""} ${isComplete ? "is-complete" : ""}">
                 <div class="hub-lite-create-progress-line">
-                  <span class="hub-lite-create-progress-rail ${index === 0 ? "is-hidden" : ""}"></span>
+                  <span class="hub-lite-create-progress-rail is-before ${index === 0 ? "is-hidden" : ""}"></span>
                   <span class="hub-lite-create-progress-dot">${isComplete ? '<span class="material-icons-round" style="font-size:15px">done</span>' : step}</span>
-                  <span class="hub-lite-create-progress-rail ${index === stepMeta.length - 1 ? "is-hidden" : ""}"></span>
+                  <span class="hub-lite-create-progress-rail is-after ${index === stepMeta.length - 1 ? "is-hidden" : ""}"></span>
                 </div>
                 <div class="hub-lite-create-progress-label">${item.label}</div>
                 <div class="hub-lite-create-progress-value">${value || " "}</div>
@@ -1129,7 +1288,7 @@
         };
 
         const renderOptionGrid = () => {
-          optionGrid.innerHTML = CONSOLE_CREATE_OPTIONS.map((item) => {
+          elements.optionGrid.innerHTML = CONSOLE_CREATE_OPTIONS.map((item) => {
             return `
               <button class="console-create-option-card ${consoleCreateState.type === item.id ? "is-selected" : ""}" type="button" data-console-type="${item.id}">
                 <div class="console-create-option-head">
@@ -1148,7 +1307,7 @@
           const option = getConsoleCreateOption();
           const selectedDatabase = consoleCreateState.availableDatabases.find((item) => String(item?.id || "") === String(consoleCreateState.databaseId || ""));
           const isLocked = consoleCreateState.isSubmitting || consoleCreateState.created;
-          summary.innerHTML = `
+          elements.summary.innerHTML = `
             <div class="console-create-summary-pill">${getConsoleDbLogo(option.id)}${option.title}</div>
             <div class="console-create-summary-title">${option.dbLabel}용 ${option.title} 콘솔을 만듭니다</div>
             <div class="console-create-summary-copy">${option.desc}</div>
@@ -1158,55 +1317,91 @@
               ${selectedDatabase ? `<span class="console-create-summary-chip">${selectedDatabase.name}</span>` : ""}
             </div>
           `;
-          input.value = consoleCreateState.name;
-          input.disabled = isLocked;
-          databaseSelect.innerHTML = [
+          elements.input.value = consoleCreateState.name;
+          elements.input.disabled = isLocked;
+          elements.databaseSelect.innerHTML = [
             '<option value="">지금은 연결하지 않음</option>',
             ...consoleCreateState.availableDatabases.map((item) => `<option value="${item.id}" ${String(item.id) === String(consoleCreateState.databaseId || "") ? "selected" : ""}>${item.name} · ${item.engine || "-"}</option>`)
           ].join("");
-          databaseSelect.disabled = consoleCreateState.isLoadingDatabases || isLocked;
+          elements.databaseSelect.disabled = consoleCreateState.isLoadingDatabases || isLocked;
 
           if (consoleCreateState.isLoadingDatabases) {
-            databaseNote.textContent = "연결 가능한 DB를 불러오는 중입니다.";
-          } else if (consoleCreateState.created) {
-            databaseNote.textContent = "선택한 정보로 콘솔이 생성되었습니다.";
+            elements.databaseNote.textContent = "연결 가능한 DB를 불러오는 중입니다.";
           } else if (consoleCreateState.errorMessage) {
-            databaseNote.textContent = consoleCreateState.errorMessage;
+            elements.databaseNote.textContent = consoleCreateState.errorMessage;
           } else if (!consoleCreateState.availableDatabases.length) {
-            databaseNote.textContent = "호환되는 데이터베이스가 없어도 콘솔만 먼저 생성할 수 있습니다.";
+            elements.databaseNote.textContent = "호환되는 데이터베이스가 없어도 콘솔만 먼저 생성할 수 있습니다.";
           } else if (!String(consoleCreateState.databaseId || "").trim()) {
-            databaseNote.textContent = "DB 연결은 선택 사항입니다. 지금은 콘솔만 만들고 나중에 바인딩할 수 있습니다.";
+            elements.databaseNote.textContent = "DB 연결은 선택 사항입니다. 지금은 콘솔만 만들고 나중에 바인딩할 수 있습니다.";
           } else {
-            databaseNote.textContent = "선택한 데이터베이스와 함께 콘솔을 생성합니다.";
+            elements.databaseNote.textContent = "선택한 데이터베이스와 함께 콘솔을 생성합니다.";
           }
         };
 
+        const renderStatus = () => {
+          const option = getConsoleCreateOption();
+          const nameValue = String(consoleCreateState.name || "").trim() || option.title;
+          const selectedDatabase = consoleCreateState.availableDatabases.find((item) => String(item?.id || "") === String(consoleCreateState.databaseId || ""));
+          if (consoleCreateState.errorMessage) {
+            elements.statusTitle.textContent = `${nameValue} 생성에 실패했습니다`;
+            elements.statusCopy.textContent = consoleCreateState.errorMessage;
+          } else {
+            elements.statusTitle.textContent = consoleCreateState.statusDone
+              ? `${nameValue} 콘솔 생성이 완료되었습니다`
+              : `${nameValue} 콘솔 생성이 진행 중입니다`;
+            elements.statusCopy.textContent = consoleCreateState.statusDone
+              ? (selectedDatabase
+                ? "이제 상세 화면에서 연결된 데이터베이스와 함께 접근 정책을 이어서 확인할 수 있습니다."
+                : "이제 상세 화면에서 데이터베이스 바인딩과 접근 정책을 이어서 설정할 수 있습니다.")
+              : "선택한 콘솔 정보를 기준으로 실제 생성 API를 호출하고 상태를 정리합니다.";
+          }
+          elements.statusList.innerHTML = CONSOLE_CREATE_STATUS_STEPS.map((label, index) => {
+            const isComplete = index < consoleCreateState.statusIndex || consoleCreateState.statusDone;
+            const isFailed = Boolean(consoleCreateState.errorMessage) && index === Math.min(consoleCreateState.statusIndex, CONSOLE_CREATE_STATUS_STEPS.length - 1);
+            const isActive = !consoleCreateState.statusDone && !consoleCreateState.errorMessage && index === consoleCreateState.statusIndex;
+            const stateLabel = isFailed ? "실패" : (isComplete ? "완료" : (isActive ? "진행 중" : "대기"));
+            return `
+              <div class="console-create-status-row ${isComplete ? "is-complete" : ""} ${isActive ? "is-active" : ""}">
+                <span class="console-create-status-dot">
+                  <span class="material-icons-round">${isFailed ? "error" : (isComplete ? "done" : (isActive ? "autorenew" : "more_horiz"))}</span>
+                </span>
+                <div class="console-create-status-label">${label}</div>
+                <div class="console-create-status-state">${stateLabel}</div>
+              </div>
+            `;
+          }).join("");
+        };
+
         const renderStages = () => {
-          stages.forEach((stage) => {
+          elements.stages.forEach((stage) => {
             stage.hidden = Number(stage.dataset.consoleCreateStep) !== consoleCreateState.step;
           });
         };
 
         const syncHeader = () => {
           const meta = stepMeta[consoleCreateState.step - 1];
-          stepBadge.textContent = String(consoleCreateState.step);
-          subtitle.textContent = consoleCreateState.created ? "콘솔 생성이 완료되었습니다." : meta.subtitle;
+          elements.stepBadge.textContent = String(consoleCreateState.step);
+          elements.subtitle.textContent = meta.subtitle;
         };
 
         const syncActions = () => {
-          const isComplete = consoleCreateState.created;
-          back.textContent = consoleCreateState.step === 1 ? "취소" : "뒤로";
-          back.hidden = isComplete;
-          next.hidden = consoleCreateState.step === 2 || isComplete;
-          submit.hidden = consoleCreateState.step !== 2 || isComplete;
-          done.hidden = !isComplete;
-          back.disabled = consoleCreateState.isSubmitting || isComplete;
-          next.disabled = isComplete || !consoleCreateState.type || consoleCreateState.isLoadingDatabases || consoleCreateState.isSubmitting;
-          submit.disabled = isComplete || !String(consoleCreateState.name || "").trim() || consoleCreateState.isLoadingDatabases || consoleCreateState.isSubmitting;
-          if (consoleCreateState.step === 2) {
-            submit.innerHTML = consoleCreateState.isSubmitting
-              ? '<span class="material-icons-round">progress_activity</span>생성 중'
-              : '<span class="material-icons-round">check_circle</span>콘솔 생성';
+          const isProcessing = consoleCreateState.step === 3 && consoleCreateState.isSubmitting;
+          const isComplete = consoleCreateState.step === 3 && consoleCreateState.statusDone;
+          elements.back.textContent = consoleCreateState.step === 1 ? "취소" : "뒤로";
+          elements.back.hidden = isProcessing || isComplete;
+          elements.next.hidden = consoleCreateState.step === 3;
+          elements.done.hidden = !isComplete;
+          elements.back.style.display = isProcessing || isComplete ? "none" : "";
+          elements.next.style.display = consoleCreateState.step === 3 ? "none" : "";
+          elements.done.style.display = isComplete ? "" : "none";
+          elements.done.disabled = !consoleCreateState.statusDone;
+          elements.back.disabled = consoleCreateState.isSubmitting || isComplete;
+          if (consoleCreateState.step === 1) {
+            elements.next.textContent = "다음";
+            elements.next.disabled = isProcessing || isComplete || !consoleCreateState.type || consoleCreateState.isLoadingDatabases || consoleCreateState.isSubmitting;
+          } else if (consoleCreateState.step === 2) {
+            elements.next.innerHTML = `<span class="material-icons-round">rocket_launch</span>생성 시작`;
+            elements.next.disabled = isProcessing || isComplete || !String(consoleCreateState.name || "").trim() || consoleCreateState.isLoadingDatabases || consoleCreateState.isSubmitting;
           }
         };
 
@@ -1216,15 +1411,74 @@
           renderStages();
           renderOptionGrid();
           renderSummary();
+          renderStatus();
           syncActions();
+        };
+
+        const clearConsoleCreateTimer = () => {
+          if (consoleCreateState.timer) {
+            window.clearTimeout(consoleCreateState.timer);
+            consoleCreateState.timer = null;
+          }
         };
 
         const close = () => {
           modal.hidden = true;
           document.body.style.overflow = "";
           resetConsoleCreateState();
-          if (form) form.reset();
+          if (elements.form) elements.form.reset();
           rerender();
+        };
+
+        const startConsoleCreate = async () => {
+          clearConsoleCreateTimer();
+          consoleCreateState.statusIndex = 0;
+          consoleCreateState.statusDone = false;
+          consoleCreateState.created = false;
+          consoleCreateState.isSubmitting = true;
+          consoleCreateState.errorMessage = "";
+          rerender();
+
+          const tick = () => {
+            if (!consoleCreateState.isSubmitting || consoleCreateState.statusDone || consoleCreateState.errorMessage) {
+              return;
+            }
+
+            consoleCreateState.statusIndex = Math.min(consoleCreateState.statusIndex + 1, CONSOLE_CREATE_STATUS_STEPS.length - 1);
+            rerender();
+            consoleCreateState.timer = window.setTimeout(tick, 900);
+          };
+
+          consoleCreateState.timer = window.setTimeout(tick, 900);
+
+          try {
+            await requestJson("/consoles", {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                name: String(consoleCreateState.name || "").trim(),
+                type: consoleCreateState.type,
+                ...(String(consoleCreateState.databaseId || "").trim() ? { databaseId: [String(consoleCreateState.databaseId || "").trim()] } : {})
+              })
+            });
+            consoleCreateState.isSubmitting = false;
+            consoleCreateState.statusDone = true;
+            consoleCreateState.created = true;
+            consoleCreateState.statusIndex = CONSOLE_CREATE_STATUS_STEPS.length;
+            clearConsoleCreateTimer();
+            rerender();
+            await loadConsoleHub();
+          } catch (error) {
+            consoleCreateState.errorMessage = String(error?.message || "콘솔 생성에 실패했습니다.").replace(/^\d+\s*/, "").trim();
+            consoleCreateState.isSubmitting = false;
+            consoleCreateState.statusDone = false;
+            consoleCreateState.created = false;
+            clearConsoleCreateTimer();
+            rerender();
+          }
         };
 
         modal.addEventListener("click", (event) => {
@@ -1239,9 +1493,9 @@
           }
         });
 
-        modal.querySelector("#consoleCreateClose").addEventListener("click", close);
+        elements.close.addEventListener("click", close);
 
-        optionGrid.addEventListener("click", (event) => {
+        elements.optionGrid.addEventListener("click", (event) => {
           if (consoleCreateState.isSubmitting || consoleCreateState.created) {
             return;
           }
@@ -1250,111 +1504,107 @@
           consoleCreateState.type = button.dataset.consoleType || "";
           consoleCreateState.databaseId = "";
           consoleCreateState.availableDatabases = [];
+          consoleCreateState.statusIndex = 0;
+          consoleCreateState.statusDone = false;
           consoleCreateState.created = false;
           consoleCreateState.errorMessage = "";
           rerender();
         });
 
-        input.addEventListener("input", () => {
+        elements.input.addEventListener("input", () => {
           if (consoleCreateState.isSubmitting || consoleCreateState.created) {
-            input.value = consoleCreateState.name;
+            elements.input.value = consoleCreateState.name;
             return;
           }
-          consoleCreateState.name = String(input.value || "").trim();
+          consoleCreateState.name = String(elements.input.value || "").trim();
+          consoleCreateState.statusIndex = 0;
+          consoleCreateState.statusDone = false;
           consoleCreateState.created = false;
           renderProgress();
           syncActions();
         });
 
-        databaseSelect.addEventListener("change", () => {
+        elements.databaseSelect.addEventListener("change", () => {
           if (consoleCreateState.isSubmitting || consoleCreateState.created) {
-            databaseSelect.value = String(consoleCreateState.databaseId || "");
+            elements.databaseSelect.value = String(consoleCreateState.databaseId || "");
             return;
           }
-          consoleCreateState.databaseId = String(databaseSelect.value || "").trim();
+          consoleCreateState.databaseId = String(elements.databaseSelect.value || "").trim();
+          consoleCreateState.statusIndex = 0;
+          consoleCreateState.statusDone = false;
           consoleCreateState.created = false;
           renderProgress();
           renderSummary();
           syncActions();
         });
 
-        back.addEventListener("click", () => {
+        elements.back.addEventListener("click", () => {
           if (consoleCreateState.step === 1) {
             close();
+            return;
+          }
+          if (consoleCreateState.step === 3) {
+            if (consoleCreateState.created) {
+              close();
+              return;
+            }
+            clearConsoleCreateTimer();
+            consoleCreateState.step = 2;
+            consoleCreateState.statusIndex = 0;
+            consoleCreateState.statusDone = false;
+            consoleCreateState.created = false;
+            rerender();
             return;
           }
           consoleCreateState.step = 1;
           rerender();
         });
 
-        next.addEventListener("click", async () => {
+        elements.next.addEventListener("click", async () => {
           if (!consoleCreateState.type || consoleCreateState.isSubmitting || consoleCreateState.created) {
             return;
           }
-          consoleCreateState.isLoadingDatabases = true;
-          consoleCreateState.created = false;
-          consoleCreateState.errorMessage = "";
-          rerender();
-          try {
-            await ensureConsoleCreateDatabases(consoleCreateState.type);
-          } catch (error) {
-            consoleCreateState.availableDatabases = [];
-            consoleCreateState.databaseId = "";
-            consoleCreateState.errorMessage = String(error?.message || "연결 가능한 데이터베이스를 불러오지 못했습니다.").replace(/^\d+\s*/, "").trim();
-          } finally {
-            consoleCreateState.isLoadingDatabases = false;
-          }
-          consoleCreateState.step = 2;
-          rerender();
-          requestAnimationFrame(() => {
-            input.focus();
-          });
-        });
-
-        if (form) {
-          form.addEventListener("submit", (event) => {
-            event.preventDefault();
-            if (consoleCreateState.isSubmitting || consoleCreateState.created) {
-              return;
-            }
-            const name = String(input && input.value || "").trim();
-            const databaseId = String(databaseSelect && databaseSelect.value || "").trim();
-            if (!name) {
-              rerender();
-              return;
-            }
-            consoleCreateState.isSubmitting = true;
+          if (consoleCreateState.step === 1) {
+            consoleCreateState.isLoadingDatabases = true;
             consoleCreateState.created = false;
             consoleCreateState.errorMessage = "";
             rerender();
+            try {
+              await ensureConsoleCreateDatabases(consoleCreateState.type);
+            } catch (error) {
+              consoleCreateState.availableDatabases = [];
+              consoleCreateState.databaseId = "";
+              consoleCreateState.errorMessage = String(error?.message || "연결 가능한 데이터베이스를 불러오지 못했습니다.").replace(/^\d+\s*/, "").trim();
+            } finally {
+              consoleCreateState.isLoadingDatabases = false;
+            }
+            consoleCreateState.step = 2;
+            rerender();
+            requestAnimationFrame(() => {
+              elements.input.focus();
+            });
+            return;
+          }
 
-            requestJson("/consoles", {
-              method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                name,
-                type: consoleCreateState.type,
-                ...(databaseId ? { databaseId: [databaseId] } : {})
-              })
-            })
-              .then(async () => {
-                consoleCreateState.isSubmitting = false;
-                consoleCreateState.created = true;
-                rerender();
-                await loadConsoleHub();
-              })
-              .catch((error) => {
-                consoleCreateState.errorMessage = String(error?.message || "콘솔 생성에 실패했습니다.").replace(/^\d+\s*/, "").trim();
-                consoleCreateState.isSubmitting = false;
-                rerender();
-              });
+          if (consoleCreateState.step !== 2 || !String(consoleCreateState.name || "").trim()) {
+            rerender();
+            return;
+          }
+
+          consoleCreateState.step = 3;
+          rerender();
+          elements.back.disabled = true;
+          elements.next.disabled = true;
+          void startConsoleCreate();
+        });
+
+        if (elements.form) {
+          elements.form.addEventListener("submit", (event) => {
+            event.preventDefault();
           });
         }
 
-        done.addEventListener("click", close);
+        elements.done.addEventListener("click", close);
 
         rerender();
         return modal;

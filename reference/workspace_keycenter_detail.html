@@ -177,6 +177,73 @@
       text-transform: uppercase;
       text-align: right;
     }
+    .author-manage {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: auto;
+      max-width: 100%;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      white-space: nowrap;
+    }
+    .author-members-list {
+      display: flex;
+      align-items: center;
+      padding-left: 8px;
+    }
+    .author-member-avatar,
+    .author-member-more {
+      width: 30px;
+      height: 30px;
+      margin-left: -8px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgba(255,255,255,.92);
+      box-shadow: 0 8px 18px rgba(15,23,42,.08);
+      flex-shrink: 0;
+      font-size: 10px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .author-member-more {
+      background: rgba(15,23,42,.08);
+      color: var(--text);
+    }
+    .author-members-caption {
+      font-size: 11px;
+      color: var(--subtle);
+    }
+    .author-members-add {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 30px;
+      margin-left: auto;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(214,216,219,.92);
+      background: rgba(255,255,255,.84);
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .author-members-add .material-icons-round {
+      font-size: 14px;
+    }
+    .keycenter-hero-side {
+      display: grid;
+      gap: 12px;
+      justify-items: end;
+      flex-shrink: 0;
+      max-width: 100%;
+    }
     .section-card-spacer {
       margin-top: 18px;
     }
@@ -246,6 +313,44 @@
       color: var(--text);
       white-space: normal;
       word-break: break-word;
+    }
+    .key-row-value.is-secret {
+      justify-content: space-between;
+      min-width: min(100%, 440px);
+      gap: 12px;
+    }
+    .key-secret-value {
+      min-width: 0;
+      max-width: 100%;
+      white-space: normal;
+      word-break: break-all;
+      overflow-wrap: anywhere;
+    }
+    .key-secret-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .icon-action-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #eef4ff;
+      color: var(--brand);
+      transition: background .15s ease, transform .15s ease;
+    }
+    .icon-action-btn:hover {
+      background: #dbeafe;
+      transform: translateY(-1px);
+    }
+    .icon-action-btn .material-icons-round {
+      font-size: 18px;
+      color: currentColor;
     }
     .key-row-value .material-icons-round {
       font-size: 16px;
@@ -522,6 +627,16 @@
       .author-side {
         text-align: left;
       }
+      .keycenter-hero-side {
+        width: 100%;
+        justify-items: start;
+      }
+      .author-manage {
+        flex-wrap: wrap;
+      }
+      .author-members-add {
+        margin-left: 0;
+      }
     }
   </style>
 </head>
@@ -557,6 +672,107 @@
         </article>
       `).join("")}</div>`;
     }
+    const authorInvitePool = [];
+    const authorAvatarGradients = [
+      "linear-gradient(135deg,#fb7185,#e11d48)",
+      "linear-gradient(135deg,#22d3ee,#0284c7)",
+      "linear-gradient(135deg,#fbbf24,#ea580c)",
+      "linear-gradient(135deg,#34d399,#0d9488)",
+      "linear-gradient(135deg,#a78bfa,#7c3aed)",
+      "linear-gradient(135deg,#60a5fa,#1d4ed8)"
+    ];
+    function authorInitials(name) {
+      return String(name || "?")
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((part) => part[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase();
+    }
+    function authorAvatarGradient(name) {
+      const seed = Array.from(String(name || ""))
+        .reduce((total, char) => total + char.charCodeAt(0), 0);
+      return authorAvatarGradients[seed % authorAvatarGradients.length];
+    }
+    function authorManageBar(detailKey, rows) {
+      const authors = Array.isArray(rows) ? rows : [];
+      const visibleMembers = authors.slice(0, 4);
+      const extraMembers = Math.max(authors.length - visibleMembers.length, 0);
+      const avatarMarkup = visibleMembers.length
+        ? visibleMembers.map((member) => `
+              <div class="author-member-avatar" style="background:${authorAvatarGradient(member?.name)}" title="${escapeHtml(member?.name || "Author")}">
+                ${escapeHtml(authorInitials(member?.name))}
+              </div>
+            `).join("")
+        : '<div class="author-member-more">+</div>';
+      return `
+        <div class="author-manage" data-author-manage-key="${escapeHtml(detailKey)}">
+          <div class="author-members-list">
+            ${avatarMarkup}
+            ${extraMembers ? `<div class="author-member-more">+${extraMembers}</div>` : ""}
+          </div>
+          <div class="author-members-caption">${authors.length} collaborators</div>
+          <button class="author-members-add" type="button" data-author-add-key="${escapeHtml(detailKey)}"><span class="material-icons-round">person_add</span>추가</button>
+        </div>
+      `;
+    }
+    function addAuthorToDetail(detailKey) {
+      const item = DETAIL_ITEMS[detailKey];
+      if (!item || item.__isLoading || String(item?.statusLabel || "").toLowerCase() === "unavailable") return;
+      const currentAuthors = Array.isArray(item.authorList) ? item.authorList : [];
+      const nextCandidate = authorInvitePool.find((candidate) =>
+        !currentAuthors.some((author) => author?.name === candidate.name)
+      );
+      if (!nextCandidate) return;
+      const nextAuthor = nextCandidate;
+      item.authorList = [...currentAuthors, nextAuthor];
+      mountAuthorManageBar();
+    }
+    function initializeAuthorAddButtons() {
+      if (window.__keycenterAuthorAddInitialized) return;
+      window.__keycenterAuthorAddInitialized = true;
+      document.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-author-add-key]");
+        if (!button) return;
+        addAuthorToDetail(button.dataset.authorAddKey);
+      });
+    }
+    function mountAuthorManageBar() {
+      const params = new URLSearchParams(window.location.search);
+      const requestedId = params.get(window.DETAIL_PAGE_CONFIG?.paramName || "id");
+      const detailKey = Object.prototype.hasOwnProperty.call(DETAIL_ITEMS, requestedId)
+        ? requestedId
+        : Object.keys(DETAIL_ITEMS)[0];
+      const item = DETAIL_ITEMS[detailKey];
+      if (!item || item.__isLoading || String(item?.statusLabel || "").toLowerCase() === "unavailable") return;
+
+      const heroTop = document.querySelector(".hero .hero-top");
+      const heroActions = heroTop?.querySelector(".hero-actions");
+      if (!heroTop || !heroActions) return;
+
+      let heroSide = heroTop.querySelector(".keycenter-hero-side");
+      if (!heroSide) {
+        heroSide = document.createElement("div");
+        heroSide.className = "keycenter-hero-side";
+        heroActions.replaceWith(heroSide);
+        heroSide.appendChild(heroActions);
+      }
+
+      const nextMarkup = authorManageBar(detailKey, item.authorList);
+      const existingManageNode = heroSide.querySelector(`[data-author-manage-key="${CSS.escape(detailKey)}"]`);
+      if (existingManageNode) {
+        existingManageNode.outerHTML = nextMarkup;
+        return;
+      }
+
+      const staleManageNode = heroSide.querySelector("[data-author-manage-key]");
+      if (staleManageNode) {
+        staleManageNode.remove();
+      }
+
+      heroSide.insertAdjacentHTML("beforeend", nextMarkup);
+    }
     function metricSummary(rows) {
       return `<div class="mini-stats">${rows.map((row) => `
         <article class="mini-stat">
@@ -590,12 +806,26 @@
     }
     function keyRows(rows) {
       return `<div class="key-stack">${rows.map((row) => `
-        <div class="key-row">
+        <div class="key-row"${row.isSecret ? ' data-secret-row="true"' : ""}${row.secretKeyId ? ` data-secret-key-id="${escapeHtml(row.secretKeyId)}"` : ""}>
           <div>
             <div class="key-row-label">${row.label}</div>
             <div class="key-row-meta">${row.meta}</div>
           </div>
-          <div class="key-row-value">${row.value}${row.actionIcon ? `<span class="material-icons-round">${row.actionIcon}</span>` : ""}</div>
+          ${
+            row.isSecret
+              ? `<div class="key-row-value is-secret">
+                  <span class="mono key-secret-value" data-secret-value="true" data-secret-visible-state="false" data-secret-loaded="${row.rawValue ? "true" : "false"}" data-secret-hidden="${escapeHtml(row.maskedValue || maskApiKeyPreview(row.rawValue || row.value || "-"))}" data-secret-visible="${escapeHtml(row.rawValue || "")}">${escapeHtml(row.maskedValue || maskApiKeyPreview(row.rawValue || row.value || "-"))}</span>
+                  <span class="key-secret-actions">
+                    <button class="icon-action-btn" type="button" data-secret-toggle="true" aria-label="API 키 보기">
+                      <span class="material-icons-round">visibility</span>
+                    </button>
+                    <button class="icon-action-btn" type="button" data-secret-copy="true" aria-label="API 키 복사">
+                      <span class="material-icons-round">content_copy</span>
+                    </button>
+                  </span>
+                </div>`
+              : `<div class="key-row-value">${row.value}${row.actionIcon ? `<span class="material-icons-round">${row.actionIcon}</span>` : ""}</div>`
+          }
         </div>
       `).join("")}</div>`;
     }
@@ -831,12 +1061,9 @@
             </article>
             <article class="card">
               <div class="card-title">발급 및 접근 주체</div>
-              <div class="card-desc">owner 정보와 현재 author 목록입니다.</div>
-              ${secretGrid(item.registration)}
+              <div class="card-desc">owner와 발급 이력을 확인할 수 있습니다.</div>
               <div class="section-card-spacer">
-                <div class="card-title">Author 목록</div>
-                <div class="card-desc">이 key에 접근 가능한 author 주체입니다.</div>
-                ${authorList(item.authorList)}
+              ${secretGrid(item.registration)}
               </div>
             </article>
           </div>
@@ -876,620 +1103,122 @@
       };
     }
 
-    const usageInsightsByKey = {
-      "openai-support-prod-key": {
-        period: "2026.06.01 - 2026.06.16",
+    const usageInsightsByKey = {};
+
+    function buildKeycenterPlaceholder(key, options = {}) {
+      const title = escapeHtml(options.title || key || "keycenter-key");
+      const description = escapeHtml(options.description || "데이터를 불러오는 중입니다.");
+      const statusLabel = escapeHtml(options.statusLabel || "Loading");
+      const statusTone = options.statusTone || "review";
+      const lookupKey = escapeHtml(key || "-");
+
+      usageInsightsByKey[key] = {
+        period: "선택 기간",
         keyInfo: [
-          { label: "API 키", value: '<span class="mono">sk-proj-su••••</span>', meta: "support-assistant-api와 gateway가 공통으로 참조하는 운영 key입니다.", actionIcon: "content_copy" },
-          { label: "연결 런타임", value: "OpenAI Responses API", meta: "운영 응답 생성과 요약 생성 흐름에 함께 사용합니다.", actionIcon: "open_in_new" }
+          { label: "Lookup Key", value: `<span class="mono">${lookupKey}</span>`, meta: "현재 상세 대상을 확인하는 중입니다.", actionIcon: "badge" },
+          { label: "상태", value: statusLabel, meta: "데이터를 불러오는 중입니다.", actionIcon: "sync" }
         ],
-        models: ["gpt-4.1", "gpt-4o", "gpt-4o-mini", "text-embedding-3-large"],
+        models: ["데이터를 불러오는 중입니다."],
         totals: [
-          { label: "총 요청 수", value: "18.4K", meta: "운영 chatbot와 gateway 호출 포함" },
-          { label: "총 세션 수", value: "432", meta: "일별 사용자 세션 기준" },
-          { label: "총 토큰", value: "18.2M", meta: "input + output token 합계" },
-          { label: "총 지출", value: "$1,842", meta: "선택 기간 사용 비용" }
+          {
+            title: "요청 흐름",
+            meta: "데이터를 불러오는 중입니다.",
+            items: [
+              { label: "총 요청 수", value: "0", meta: "데이터를 불러오는 중입니다." },
+              { label: "성공 요청", value: "0", meta: "데이터를 불러오는 중입니다." },
+              { label: "실패 요청", value: "0", meta: "데이터를 불러오는 중입니다." }
+            ]
+          },
+          {
+            title: "토큰 사용량",
+            meta: "데이터를 불러오는 중입니다.",
+            items: [
+              { label: "총 토큰 수", value: "0", meta: "데이터를 불러오는 중입니다." },
+              { label: "Input Tokens", value: "0", meta: "데이터를 불러오는 중입니다." },
+              { label: "Output Tokens", value: "0", meta: "데이터를 불러오는 중입니다." },
+              { label: "Cached Tokens", value: "0", meta: "데이터를 불러오는 중입니다.", sideMeta: "write 0 · read 0" }
+            ],
+            footer: {
+              label: "총 지출",
+              value: "$0.00",
+              meta: "데이터를 불러오는 중입니다."
+            }
+          }
         ],
-        filters: ["all", "gpt-4.1", "gpt-4o", "gpt-4o-mini"],
+        filters: ["all"],
         selectedFilter: "all",
-        charts: [
-          { title: "Token Consumption", meta: "일별 token 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Total", color: "#14b8a6", values: [820, 910, 980, 1060, 1140, 1210, 1320, 1410] },
-            { label: "Completion", color: "#2563eb", values: [470, 510, 560, 590, 650, 680, 730, 790] },
-            { label: "Prompt", color: "#f59e0b", values: [350, 400, 420, 470, 490, 530, 590, 620] }
-          ]},
-          { title: "Requests per Day", meta: "일별 요청 수", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Requests", color: "#38bdf8", values: [820, 860, 910, 950, 980, 1040, 1090, 1150] }
-          ]},
-          { title: "Daily Expenditure (USD)", meta: "일별 비용 추이", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Spend", color: "#10b981", values: [74, 81, 88, 94, 101, 108, 116, 123] }
-          ]},
-          { title: "Success vs Failed Requests", meta: "성공과 실패 요청 비율", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Success", color: "#14b8a6", values: [812, 851, 900, 939, 968, 1034, 1082, 1143] },
-            { label: "Failed", color: "#ef4444", values: [8, 9, 10, 11, 12, 11, 8, 7] }
-          ]}
-        ]
-      },
-      "anthropic-review-guard-key": {
-        period: "2026.06.01 - 2026.06.16",
-        keyInfo: [
-          { label: "API 키", value: '<span class="mono">sk-ant-re••••</span>', meta: "review agent가 reasoning 호출에 사용하는 공유 key입니다.", actionIcon: "content_copy" },
-          { label: "연결 런타임", value: "Anthropic Messages API", meta: "긴 문맥 요약과 리뷰 생성 흐름에 연결됩니다.", actionIcon: "open_in_new" }
+        charts: buildUsageCharts({ days: [] })
+      };
+
+      return {
+        id: key,
+        key,
+        title,
+        description,
+        heroIcon: "vpn_key",
+        typeLabel: "keycenter",
+        statusLabel,
+        statusTone,
+        theme: getProviderTheme([], "review"),
+        accessLink: { href: "workspace_keycenter_hub.html", label: "Keycenter Hub 보기" },
+        connectedLink: { href: "workspace_keycenter_hub.html", label: "Keycenter Hub 보기" },
+        actions: [
+          { label: "Keycenter Hub", icon: "vpn_key", href: "workspace_keycenter_hub.html" }
         ],
-        models: ["claude-3.7-sonnet", "claude-3.5-sonnet", "claude-3.5-haiku"],
-        totals: [
-          { label: "총 요청 수", value: "7.9K", meta: "리뷰 agent와 문서 요약 흐름 포함" },
-          { label: "총 세션 수", value: "164", meta: "검토 단위 실행 세션 기준" },
-          { label: "총 토큰", value: "9.6M", meta: "reasoning token 포함" },
-          { label: "총 지출", value: "$968", meta: "선택 기간 사용 비용" }
+        heroStats: [
+          { label: "Lookup", value: "1", meta: `<span class="mono">${lookupKey}</span>` },
+          { label: "Model Scope", value: "0", meta: "데이터를 불러오는 중입니다." },
+          { label: "Quota", value: "0%", meta: "데이터를 불러오는 중입니다." },
+          { label: "Surface", value: "0", meta: "데이터를 불러오는 중입니다." }
         ],
-        filters: ["all", "claude-3.7-sonnet", "claude-3.5-sonnet"],
-        selectedFilter: "all",
-        charts: [
-          { title: "Token Consumption", meta: "reasoning token 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Total", color: "#14b8a6", values: [430, 455, 470, 520, 560, 590, 620, 655] },
-            { label: "Completion", color: "#2563eb", values: [245, 258, 271, 298, 320, 338, 356, 372] },
-            { label: "Prompt", color: "#f59e0b", values: [185, 197, 199, 222, 240, 252, 264, 283] }
-          ]},
-          { title: "Requests per Day", meta: "리뷰 실행 요청 수", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Requests", color: "#38bdf8", values: [290, 301, 312, 344, 356, 379, 394, 410] }
-          ]},
-          { title: "Daily Expenditure (USD)", meta: "review 실행 비용", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Spend", color: "#10b981", values: [41, 43, 45, 49, 52, 57, 60, 64] }
-          ]},
-          { title: "Success vs Failed Requests", meta: "성공/실패 요청 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Success", color: "#14b8a6", values: [288, 299, 309, 340, 353, 376, 391, 409] },
-            { label: "Failed", color: "#ef4444", values: [2, 2, 3, 4, 3, 3, 3, 1] }
-          ]}
-        ]
-      },
-      "internal-docs-rag-key": {
-        period: "2026.06.01 - 2026.06.16",
-        keyInfo: [
-          { label: "API 키", value: '<span class="mono">ik-doc-ra••••</span>', meta: "docs widget와 inventory retrieval이 함께 쓰는 내부 key입니다.", actionIcon: "content_copy" },
-          { label: "연결 런타임", value: "Internal Retrieval API", meta: "검색, rerank, 문맥 보강 호출에 사용합니다.", actionIcon: "open_in_new" }
+        accessInfo: [
+          { key: "Lookup Key", value: `<span class="mono">${lookupKey}</span>` },
+          { key: "상태", value: statusLabel }
         ],
-        models: ["asf-rag-base", "rerank-lite", "embed-doc-v2", "summarize-lite"],
-        totals: [
-          { label: "총 요청 수", value: "142K", meta: "검색 및 rerank 요청 합계" },
-          { label: "총 세션 수", value: "3.2K", meta: "문서 검색 세션 기준" },
-          { label: "총 토큰", value: "4.8M", meta: "문맥 보강 응답 포함" },
-          { label: "총 지출", value: "$412", meta: "내부 정산 기준 비용" }
+        registration: [
+          { label: "Lookup Key", value: lookupKey, meta: "상세 대상을 확인하는 중입니다." }
         ],
-        filters: ["all", "asf-rag-base", "rerank-lite", "embed-doc-v2"],
-        selectedFilter: "all",
-        charts: [
-          { title: "Token Consumption", meta: "검색/응답 token 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Total", color: "#14b8a6", values: [120, 138, 144, 151, 165, 172, 184, 196] },
-            { label: "Completion", color: "#2563eb", values: [42, 48, 52, 55, 61, 66, 69, 74] },
-            { label: "Prompt", color: "#f59e0b", values: [78, 90, 92, 96, 104, 106, 115, 122] }
-          ]},
-          { title: "Requests per Day", meta: "검색 요청 수", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Requests", color: "#38bdf8", values: [7200, 7600, 8120, 8450, 9020, 9300, 9680, 10120] }
-          ]},
-          { title: "Daily Expenditure (USD)", meta: "내부 비용 추이", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Spend", color: "#10b981", values: [18, 20, 21, 23, 25, 26, 28, 31] }
-          ]},
-          { title: "Success vs Failed Requests", meta: "성공/실패 요청 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Success", color: "#14b8a6", values: [7156, 7554, 8071, 8401, 8974, 9251, 9632, 10058] },
-            { label: "Failed", color: "#ef4444", values: [44, 46, 49, 49, 46, 49, 48, 62] }
-          ]}
-        ]
-      },
-      "azure-ops-briefing-key": {
-        period: "2026.06.01 - 2026.06.16",
-        keyInfo: [
-          { label: "API 키", value: '<span class="mono">az-op-br••••</span>', meta: "ops-briefing-bot과 incident-triage-bot이 공유하는 regional key입니다.", actionIcon: "content_copy" },
-          { label: "연결 런타임", value: "Azure OpenAI Chat Completions", meta: "브리핑 요약과 incident 응답 초안 생성에 사용합니다.", actionIcon: "open_in_new" }
+        authorList: [],
+        statusCards: [
+          { title: "발급 상태", meta: "데이터를 불러오는 중입니다.", value: statusLabel },
+          { title: "선택 기간 사용량", meta: "데이터를 불러오는 중입니다.", value: "0" },
+          { title: "오류율", meta: "데이터를 불러오는 중입니다.", value: "0.0%" }
         ],
-        models: ["azure-gpt-4.1", "azure-gpt-4o-mini", "text-embedding-3-large"],
-        totals: [
-          { label: "총 요청 수", value: "6.1K", meta: "운영 브리핑과 triage 요청 포함" },
-          { label: "총 세션 수", value: "138", meta: "ops 브리핑 세션 기준" },
-          { label: "총 토큰", value: "6.4M", meta: "요약 및 응답 생성 token 합계" },
-          { label: "총 지출", value: "$624", meta: "선택 기간 사용 비용" }
+        usageSummary: [
+          { label: "Status", value: statusLabel, meta: "데이터를 불러오는 중입니다." },
+          { label: "Quota", value: "0%", meta: "데이터를 불러오는 중입니다." },
+          { label: "Spend", value: "$0.00", meta: "데이터를 불러오는 중입니다." },
+          { label: "Models", value: "0", meta: "데이터를 불러오는 중입니다." }
         ],
-        filters: ["all", "azure-gpt-4.1", "azure-gpt-4o-mini"],
-        selectedFilter: "all",
-        charts: [
-          { title: "Token Consumption", meta: "브리핑 시간대 token 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Total", color: "#14b8a6", values: [300, 340, 360, 390, 430, 460, 510, 550] },
-            { label: "Completion", color: "#2563eb", values: [170, 191, 202, 221, 242, 259, 286, 307] },
-            { label: "Prompt", color: "#f59e0b", values: [130, 149, 158, 169, 188, 201, 224, 243] }
-          ]},
-          { title: "Requests per Day", meta: "브리핑과 incident 요청 수", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Requests", color: "#38bdf8", values: [220, 250, 266, 284, 310, 326, 358, 392] }
-          ]},
-          { title: "Daily Expenditure (USD)", meta: "일별 비용 추이", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Spend", color: "#10b981", values: [24, 28, 29, 31, 36, 39, 44, 49] }
-          ]},
-          { title: "Success vs Failed Requests", meta: "성공/실패 요청 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Success", color: "#14b8a6", values: [219, 248, 263, 282, 307, 324, 355, 389] },
-            { label: "Failed", color: "#ef4444", values: [1, 2, 3, 2, 3, 2, 3, 3] }
-          ]}
-        ]
-      },
-      "partner-pricing-review-key": {
-        period: "2026.06.01 - 2026.06.16",
-        keyInfo: [
-          { label: "API 키", value: '<span class="mono">sk-pilot-pr••••</span>', meta: "pricing-advisor-bot 파일럿 검토에만 열려 있는 key입니다.", actionIcon: "content_copy" },
-          { label: "연결 런타임", value: "OpenAI Sandbox Runtime", meta: "응답 계약과 포맷 검토가 끝난 범위에서만 사용합니다.", actionIcon: "open_in_new" }
+        connectedItems: [{
+          title: "데이터를 불러오는 중입니다.",
+          meta: description,
+          badge: "Loading",
+          tags: ["API"],
+          sideLabel: "Binding",
+          sideValue: "-",
+          href: "workspace_keycenter_hub.html",
+          linkLabel: "Keycenter Hub 보기"
+        }],
+        guideTips: [
+          { title: "데이터를 불러오는 중입니다.", meta: "Keycenter 상세 응답을 받은 뒤 실제 안내 항목을 표시합니다.", side: "Loading" }
         ],
-        models: ["gpt-4.1", "gpt-4o", "gpt-4o-mini"],
-        totals: [
-          { label: "총 요청 수", value: "1.3K", meta: "파일럿 검토 호출 기준" },
-          { label: "총 세션 수", value: "28", meta: "pilot 상담 세션 기준" },
-          { label: "총 토큰", value: "1.1M", meta: "파일럿 응답 token 합계" },
-          { label: "총 지출", value: "$112", meta: "파일럿 구간 사용 비용" }
-        ],
-        filters: ["all", "gpt-4.1", "gpt-4o"],
-        selectedFilter: "all",
-        charts: [
-          { title: "Token Consumption", meta: "pilot token 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Total", color: "#14b8a6", values: [22, 28, 30, 38, 43, 47, 51, 58] },
-            { label: "Completion", color: "#2563eb", values: [12, 15, 17, 22, 24, 26, 28, 32] },
-            { label: "Prompt", color: "#f59e0b", values: [10, 13, 13, 16, 19, 21, 23, 26] }
-          ]},
-          { title: "Requests per Day", meta: "pilot 요청 수", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Requests", color: "#38bdf8", values: [38, 42, 51, 56, 62, 64, 70, 74] }
-          ]},
-          { title: "Daily Expenditure (USD)", meta: "파일럿 비용 추이", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Spend", color: "#10b981", values: [4, 5, 5, 6, 7, 7, 8, 9] }
-          ]},
-          { title: "Success vs Failed Requests", meta: "성공/실패 요청 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Success", color: "#14b8a6", values: [36, 40, 48, 52, 57, 59, 63, 67] },
-            { label: "Failed", color: "#ef4444", values: [2, 2, 3, 4, 5, 5, 7, 7] }
-          ]}
-        ]
-      },
-      "internal-tool-runtime-key": {
-        period: "2026.06.01 - 2026.06.16",
-        keyInfo: [
-          { label: "API 키", value: '<span class="mono">ik-tool-ru••••</span>', meta: "workspace-knowledge와 billing-service가 공유하는 내부 runtime key입니다.", actionIcon: "content_copy" },
-          { label: "연결 런타임", value: "Internal Tool Runtime API", meta: "tool 호출, 함수 라우팅, 검색 실행에 사용합니다.", actionIcon: "open_in_new" }
-        ],
-        models: ["internal-rag-1", "function-router", "policy-check-lite", "rerank-lite"],
-        totals: [
-          { label: "총 요청 수", value: "284K", meta: "runtime과 tool execution 호출 합계" },
-          { label: "총 세션 수", value: "4.9K", meta: "tool consumer 세션 기준" },
-          { label: "총 토큰", value: "3.4M", meta: "tool response 및 요약 token 합계" },
-          { label: "총 지출", value: "$286", meta: "내부 정산 기준 비용" }
-        ],
-        filters: ["all", "internal-rag-1", "function-router", "rerank-lite"],
-        selectedFilter: "all",
-        charts: [
-          { title: "Token Consumption", meta: "runtime token 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Total", color: "#14b8a6", values: [86, 91, 94, 99, 105, 112, 118, 124] },
-            { label: "Completion", color: "#2563eb", values: [33, 36, 38, 40, 44, 47, 49, 52] },
-            { label: "Prompt", color: "#f59e0b", values: [53, 55, 56, 59, 61, 65, 69, 72] }
-          ]},
-          { title: "Requests per Day", meta: "tool runtime 요청 수", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Requests", color: "#38bdf8", values: [14800, 15600, 16300, 17100, 18000, 18900, 19700, 20500] }
-          ]},
-          { title: "Daily Expenditure (USD)", meta: "내부 비용 추이", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Spend", color: "#10b981", values: [11, 12, 13, 14, 15, 17, 18, 19] }
-          ]},
-          { title: "Success vs Failed Requests", meta: "성공/실패 요청 흐름", labels: ["06-01", "06-03", "06-05", "06-07", "06-09", "06-11", "06-13", "06-16"], series: [
-            { label: "Success", color: "#14b8a6", values: [14722, 15526, 16230, 17019, 17904, 18808, 19619, 20401] },
-            { label: "Failed", color: "#ef4444", values: [78, 74, 70, 81, 96, 92, 81, 99] }
-          ]}
-        ]
-      }
+        __isLoading: Boolean(options.isLoading ?? true)
+      };
+    }
+
+    const detailParams = new URLSearchParams(window.location.search);
+    const requestedDetailId = detailParams.get("id");
+    const initialLookupKey = requestedDetailId || "__auto__";
+    const DETAIL_ITEMS = {
+      [initialLookupKey]: buildItem(buildKeycenterPlaceholder(initialLookupKey, {
+        title: requestedDetailId || "keycenter-key",
+        description: requestedDetailId
+          ? "Keycenter 상세 데이터를 불러오는 중입니다."
+          : "첫 번째 Keycenter 상세 데이터를 불러오는 중입니다.",
+        isLoading: true
+      }))
     };
-
-    const rawItems = [
-      {
-        id: "kc-openai-prod-014",
-        key: "openai-support-prod-key",
-        title: "openai-support-prod-key",
-        description: "support-assistant-api와 campaign-orchestrator가 함께 사용하는 paid tier key입니다.",
-        heroIcon: "vpn_key",
-        typeLabel: "paid",
-        statusLabel: "Active",
-        statusTone: "healthy",
-        theme: { bg: "#fff4dd", brand: "#f59e0b", brandH: "#d97706", brandBg: "#ffe5a3", brandSoft: "rgba(245,158,11,.18)", accent: "#f97316" },
-        accessLink: { href: "workspace_keycenter_hub.html", label: "Keycenter Hub 보기" },
-        connectedLink: { href: "workspace_chatbot_hub.html", label: "연결 허브 보기" },
-        actions: [
-          { label: "Keycenter Hub", icon: "vpn_key", href: "workspace_keycenter_hub.html" },
-          { label: "Chatbot Hub", icon: "arrow_outward", variant: "primary", href: "workspace_chatbot_hub.html" }
-        ],
-        heroStats: [
-          { label: "Key Tier", value: "paid", meta: "운영용 유료 tier" },
-          { label: "Model Scope", value: "2", meta: "gpt-4.1 / gpt-4o" },
-          { label: "Rotation", value: "11d", meta: "2026.06.28 예정" },
-          { label: "Surface", value: "3", meta: "chatbot, agent, gateway" }
-        ],
-        accessInfo: [
-          { key: "Key Tier", value: "paid" },
-          { key: "Endpoint", value: '<span class="mono">https://api.openai.com/v1</span>' },
-          { key: "Auth Header", value: '<span class="mono">Authorization: Bearer &lt;key&gt;</span>' },
-          { key: "Key Prefix", value: '<span class="mono">sk-proj-su••••</span>' },
-          { key: "Allowed Models", value: "gpt-4.1, gpt-4o" }
-        ],
-        registration: [
-          { label: "Key ID", value: "kc-openai-prod-014", meta: "Keycenter 식별자" },
-          { label: "Secret Path", value: "vault://keycenter/openai/support-prod", meta: "저장 위치" },
-          { label: "발급일", value: "2026.05.29", meta: "최근 발급 기준" },
-          { label: "Rotation Cycle", value: "30d", meta: "정기 교체 주기" }
-        ],
-        connectionChecks: [
-          { title: "Secret Reference", meta: "vault reference가 정상 조회됩니다.", side: "Pass" },
-          { title: "Auth Test", meta: "최근 인증 호출에서 200 응답을 확인했습니다.", side: "Pass" },
-          { title: "Consumer Mapping", meta: "등록된 사용처 3개와 현재 바인딩 정보가 일치합니다.", side: "Match" }
-        ],
-        statusCards: [
-          { title: "발급 상태", meta: "현재 운영 key", value: "Active" },
-          { title: "최근 7일 사용량", meta: "input + output tokens", value: "18.2M" },
-          { title: "오류율", meta: "최근 24시간", value: "0.3%" }
-        ],
-        usageSummary: [
-          { label: "Status", value: "Active", meta: "운영 key로 정상 사용 중입니다." },
-          { label: "Quota", value: "74%", meta: "현재 할당량의 74%를 사용했습니다." },
-          { label: "Rotation", value: "11d", meta: "다음 교체 일정이 가까워지고 있습니다." },
-          { label: "Surface", value: "3", meta: "여러 운영 surface가 함께 사용합니다." }
-        ],
-        connectedItems: [
-          { title: "support-assistant-api", meta: "고객 문의 응답용 API bot이 기본 응답 생성에 이 key를 사용합니다.", badge: "Chatbot", tags: ["Primary", "Production"], sideLabel: "Binding", sideValue: "Direct", href: "workspace_chatbot_detail.html?item=support-assistant-api", linkLabel: "챗봇 보기" },
-          { title: "campaign-orchestrator", meta: "승인형 자동화 흐름의 요약 생성 단계가 이 key를 참조합니다.", badge: "Agent", tags: ["Workflow", "Approval"], sideLabel: "Binding", sideValue: "Shared", href: "workspace_agent_detail.html?item=campaign-orchestrator", linkLabel: "에이전트 보기" },
-          { title: "workspace response gateway", meta: "운영 공통 게이트웨이에서 이 key를 기본 runtime key로 사용합니다.", badge: "Gateway", tags: ["Runtime", "Shared"], sideLabel: "Binding", sideValue: "Primary", href: "workspace_keycenter_hub.html", linkLabel: "Keycenter 보기" }
-        ],
-        healthChecks: [
-          { title: "Rotation Window", meta: "11일 후 교체 예정이므로 연결 서비스와 교체 일정을 함께 확인합니다.", side: "Soon" },
-          { title: "Quota Guard", meta: "현재 74% 사용량으로 추가 바인딩 전 여유량 확인이 필요합니다.", side: "Watch" },
-          { title: "Model Allowlist", meta: "허용 모델 2종이 현재 consumer 요구와 일치합니다.", side: "Pass" }
-        ],
-        guideTips: [
-          { title: "사용량이 높은 key는 교체 일정을 먼저 확인합니다", meta: "운영 surface가 많은 key는 회전 직전 변경 범위를 미리 확인하는 편이 안전합니다.", side: "Rotate" },
-          { title: "허용 모델과 실제 연결 모델을 같이 봅니다", meta: "consumer가 기대하는 모델이 allowlist에 없으면 연결은 살아 있어도 원하는 응답을 못 받을 수 있습니다.", side: "Model" },
-          { title: "공유 key는 신규 사용처 추가 전에 quota를 확인합니다", meta: "같은 key를 여러 surface가 함께 쓰면 작은 증가도 전체 headroom에 영향을 줄 수 있습니다.", side: "Quota" }
-        ]
-      },
-      {
-        id: "kc-anthropic-shared-007",
-        key: "anthropic-review-guard-key",
-        title: "anthropic-review-guard-key",
-        description: "repo-review-guard와 release-notes-pilot이 함께 쓰는 paid tier key입니다.",
-        heroIcon: "vpn_key",
-        typeLabel: "paid",
-        statusLabel: "Active",
-        statusTone: "healthy",
-        theme: { bg: "#fff4dd", brand: "#f59e0b", brandH: "#d97706", brandBg: "#ffe5a3", brandSoft: "rgba(245,158,11,.18)", accent: "#f97316" },
-        accessLink: { href: "workspace_keycenter_hub.html", label: "Keycenter Hub 보기" },
-        connectedLink: { href: "workspace_agent_hub.html", label: "연결 허브 보기" },
-        actions: [
-          { label: "Agent Hub", icon: "smart_toy", href: "workspace_agent_hub.html" },
-          { label: "Keycenter Hub", icon: "arrow_outward", variant: "primary", href: "workspace_keycenter_hub.html" }
-        ],
-        heroStats: [
-          { label: "Key Tier", value: "paid", meta: "리뷰용 유료 tier" },
-          { label: "Model Scope", value: "1", meta: "claude-3.7-sonnet" },
-          { label: "Rotation", value: "18d", meta: "2026.07.05 예정" },
-          { label: "Surface", value: "2", meta: "review agent 중심" }
-        ],
-        accessInfo: [
-          { key: "Key Tier", value: "paid" },
-          { key: "Endpoint", value: '<span class="mono">https://api.anthropic.com/v1/messages</span>' },
-          { key: "Auth Header", value: '<span class="mono">x-api-key: &lt;key&gt;</span>' },
-          { key: "Key Prefix", value: '<span class="mono">sk-ant-re••••</span>' },
-          { key: "Allowed Models", value: "claude-3.7-sonnet" }
-        ],
-        registration: [
-          { label: "Key ID", value: "kc-anthropic-shared-007", meta: "Keycenter 식별자" },
-          { label: "Secret Path", value: "vault://keycenter/anthropic/review-guard", meta: "저장 위치" },
-          { label: "발급일", value: "2026.06.04", meta: "현재 활성 버전" },
-          { label: "Rotation Cycle", value: "30d", meta: "정기 교체 주기" }
-        ],
-        connectionChecks: [
-          { title: "Secret Reference", meta: "vault path가 정상 조회됩니다.", side: "Pass" },
-          { title: "Auth Test", meta: "review runtime에서 인증 테스트를 통과했습니다.", side: "Pass" },
-          { title: "Consumer Mapping", meta: "repo-review-guard와 release-notes-pilot 연결이 최신 상태입니다.", side: "Match" }
-        ],
-        statusCards: [
-          { title: "발급 상태", meta: "공유 reasoning key", value: "Active" },
-          { title: "최근 7일 사용량", meta: "reasoning token 기준", value: "9.6M" },
-          { title: "오류율", meta: "최근 24시간", value: "0.1%" }
-        ],
-        usageSummary: [
-          { label: "Status", value: "Active", meta: "review 흐름에서 안정적으로 사용 중입니다." },
-          { label: "Quota", value: "62%", meta: "현재 reasoning 할당량의 62%를 사용했습니다." },
-          { label: "Rotation", value: "18d", meta: "이번 주기에는 여유가 있습니다." },
-          { label: "Surface", value: "2", meta: "agent 2개가 이 key를 공유합니다." }
-        ],
-        connectedItems: [
-          { title: "repo-review-guard", meta: "PR 위험도 요약과 리뷰 코멘트 생성을 이 key로 수행합니다.", badge: "Agent", tags: ["Review", "Reasoning"], sideLabel: "Binding", sideValue: "Primary", href: "workspace_agent_detail.html?item=repo-review-guard", linkLabel: "에이전트 보기" },
-          { title: "release-notes-pilot", meta: "릴리즈 문서 요약 단계에서 긴 문맥 reasoning에 사용합니다.", badge: "Agent", tags: ["Docs", "Summary"], sideLabel: "Binding", sideValue: "Shared", href: "workspace_agent_detail.html?item=release-notes-pilot", linkLabel: "에이전트 보기" }
-        ],
-        healthChecks: [
-          { title: "Quota Guard", meta: "현재 사용량은 안정적이지만 월말 문서 생성량 증가를 함께 봐야 합니다.", side: "Normal" },
-          { title: "Model Contract", meta: "connected agent 2개 모두 claude-3.7-sonnet 계약과 일치합니다.", side: "Pass" },
-          { title: "Rotation Ready", meta: "다음 교체 전 테스트 runtime이 준비되어 있습니다.", side: "Ready" }
-        ],
-        guideTips: [
-          { title: "reasoning key는 연결 agent의 문맥 길이와 함께 봅니다", meta: "같은 호출 수라도 문맥 길이에 따라 사용량 차이가 크게 날 수 있습니다.", side: "Context" },
-          { title: "공유 key는 신규 agent 연결 전에 소비 패턴을 비교합니다", meta: "문서 요약과 리뷰 요약은 피크 시간이 달라 함께 붙여도 괜찮은지 먼저 보는 것이 좋습니다.", side: "Pattern" },
-          { title: "교체 전에는 샘플 프롬프트로 응답 차이를 확인합니다", meta: "reasoning key는 정상 응답 여부보다 실제 품질 차이가 더 중요한 경우가 많습니다.", side: "Quality" }
-        ]
-      },
-      {
-        id: "kc-internal-rag-021",
-        key: "internal-docs-rag-key",
-        title: "internal-docs-rag-key",
-        description: "docs-guide-widget와 workspace-knowledge가 함께 참조하는 asf tier key입니다.",
-        heroIcon: "vpn_key",
-        typeLabel: "asf",
-        statusLabel: "Active",
-        statusTone: "healthy",
-        theme: { bg: "#fff4dd", brand: "#f59e0b", brandH: "#d97706", brandBg: "#ffe5a3", brandSoft: "rgba(245,158,11,.18)", accent: "#f97316" },
-        accessLink: { href: "workspace_keycenter_hub.html", label: "Keycenter Hub 보기" },
-        connectedLink: { href: "workspace_tool_inventory_hub.html", label: "연결 허브 보기" },
-        actions: [
-          { label: "Tool Inventory", icon: "inventory_2", href: "workspace_tool_inventory_hub.html" },
-          { label: "Chatbot Hub", icon: "arrow_outward", variant: "primary", href: "workspace_chatbot_hub.html" }
-        ],
-        heroStats: [
-          { label: "Key Tier", value: "asf", meta: "사내 검색 공용 tier" },
-          { label: "Model Scope", value: "2", meta: "asf-rag-base / rerank-lite" },
-          { label: "Rotation", value: "24d", meta: "2026.07.11 예정" },
-          { label: "Surface", value: "3", meta: "chatbot, tool, agent" }
-        ],
-        accessInfo: [
-          { key: "Key Tier", value: "asf" },
-          { key: "Endpoint", value: '<span class="mono">https://rag-internal.dej.ai/query</span>' },
-          { key: "Auth Header", value: '<span class="mono">x-service-key: &lt;key&gt;</span>' },
-          { key: "Key Prefix", value: '<span class="mono">ik-doc-ra••••</span>' },
-          { key: "Allowed Models", value: "asf-rag-base, rerank-lite" }
-        ],
-        registration: [
-          { label: "Key ID", value: "kc-internal-rag-021", meta: "Keycenter 식별자" },
-          { label: "Secret Path", value: "vault://keycenter/internal/docs-rag", meta: "저장 위치" },
-          { label: "발급일", value: "2026.06.10", meta: "현재 활성 버전" },
-          { label: "Rotation Cycle", value: "45d", meta: "내부 서비스 주기" }
-        ],
-        connectionChecks: [
-          { title: "Secret Reference", meta: "internal service reference가 정상 조회됩니다.", side: "Pass" },
-          { title: "Auth Test", meta: "docs widget과 inventory runtime 모두 인증 테스트를 통과했습니다.", side: "Pass" },
-          { title: "Consumer Mapping", meta: "문서 검색 consumer 3개가 최신 상태로 연결되어 있습니다.", side: "Match" }
-        ],
-        statusCards: [
-          { title: "발급 상태", meta: "내부 retrieval key", value: "Active" },
-          { title: "최근 7일 사용량", meta: "query requests", value: "142K" },
-          { title: "오류율", meta: "최근 24시간", value: "0.6%" }
-        ],
-        usageSummary: [
-          { label: "Status", value: "Active", meta: "문서 검색 흐름에서 정상 사용 중입니다." },
-          { label: "Quota", value: "57%", meta: "현재 query budget의 57%를 사용했습니다." },
-          { label: "Rotation", value: "24d", meta: "당장 교체가 가까운 상태는 아닙니다." },
-          { label: "Surface", value: "3", meta: "retrieval consumer 3개가 연결되어 있습니다." }
-        ],
-        connectedItems: [
-          { title: "docs-guide-widget", meta: "문서 페이지 도움말 챗봇이 검색 결과 보강에 이 key를 사용합니다.", badge: "Chatbot", tags: ["Docs", "Search"], sideLabel: "Binding", sideValue: "Primary", href: "workspace_chatbot_detail.html?item=docs-guide-widget", linkLabel: "챗봇 보기" },
-          { title: "workspace-knowledge", meta: "문서 검색과 owner 탐색을 제공하는 tool inventory가 이 key를 참조합니다.", badge: "Tool", tags: ["Inventory", "Retrieval"], sideLabel: "Binding", sideValue: "Direct", href: "workspace_tool_inventory_detail.html?item=workspace-knowledge", linkLabel: "인벤토리 보기" },
-          { title: "release-notes-pilot", meta: "문서 초안 생성 전 관련 문서를 찾는 단계에서 이 key를 사용합니다.", badge: "Agent", tags: ["Docs", "Context"], sideLabel: "Binding", sideValue: "Shared", href: "workspace_agent_detail.html?item=release-notes-pilot", linkLabel: "에이전트 보기" }
-        ],
-        healthChecks: [
-          { title: "Latency Guard", meta: "p95 응답 시간은 현재 기준 내에 있습니다.", side: "Pass" },
-          { title: "Quota Guard", meta: "문서 배치 작업이 몰리는 날에는 query 사용량을 함께 보는 것이 좋습니다.", side: "Normal" },
-          { title: "Consumer Contract", meta: "retrieval response 포맷이 연결된 consumer와 일치합니다.", side: "Pass" }
-        ],
-        guideTips: [
-          { title: "retrieval key는 호출 수보다 검색 패턴을 함께 봅니다", meta: "문서 동기화 직후에는 같은 consumer라도 응답량이 크게 달라질 수 있습니다.", side: "Query" },
-          { title: "tool inventory와 chatbot 연결을 함께 확인합니다", meta: "같은 검색 key를 여러 surface가 공유하면 한쪽 변경이 다른 쪽 결과에도 영향을 줄 수 있습니다.", side: "Shared" },
-          { title: "응답 지연이 보이면 model보다 endpoint 상태를 먼저 확인합니다", meta: "retrieval key는 생성 모델보다 검색 서비스 상태가 체감 품질에 더 크게 작용할 수 있습니다.", side: "Latency" }
-        ]
-      },
-      {
-        id: "kc-azure-ops-005",
-        key: "azure-ops-briefing-key",
-        title: "azure-ops-briefing-key",
-        description: "ops-briefing-bot과 incident-triage-bot이 공유하는 paid tier key입니다.",
-        heroIcon: "vpn_key",
-        typeLabel: "paid",
-        statusLabel: "Active",
-        statusTone: "healthy",
-        theme: { bg: "#fff4dd", brand: "#f59e0b", brandH: "#d97706", brandBg: "#ffe5a3", brandSoft: "rgba(245,158,11,.18)", accent: "#f97316" },
-        accessLink: { href: "workspace_keycenter_hub.html", label: "Keycenter Hub 보기" },
-        connectedLink: { href: "workspace_chatbot_hub.html", label: "연결 허브 보기" },
-        actions: [
-          { label: "Chatbot Hub", icon: "chat", href: "workspace_chatbot_hub.html" },
-          { label: "Agent Hub", icon: "arrow_outward", variant: "primary", href: "workspace_agent_hub.html" }
-        ],
-        heroStats: [
-          { label: "Key Tier", value: "paid", meta: "ops용 유료 tier" },
-          { label: "Model Scope", value: "2", meta: "azure-gpt-4.1 / 4o-mini" },
-          { label: "Rotation", value: "9d", meta: "2026.06.26 예정" },
-          { label: "Surface", value: "2", meta: "ops chatbot와 agent" }
-        ],
-        accessInfo: [
-          { key: "Key Tier", value: "paid" },
-          { key: "Endpoint", value: '<span class="mono">https://ops-eastus.openai.azure.com</span>' },
-          { key: "Auth Header", value: '<span class="mono">api-key: &lt;key&gt;</span>' },
-          { key: "Key Prefix", value: '<span class="mono">az-op-br••••</span>' },
-          { key: "Allowed Models", value: "azure-gpt-4.1, azure-gpt-4o-mini" }
-        ],
-        registration: [
-          { label: "Key ID", value: "kc-azure-ops-005", meta: "Keycenter 식별자" },
-          { label: "Secret Path", value: "vault://keycenter/azure/ops-briefing", meta: "저장 위치" },
-          { label: "발급일", value: "2026.05.27", meta: "현재 활성 버전" },
-          { label: "Rotation Cycle", value: "30d", meta: "정기 교체 주기" }
-        ],
-        connectionChecks: [
-          { title: "Secret Reference", meta: "Azure runtime에서 최신 secret을 정상 조회합니다.", side: "Pass" },
-          { title: "Auth Test", meta: "ops briefing runtime에서 인증 테스트를 통과했습니다.", side: "Pass" },
-          { title: "Consumer Mapping", meta: "운영 surface 2개가 같은 regional endpoint를 참조합니다.", side: "Match" }
-        ],
-        statusCards: [
-          { title: "발급 상태", meta: "regional ops key", value: "Active" },
-          { title: "최근 7일 사용량", meta: "ops requests", value: "6.4M" },
-          { title: "오류율", meta: "최근 24시간", value: "0.4%" }
-        ],
-        usageSummary: [
-          { label: "Status", value: "Active", meta: "운영 브리핑 흐름에서 정상 사용 중입니다." },
-          { label: "Quota", value: "69%", meta: "브리핑 시간대 피크가 반영된 수치입니다." },
-          { label: "Rotation", value: "9d", meta: "가까운 교체 일정을 함께 준비해야 합니다." },
-          { label: "Surface", value: "2", meta: "ops chatbot와 triage agent가 공유합니다." }
-        ],
-        connectedItems: [
-          { title: "ops-briefing-bot", meta: "운영 브리핑 응답과 요약 메시지를 생성하는 기본 chatbot입니다.", badge: "Chatbot", tags: ["Ops", "Briefing"], sideLabel: "Binding", sideValue: "Primary", href: "workspace_chatbot_detail.html?item=ops-briefing-bot", linkLabel: "챗봇 보기" },
-          { title: "incident-triage-bot", meta: "장애 요약과 분류 초안 생성을 이 key로 수행합니다.", badge: "Agent", tags: ["Incident", "Ops"], sideLabel: "Binding", sideValue: "Shared", href: "workspace_agent_hub.html", linkLabel: "에이전트 허브 보기" }
-        ],
-        healthChecks: [
-          { title: "Rotation Window", meta: "9일 후 교체 예정이므로 운영 채널과 교체 공지를 함께 준비합니다.", side: "Soon" },
-          { title: "Regional Endpoint", meta: "현재 East US endpoint가 정상 응답 중입니다.", side: "Pass" },
-          { title: "Peak Usage Guard", meta: "브리핑 시간대에 사용량이 몰리므로 피크 시간대 추이를 같이 봅니다.", side: "Watch" }
-        ],
-        guideTips: [
-          { title: "regional key는 endpoint와 지역 설정을 함께 봅니다", meta: "같은 모델이라도 지역 설정이 다르면 연결 상태와 지연이 달라질 수 있습니다.", side: "Region" },
-          { title: "ops key는 브리핑 시간대 사용량을 따로 확인합니다", meta: "평균 사용량보다 특정 시간대 피크가 더 중요한 경우가 많습니다.", side: "Peak" },
-          { title: "교체 전에는 shared runtime 두 곳을 모두 테스트합니다", meta: "chatbot와 agent가 같은 key를 쓰면 한쪽만 테스트해서는 실제 영향 범위를 다 보기 어렵습니다.", side: "Runtime" }
-        ]
-      },
-      {
-        id: "kc-openai-partner-003",
-        key: "partner-pricing-review-key",
-        title: "partner-pricing-review-key",
-        description: "pricing-advisor-bot 파일럿 검토에 사용하는 free tier key입니다.",
-        heroIcon: "vpn_key",
-        typeLabel: "free",
-        statusLabel: "Review",
-        statusTone: "review",
-        theme: { bg: "#fff4dd", brand: "#f59e0b", brandH: "#d97706", brandBg: "#ffe5a3", brandSoft: "rgba(245,158,11,.18)", accent: "#f97316" },
-        accessLink: { href: "workspace_keycenter_hub.html", label: "Keycenter Hub 보기" },
-        connectedLink: { href: "workspace_chatbot_hub.html", label: "연결 허브 보기" },
-        actions: [
-          { label: "Chatbot Hub", icon: "chat", href: "workspace_chatbot_hub.html" },
-          { label: "Keycenter Hub", icon: "arrow_outward", variant: "primary", href: "workspace_keycenter_hub.html" }
-        ],
-        heroStats: [
-          { label: "Key Tier", value: "free", meta: "파일럿용 무료 tier" },
-          { label: "Model Scope", value: "2", meta: "gpt-4.1 / gpt-4o" },
-          { label: "Rotation", value: "Pending", meta: "정식 발급 전 검토 중" },
-          { label: "Surface", value: "1", meta: "pilot chatbot only" }
-        ],
-        accessInfo: [
-          { key: "Key Tier", value: "free" },
-          { key: "Endpoint", value: '<span class="mono">https://api.openai.com/v1</span>' },
-          { key: "Auth Header", value: '<span class="mono">Authorization: Bearer &lt;key&gt;</span>' },
-          { key: "Key Prefix", value: '<span class="mono">sk-pilot-pr••••</span>' },
-          { key: "Allowed Models", value: "gpt-4.1, gpt-4o" }
-        ],
-        registration: [
-          { label: "Key ID", value: "kc-openai-partner-003", meta: "Keycenter 식별자" },
-          { label: "Secret Path", value: "vault://keycenter/openai/partner-pricing", meta: "저장 위치" },
-          { label: "발급일", value: "2026.06.12", meta: "파일럿 검토 버전" },
-          { label: "Rotation Cycle", value: "Pending", meta: "정식 승인 후 확정" }
-        ],
-        connectionChecks: [
-          { title: "Secret Reference", meta: "파일럿 환경에서만 secret reference가 열려 있습니다.", side: "Limited" },
-          { title: "Auth Test", meta: "sandbox 인증 테스트는 통과했지만 정식 운영 검수는 남아 있습니다.", side: "Review" },
-          { title: "Consumer Mapping", meta: "현재 pricing-advisor-bot 한 곳만 연결되어 있습니다.", side: "Match" }
-        ],
-        statusCards: [
-          { title: "발급 상태", meta: "pilot review key", value: "Review" },
-          { title: "최근 7일 사용량", meta: "pilot requests", value: "1.1M" },
-          { title: "오류율", meta: "최근 24시간", value: "1.9%" }
-        ],
-        usageSummary: [
-          { label: "Status", value: "Review", meta: "정식 운영 전 검토 단계입니다." },
-          { label: "Quota", value: "28%", meta: "파일럿 구간만 제한적으로 사용 중입니다." },
-          { label: "Rotation", value: "Pending", meta: "정식 승인 후 교체 주기를 확정합니다." },
-          { label: "Surface", value: "1", meta: "pricing-advisor-bot만 연결되어 있습니다." }
-        ],
-        connectedItems: [
-          { title: "pricing-advisor-bot", meta: "파트너 상담 응답 검토를 진행하는 파일럿 chatbot입니다.", badge: "Chatbot", tags: ["Partner", "Pilot"], sideLabel: "Binding", sideValue: "Pilot", href: "workspace_chatbot_detail.html?item=pricing-advisor-bot", linkLabel: "챗봇 보기" },
-          { title: "partner pilot validation", meta: "정식 운영 전 응답 계약과 사용량을 함께 검토하는 검증 흐름입니다.", badge: "Validation", tags: ["Schema", "Review"], sideLabel: "Binding", sideValue: "Pending", href: "workspace_keycenter_hub.html", linkLabel: "Keycenter 보기" }
-        ],
-        healthChecks: [
-          { title: "Prod Approval", meta: "정식 운영 승인이 아직 완료되지 않았습니다.", side: "Pending" },
-          { title: "Schema Contract", meta: "응답 매핑 mismatch가 남아 있어 연결 확장이 보류 중입니다.", side: "Review" },
-          { title: "Quota Guard", meta: "사용량은 낮지만 검토 결과가 먼저 정리되어야 합니다.", side: "Normal" }
-        ],
-        guideTips: [
-          { title: "review 상태 key는 사용량보다 승인 상태를 먼저 봅니다", meta: "호출이 적어도 계약 검토가 끝나지 않으면 운영 확장은 어렵습니다.", side: "Review" },
-          { title: "pilot key는 연결 consumer를 최소 범위로 유지합니다", meta: "검토가 끝나기 전에는 여러 surface에 넓게 바인딩하지 않는 편이 안전합니다.", side: "Scope" },
-          { title: "응답 포맷 이슈는 auth 성공과 별개로 봅니다", meta: "인증이 정상이어도 response mapping이 맞지 않으면 실제 연결은 준비되지 않은 상태일 수 있습니다.", side: "Schema" }
-        ]
-      },
-      {
-        id: "kc-internal-tool-010",
-        key: "internal-tool-runtime-key",
-        title: "internal-tool-runtime-key",
-        description: "workspace-knowledge와 billing-service가 공유하는 dej-base tier key입니다.",
-        heroIcon: "vpn_key",
-        typeLabel: "dej-base",
-        statusLabel: "Active",
-        statusTone: "healthy",
-        theme: { bg: "#fff4dd", brand: "#f59e0b", brandH: "#d97706", brandBg: "#ffe5a3", brandSoft: "rgba(245,158,11,.18)", accent: "#f97316" },
-        accessLink: { href: "workspace_keycenter_hub.html", label: "Keycenter Hub 보기" },
-        connectedLink: { href: "workspace_tool_inventory_hub.html", label: "연결 허브 보기" },
-        actions: [
-          { label: "Tool Inventory", icon: "inventory_2", href: "workspace_tool_inventory_hub.html" },
-          { label: "Keycenter Hub", icon: "arrow_outward", variant: "primary", href: "workspace_keycenter_hub.html" }
-        ],
-        heroStats: [
-          { label: "Key Tier", value: "dej-base", meta: "기본 내부 실행 tier" },
-          { label: "Model Scope", value: "2", meta: "internal-rag-1 / function-router" },
-          { label: "Rotation", value: "21d", meta: "2026.07.08 예정" },
-          { label: "Surface", value: "3", meta: "tool inventory 중심" }
-        ],
-        accessInfo: [
-          { key: "Key Tier", value: "dej-base" },
-          { key: "Endpoint", value: '<span class="mono">https://tools-internal.dej.ai/runtime</span>' },
-          { key: "Auth Header", value: '<span class="mono">x-runtime-key: &lt;key&gt;</span>' },
-          { key: "Key Prefix", value: '<span class="mono">ik-tool-ru••••</span>' },
-          { key: "Allowed Models", value: "internal-rag-1, function-router" }
-        ],
-        registration: [
-          { label: "Key ID", value: "kc-internal-tool-010", meta: "Keycenter 식별자" },
-          { label: "Secret Path", value: "vault://keycenter/internal/tool-runtime", meta: "저장 위치" },
-          { label: "발급일", value: "2026.06.02", meta: "현재 활성 버전" },
-          { label: "Rotation Cycle", value: "45d", meta: "내부 서비스 주기" }
-        ],
-        connectionChecks: [
-          { title: "Secret Reference", meta: "runtime secret reference가 정상 조회됩니다.", side: "Pass" },
-          { title: "Auth Test", meta: "tool inventory runtime에서 인증 테스트를 통과했습니다.", side: "Pass" },
-          { title: "Consumer Mapping", meta: "tool inventory와 연결된 consumer 3개가 최신 상태입니다.", side: "Match" }
-        ],
-        statusCards: [
-          { title: "발급 상태", meta: "tool runtime key", value: "Active" },
-          { title: "최근 7일 사용량", meta: "runtime calls", value: "284K" },
-          { title: "오류율", meta: "최근 24시간", value: "0.5%" }
-        ],
-        usageSummary: [
-          { label: "Status", value: "Active", meta: "tool runtime에서 정상 사용 중입니다." },
-          { label: "Quota", value: "48%", meta: "현재 runtime budget의 48%를 사용했습니다." },
-          { label: "Rotation", value: "21d", meta: "다음 교체까지는 여유가 있습니다." },
-          { label: "Surface", value: "3", meta: "tool inventory와 consumer가 함께 사용합니다." }
-        ],
-        connectedItems: [
-          { title: "workspace-knowledge", meta: "문서 검색과 owner 탐색을 제공하는 inventory가 이 key를 사용합니다.", badge: "Tool", tags: ["Knowledge", "Retrieval"], sideLabel: "Binding", sideValue: "Primary", href: "workspace_tool_inventory_detail.html?item=workspace-knowledge", linkLabel: "인벤토리 보기" },
-          { title: "billing-service", meta: "청구 조회와 정책 응답을 제공하는 inventory runtime이 이 key를 사용합니다.", badge: "Tool", tags: ["Billing", "Runtime"], sideLabel: "Binding", sideValue: "Shared", href: "workspace_tool_inventory_detail.html?item=billing-service", linkLabel: "인벤토리 보기" },
-          { title: "repo-review-guard", meta: "tool inventory를 통해 owner 탐색과 문서 조회를 수행합니다.", badge: "Agent", tags: ["Review", "Tool Call"], sideLabel: "Binding", sideValue: "Indirect", href: "workspace_agent_detail.html?item=repo-review-guard", linkLabel: "에이전트 보기" }
-        ],
-        healthChecks: [
-          { title: "Runtime Health", meta: "tool runtime endpoint가 현재 정상 응답 중입니다.", side: "Pass" },
-          { title: "Quota Guard", meta: "여유량이 충분해 추가 tool 연결 여지가 있습니다.", side: "Good" },
-          { title: "Policy Scope", meta: "현재 허용 모델 범위가 연결된 inventory 계약과 일치합니다.", side: "Pass" }
-        ],
-        guideTips: [
-          { title: "tool runtime key는 직접 연결과 간접 연결을 함께 봅니다", meta: "inventory 하나만 보여도 실제 consumer는 그 뒤에 더 많을 수 있습니다.", side: "Flow" },
-          { title: "inventory 확장 전에는 runtime 여유량을 먼저 확인합니다", meta: "tool 호출은 consumer 수가 늘수록 급격히 증가할 수 있어 사전 확인이 중요합니다.", side: "Quota" },
-          { title: "내부 runtime key는 endpoint 상태를 함께 확인합니다", meta: "모델 스펙보다 runtime endpoint 상태가 체감 안정성에 더 직접적인 경우가 많습니다.", side: "Runtime" }
-        ]
-      }
-    ];
-
-    const DETAIL_ITEMS = Object.fromEntries(rawItems.flatMap((item) => {
-      const builtItem = buildItem(item);
-      return [
-        [item.id, builtItem],
-        [item.key, builtItem]
-      ];
-    }));
-
-    const LEGACY_ITEM_TO_ID = Object.fromEntries(rawItems.map((item) => [item.key, item.id]));
-    const RAW_ITEMS_BY_ID = Object.fromEntries(rawItems.map((item) => [item.id, item]));
-    const RAW_ITEMS_BY_KEY = Object.fromEntries(rawItems.map((item) => [item.key, item]));
 
     function getPayloadData(payload) {
       return payload && typeof payload === "object" && !Array.isArray(payload) && payload.data && typeof payload.data === "object"
@@ -1842,9 +1571,12 @@
         keyInfo: [
           {
             label: "API 키 정보",
-            value: `<span class="mono">${escapeHtml(maskApiKeyPreview(keyItem?.secret || "-"))}</span>`,
-            meta: "응답에는 항상 마스킹된 preview만 표시합니다.",
-            actionIcon: "content_copy"
+            value: `<span class="mono">${escapeHtml(maskApiKeyPreview(String(keyItem?.secret || "-").trim() || "-"))}</span>`,
+            maskedValue: maskApiKeyPreview(String(keyItem?.secret || "").trim() || "-"),
+            rawValue: "",
+            secretKeyId: String(keyItem?.id || "").trim(),
+            isSecret: true,
+            meta: "기본은 masked preview이며, reveal 후 전체 값을 확인하고 복사할 수 있습니다."
           },
           {
             label: "Account Identifier",
@@ -1970,7 +1702,7 @@
         period: "선택 기간",
         keyInfo: [
           { label: "Key ID", value: `<span class="mono">${escapeHtml(id)}</span>`, meta: "요청한 detail id", actionIcon: "badge" },
-          { label: "상태", value: "Unavailable", meta: "API 응답 또는 sample fallback을 찾지 못했습니다.", actionIcon: "error_outline" }
+          { label: "상태", value: "Unavailable", meta: "API detail 응답을 찾지 못했습니다.", actionIcon: "error_outline" }
         ],
         models: [],
         totals: [
@@ -2028,7 +1760,7 @@
         accessInfo: [
           { key: "Key ID", value: `<span class="mono">${escapeHtml(id)}</span>` },
           { key: "상태", value: "Unavailable" },
-          { key: "원인", value: "sample fallback 또는 API detail 조회 실패" }
+          { key: "원인", value: "API detail 조회 실패" }
         ],
         registration: [
           { label: "Key ID", value: escapeHtml(id), meta: "요청한 detail 식별자" }
@@ -2083,14 +1815,116 @@
       initializeUsageInsights(usage);
     });
 
-    async function fetchJson(url) {
+    function initializeKeySecretActions() {
+      if (window.__keycenterSecretActionsInitialized) return;
+      window.__keycenterSecretActionsInitialized = true;
+
+      const copyText = async (text) => {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+          return;
+        }
+
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "true");
+        textarea.style.position = "absolute";
+        textarea.style.left = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+      };
+
+      document.addEventListener("click", async (event) => {
+        const toggleButton = event.target.closest("[data-secret-toggle]");
+        if (toggleButton) {
+          const row = toggleButton.closest("[data-secret-row]");
+          const valueNode = row?.querySelector("[data-secret-value]");
+          if (!valueNode) return;
+
+          if (valueNode.dataset.secretLoaded !== "true") {
+            const secretKeyId = row?.dataset.secretKeyId || "";
+            if (!secretKeyId) return;
+
+            try {
+              const revealed = await revealKeySecret(secretKeyId);
+              const rawSecret = String(revealed?.secret || "").trim();
+              if (!rawSecret) return;
+              valueNode.dataset.secretVisible = rawSecret;
+              valueNode.dataset.secretLoaded = "true";
+            } catch (error) {
+              console.error("[keycenter_detail] failed to reveal api key", error);
+              return;
+            }
+          }
+
+          const nextVisible = valueNode.dataset.secretVisibleState !== "true";
+          valueNode.dataset.secretVisibleState = String(nextVisible);
+          valueNode.textContent = nextVisible ? valueNode.dataset.secretVisible || "" : valueNode.dataset.secretHidden || "";
+          toggleButton.setAttribute("aria-label", nextVisible ? "API 키 숨기기" : "API 키 보기");
+          const toggleIcon = toggleButton.querySelector(".material-icons-round");
+          if (toggleIcon) {
+            toggleIcon.textContent = nextVisible ? "visibility_off" : "visibility";
+          }
+          return;
+        }
+
+        const copyButton = event.target.closest("[data-secret-copy]");
+        if (!copyButton) return;
+
+        const row = copyButton.closest("[data-secret-row]");
+        const valueNode = row?.querySelector("[data-secret-value]");
+        if (valueNode?.dataset.secretLoaded !== "true") {
+          const secretKeyId = row?.dataset.secretKeyId || "";
+          if (!secretKeyId) return;
+
+          try {
+            const revealed = await revealKeySecret(secretKeyId);
+            const revealedSecret = String(revealed?.secret || "").trim();
+            if (!revealedSecret) return;
+            valueNode.dataset.secretVisible = revealedSecret;
+            valueNode.dataset.secretLoaded = "true";
+          } catch (error) {
+            console.error("[keycenter_detail] failed to reveal api key for copy", error);
+            return;
+          }
+        }
+
+        const rawSecret = valueNode?.dataset.secretVisible || "";
+        if (!rawSecret) return;
+
+        try {
+          await copyText(rawSecret);
+          copyButton.classList.add("is-copied");
+          const copyIcon = copyButton.querySelector(".material-icons-round");
+          if (copyIcon) {
+            copyIcon.textContent = "check";
+          }
+
+          window.setTimeout(() => {
+            copyButton.classList.remove("is-copied");
+            const resetIcon = copyButton.querySelector(".material-icons-round");
+            if (resetIcon) {
+              resetIcon.textContent = "content_copy";
+            }
+          }, 1200);
+        } catch (error) {
+          console.error("[keycenter_detail] failed to copy api key", error);
+        }
+      });
+    }
+
+    async function fetchJson(url, options = {}) {
       const response = await fetch(url, {
-        method: "GET",
+        method: options.method || "GET",
         credentials: "same-origin",
         cache: "no-store",
         headers: {
-          Accept: "application/json"
-        }
+          Accept: "application/json",
+          ...(options.headers || {})
+        },
+        body: options.body
       });
 
       if (!response.ok) {
@@ -2100,77 +1934,26 @@
       return response.json();
     }
 
-    function normalizeText(value) {
-      return String(value || "").trim().toLowerCase();
+    async function revealKeySecret(secretKeyId) {
+      const payload = await fetchJson(`/api/v2/keycenter/keys/${encodeURIComponent(secretKeyId)}/reveal`, {
+        method: "POST"
+      });
+      return getPayloadData(payload);
     }
 
-    function normalizeTierValue(value) {
-      return String(value || "").trim().toLowerCase();
-    }
-
-    function resolveSampleSeed(params, resolvedId) {
-      const legacyItem = params.get("item");
-      if (legacyItem && RAW_ITEMS_BY_KEY[legacyItem]) {
-        return RAW_ITEMS_BY_KEY[legacyItem];
+    async function resolveRequestedKeyItem(requestedId) {
+      if (requestedId) {
+        const keyPayload = await fetchJson(`/api/v2/keycenter/keys/${encodeURIComponent(requestedId)}`);
+        return getPayloadData(keyPayload);
       }
 
-      if (resolvedId && RAW_ITEMS_BY_ID[resolvedId]) {
-        return RAW_ITEMS_BY_ID[resolvedId];
+      const payload = await fetchJson("/api/v2/keycenter/keys?limit=1");
+      const data = getPayloadData(payload);
+      const firstItem = Array.isArray(data?.items) ? data.items[0] : null;
+      if (!firstItem) {
+        throw new Error("등록된 key가 없습니다.");
       }
-
-      return null;
-    }
-
-    function findMatchingKeyItem(items, seedItem) {
-      const list = Array.isArray(items) ? items : [];
-      if (!seedItem || !list.length) return null;
-
-      const desiredKey = normalizeText(seedItem.key);
-      const desiredTitle = normalizeText(seedItem.title);
-      const desiredTier = normalizeTierValue(seedItem.typeLabel);
-
-      const exactAccountIdentifier = list.find((item) => normalizeText(item?.accountIdentifier) === desiredKey);
-      if (exactAccountIdentifier) return exactAccountIdentifier;
-
-      const exactNameAndTier = list.find((item) =>
-        normalizeText(item?.name) === desiredTitle &&
-        (
-          normalizeTierValue(item?.tier?.label) === desiredTier ||
-          normalizeTierValue(item?.tier?.code) === desiredTier
-        )
-      );
-      if (exactNameAndTier) return exactNameAndTier;
-
-      const exactNameMatches = list.filter((item) => normalizeText(item?.name) === desiredTitle);
-      if (exactNameMatches.length === 1) {
-        return exactNameMatches[0];
-      }
-
-      const looseMatches = list.filter((item) =>
-        normalizeText(item?.name) === desiredTitle ||
-        normalizeText(item?.accountIdentifier) === desiredKey
-      );
-      if (looseMatches.length === 1) {
-        return looseMatches[0];
-      }
-
-      return null;
-    }
-
-    async function resolveApiKeyFromSample(seedItem) {
-      if (!seedItem) return null;
-
-      const candidates = Array.from(new Set([seedItem.key, seedItem.title].filter(Boolean)));
-      for (const candidate of candidates) {
-        const payload = await fetchJson(`/api/v2/keycenter/keys?limit=100&q=${encodeURIComponent(candidate)}`);
-        const data = getPayloadData(payload);
-        const match = findMatchingKeyItem(data?.items, seedItem);
-        if (match) {
-          return match;
-        }
-      }
-
-      return null;
+      return firstItem;
     }
 
     function getUsageWindow() {
@@ -2194,36 +1977,30 @@
       });
     }
 
+    function remountTopbar() {
+      const topbarHost = document.querySelector("[data-ax-topbar]");
+      if (topbarHost && window.mountAxStudioTopbar) {
+        window.mountAxStudioTopbar(topbarHost);
+      }
+    }
+
+    function rerenderDetailItem(renderKey, nextItem) {
+      window.DETAIL_PAGE_CONFIG.items[renderKey] = nextItem;
+      window.renderWorkspaceDetailPage?.();
+      remountTopbar();
+      initializeUsageChartFilters();
+      mountAuthorManageBar();
+      initializeAuthorAddButtons();
+    }
+
     async function bootstrapDetailConfig() {
       const params = new URLSearchParams(window.location.search);
-      const legacyItem = params.get("item");
       const requestedId = params.get("id");
-      const seedItem = resolveSampleSeed(params, requestedId);
-
-      if (!requestedId && legacyItem && LEGACY_ITEM_TO_ID[legacyItem]) {
-        params.set("id", LEGACY_ITEM_TO_ID[legacyItem]);
-        const nextSearch = params.toString();
-        const nextUrl = `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""}${window.location.hash || ""}`;
-        window.history.replaceState({}, "", nextUrl);
-      }
-
-      const resolvedId = params.get("id");
-      if (!resolvedId) {
-        return;
-      }
+      const renderKey = requestedId || initialLookupKey;
 
       try {
-        let keyItem;
-        try {
-          const keyPayload = await fetchJson(`/api/v2/keycenter/keys/${encodeURIComponent(resolvedId)}`);
-          keyItem = getPayloadData(keyPayload);
-        } catch (error) {
-          const resolvedFromSample = await resolveApiKeyFromSample(seedItem);
-          if (!resolvedFromSample) {
-            throw error;
-          }
-
-          keyItem = resolvedFromSample;
+        const keyItem = await resolveRequestedKeyItem(requestedId);
+        if (!requestedId && keyItem?.id) {
           params.set("id", keyItem.id);
           const nextSearch = params.toString();
           const nextUrl = `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""}${window.location.hash || ""}`;
@@ -2232,12 +2009,12 @@
 
         const usageWindow = getUsageWindow();
         const [usagePayload, tierPayload] = await Promise.all([
-          fetchJson(`/api/v2/keycenter/tiers/usage?startDate=${encodeURIComponent(usageWindow.startDate)}&endDate=${encodeURIComponent(usageWindow.endDate)}&key=${encodeURIComponent(keyItem?.id || resolvedId)}`),
+          fetchJson(`/api/v2/keycenter/tiers/usage?startDate=${encodeURIComponent(usageWindow.startDate)}&endDate=${encodeURIComponent(usageWindow.endDate)}&key=${encodeURIComponent(keyItem?.id || renderKey)}`),
           keyItem?.tier?.id
             ? fetchJson(`/api/v2/keycenter/tiers/${encodeURIComponent(keyItem.tier.id)}`)
                 .catch((error) => {
                   console.warn("Failed to load tier detail for keycenter detail", {
-                    keyId: keyItem?.id || resolvedId,
+                    keyId: keyItem?.id || renderKey,
                     tierId: keyItem?.tier?.id || null,
                     error
                   });
@@ -2247,12 +2024,10 @@
         ]);
         const usage = getPayloadData(usagePayload);
         const tierDetail = getPayloadData(tierPayload);
-        DETAIL_ITEMS[keyItem.id] = buildItem(buildDynamicItemFromApi(keyItem, usage, tierDetail));
+        rerenderDetailItem(keyItem.id, buildItem(buildDynamicItemFromApi(keyItem, usage, tierDetail)));
       } catch (error) {
         console.warn("Failed to hydrate keycenter detail from API", error);
-        if (!DETAIL_ITEMS[resolvedId]) {
-          DETAIL_ITEMS[resolvedId] = buildItem(buildUnavailableItem(resolvedId));
-        }
+        rerenderDetailItem(renderKey, buildItem(buildUnavailableItem(requestedId || renderKey)));
       }
     }
 
@@ -2268,19 +2043,17 @@
     };
   </script>
   <script>
-    bootstrapDetailConfig()
-      .catch((error) => {
-        console.warn("Failed to initialize keycenter detail page", error);
-      })
-      .finally(async () => {
-        try {
-          await loadScript("workspace_detail_shared.js");
-          await loadScript("ax_studio_topbar.js");
-          initializeUsageChartFilters();
-        } catch (error) {
-          console.error("Failed to load keycenter detail scripts", error);
-        }
-      });
+    (async () => {
+      try {
+        await loadScript("workspace_detail_shared.js");
+        await loadScript("ax_studio_topbar.js");
+        initializeUsageChartFilters();
+        initializeKeySecretActions();
+        await bootstrapDetailConfig();
+      } catch (error) {
+        console.error("Failed to load keycenter detail scripts", error);
+      }
+    })();
   </script>
 </body>
 </html>

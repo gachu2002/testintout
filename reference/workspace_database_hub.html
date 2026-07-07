@@ -1175,7 +1175,7 @@
               label: "Detail",
               icon: "open_in_new",
               kind: "open",
-              href: `workspace_database_detail.html?db=${encodeURIComponent(slug || normalizedName)}`
+              href: `workspace_database_detail.html?id=${encodeURIComponent(slug || normalizedName)}`
             }
           ]
         };
@@ -1310,9 +1310,9 @@
             return `
               <div class="hub-lite-create-progress-item ${isCurrent ? "is-current" : ""} ${isComplete ? "is-complete" : ""}">
                 <div class="hub-lite-create-progress-line">
-                  <span class="hub-lite-create-progress-rail ${index === 0 ? "is-hidden" : ""}"></span>
+                  <span class="hub-lite-create-progress-rail is-before ${index === 0 ? "is-hidden" : ""}"></span>
                   <span class="hub-lite-create-progress-dot">${isComplete ? '<span class="material-icons-round" style="font-size:15px">done</span>' : step}</span>
-                  <span class="hub-lite-create-progress-rail ${index === stepMeta.length - 1 ? "is-hidden" : ""}"></span>
+                  <span class="hub-lite-create-progress-rail is-after ${index === stepMeta.length - 1 ? "is-hidden" : ""}"></span>
                 </div>
                 <div class="hub-lite-create-progress-label">${item.label}</div>
                 <div class="hub-lite-create-progress-value">${value || " "}</div>
@@ -1747,7 +1747,7 @@
               label: "Detail",
               icon: "open_in_new",
               kind: "open",
-              href: `workspace_database_detail.html?db=${encodeURIComponent(resource.name)}`
+              href: `workspace_database_detail.html?id=${encodeURIComponent(resource.id || resource.name)}`
             },
             {
               label: resource.capabilities?.canRestart ? "Restart" : "No Access",

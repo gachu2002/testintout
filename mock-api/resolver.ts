@@ -3,8 +3,13 @@ import { Buffer } from 'node:buffer';
 type MockData = Record<string, unknown> & {
   appGalleryAppDetailsBySlug?: Record<string, unknown>;
   appGalleryAppsByCategoryResponse?: Record<string, unknown>;
+  databaseBindingsByDatabaseId?: Record<string, unknown>;
+  databaseCreateResponse?: unknown;
+  databaseDetailsById?: Record<string, unknown>;
+  databaseRestartResponse?: unknown;
   domainCertificateByDomainId?: Record<string, unknown>;
   domainConnectionByDomainId?: Record<string, unknown>;
+  domainCreateResponse?: unknown;
   projectPublishHistoryByProjectId?: Record<string, unknown>;
   projectResourcesByProjectId?: Record<string, unknown>;
 };
@@ -55,6 +60,7 @@ const routeKeys = new Map<string, string>([
   ['/api/v2/permissions/realms', 'permissionRealmsResponse'],
   ['/api/v2/permissions/realms/filters', 'permissionRealmFiltersResponse'],
   ['/api/v2/permissions/realms/stats', 'permissionRealmStatsResponse'],
+  ['/api/v2/permissions/requests', 'permissionRequestsResponse'],
   ['/api/v2/agents', 'agentsResponse'],
   ['/api/v2/agents/filters', 'agentsFiltersResponse'],
   ['/api/v2/agents/panels/models', 'agentModelsPanelResponse'],
@@ -87,6 +93,34 @@ export function resolveMockResponse(
       payload: mockData.appGalleryInstallResponse ?? {
         data: { jobId: '6a3a02a5dc684c9fde7e52e1', status: 'queued' },
       },
+      status: 200,
+    };
+  }
+
+  if (method === 'POST' && requestUrl.pathname === '/api/v2/databases') {
+    return {
+      payload: mockData.databaseCreateResponse ?? { data: null },
+      status: 200,
+    };
+  }
+
+  if (method === 'POST' && /^\/api\/v2\/databases\/([^/]+)\/restart$/.test(requestUrl.pathname)) {
+    return {
+      payload: mockData.databaseRestartResponse ?? { data: null },
+      status: 200,
+    };
+  }
+
+  if (method === 'POST' && requestUrl.pathname === '/api/v2/domains') {
+    return {
+      payload: mockData.domainCreateResponse ?? { data: null },
+      status: 200,
+    };
+  }
+
+  if (method === 'POST' && requestUrl.pathname === '/api/v2/permissions/realms') {
+    return {
+      payload: mockData.permissionRealmCreateResponse ?? { data: null },
       status: 200,
     };
   }
@@ -232,6 +266,28 @@ export function resolveMockResponse(
         payload: applyPagination(payload, requestUrl.searchParams),
         status: 200,
       };
+    }
+  }
+
+  const databaseBindingsMatch = requestUrl.pathname.match(
+    /^\/api\/v2\/databases\/([^/]+)\/bindings$/,
+  );
+
+  if (databaseBindingsMatch) {
+    const databaseId = decodeURIComponent(databaseBindingsMatch[1]);
+    const bindings = mockData.databaseBindingsByDatabaseId?.[databaseId];
+
+    return { payload: bindings ?? { data: { items: [] } }, status: 200 };
+  }
+
+  const databaseDetailMatch = requestUrl.pathname.match(/^\/api\/v2\/databases\/([^/]+)$/);
+
+  if (databaseDetailMatch) {
+    const databaseId = decodeURIComponent(databaseDetailMatch[1]);
+    const detail = mockData.databaseDetailsById?.[databaseId];
+
+    if (detail) {
+      return { payload: detail, status: 200 };
     }
   }
 

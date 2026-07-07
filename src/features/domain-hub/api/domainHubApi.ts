@@ -3,6 +3,8 @@ import type {
   DomainCertificatePanel,
   DomainConnectionDetail,
   DomainConnectionPanel,
+  DomainCreateRequest,
+  DomainCreateResponse,
   DomainGuideLinksPanel,
   DomainHubFilters,
   DomainHubStats,
@@ -14,13 +16,22 @@ import type { ApiDataResponse, CursorParams, PaginatedResponse } from '@/lib/api
 import { unwrapApiData } from '@/lib/api/types';
 
 export async function getDomainHubDomains(
-  { cursor, limit, q }: CursorParams = { cursor: '', limit: 6 },
+  { cursor, limit, q, sort }: CursorParams = { cursor: '', limit: 8, sort: '' },
 ): Promise<PaginatedResponse<DomainResource>> {
   const response = await apiClient.get<PaginatedResponse<DomainResource>>('/v2/domains', {
-    params: { cursor, limit, ...(q ? { q } : {}) },
+    params: { cursor, limit, sort, ...(q ? { q } : {}) },
   });
 
   return response.data;
+}
+
+export async function createDomain(payload: DomainCreateRequest): Promise<DomainCreateResponse> {
+  const response = await apiClient.post<ApiDataResponse<DomainCreateResponse>>(
+    '/v2/domains',
+    payload,
+  );
+
+  return unwrapApiData(response);
 }
 
 export async function getDomainHubStats(): Promise<DomainHubStats> {

@@ -20,7 +20,13 @@ const statusMeta: Record<DomainStatusFilter, { icon: ReactNode; label: string }>
   review: { icon: <VerifiedUserRoundedIcon sx={{ fontSize: 15 }} />, label: '검토' },
 };
 
-const referenceStatusOrder: DomainStatusFilter[] = ['all', 'pending', 'certificate', 'connected'];
+const referenceStatusOrder: DomainStatusFilter[] = [
+  'all',
+  'pending',
+  'review',
+  'certificate',
+  'connected',
+];
 
 export function DomainHubFilterBar({
   activeStatus,

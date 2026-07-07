@@ -160,7 +160,7 @@
           color: "linear-gradient(135deg,#f59e0b,#fbbf24)",
           details: [
             { icon: "category", text: "Format · REST API" },
-            { icon: "lan", text: "incident-ai.workspace/api/v1/tools" },
+            { icon: "shield", text: "Direct URL 비공개" },
             { icon: "monitor_heart", text: "Health · Review" }
           ],
           usage: { value: 61, meta: "최근 24시간 호출량 4.3K · 실패율 4.1%" },
@@ -591,6 +591,10 @@
         return bucketId === "external-mcp" || bucketId === "internal-mcp";
       }
 
+      function isDirectInventory(item) {
+        return getBucketId(item) === "direct";
+      }
+
       function buildHeroStats(statsPayload, items) {
         const countsByBucket = items.reduce((acc, item) => {
           const bucketId = getBucketId(item);
@@ -656,6 +660,9 @@
         const mcpConnectionDetail = item?.transport
           ? `Transport · ${safeText(item.transport)}`
           : "MCP URL 비공개";
+        const directConnectionDetail = item?.transport
+          ? `Transport · ${safeText(item.transport)}`
+          : "Direct URL 비공개";
         const endpointOrOrigin = item?.endpointUrl
           || item?.openapiSpecUrl
           || item?.origin?.workspace
@@ -666,6 +673,8 @@
           { icon: "category", text: `Format · ${safeText(getFormatLabel(item))}` },
           isMcpInventory(item)
             ? { icon: "shield", text: mcpConnectionDetail }
+            : isDirectInventory(item)
+              ? { icon: "shield", text: directConnectionDetail }
             : { icon: item?.endpointUrl || item?.openapiSpecUrl ? "lan" : "hub", text: safeText(endpointOrOrigin) },
           { icon: "monitor_heart", text: `Status · ${safeText(item?.statusLabel || item?.status || "Review")}` }
         ];

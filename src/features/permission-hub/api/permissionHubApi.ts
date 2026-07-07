@@ -3,6 +3,8 @@ import type {
   PermissionHubFilters,
   PermissionHubStats,
   PermissionRealm,
+  PermissionRealmCreateRequest,
+  PermissionRequestItem,
   PermissionTipsPanel,
 } from '@/features/permission-hub/types';
 import { apiClient } from '@/lib/api/axios';
@@ -20,6 +22,34 @@ export async function getPermissionRealms(
     '/v2/permissions/realms',
     {
       params: { cursor, limit, q, sort },
+    },
+  );
+
+  return response.data;
+}
+
+export async function createPermissionRealm(
+  payload: PermissionRealmCreateRequest,
+): Promise<PermissionRealm> {
+  const response = await apiClient.post<ApiDataResponse<PermissionRealm>>(
+    '/v2/permissions/realms',
+    payload,
+  );
+
+  return unwrapApiData(response);
+}
+
+export async function getPermissionRequests(
+  { cursor, limit, sort = '-createdAt' }: Pick<CursorParams, 'cursor' | 'limit' | 'sort'> = {
+    cursor: '',
+    limit: 8,
+    sort: '-createdAt',
+  },
+): Promise<PaginatedResponse<PermissionRequestItem>> {
+  const response = await apiClient.get<PaginatedResponse<PermissionRequestItem>>(
+    '/v2/permissions/requests',
+    {
+      params: { cursor, limit, sort },
     },
   );
 

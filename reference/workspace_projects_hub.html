@@ -4809,7 +4809,7 @@
       const serviceHealthList = document.getElementById("serviceHealthList");
       const viewerRole = document.body.dataset.viewerRole || "admin";
       const canManageOtherIde = viewerRole === "admin" || viewerRole === "owner";
-      const PROJECT_PAGE_SIZE = 4;
+      const PROJECT_PAGE_SIZE = 6;
       const STORAGE_META = {
         micro: { memory: "1GB", cpu: "0.5vCPU", pods: "1 pod" },
         small: { memory: "2GB", cpu: "1vCPU", pods: "1 pod" },
@@ -5179,19 +5179,85 @@
       const getQueueToneStyle = (tone) => {
         if (tone === "healthy") return "background:#dcfce7;color:#166534";
         if (tone === "review") return "background:#fef3c7;color:#b45309";
+        if (tone === "error") return "background:#fee2e2;color:#b91c1c";
         return "background:#eef2ff;color:#4338ca";
       };
 
       const getQueueIcon = (tone, row) => {
         if (tone === "healthy") return "done_all";
         if (tone === "review") return "schedule";
+        if (tone === "error") return "error";
         if (/endpoint/i.test(String(row?.meta || ""))) return "layers";
         return "precision_manufacturing";
       };
 
+      const normalizeQueueStatus = (value) => {
+        const status = String(value || "").trim().toLowerCase();
+        if (!status) return "queued";
+        if (/(fail|error|crash)/.test(status)) return "failed";
+        if (/(run|ready|active|deploy|progress|start)/.test(status)) return "running";
+        if (/(queue|wait|pending|build|review)/.test(status)) return "queued";
+        if (/(stop|inactive|idle|pause)/.test(status)) return "idle";
+        return status;
+      };
+
+      const getQueueStatusMeta = (value, isCurrent = false) => {
+        const normalized = normalizeQueueStatus(value);
+        if (normalized === "failed") {
+          return { tone: "error", label: "Failed" };
+        }
+        if (normalized === "running") {
+          return { tone: "healthy", label: isCurrent ? "Live" : "Running" };
+        }
+        if (normalized === "idle") {
+          return { tone: "review", label: isCurrent ? "Current" : "Idle" };
+        }
+        if (normalized === "queued") {
+          return { tone: "review", label: "Queued" };
+        }
+        return { tone: "default", label: isCurrent ? "Current" : "Ready" };
+      };
+
+      const formatQueueTime = (value) => {
+        if (!value) return "생성 시각 정보가 없습니다.";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return String(value);
+        return `${formatUpdatedAt(date.toISOString())} 생성`;
+      };
+
+      const buildQueueRowFromPublish = (item) => {
+        const projectName = item?.project?.name || item?.containerName || "Untitled";
+        const projectId = String(item?.projectId || item?.project?.id || "");
+        const detailHref = projectId
+          ? `workspace_project_detail.html?projectId=${encodeURIComponent(projectId)}&project=${encodeURIComponent(projectName)}`
+          : `workspace_project_detail.html?project=${encodeURIComponent(projectName)}`;
+        const version = item?.version || item?.containerVersion || "version 미지정";
+        const statusMeta = getQueueStatusMeta(item?.status, Boolean(item?.isCurrent));
+        const ownerName = item?.owner?.name || item?.owner?.preferred_username || item?.owner?.email || "owner 미상";
+        const meta = [
+          item?.status ? statusMeta.label : null,
+          item?.isCurrent ? "current publish" : null,
+          item?.project?.name && item?.containerName && item.project.name !== item.containerName ? item.containerName : null
+        ].filter(Boolean).join(" · ");
+
+        return {
+          id: item?.id || `${projectId}-${version}`,
+          title: projectName,
+          href: detailHref,
+          meta: meta || "최근 publish 이력",
+          description: `${formatQueueTime(item?.createdAt)} · ${ownerName}`,
+          pill: {
+            label: version,
+            tone: statusMeta.tone
+          },
+          isCurrent: Boolean(item?.isCurrent),
+          status: item?.status || null
+        };
+      };
+
       const buildQueueItem = (row) => {
         const queueTitle = row?.title || "Untitled";
-        const queueHref = `workspace_project_detail.html?project=${encodeURIComponent(queueTitle)}`;
+        const queueHref = row?.href || `workspace_project_detail.html?project=${encodeURIComponent(queueTitle)}`;
         const pillLabel = row?.pill?.label || "Queued";
         const metaLabel = row?.meta || "상태 정보를 불러오는 중입니다.";
         const description = row?.description || "세부 설명이 없습니다.";
@@ -5435,9 +5501,9 @@
         if (!publishQueueList) return;
         if (!Array.isArray(rows) || !rows.length) {
           setPublishQueueState({
-            message: "현재 대기 중인 publish 항목이 없습니다.",
+            message: "최근 publish 이력이 없습니다.",
             tone: "empty",
-            detail: "publish-queue panel rows가 비어 있습니다."
+            detail: "본인이 접근 가능한 publish가 생기면 최근 10건이 여기에 표시됩니다."
           });
           return;
         }
@@ -5817,14 +5883,14 @@
           setPublishQueueState({
             message: "Publish Queue를 불러오는 중입니다.",
             tone: "loading",
-            detail: "/api/v2/chatbots/panels/publish-queue 호출 중입니다."
+            detail: "/api/v2/publishes?sort=-created&limit=10 호출 중입니다."
           });
         }
 
-        publishQueueRequest = requestJson("/api/v2/chatbots/panels/publish-queue")
+        publishQueueRequest = requestJson("/api/v2/publishes?sort=-created&limit=10")
           .then((payload) => {
-            const panel = payload?.data || payload || {};
-            const rows = Array.isArray(panel?.rows) ? panel.rows : [];
+            const items = Array.isArray(payload?.items) ? payload.items : [];
+            const rows = items.map((item) => buildQueueRowFromPublish(item));
             renderPublishQueue(rows);
             return rows;
           })
@@ -5832,7 +5898,7 @@
             setPublishQueueState({
               message: error?.message || "Publish Queue를 불러오지 못했습니다.",
               tone: "error",
-              detail: "backend panel 응답을 확인해 주세요."
+              detail: "publish 목록 API 응답을 확인해 주세요."
             });
             throw error;
           })

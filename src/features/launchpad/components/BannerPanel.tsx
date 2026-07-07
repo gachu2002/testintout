@@ -84,43 +84,38 @@ export function BannerPanel({
     <Box
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      sx={{ display: 'grid' }}
+      sx={{ display: 'grid', gap: '2px' }}
     >
-      {slides.map((slide, index) => (
-        <BannerSlideFrame
-          activeIndex={safeIndex}
-          hero={hero}
-          isActive={index === safeIndex}
-          key={slide.id}
-          onSelect={onSelect}
-          showAnnouncementsError={showAnnouncementsError}
-          slide={slide}
-          slides={slides}
-        />
-      ))}
+      <Box sx={{ display: 'grid' }}>
+        {slides.map((slide, index) => (
+          <BannerSlideFrame
+            hero={hero}
+            isActive={index === safeIndex}
+            key={slide.id}
+            showAnnouncementsError={showAnnouncementsError}
+            slide={slide}
+          />
+        ))}
+      </Box>
+      <BannerDots activeIndex={safeIndex} onSelect={onSelect} slides={slides} />
     </Box>
   );
 }
 
 function BannerSlideFrame({
-  activeIndex,
   hero,
   isActive,
-  onSelect,
   showAnnouncementsError,
   slide,
-  slides,
 }: {
-  activeIndex: number;
   hero?: LaunchpadHero;
   isActive: boolean;
-  onSelect: (index: number) => void;
   showAnnouncementsError: boolean;
   slide: ReferenceBannerSlide;
-  slides: ReferenceBannerSlide[];
 }) {
   const visual = getSlideVisual(slide.variant);
   const isDark = slide.variant !== 'release';
+  const isRelease = slide.variant === 'release';
   const hasVisualSide = slide.variant === 'dej' || slide.visualMode !== 'none';
   const titleMaxWidth = !hasVisualSide
     ? 860
@@ -148,10 +143,10 @@ function BannerSlideFrame({
         borderRadius: '18px',
         boxShadow: visual.shadow,
         color: isDark ? '#fff' : theme.palette.text.primary,
-        display: 'flex',
+        display: hasVisualSide ? 'flex' : 'block',
         gridArea: '1 / 1',
         isolation: 'isolate',
-        minHeight: { md: slide.variant === 'release' ? 152 : 168, xs: 'auto' },
+        minHeight: { md: hasVisualSide ? 168 : 0, xs: 'auto' },
         opacity: isActive ? 1 : 0,
         overflow: 'hidden',
         p: { md: visual.padding, xs: '24px 22px 20px' },
@@ -171,23 +166,31 @@ function BannerSlideFrame({
         spacing={3}
         sx={{ position: 'relative', width: '100%', zIndex: 2 }}
       >
-        <Box maxWidth={hasVisualSide ? 720 : 860}>
+        <Box maxWidth={hasVisualSide ? 720 : '100%'}>
           <Stack
             alignItems="center"
             direction="row"
             spacing={0.625}
             sx={{
-              bgcolor: isDark ? alpha('#fff', 0.13) : 'transparent',
+              bgcolor: isDark
+                ? alpha('#fff', 0.13)
+                : isRelease
+                  ? 'rgba(255,255,255,.82)'
+                  : 'transparent',
               borderRadius: 999,
-              boxShadow: isDark ? `inset 0 0 0 1px ${alpha('#fff', 0.12)}` : 'none',
-              color: isDark ? '#e0f7ff' : 'primary.main',
+              boxShadow: isDark
+                ? `inset 0 0 0 1px ${alpha('#fff', 0.12)}`
+                : isRelease
+                  ? 'inset 0 0 0 1px rgba(244,114,182,.18)'
+                  : 'none',
+              color: isDark ? '#e0f7ff' : isRelease ? '#be185d' : 'primary.main',
               display: 'inline-flex',
               fontSize: 11,
               fontWeight: 800,
               letterSpacing: isDark ? '.1em' : '1.6px',
               mb: 1.5,
-              px: isDark ? 1.125 : 0,
-              py: isDark ? 0.75 : 0,
+              px: isDark || isRelease ? 1.125 : 0,
+              py: isDark || isRelease ? 0.75 : 0,
               textTransform: 'uppercase',
             }}
           >
@@ -198,7 +201,7 @@ function BannerSlideFrame({
           <Typography
             component="h2"
             sx={{
-              color: isDark ? '#fff' : 'text.primary',
+              color: isDark ? '#fff' : isRelease ? '#831843' : 'text.primary',
               fontSize: { sm: slide.variant === 'dej' ? 24 : 23, xs: 21 },
               fontWeight: 800,
               letterSpacing: slide.variant === 'dej' ? '-.7px' : '-.5px',
@@ -216,7 +219,11 @@ function BannerSlideFrame({
           </Typography>
           <Typography
             sx={{
-              color: isDark ? 'rgba(236,249,255,.9)' : 'text.secondary',
+              color: isDark
+                ? 'rgba(236,249,255,.9)'
+                : isRelease
+                  ? 'rgba(131,24,67,.84)'
+                  : 'text.secondary',
               fontSize: 13,
               lineHeight: slide.variant === 'release' ? 1.6 : 1.65,
               maxWidth: descriptionMaxWidth,
@@ -233,27 +240,22 @@ function BannerSlideFrame({
           <BannerActions isInteractive={isActive} slide={slide} visual={visual} />
         </Box>
 
-        <Stack
-          alignItems="center"
-          spacing={2}
-          sx={{
-            minWidth: { md: hasVisualSide ? 240 : 0, xs: 0 },
-            width: { md: 'auto', xs: '100%' },
-          }}
-        >
-          {slide.variant === 'dej' ? <DejSnapshot hero={hero} slide={slide} /> : null}
-          {slide.variant !== 'dej' && slide.visualMode !== 'none' ? (
-            <BannerVisualCard slide={slide} />
-          ) : null}
-          <BannerDots
-            activeIndex={activeIndex}
-            accent={visual.dotColor}
-            isInteractive={isActive}
-            onSelect={onSelect}
-            slides={slides}
-          />
-          {showAnnouncementsError ? <AnnouncementErrorNotice isDark={isDark} /> : null}
-        </Stack>
+        {hasVisualSide || showAnnouncementsError ? (
+          <Stack
+            alignItems="center"
+            spacing={2}
+            sx={{
+              minWidth: { md: hasVisualSide ? 240 : 0, xs: 0 },
+              width: { md: 'auto', xs: '100%' },
+            }}
+          >
+            {slide.variant === 'dej' ? <DejSnapshot hero={hero} slide={slide} /> : null}
+            {slide.variant !== 'dej' && slide.visualMode !== 'none' ? (
+              <BannerVisualCard slide={slide} />
+            ) : null}
+            {showAnnouncementsError ? <AnnouncementErrorNotice isDark={isDark} /> : null}
+          </Stack>
+        ) : null}
       </Stack>
     </Paper>
   );
@@ -336,20 +338,18 @@ function BannerActions({
 }
 
 function BannerDots({
-  accent,
   activeIndex,
-  isInteractive,
   onSelect,
   slides,
 }: {
-  accent: string;
   activeIndex: number;
-  isInteractive: boolean;
   onSelect: (index: number) => void;
   slides: ReferenceBannerSlide[];
 }) {
+  if (slides.length < 2) return null;
+
   return (
-    <Stack direction="row" spacing={0.75}>
+    <Stack direction="row" justifyContent="center" spacing={0.75}>
       {slides.map((slide, index) => (
         <Box
           aria-current={index === activeIndex}
@@ -358,7 +358,7 @@ function BannerDots({
           key={slide.id}
           onClick={() => onSelect(index)}
           sx={(theme) => ({
-            bgcolor: index === activeIndex ? accent : 'rgba(95,101,109,.45)',
+            bgcolor: index === activeIndex ? theme.workspace.colors.brand : 'rgba(95,101,109,.45)',
             border: 0,
             borderRadius: 99,
             cursor: 'pointer',
@@ -368,7 +368,6 @@ function BannerDots({
             width: index === activeIndex ? 20 : 6,
             ...focusVisibleStyles(theme),
           })}
-          tabIndex={isInteractive ? undefined : -1}
           type="button"
         />
       ))}

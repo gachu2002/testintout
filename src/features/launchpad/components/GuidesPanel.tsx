@@ -46,7 +46,7 @@ export function GuidesPanel({
         </Box>
         <SectionStatusBadge status={launchpadSectionStatus.guides} />
         {guideLinks?.footerLink ? (
-          <MoreLink href={guideLinks.footerLink.href} label="More" />
+          <MoreLink href={guideLinks.footerLink.href} label="더보기" />
         ) : null}
       </Stack>
       {isLoading ? <ListSkeleton count={6} /> : null}

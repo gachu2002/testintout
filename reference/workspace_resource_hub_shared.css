@@ -1017,6 +1017,13 @@ button {
     font-size: 10px;
     font-weight: 700;
     color: var(--t2);
+    text-decoration: none;
+    appearance: none;
+}
+
+.metric-chip[href],
+button.metric-chip {
+    cursor: pointer;
 }
 
 .metric-chip .material-icons-round {
@@ -1024,10 +1031,37 @@ button {
     color: var(--t3);
 }
 
+.metric-chip.bucket-bind-chip {
+    gap: 4px;
+    padding: 4px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    background: rgba(248, 249, 252, .95);
+    border-color: rgba(224, 227, 232, .95);
+    color: var(--t2);
+}
+
+.metric-chip.bucket-bind-chip:hover {
+    background: rgba(241, 245, 249, .98);
+    border-color: rgba(203, 213, 225, .95);
+    box-shadow: none;
+}
+
+.metric-chip.bucket-bind-chip .material-icons-round {
+    font-size: 12px;
+    color: var(--t3);
+}
+
 .metric-chip.is-manage-enabled {
     background: var(--green-bg);
     border-color: rgba(13, 148, 136, .22);
     color: var(--green);
+}
+
+.metric-chip.is-manage-enabled:hover {
+    border-color: rgba(13, 148, 136, .32);
+    box-shadow: 0 8px 18px rgba(13, 148, 136, .12);
 }
 
 .metric-chip.is-manage-enabled .material-icons-round {
@@ -1042,6 +1076,16 @@ button {
 
 .metric-chip.is-request-enabled .material-icons-round {
     color: var(--green);
+}
+
+.metric-chip.tone-muted {
+    background: rgba(148, 163, 184, .12);
+    border-color: rgba(148, 163, 184, .18);
+    color: #64748b;
+}
+
+.metric-chip.tone-muted .material-icons-round {
+    color: #94a3b8;
 }
 
 .resource-usage-block {
@@ -1928,10 +1972,59 @@ a.db-connector:hover {
 }
 
 .hub-briefing-overview-stat {
+    position: relative;
     padding: 10px 10px 11px;
     border-radius: 12px;
     background: #ffffff;
     border: 1px solid rgba(148, 163, 184, .16);
+}
+
+.hub-briefing-overview-stat.has-tooltip {
+    cursor: help;
+}
+
+.hub-briefing-overview-stat.has-tooltip:focus-visible {
+    outline: 2px solid rgba(15, 118, 110, .3);
+    outline-offset: 2px;
+}
+
+.hub-floating-tooltip {
+    position: fixed;
+    left: 0;
+    top: 0;
+    max-width: 260px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: rgba(15, 23, 42, .94);
+    color: #f8fafc;
+    font-size: 11px;
+    line-height: 1.45;
+    font-weight: 600;
+    letter-spacing: -.01em;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, .22);
+    pointer-events: none;
+    white-space: normal;
+    z-index: 1000;
+}
+
+.hub-floating-tooltip::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    background: rgba(15, 23, 42, .94);
+    transform: translateX(-50%) rotate(45deg);
+}
+
+.hub-floating-tooltip[data-placement="top"]::after {
+    top: 100%;
+    margin-top: -5px;
+}
+
+.hub-floating-tooltip[data-placement="bottom"]::after {
+    bottom: 100%;
+    margin-bottom: -5px;
 }
 
 .hub-briefing-overview-label {
@@ -2414,7 +2507,7 @@ a.db-connector:hover {
 .hub-lite-create-progress-rail {
     height: 2px;
     border-radius: 999px;
-    background: linear-gradient(90deg, color-mix(in srgb, var(--brand) 36%, #d84ed8) 0%, color-mix(in srgb, var(--accent-2) 44%, #74b8ff) 100%);
+    background: #cfd8e3;
 }
 
 .hub-lite-create-progress-dot {
@@ -2424,11 +2517,21 @@ a.db-connector:hover {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: var(--brand);
+    background: #d7dbe2;
     color: #fff;
     font-size: 11px;
     font-weight: 800;
     flex-shrink: 0;
+}
+
+.hub-lite-create-progress-item.is-current .hub-lite-create-progress-dot,
+.hub-lite-create-progress-item.is-complete .hub-lite-create-progress-dot {
+    background: var(--brand);
+}
+
+.hub-lite-create-progress-item.is-complete .hub-lite-create-progress-rail,
+.hub-lite-create-progress-item.is-current .hub-lite-create-progress-rail.is-before {
+    background: linear-gradient(90deg, color-mix(in srgb, var(--brand) 36%, #d84ed8) 0%, color-mix(in srgb, var(--accent-2) 44%, #74b8ff) 100%);
 }
 
 .hub-lite-create-progress-label {
@@ -2437,6 +2540,11 @@ a.db-connector:hover {
     font-weight: 800;
     color: var(--t1);
     line-height: 1.3;
+}
+
+.hub-lite-create-progress-item.is-current .hub-lite-create-progress-label,
+.hub-lite-create-progress-item.is-complete .hub-lite-create-progress-label {
+    color: var(--brand);
 }
 
 .hub-lite-create-progress-value {

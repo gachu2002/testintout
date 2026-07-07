@@ -3177,9 +3177,17 @@
         base.engineLabel = `${engineMeta.label}${versionLabel ? ` · v${detail.version}` : ""}`;
         base.title = normalizeText(detail?.name, base.title);
         base.description = getEngineDescription(detail?.engine, detail?.name);
+        const primaryConsole = consoleBindings[0] || null;
+        const primaryConsoleHref = primaryConsole?.id
+          ? `workspace_console_detail.html?id=${encodeURIComponent(primaryConsole.id)}`
+          : "workspace_tools_hub.html";
         base.actions = [
           { label: "Database Hub", icon: "arrow_back", href: "workspace_database_hub.html" },
-          { label: consoleBindings[0]?.name ? `${consoleBindings[0].name} 열기` : "Consoles Hub", icon: "open_in_new", href: "workspace_tools_hub.html" }
+          {
+            label: primaryConsole?.name ? `${primaryConsole.name} 열기` : "Consoles Hub",
+            icon: "open_in_new",
+            href: primaryConsoleHref
+          }
         ];
         base.heroStats = [
           {
@@ -3362,28 +3370,28 @@
         return base;
       }
 
-      async function resolveApiDatabaseDetail(requestedDb) {
-        if (!requestedDb) {
+      async function resolveApiDatabaseDetail(requestedId) {
+        if (!requestedId) {
           return null;
         }
 
-        const normalizedRequest = String(requestedDb).trim().toLowerCase();
+        const normalizedRequest = String(requestedId).trim().toLowerCase();
         if (!normalizedRequest) {
           return null;
         }
 
         try {
-          const listPayload = await fetchJson("/databases", { q: requestedDb, limit: 100 });
+          const listPayload = await fetchJson("/databases", { q: requestedId, limit: 100 });
           const items = extractItems(listPayload);
           const matched = items.find(item => String(item?.name || "").trim().toLowerCase() === normalizedRequest)
-            || items.find(item => String(item?.id || "").trim() === requestedDb);
+            || items.find(item => String(item?.id || "").trim() === requestedId);
 
           if (matched?.id) {
             const detailPayload = await fetchJson(`/databases/${encodeURIComponent(matched.id)}`);
             return extractData(detailPayload, null);
           }
 
-          const detailPayload = await fetchJson(`/databases/${encodeURIComponent(requestedDb)}`);
+          const detailPayload = await fetchJson(`/databases/${encodeURIComponent(requestedId)}`);
           return extractData(detailPayload, null);
         } catch (error) {
           console.error("[database_detail] failed to fetch database detail", error);
@@ -3392,10 +3400,10 @@
       }
 
       const params = new URLSearchParams(window.location.search);
-      const requestedDb = params.get("db");
-      const apiDetail = await resolveApiDatabaseDetail(requestedDb);
+      const requestedId = params.get("id") || params.get("db");
+      const apiDetail = await resolveApiDatabaseDetail(requestedId);
       const consoleDetails = apiDetail ? await resolveConsoleDetails(apiDetail.bindings) : [];
-      const db = apiDetail ? buildApiBackedDetail({ ...apiDetail, consoleDetails }) : buildUnavailableDetail(requestedDb);
+      const db = apiDetail ? buildApiBackedDetail({ ...apiDetail, consoleDetails }) : buildUnavailableDetail(requestedId);
 
       const root = document.documentElement.style;
       root.setProperty("--bg", db.theme.bg || "#edf4ff");
